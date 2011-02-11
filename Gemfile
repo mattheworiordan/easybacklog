@@ -1,30 +1,31 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.0.3'
 
 gem 'sqlite3-ruby', :require => 'sqlite3'
 
-# Use unicorn as the web server
-# gem 'unicorn'
+gem 'haml'
 
-# Deploy with Capistrano
-# gem 'capistrano'
+group :development, :test, :cucumber do
+  # gem 'ruby-debug'
+  gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git'
+end
 
-# To use debugger
-# gem 'ruby-debug'
+group :test, :cucumber do
+  gem 'rspec','>=2.0.0'
+  gem 'rspec-rails','>=2.0.0'
+  gem 'shoulda'
+  gem 'factory_girl_rails'
+  gem 'webrat'
+  gem 'cucumber-rails'
+  gem 'autotest'
+  gem 'autotest-growl'
+  gem 'autotest-rails'
+end
 
-# Bundle the extra gems:
-# gem 'bj'
-# gem 'nokogiri'
-# gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
-
-# Bundle gems for the local environment. Make sure to
-# put test-only gems in this group so their generators
-# and rake tasks are available in development mode:
-# group :development, :test do
-#   gem 'webrat'
-# end
+group :development do
+  gem 'ruby-debug19', :require => 'ruby-debug'
+  # multiple environments for Heroku
+  gem 'heroku'
+  gem 'heroku_san'
+end
