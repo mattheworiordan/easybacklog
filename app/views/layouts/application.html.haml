@@ -1,0 +1,17 @@
+# encoding: utf-8
+!!!
+%html{:xmlns => 'http://www.w3.org/1999/xhtml'}
+  %head
+    %title Ibacklog
+    
+    = stylesheet_link_tag :all
+    = javascript_include_tag :defaults
+    = csrf_meta_tag
+
+  %body
+    %div.notice 
+      = notice
+    %div.alert 
+      = alert
+
+    = yield
