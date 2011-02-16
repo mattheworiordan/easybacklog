@@ -19,6 +19,21 @@ class BacklogsController < ApplicationController
     end
   end
 
+  def update
+    @backlog = @company.backlogs.find(params[:id])
+    case params[:data_type]
+    when 'backlog-name'
+      @backlog.name = params[:new_value]
+    end
+    if !@backlog.changed?
+      render :json => { :result => 'failure', :reason => 'No changes were detected'}
+    elsif @backlog.save!
+      render :json => { :result => 'success' }
+    else
+      render :json => { :result => 'failure', :reason => @backlog.errors.full_messages.join('<br/>') }
+    end
+  end
+
   private
     # set the @company instance variable from nested oute
     # ensure user has access to this company

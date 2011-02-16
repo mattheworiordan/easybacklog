@@ -9,3 +9,13 @@
 .alert, .form_errors {
   border-color: red;
   background-color: #ffcccc; }
+
+h2 {
+  font-size: 1.2em;
+  margin-right: 1em;
+  font-family: Arial, Helvetica, Sans;
+  font-weight: normal; }
+  h2 input {
+    font-size: 1em;
+    font-family: Arial, Helvetica, Sans;
+    font-weight: normal; }

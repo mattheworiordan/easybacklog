@@ -1,5 +1,6 @@
 - title 'View backlog'
 
-%h2#backlog-name
-  = @backlog.name
+%h2.backlog-name.editable= @backlog.name
 =link_to 'Back to backlogs', company_path(@backlog.company)
+
+%input{:type => 'hidden', :value => "#{company_backlog_path(@backlog.company, @backlog)}", :name => 'ajax-data-path', :id => 'ajax-data-path'}
