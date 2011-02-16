@@ -1,0 +1,20 @@
+- title 'Duplicate a backlog'
+
+%h2 Duplicate backlog #{@backlog.name}
+
+%p Please enter a new unique name for the duplicated backlog
+
+= form_for(@new_backlog, :url => duplicate_company_backlog_path(@company, @backlog)) do |f|
+  - unless @new_backlog.errors.blank?
+    .form_errors
+      The form was not completed correctly.  Please correct the following fields to register:
+      %ul
+        - @new_backlog.errors.full_messages.each do |error|
+          %li
+            = error
+  = f.label :name, "New backlog name"
+  = f.text_field :name
+  = "(old name: #{@backlog.name})"
+  %br/
+  = f.submit "Duplicate backlog"
+  = link_to "cancel", company_path(@company)

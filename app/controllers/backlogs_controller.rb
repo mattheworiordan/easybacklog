@@ -34,6 +34,25 @@ class BacklogsController < ApplicationController
     end
   end
 
+  def destroy
+    @backlog = @company.backlogs.find(params[:id])
+    @backlog.destroy
+    flash[:notice] = 'Backlog was successfully deleted.'
+    redirect_to company_path(@company)
+  end
+
+  def duplicate
+    @backlog = @company.backlogs.find(params[:id])
+    @new_backlog = @company.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
+    if request.post?
+      if @new_backlog.save
+        @backlog.copy_children_to_backlog(@new_backlog)
+        flash[:notice] = 'Backlog was duplicated successfully.'
+        redirect_to company_backlog_path(@company, @new_backlog)
+      end
+    end
+  end
+
   private
     # set the @company instance variable from nested oute
     # ensure user has access to this company
