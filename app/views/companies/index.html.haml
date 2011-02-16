@@ -1,12 +1,12 @@
 - title 'Company'
 - if @companies.blank?
-  %h1 No company account
+  %h2 No company account
   %p
     You do not have access to a company account yet.  Please #{link_to 'contact us', contact_path} to be added to a company account.
   %p 
     Or alternatively you may #{link_to 'create a new company', new_company_path}.
 - else
-  %h1 Please select a company account
+  %h2 Please select a company account
   %p 
     As you have access to more than one company account, please tell us which company's backlogs you wish to view.
   %ul

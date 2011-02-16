@@ -11,10 +11,10 @@
     = csrf_meta_tag
 
   %body
-    %div
+    %div.main-title-logo
       %h1
         =link_to 'iBacklog', root_path
-    %div
+    %div.account-info
       - if user_signed_in?
         Hello #{current_user.name}.
         = link_to 'Update my details.', edit_user_registration_path
@@ -24,12 +24,13 @@
         |
         = link_to 'Sign up', new_user_registration_path
 
-    #alert-space
-      - if notice
-        %div.notice
-          = notice
-      - if alert
-        %div.alert
-          = alert
+    %div.body
+      #alert-space
+        - if notice
+          %div.notice
+            = notice
+        - if alert
+          %div.alert
+            = alert
 
-    = yield
+      = yield
