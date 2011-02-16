@@ -1,0 +1,19 @@
+- title 'Create a backlog'
+
+%h2 Create a backlog
+
+%p Please note that the name for your backlog must be unique.
+
+= form_for(@backlog, :url => company_backlogs_path(@company, @backlog)) do |f|
+  - unless @backlog.errors.blank?
+    .form_errors
+      The form was not completed correctly.  Please correct the following fields to register:
+      %ul
+        - @backlog.errors.full_messages.each do |error|
+          %li
+            = error
+  = f.label :name, "Backlog name"
+  = f.text_field :name
+  %br/
+  = f.submit "Create new backlog"
+  = link_to "cancel", company_path(@company)

@@ -1,0 +1,27 @@
+- unless resource.errors.blank?
+  .form_errors
+    The form was not completed correctly.  Please correct the following fields to register:
+    %ul
+      - resource.errors.full_messages.each do |error|
+        %li
+          = error
+%p
+  = f.label :name
+  %br/
+  = f.text_field :name
+%p
+  = f.label :company
+  %br/
+  = f.text_field :company
+%p
+  = f.label :email
+  %br/
+  = f.text_field :email
+%p
+  = f.label :password
+  %br/
+  = f.password_field :password
+%p
+  = f.label :password_confirmation
+  %br/
+  = f.password_field :password_confirmation

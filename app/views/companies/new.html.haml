@@ -1,0 +1,17 @@
+%h2 Create a new company account
+
+%p Please do not create a new company account if you believe one already exists.  You must contact us to be added to the existing company account to gain access to the backlogs within that account.
+
+= form_for(@company) do |f|
+  - unless @company.errors.blank?
+    .form_errors
+      The form was not completed correctly.  Please correct the following fields to register:
+      %ul
+        - @company.errors.full_messages.each do |error|
+          %li
+            = error
+  = f.label :name, "Company name"
+  = f.text_field :name
+  %br/
+  = f.submit "Create new company"
+  

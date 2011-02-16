@@ -6,6 +6,8 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 
 gem 'haml'
 
+gem 'devise'
+
 group :development, :test, :cucumber do
   # gem 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git'
@@ -28,4 +30,6 @@ group :development do
   # multiple environments for Heroku
   gem 'heroku'
   gem 'heroku_san'
+  gem 'ruby_parser' # for Devise generators
+  gem 'hpricot' # for Devise generators
 end

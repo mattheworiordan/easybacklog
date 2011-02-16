@@ -1,0 +1,17 @@
+%h2 
+  = @company.name
+- if @companies_count > 1
+  = link_to "Back to companies", companies_path
+
+%h3
+  Backlogs
+- if @backlogs.empty?
+  %p
+    There are no backlogs yet in this account.
+- else
+  %ul
+    - @backlogs.each do |backlog|
+      %li
+        = link_to backlog.name, company_backlog_path(@company, backlog)
+
+= link_to "Create a new backlog", new_company_backlog_path(@company)

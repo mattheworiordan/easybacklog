@@ -1,0 +1,11 @@
+.notice, .alert, .form_errors {
+  border: 1px solid green;
+  padding: 5px;
+  margin: 5px;
+  display: block;
+  background-color: #ccffcc;
+  font-weight: bold; }
+
+.alert, .form_errors {
+  border-color: red;
+  background-color: #ffcccc; }
