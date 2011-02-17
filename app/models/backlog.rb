@@ -5,7 +5,7 @@ class Backlog < ActiveRecord::Base
 
   #has_many :stories, :dependent => :delete_all
 
-  validates_uniqueness_of :name, :scope => [:company_id]
+  validates_uniqueness_of :name, :scope => [:company_id], :message => 'has already been taken for another backlog'
   validates_presence_of :name
 
   def copy_children_to_backlog(destination)

@@ -27,10 +27,10 @@ class BacklogsController < ApplicationController
     end
     if !@backlog.changed?
       render :json => { :result => 'failure', :reason => 'No changes were detected'}
-    elsif @backlog.save!
+    elsif @backlog.save
       render :json => { :result => 'success' }
     else
-      render :json => { :result => 'failure', :reason => @backlog.errors.full_messages.join('<br/>') }
+      render :json => { :result => 'failure', :reason => @backlog.errors.full_messages.join(', ') }
     end
   end
 
