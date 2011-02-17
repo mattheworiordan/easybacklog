@@ -73,6 +73,10 @@ ul {
     margin-left: 2em;
     margin-bottom: 0.35em; }
 
+/* dialogs */
+.dialog {
+  display: none; }
+
 /* styles */
 .main-title-logo {
   float: left; }

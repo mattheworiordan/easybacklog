@@ -22,3 +22,8 @@
 %p
 
 = link_to "Create a new backlog", new_company_backlog_path(@company)
+
+#dialog-confirm.dialog{:title=>"Delete backlog?"}
+  %p
+    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
+    This backlog will be permanently deleted and cannot be recovered. Are you sure?

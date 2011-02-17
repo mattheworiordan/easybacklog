@@ -3,6 +3,25 @@ $(document).ready(function() {
     onblur: 'submit',
     data: AjaxDispatcher.BeforeChange
   });
+
+  $('a').live('confirm', function() {
+    var clicked_link = $(this);
+    $('#dialog-confirm').dialog({
+      resizable: false,
+      height:140,
+      modal: true,
+      buttons: {
+        "Delete": function() {
+          clicked_link.attr('data-confirm','').click();
+          $(this).dialog("close");
+        },
+        Cancel: function() {
+          $(this).dialog("close");
+        }
+      }
+    });
+    return (false);
+  })
 })
 
 // Manage dispatching of AJAX changes from Backlog page to relevant controllers
