@@ -35,6 +35,7 @@ GEM
       activemodel (= 3.0.3)
       activesupport (= 3.0.3)
     activesupport (3.0.3)
+    acts_as_list (0.1.2)
     archive-tar-minitar (0.5.2)
     arel (2.0.8)
     autotest (4.4.6)
@@ -156,6 +157,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acts_as_list
   autotest
   autotest-growl
   autotest-rails

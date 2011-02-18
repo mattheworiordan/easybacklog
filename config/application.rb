@@ -13,7 +13,7 @@ module Ibacklog
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    # config.autoload_paths += %W(#{config.root}/extras)
+    # config.autoload_paths += %W(#{Rails.root}/lib/core_extensions)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -27,7 +27,7 @@ module Ibacklog
     # config.time_zone = 'Central Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
-    # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', 'framework', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
     # JavaScript files you want as :defaults (application.js is always included).
@@ -38,5 +38,7 @@ module Ibacklog
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
+
+    Dir["#{Rails.root}/lib/core_extensions/*.rb"].each { |file| require file }
   end
 end

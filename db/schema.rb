@@ -10,15 +10,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110215223116) do
+ActiveRecord::Schema.define(:version => 20110217214120) do
+
+  create_table "acceptance_criteria", :force => true do |t|
+    t.integer "story_id",  :null => false
+    t.string  "criterion", :null => false
+    t.integer "position",  :null => false
+  end
+
+  add_index "acceptance_criteria", ["story_id"], :name => "index_acceptance_criteria_on_story_id"
 
   create_table "backlogs", :force => true do |t|
-    t.string   "name",                  :null => false
-    t.integer  "company_id",            :null => false
-    t.integer  "author_id",             :null => false
-    t.integer  "last_modified_user_id", :null => false
+    t.string   "name",                                   :null => false
+    t.integer  "company_id",                             :null => false
+    t.integer  "author_id",                              :null => false
+    t.integer  "last_modified_user_id",                  :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "velocity",              :default => 3.0
+    t.integer  "rate",                  :default => 800
   end
 
   add_index "backlogs", ["company_id"], :name => "index_backlogs_on_company_id"
@@ -27,6 +37,9 @@ ActiveRecord::Schema.define(:version => 20110215223116) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "default_velocity", :default => 3.0
+    t.integer  "default_rate",     :default => 800
+    t.integer  "locale_id"
   end
 
   create_table "company_users", :force => true do |t|
@@ -36,6 +49,43 @@ ActiveRecord::Schema.define(:version => 20110215223116) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "locales", :force => true do |t|
+    t.string   "name"
+    t.string   "code"
+    t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stories", :force => true do |t|
+    t.integer  "theme_id",   :null => false
+    t.integer  "unique_id",  :null => false
+    t.string   "as_a"
+    t.string   "i_want_to"
+    t.string   "so_i_can"
+    t.string   "comments"
+    t.integer  "score_50"
+    t.integer  "score_90"
+    t.integer  "position",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "stories", ["as_a"], :name => "index_stories_on_as_a"
+  add_index "stories", ["theme_id", "unique_id"], :name => "index_stories_on_theme_id_and_unique_id", :unique => true
+  add_index "stories", ["theme_id"], :name => "index_stories_on_theme_id"
+
+  create_table "themes", :force => true do |t|
+    t.integer  "backlog_id"
+    t.string   "name"
+    t.string   "code"
+    t.integer  "position"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "themes", ["backlog_id"], :name => "index_themes_on_backlog_id"
 
   create_table "users", :force => true do |t|
     t.string   "name",                                                :null => false
