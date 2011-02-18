@@ -26,6 +26,10 @@ group :test, :cucumber do
   gem 'autotest-growl'
   gem 'autotest-rails'
   gem 'database_cleaner'
+  gem 'capybara'
+  gem 'culerity'
+  gem 'Selenium'
+  gem 'selenium-client'
 end
 
 group :development do

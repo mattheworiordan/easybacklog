@@ -7,6 +7,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    Selenium (1.1.14)
     ZenTest (4.4.2)
     abstract (1.0.0)
     actionmailer (3.0.3)
@@ -45,6 +46,18 @@ GEM
       ZenTest
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
+    capybara (0.4.1.2)
+      celerity (>= 0.7.9)
+      culerity (>= 0.2.4)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.27)
+      xpath (~> 0.1.3)
+    celerity (0.8.8)
+    childprocess (0.1.7)
+      ffi (~> 0.6.3)
     columnize (0.3.2)
     configuration (1.2.0)
     cucumber (0.10.0)
@@ -55,6 +68,7 @@ GEM
       term-ansicolor (~> 1.0.5)
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
+    culerity (0.2.15)
     database_cleaner (0.6.3)
     devise (1.1.5)
       bcrypt-ruby (~> 2.1.2)
@@ -66,6 +80,8 @@ GEM
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
       railties (>= 3.0.0)
+    ffi (0.6.3)
+      rake (>= 0.8.7)
     gherkin (2.3.3)
       json (~> 1.4.6)
     haml (3.0.25)
@@ -78,6 +94,7 @@ GEM
     hpricot (0.8.3)
     i18n (0.5.0)
     json (1.4.6)
+    json_pure (1.5.1)
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
@@ -137,6 +154,13 @@ GEM
       archive-tar-minitar (>= 0.5.2)
     ruby_parser (2.0.5)
       sexp_processor (~> 3.0)
+    rubyzip (0.9.4)
+    selenium-client (1.2.18)
+    selenium-webdriver (0.1.3)
+      childprocess (~> 0.1.5)
+      ffi (~> 0.6.3)
+      json_pure
+      rubyzip
     sexp_processor (3.0.5)
     shoulda (2.11.3)
     sqlite3 (1.3.3)
@@ -153,17 +177,22 @@ GEM
       nokogiri (>= 1.2.0)
       rack (>= 1.0)
       rack-test (>= 0.5.3)
+    xpath (0.1.3)
+      nokogiri (~> 1.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  Selenium
   acts_as_list
   autotest
   autotest-growl
   autotest-rails
   awesome_print!
+  capybara
   cucumber-rails
+  culerity
   database_cleaner
   devise
   factory_girl_rails
@@ -176,6 +205,7 @@ DEPENDENCIES
   rspec-rails (>= 2.0.0)
   ruby-debug19
   ruby_parser
+  selenium-client
   shoulda
   sqlite3-ruby
   webrat
