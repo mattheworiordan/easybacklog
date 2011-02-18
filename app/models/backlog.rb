@@ -9,6 +9,8 @@ class Backlog < ActiveRecord::Base
   validates_presence_of :name, :rate, :velocity
   validates_numericality_of :rate, :velocity
 
+  attr_accessible :company, :name, :rate, :velocity
+
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|
       destination.themes << theme

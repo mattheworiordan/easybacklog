@@ -7,10 +7,13 @@ class BacklogsController < ApplicationController
 
   def new
     @backlog = @company.backlogs.new
+    @backlog.rate = @company.default_rate if @backlog.rate.blank?
+    @backlog.velocity = @company.default_velocity if @backlog.velocity.blank?
   end
 
   def create
-    @backlog = @company.backlogs.new(params[:backlog].merge(:author => current_user, :last_modified_user => current_user))
+    @backlog = @company.backlogs.new(params[:backlog])
+    @backlog.author = @backlog.last_modified_user = current_user
     if @backlog.save
       flash[:notice] = 'Backlog was successfully created.'
       redirect_to company_backlog_path(@company, @backlog)
@@ -44,6 +47,8 @@ class BacklogsController < ApplicationController
   def duplicate
     @backlog = @company.backlogs.find(params[:id])
     @new_backlog = @company.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
+    @new_backlog.author = @backlog.author
+    @new_backlog.last_modified_user = current_user
     if request.post?
       if @new_backlog.save
         @backlog.copy_children_to_backlog(@new_backlog)

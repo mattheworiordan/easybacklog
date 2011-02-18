@@ -15,5 +15,11 @@
   = f.label :name, "Backlog name"
   = f.text_field :name
   %br/
+  = f.label :rate, "Rate"
+  = f.text_field :rate
+  %br/
+  = f.label :velocity, "Velocity"
+  = f.text_field :velocity
+  %br/
   = f.submit "Create new backlog"
   = link_to "cancel", company_path(@company)
