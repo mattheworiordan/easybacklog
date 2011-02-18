@@ -55,6 +55,7 @@ GEM
       term-ansicolor (~> 1.0.5)
     cucumber-rails (0.3.2)
       cucumber (>= 0.8.0)
+    database_cleaner (0.6.3)
     devise (1.1.5)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
@@ -163,6 +164,7 @@ DEPENDENCIES
   autotest-rails
   awesome_print!
   cucumber-rails
+  database_cleaner
   devise
   factory_girl_rails
   haml
