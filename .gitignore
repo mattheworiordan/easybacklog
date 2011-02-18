@@ -2,3 +2,6 @@
 db/*.sqlite3
 log/*.log
 tmp/**/*
+tmp/*
+TODO.rb
+*.log
