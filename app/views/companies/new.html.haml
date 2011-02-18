@@ -1,3 +1,5 @@
+- title 'Create a new company account'
+
 %h2 Create a new company account
 
 %p Please do not create a new company account if you believe one already exists.  You must contact us to be added to the existing company account to gain access to the backlogs within that account.
@@ -10,8 +12,18 @@
         - @company.errors.full_messages.each do |error|
           %li
             = error
-  = f.label :name, "Company name"
+  = f.label :name, "Name"
   = f.text_field :name
+  %br/
+  = f.label :locale_id, "Locale"
+  = select("company", "locale_id", [[ 'Select a locale...', nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
+  %br/
+  = f.label :default_rate, "Default rate"
+  = f.text_field :default_rate
+  %br/
+  = f.label :default_velocity, "Default velocity"
+  = f.text_field :default_velocity
+  %br/
   %br/
   = f.submit "Create new company"
   

@@ -110,6 +110,16 @@ ul {
   background-color: red + #CCCCCC;
 }
 
+.field_with_errors {
+  display: inline;
+  label {
+    color: red;
+  }
+  input {
+    border: 2px solid red;
+  }
+}
+
 .small {
   display: inline;
   padding-left: 0.5em;

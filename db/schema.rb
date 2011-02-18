@@ -21,14 +21,14 @@ ActiveRecord::Schema.define(:version => 20110217214120) do
   add_index "acceptance_criteria", ["story_id"], :name => "index_acceptance_criteria_on_story_id"
 
   create_table "backlogs", :force => true do |t|
-    t.string   "name",                                   :null => false
-    t.integer  "company_id",                             :null => false
-    t.integer  "author_id",                              :null => false
-    t.integer  "last_modified_user_id",                  :null => false
+    t.string   "name",                  :null => false
+    t.integer  "company_id",            :null => false
+    t.integer  "author_id",             :null => false
+    t.integer  "last_modified_user_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "velocity",              :default => 3.0
-    t.integer  "rate",                  :default => 800
+    t.decimal  "velocity"
+    t.integer  "rate"
   end
 
   add_index "backlogs", ["company_id"], :name => "index_backlogs_on_company_id"
@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(:version => 20110217214120) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "default_velocity", :default => 3.0
-    t.integer  "default_rate",     :default => 800
+    t.decimal  "default_velocity"
+    t.integer  "default_rate"
     t.integer  "locale_id"
   end
 

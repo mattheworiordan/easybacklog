@@ -101,6 +101,13 @@ ul {
   border-color: red;
   background-color: #ffcccc; }
 
+.field_with_errors {
+  display: inline; }
+  .field_with_errors label {
+    color: red; }
+  .field_with_errors input {
+    border: 2px solid red; }
+
 .small {
   display: inline;
   padding-left: 0.5em;

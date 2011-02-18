@@ -6,10 +6,10 @@ class AddVelocityAndRateToBacklogAndCompany < ActiveRecord::Migration
     add_column :backlogs, :velocity, :decimal, :precision => 6, :scale => 1, :default => 3
     add_column :backlogs, :rate, :integer, :default => 800
 
-    change_column :companies, :default_velocity, :decimal, :precision => 6, :scale => 1, :required => true
-    change_column :companies, :default_rate, :integer, :required => true
-    change_column :backlogs, :velocity, :decimal, :precision => 6, :scale => 1, :required => true
-    change_column :backlogs, :rate, :integer, :required => true
+    change_column_default(:companies, :default_velocity, nil)
+    change_column_default(:companies, :default_rate, nil)
+    change_column_default(:backlogs, :velocity, nil)
+    change_column_default(:backlogs, :rate, nil)
   end
 
   def self.down
