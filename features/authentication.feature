@@ -28,13 +28,6 @@ Feature: Authentication
     Then I should see the notice "You have signed up successfully"
   
   Scenario: Login
-    Given a user is registered
-    When I am on the home page
-      And I follow "Log in"
-      And I press "Sign in"
-    Then I should see the alert "Invalid email or password."
-    When I fill in "Email" with "john.doe@acme.com"
-      And I fill in "Password" with "password"
-      And I press "Sign in"
-    Then I should see the notice "Signed in successfully."
+    Given a user named "John" is registered
+      And I am signed in as "John"
       
