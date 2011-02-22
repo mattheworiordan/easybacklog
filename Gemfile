@@ -10,6 +10,8 @@ gem 'devise'
 
 gem 'acts_as_list' # orderable items
 
+gem 'jammit'
+
 group :development, :test, :cucumber do
   # gem 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git'

@@ -5,9 +5,9 @@
     %title
       = (yield(:title).length > 0 ? yield(:title) : 'Simple backlog management') + ' : iBacklog'
 
-    = stylesheet_link_tag :all
     = stylesheet_link_tag 'ui-lightness/jquery-ui-1.8.9.custom'
-    = javascript_include_tag 'jquery-1.5.min', 'jquery-ui-1.8.9.custom.min', 'rails', 'jquery.jeditable.mini.js', 'application'
+    = include_javascripts :workspace
+    = include_stylesheets :common, :media => 'all'
     = csrf_meta_tag
 
   %body

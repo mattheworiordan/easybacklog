@@ -1,0 +1,14 @@
+embed_assets: on
+template_function: _.template
+
+javascripts:
+  workspace:
+    - public/javascripts/vendor/*.js
+    - public/javascripts/application.js
+    - public/javascripts/views/**/*.js
+    - app/views/backlogs/*.jst
+    - app/views/companies/*.jst
+
+stylesheets:
+  common:
+    - public/stylesheets/global.css
