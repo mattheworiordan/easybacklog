@@ -9,4 +9,6 @@ class Theme < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :code, :scope => [:backlog_id]
   validates_presence_of :code
+
+  attr_accessible :name, :code
 end

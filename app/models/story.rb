@@ -8,6 +8,8 @@ class Story < ActiveRecord::Base
 
   before_save :assign_unique_id
 
+  attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90
+
   private
     def assign_unique_id
       unless theme.blank? # creation of this record will fail anyway as it needs a theme, no point continuing
