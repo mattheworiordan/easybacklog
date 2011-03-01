@@ -14,7 +14,7 @@ gem 'jammit'
 
 group :development, :test, :cucumber do
   # gem 'ruby-debug'
-  gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git'
+  gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
 end
 
 group :test, :cucumber do
