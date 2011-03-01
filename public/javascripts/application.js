@@ -72,3 +72,10 @@ function AjaxDispatcherClass()
   }
 }
 AjaxDispatcher = new AjaxDispatcherClass();
+
+// MVC namespace for Backbone.js
+var App = {
+    Views: {},
+    Controllers: {},
+    Collections: {}
+};

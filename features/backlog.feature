@@ -47,4 +47,4 @@ Feature: Backlog
       And I follow "Backlog-1"
       And I change the editable text "Backlog-1" within tag "h2" to "Project Y"
       And I follow "Back to backlogs"
-    Then I should see "Project Y"   
+    Then I should see "Project Y"

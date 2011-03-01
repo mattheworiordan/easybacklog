@@ -9,4 +9,12 @@ class ApplicationController < ActionController::Base
       super
     end
   end
+
+  def send_json_error(error_message)
+    render :status => 400, :json => { :status => 'error', :message => error_message }
+  end
+
+  def send_json_notice(notice_message)
+    render :json => { :status => 'notice', :message => notice_message }
+  end
 end

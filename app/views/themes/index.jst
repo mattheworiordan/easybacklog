@@ -1,0 +1,11 @@
+<% if(collection.length > 0) { %>
+  <ul class="themes">
+  <% _.each(collection, function(theme) { %>
+    <li class="theme" id="theme-<%= theme.get('id') %>">Theme: <%= theme.get('name') %>
+      <ul class="stories"></ul>
+    </li>
+  <% }); %>
+  </ul>
+<% } else { %>
+  <h2>No themes</h2>
+<% } %>

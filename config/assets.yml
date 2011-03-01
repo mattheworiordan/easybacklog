@@ -7,9 +7,11 @@ javascripts:
     - public/javascripts/vendor/jquery-1.5.js
     - public/javascripts/vendor/*.js
     - public/javascripts/application.js
+    - app/views/**/*.jst
+    - public/javascripts/models/**/*.js
+    - public/javascripts/collections/**/*.js
     - public/javascripts/views/**/*.js
-    - app/views/backlogs/*.jst
-    - app/views/companies/*.jst
+    - public/javascripts/controllers/**/*.js
 
 stylesheets:
   common:
