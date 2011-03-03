@@ -12,7 +12,8 @@
   App.Collections.Themes = new ThemesCollection({}, { backlog_id: #{@backlog.id} });
   App.Collections.Themes.fetch({
     success: function() {
-      new App.Views.Themes.Index({ themes: App.Collections.Themes });
+      var view = new App.Views.Themes.Index({ collection: App.Collections.Themes });
+      $('#themes-container').html(view.render().el);
     },
     error: function() {
       new App.Views.Error({ message: 'The data could not be loaded from the server'});

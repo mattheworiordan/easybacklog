@@ -1,24 +1,29 @@
 App.Views.AcceptanceCriteria = {
-  List: Backbone.View.extend({
+  Index: Backbone.View.extend({
+    tagName: 'div',
+    className: 'acceptance-criteria',
+    childId: function(model) { return 'acceptance-criteria-' + model.get('id') },
+
     initialize: function() {
       this.collection = this.options.collection;
-      this.render();
     },
 
     render: function() {
-      var el = this.el;
-      this.collection.each(function(acceptanceCriteria) {
-        var view = new App.Views.AcceptanceCriteria.Show({ model: acceptanceCriteria })
-        el.append(view.render().el);
-      });
+      var parentView = this;
+      $(this.el).html(JST['acceptance_criteria/index']({ collection: this.collection.models }));
+
+      this.collection.each(function(model) {
+        var view = new App.Views.AcceptanceCriteria.Show({ model: model, id: parentView.childId(model) });
+        parentView.$('ul').append(view.render().el);
+      })
+
+      return(this);
     }
   }),
 
   Show: Backbone.View.extend({
     tagName: 'li',
     className: 'acceptance-criteria',
-    id: null,
-    model: null,
 
     events: {
       "click": "click"
@@ -26,7 +31,6 @@ App.Views.AcceptanceCriteria = {
 
     initialize: function() {
       this.model = this.options.model;
-      this.id = this.model.get('id');
     },
 
     render: function() {
@@ -35,7 +39,7 @@ App.Views.AcceptanceCriteria = {
     },
 
     click: function() {
-      alert ('click acceptance criteria');
+      alert ('Acceptance criteria clicked ' + this.model.get('id'));
     }
   })
 };

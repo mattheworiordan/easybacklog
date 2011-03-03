@@ -1,26 +1,29 @@
 App.Views.Stories = {
-  List: Backbone.View.extend({
+  Index: Backbone.View.extend({
+    tagName: 'div',
+    className: 'stories',
+    childId: function(model) { return 'story-' + model.get('id') },
+
     initialize: function() {
       this.collection = this.options.collection;
-      this.el = $('#theme-' + this.collection.theme.get('id') + ' ul.stories');
-      this.render();
     },
 
     render: function() {
-      var el = this.el;
-      this.collection.each(function(story) {
-        var view = new App.Views.Stories.Show({ model: story, id: 'story-' + story.get('id') })
-        el.append(view.render().el);
-      });
-      return (this);
+      var parentView = this;
+      $(this.el).html(JST['stories/index']({ collection: this.collection.models }));
+
+      this.collection.each(function(model) {
+        var view = new App.Views.Stories.Show({ model: model, id: parentView.childId(model) });
+        parentView.$('>ul').append(view.render().el);
+      })
+
+      return(this);
     }
   }),
 
   Show: Backbone.View.extend({
     tagName: 'li',
     className: 'story',
-    id: function() { this.model.get('id'); },
-    model: null,
 
     events: {
       "click": "click"
@@ -28,17 +31,17 @@ App.Views.Stories = {
 
     initialize: function() {
       this.model = this.options.model;
-      this.id = this.model.get('id');
     },
 
     render: function() {
       $(this.el).html( JST['stories/show']({ model: this.model }) );
-      new App.Views.AcceptanceCriteria.List({ collection: this.model.AcceptanceCriteria(), el: this.$('.acceptance-criteria ul') })
+      var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
+      $(this.el).append(view.render().el);
       return (this);
     },
 
     click: function() {
-      alert ('click');
+      alert ('Story clicked ' + this.model.get('id'));
     }
   })
 };

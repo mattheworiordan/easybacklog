@@ -1,40 +1,47 @@
 App.Views.Themes = {
   Index: Backbone.View.extend({
     tagName: "div",
-    className: "themes-list",
+    className: "themes",
+    childId: function(model) { return 'theme-' + model.get('id') },
 
     initialize: function() {
-      this.themes = this.options.themes;
-      this.render();
+      this.collection = this.options.collection;
     },
 
     render: function() {
-      var out = JST['themes/index']({ collection: this.themes.models });
-      $('#themes-container').html(out);
-      this.themes.each(function(theme) {
-        // build out story list
-        new App.Views.Stories.List({ collection: theme.Stories() });
+      var parentView = this;
+      $(this.el).html(JST['themes/index']({ collection: this.collection.models }));
+
+      this.collection.each(function(model) {
+        var view = new App.Views.Themes.Show({ model: model, id: parentView.childId(model) });
+        parentView.$('>ul').append(view.render().el);
       })
+
+      return(this);
     }
-  }) //,
-  // 
-  // Show: Backbone.View.extend({
-  //   tagName: 'li',
-  //   className: 'theme',
-  //   
-  //   initialize: function() {
-  //     this.themes = this.options.themes;
-  //     this.render();
-  //   },
-  //   
-  //   render: function() {
-  //     if(this.documents.length > 0) {
-  //         var out = JST['themes/index']({ collection: this.themes.models });
-  //     } else {
-  //         out = "<h3>No themes! <a href='#new'>Create one</a></h3>";
-  //     }
-  //     $(this.el).html(out);
-  //     alert ('rendered');
-  //   }
-  // })
+  }),
+
+  Show: Backbone.View.extend({
+    tagName: 'li',
+    className: 'theme',
+
+    events: {
+      "click": "click"
+    },
+
+    initialize: function() {
+      this.model = this.options.model;
+    },
+
+    render: function() {
+      $(this.el).html( JST['themes/show']({ model: this.model }) );
+      var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
+      $(this.el).append(view.render().el);
+      return (this);
+    },
+
+    click: function() {
+      alert ('Theme clicked ' + this.model.get('id'));
+    }
+  })
 };
