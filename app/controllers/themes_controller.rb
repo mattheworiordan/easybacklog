@@ -2,8 +2,8 @@ class ThemesController < ApplicationController
   before_filter :authenticate_user!, :set_backlog_and_protect
 
   def index
-    @themes = @backlog.themes.find(:all, :include => [:stories])
-    render :json => @themes.to_json(:include => [:stories])
+    @themes = @backlog.themes.find(:all, :include => [:stories, { :stories => :acceptance_criteria } ])
+    render :json => @themes.to_json(:include => { :stories => { :include => :acceptance_criteria } })
   end
 
   def show
@@ -42,8 +42,8 @@ class ThemesController < ApplicationController
   end
 
   private
-    # set the @company instance variable from nested oute
-    # ensure user has access to this company
+    # set the @backlog instance variable from nested route
+    # ensure user has access to this based on company
     def set_backlog_and_protect
       @backlog = Backlog.find(params[:backlog_id])
       if @backlog.company.users.find(current_user.id).blank?

@@ -12,9 +12,11 @@ Ibacklog::Application.routes.draw do
   resources :backlogs, :only => [:show] do
     resources :themes
   end
-
   resources :themes, :only => [:show] do
     resources :stories
+  end
+  resources :stories, :only => [:show] do
+    resources :acceptance_criteria
   end
 
   match '/contact' => 'pages#contact', :as => 'contact'

@@ -42,8 +42,8 @@ class StoriesController < ApplicationController
   end
 
   private
-    # set the @company instance variable from nested oute
-    # ensure user has access to this company
+    # set the @theme instance variable from nested oute
+    # ensure user has access to this based on company
     def set_theme_and_protect
       @theme = Theme.find(params[:theme_id])
       if @theme.backlog.company.users.find(current_user.id).blank?

@@ -1,25 +1,23 @@
-App.Views.Stories = {
+App.Views.AcceptanceCriteria = {
   List: Backbone.View.extend({
     initialize: function() {
       this.collection = this.options.collection;
-      this.el = $('#theme-' + this.collection.theme.get('id') + ' ul.stories');
       this.render();
     },
 
     render: function() {
       var el = this.el;
-      this.collection.each(function(story) {
-        var view = new App.Views.Stories.Show({ model: story, id: 'story-' + story.get('id') })
+      this.collection.each(function(acceptanceCriteria) {
+        var view = new App.Views.AcceptanceCriteria.Show({ model: acceptanceCriteria })
         el.append(view.render().el);
       });
-      return (this);
     }
   }),
 
   Show: Backbone.View.extend({
     tagName: 'li',
-    className: 'story',
-    id: function() { this.model.get('id'); },
+    className: 'acceptance-criteria',
+    id: null,
     model: null,
 
     events: {
@@ -32,13 +30,12 @@ App.Views.Stories = {
     },
 
     render: function() {
-      $(this.el).html( JST['stories/show']({ model: this.model }) );
-      new App.Views.AcceptanceCriteria.List({ collection: this.model.AcceptanceCriteria(), el: this.$('.acceptance-criteria ul') })
+      $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
       return (this);
     },
 
     click: function() {
-      alert ('click');
+      alert ('click acceptance criteria');
     }
   })
 };
