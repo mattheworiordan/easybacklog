@@ -1,7 +1,7 @@
 $(document).ready(function() {
   $('h2.editable').editable(AjaxDispatcher.ContentUpdated, {
     onblur: 'submit',
-    data: AjaxDispatcher.BeforeChange
+    data: AjaxDispatcher.BeforeChange,
   });
 
   $('a').live('confirm', function() {

@@ -35,11 +35,12 @@ App.Views.AcceptanceCriteria = {
 
     render: function() {
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
+      $(this.el).editable();
       return (this);
     },
 
     click: function() {
-      alert ('Acceptance criteria clicked ' + this.model.get('id'));
+      // alert ('Acceptance criteria clicked ' + this.model.get('id'));
     }
   })
 };

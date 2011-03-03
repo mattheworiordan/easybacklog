@@ -1,17 +1,19 @@
-<div class="summary">
-  <div>As a <%= model.get('as_a') %></div>
-  <div>I want to <%= model.get('i_want_to') %></div>
-  <div>So I can <%= model.get('so_i_can') %></div>
+<div class="id">
+  <div><%= model.get('unique_id')%></div>
+</div>
+<div class="user-story">
+  <div>As a <span><%= model.get('as_a') %></span></div>
+  <div>I want to <span><%= model.get('i_want_to') %></span></div>
+  <div>So I can <span><%= model.get('so_i_can') %></span></div>
 </div>
 <div class="acceptance-criteria">
-  Acceptance Criteria:
-  <ul>
-  </ul>
 </div>
 <div class="comments">
-  <%= model.get('comments') %>
+  <div><%= model.get('comments') %></div>
 </div>
-<div class="timings">
-  <%= model.get('score_50') %> -
-  <%= model.get('score_90') %>
+<div class="score-50">
+  <div><%= model.get('score_50') %></div>
+</div>
+<div class="score-90">
+  <div><%= model.get('score_90') %></div>
 </div>

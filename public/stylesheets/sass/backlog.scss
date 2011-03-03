@@ -1,0 +1,67 @@
+table#themes-container {
+  width: 100%;
+  th { background-color: #CCC; padding: 3px; border: 1px solid white;}
+  th.theme { width: 15%; }
+  th.id { width: 5%; }
+  th.user-story { width: 20%; }
+  th.acceptance-criteria { width: 20%; }
+  th.comments { width: 20%; }
+  th.score-50 { width: 5%; }
+  th.score-90 { width: 5%; }
+  th.cost { width: 5%; }
+  th.days { width: 5%; }
+}
+
+@mixin table-col($width) {
+  width: $width * 100 / 80;
+  float: left;
+  &>div {
+    margin: 1px;
+    padding: 2px;
+    border: 1px solid #CCC;
+  }
+}
+
+ul.themes {;
+  list-style: none;
+  margin: 0;
+  li.theme:nth-child(1n+2) {
+    padding: 5px 0 0 0;
+  }
+  li.theme {
+    margin: 0;
+    clear: left;
+    &>div.theme {
+      @include table-col(15% / 100 * 80);
+      padding-left: 1px;
+    }
+    &>div.stories {
+      float: left;
+      width: 80%;
+      ul.stories {
+        list-style: none;
+        margin: 0;
+        li.story:nth-child(1n+2) {
+          padding: 5px 0 0 0;
+        }
+        li.story {
+          clear: left;
+          margin: 0;
+          &>div.user-story, &>div.acceptance-criteria, &>div.comments {
+            @include table-col(20%);
+          }
+          &>div.id, &>div.score-50, &>div.score-90, &>div.cost, &>div.days {
+            @include table-col(5%);
+          }
+          ul.acceptance-criteria {
+            list-style: none;
+            margin: 0;
+            li.acceptance-criteria {
+              margin: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}

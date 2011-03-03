@@ -1,10 +1,12 @@
 - title 'View backlog'
 
-%h2.backlog-name.editable= @backlog.name
-=link_to 'Back to backlogs', company_path(@backlog.company)
+.title-area
+  .back-action
+    =link_to 'Back to backlogs', company_path(@backlog.company)
+  %h2.backlog-name.editable= @backlog.name
 
-#themes-container
-  Loading...
+.body-area
+  = render :partial => 'themes_container'
 
 %input{:type => 'hidden', :value => "#{company_backlog_path(@backlog.company, @backlog)}", :name => 'ajax-data-path', :id => 'ajax-data-path'}
 
@@ -13,7 +15,7 @@
   App.Collections.Themes.fetch({
     success: function() {
       var view = new App.Views.Themes.Index({ collection: App.Collections.Themes });
-      $('#themes-container').html(view.render().el);
+      $('#themes-container td.themes').html(view.render().el);
     },
     error: function() {
       new App.Views.Error({ message: 'The data could not be loaded from the server'});

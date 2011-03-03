@@ -37,11 +37,12 @@ App.Views.Themes = {
       $(this.el).html( JST['themes/show']({ model: this.model }) );
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
       $(this.el).append(view.render().el);
+      this.$('.theme div').editable();
       return (this);
     },
 
     click: function() {
-      alert ('Theme clicked ' + this.model.get('id'));
+      // alert ('Theme clicked ' + this.model.get('id'));
     }
   })
 };

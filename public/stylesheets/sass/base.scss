@@ -1,0 +1,80 @@
+/* generic & fix from reset */
+body {
+  font-family: Sans-Serif;
+  padding: 1em;
+  font-size: 75%; }
+
+h1 {
+  font-size: 150%;
+  font-weight: bold; }
+
+h2 {
+  font-size: 135%;
+  margin-right: 1em;
+  font-family: Sans-Serif;
+  font-weight: normal;
+  margin-bottom: 0.5em; }
+  h2 input {
+    font-size: 1em;
+    font-family: Sans-Serif;
+    font-weight: normal; }
+
+p {
+  margin-bottom: 0.85em; }
+
+ul {
+  list-style: disc;
+  margin-top: 0.25em; }
+  ul li {
+    margin-left: 2em;
+    margin-bottom: 0.35em; }
+
+/* dialogs */
+.dialog {
+  display: none; }
+
+/* styles */
+.main-title-logo {
+  float: left; }
+
+.account-info {
+  float: right;
+  font-size: 90%; }
+
+.body {
+  clear: both;
+  padding-top: 0.5em; }
+
+.notice, .alert, .form_errors {
+  border: 1px solid green;
+  padding: 5px;
+  margin: 5px;
+  display: block;
+  background-color: #ccffcc;
+  font-weight: bold; }
+
+.alert, .form_errors {
+  border-color: red;
+  background-color: #ffcccc; }
+
+.field_with_errors {
+  display: inline; }
+  .field_with_errors label {
+    color: red; }
+  .field_with_errors input {
+    border: 2px solid red; }
+
+.small {
+  display: inline;
+  padding-left: 0.5em;
+  font-size: 85%; }
+  .small a {
+    color: #666; }
+
+.title-area .back-action {
+  float: right; }
+.title-area h2 {
+  position: relative; }
+
+.body-area {
+  clear: left; }
