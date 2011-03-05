@@ -29,10 +29,13 @@
   * @param String  options[id]        POST parameter name of edited div id
   * @param Hash    options[submitdata] Extra parameters to send when submitting edited content.
   * @param String  options[type]      text, textarea or select (or any 3rd party input type) **
+  * @param Boolean options[saveonenterkeypress] For textareas, force save when a user presses enter
   * @param Integer options[rows]      number of rows if using textarea ** 
   * @param Integer options[cols]      number of columns if using textarea **
   * @param Mixed   options[height]    'auto', 'none' or height in pixels **
   * @param Mixed   options[width]     'auto', 'none' or width in pixels **
+  * @param Integer options[lesswidth] reduce generated width by pixels **
+  * @param Integer options[lessheight] reduce generated height by pixels **
   * @param String  options[loadurl]   URL to fetch input content before editing **
   * @param String  options[loadtype]  Request type for load url. Should be GET or POST.
   * @param String  options[loadtext]  Text to display while loading external content.
@@ -164,7 +167,13 @@
                             settings.autoheight ? $(self).height() : settings.height;
                     }
                 }
-                //$(this).css('visibility', '');
+                if (settings.lesswidth) {
+                  settings.width -= settings.lesswidth;
+                  console.log(settings.width + ' - ' + settings.lesswidth);
+                }
+                if (settings.lessheight) {
+                  settings.width -= settings.lessheight;
+                }
                 
                 /* remove placeholder text, replace is here because of IE */
                 if ($(this).html().toLowerCase().replace(/(;|")/g, '') == 
@@ -477,6 +486,13 @@
                         textarea.attr('cols', settings.cols);
                     } else if (settings.width != "none") {
                         textarea.width(settings.width);
+                    }
+                    if (settings.saveonenterkeypress) {
+                      textarea.keypress(function(event) {
+                        if ( (event.charCode == 13) && !event.ctrlKey ) {
+                          textarea.blur();
+                        }
+                      })
                     }
                     $(this).append(textarea);
                     return(textarea);
