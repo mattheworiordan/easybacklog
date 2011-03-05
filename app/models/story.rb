@@ -4,7 +4,9 @@ class Story < ActiveRecord::Base
   belongs_to :theme
   has_many :acceptance_criteria, :dependent => :delete_all, :order => 'position'
   validates_presence_of :theme
-  validates_uniqueness_of :unique_id, :scope => [:theme_id]
+  validates_uniqueness_of :unique_id, :scope => [:theme_id], :message => 'ID has already been taken'
+  validates_numericality_of :score_50, :score_90, :allow_nil => true
+  validates_format_of :score_50, :score_90, :with => /^(0|1|2|3|5|8|13|21)$/, :message => 'must be in the Fibonacci sequence and less than or equal to 21', :allow_nil => true
 
   before_save :assign_unique_id
 

@@ -34,4 +34,14 @@ describe Story do
     story1_themeB.unique_id.should eql(1)
     story2_themeB.unique_id.should eql(2)
   end
+
+  it 'should enforoce Fibonacci sequence' do
+    story = Factory.create(:story)
+    story.should validate_format_of(:score_50).with('1').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+    story.should validate_format_of(:score_50).with('21').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+    story.should validate_format_of(:score_50).not_with('12').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+    story.should validate_format_of(:score_50).not_with('34').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+    story.should validate_format_of(:score_50).not_with('aa').with_message(/is not a number/)
+    story.should validate_format_of(:score_50).with('').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+  end
 end
