@@ -170,11 +170,11 @@ ul.themes {
   ul.themes li.theme {
     margin: 0;
     clear: left; }
-    ul.themes li.theme > div.theme {
+    ul.themes li.theme > div.name {
       width: 15%;
       float: left;
       padding-left: 1px; }
-      ul.themes li.theme > div.theme > div {
+      ul.themes li.theme > div.name > div {
         margin: 1px;
         padding: 2px;
         border: 1px solid #CCC; }

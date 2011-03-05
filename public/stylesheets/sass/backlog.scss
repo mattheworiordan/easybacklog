@@ -31,7 +31,7 @@ ul.themes {;
   li.theme {
     margin: 0;
     clear: left;
-    &>div.theme {
+    &>div.name {
       @include table-col(15% / 100 * 80);
       padding-left: 1px;
     }

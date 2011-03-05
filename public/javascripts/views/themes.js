@@ -21,7 +21,7 @@ App.Views.Themes = {
     }
   }),
 
-  Show: Backbone.View.extend({
+  Show: App.Views.BaseView.extend({
     tagName: 'li',
     className: 'theme',
 
@@ -30,17 +30,30 @@ App.Views.Themes = {
     },
 
     initialize: function() {
-      this.model = this.options.model;
+      App.Views.BaseView.prototype.initialize.call(this);
     },
 
     render: function() {
       $(this.el).html( JST['themes/show']({ model: this.model }) );
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
-      $(this.el).append(view.render().el);
-      this.$('.theme div').editable();
+      this.$('>.stories').html(view.render().el);
+
+      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
+      var show_view = this;
+      show_view.$('>.name').css('width', $('table th.theme').outerWidth());
+
+      this.makeFieldsEditable();
       return (this);
     },
 
+    makeFieldsEditable: function() {
+      var show_view = this;
+      var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
+      var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
+      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
+
+      this.$('>.name div').editable(contentUpdatedFunc, defaultOptions);
+    },
     click: function() {
       // alert ('Theme clicked ' + this.model.get('id'));
     }
