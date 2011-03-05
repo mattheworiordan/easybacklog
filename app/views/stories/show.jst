@@ -1,10 +1,10 @@
-<div class="id">
+<div class="unique-id">
   <div><%= model.get('unique_id')%></div>
 </div>
 <div class="user-story">
-  <div>As a <span><%= model.get('as_a') %></span></div>
-  <div>I want to <span><%= model.get('i_want_to') %></span></div>
-  <div>So I can <span><%= model.get('so_i_can') %></span></div>
+  <div class="as-a"><div class="heading">As a </div><div class="data"><%= model.get('as_a') %></div></div>
+  <div class="i-want-to"><div class="heading">I want to </div><div class="data"><%= model.get('i_want_to') %></div></div>
+  <div class="so-i-can"><div class="heading">So I can </div><div class="data"><%= model.get('so_i_can') %></div></div>
 </div>
 <div class="acceptance-criteria">
 </div>

@@ -137,7 +137,7 @@ table#themes-container {
     border: 1px solid white; }
   table#themes-container th.theme {
     width: 15%; }
-  table#themes-container th.id {
+  table#themes-container th.unique-id {
     width: 5%; }
   table#themes-container th.user-story {
     width: 20%; }
@@ -188,13 +188,21 @@ ul.themes {
               margin: 1px;
               padding: 2px;
               border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.id, ul.themes li.theme > div.stories ul.stories li.story > div.score-50, ul.themes li.theme > div.stories ul.stories li.story > div.score-90, ul.themes li.theme > div.stories ul.stories li.story > div.cost, ul.themes li.theme > div.stories ul.stories li.story > div.days {
+          ul.themes li.theme > div.stories ul.stories li.story > div.unique-id, ul.themes li.theme > div.stories ul.stories li.story > div.score-50, ul.themes li.theme > div.stories ul.stories li.story > div.score-90, ul.themes li.theme > div.stories ul.stories li.story > div.cost, ul.themes li.theme > div.stories ul.stories li.story > div.days {
             width: 6.25%;
             float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.id > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > div.cost > div, ul.themes li.theme > div.stories ul.stories li.story > div.days > div {
+            ul.themes li.theme > div.stories ul.stories li.story > div.unique-id > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > div.cost > div, ul.themes li.theme > div.stories ul.stories li.story > div.days > div {
               margin: 1px;
               padding: 2px;
               border: 1px solid #CCC; }
+          ul.themes li.theme > div.stories ul.stories li.story > div.user-story > div {
+            overflow: hidden; }
+          ul.themes li.theme > div.stories ul.stories li.story > div.user-story .heading {
+            float: left;
+            clear: left;
+            padding-right: 0.25em; }
+          ul.themes li.theme > div.stories ul.stories li.story > div.user-story .data {
+            width: auto; }
           ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
             list-style: none;
             margin: 0; }

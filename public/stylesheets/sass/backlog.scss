@@ -2,7 +2,7 @@ table#themes-container {
   width: 100%;
   th { background-color: #CCC; padding: 3px; border: 1px solid white;}
   th.theme { width: 15%; }
-  th.id { width: 5%; }
+  th.unique-id { width: 5%; }
   th.user-story { width: 20%; }
   th.acceptance-criteria { width: 20%; }
   th.comments { width: 20%; }
@@ -50,8 +50,21 @@ ul.themes {;
           &>div.user-story, &>div.acceptance-criteria, &>div.comments {
             @include table-col(20%);
           }
-          &>div.id, &>div.score-50, &>div.score-90, &>div.cost, &>div.days {
+          &>div.unique-id, &>div.score-50, &>div.score-90, &>div.cost, &>div.days {
             @include table-col(5%);
+          }
+          &>div.user-story {
+            &>div {
+              overflow: hidden;
+            }
+            .heading {
+              float: left;
+              clear: left;
+              padding-right: 0.25em;
+            }
+            .data {
+              width: auto;
+            }
           }
           ul.acceptance-criteria {
             list-style: none;
