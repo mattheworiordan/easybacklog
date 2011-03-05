@@ -91,10 +91,18 @@ ul li {
   clear: both;
   padding-top: 0.5em; }
 
+.notice, .alert {
+  position: absolute;
+  margin: auto;
+  left: 50%;
+  margin-left: -200px;
+  width: 400px;
+  top: 10px;
+  text-align: center; }
+
 .notice, .alert, .form_errors {
   border: 1px solid green;
-  padding: 5px;
-  margin: 5px;
+  padding: 8px;
   display: block;
   background-color: #ccffcc;
   font-weight: bold; }
@@ -206,6 +214,5 @@ ul.themes {
           ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
             list-style: none;
             margin: 0; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.acceptance-criteria {
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
               margin: 0; }
