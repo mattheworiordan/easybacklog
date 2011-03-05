@@ -21,7 +21,7 @@ App.Views.Stories = {
     }
   }),
 
-  Show: Backbone.View.extend({
+  Show: App.Views.BaseView.extend({
     tagName: 'li',
     className: 'story',
 
@@ -30,9 +30,7 @@ App.Views.Stories = {
     },
 
     initialize: function() {
-      this.model = this.options.model;
-      this.beforeChangeValue = {};
-      _.bindAll(this, 'beforeChange', 'contentUpdated');
+      App.Views.BaseView.prototype.initialize.call(this);
     },
 
     render: function() {
@@ -54,38 +52,15 @@ App.Views.Stories = {
       var show_view = this;
       var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
       var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = { onblur: 'submit', tooltip: 'Click to edit', data: beforeChangeFunc };
+      var defaultOptions = { onblur: 'submit', tooltip: 'Click to edit', placeholder: '[edit]', data: beforeChangeFunc, lesswidth: 5 };
 
       this.$('>div.unique-id div, >div.score-50 div, >div.score-90 div').editable( contentUpdatedFunc, _.extend(defaultOptions, {}) );
-      this.$('>div.comments div, >div.user-story div div.data').editable( contentUpdatedFunc, _.extend(defaultOptions, { type: 'textarea' }) );
+      this.$('>div.comments div, >div.user-story div div.data').editable( contentUpdatedFunc, _.extend(defaultOptions, { 
+        type: 'textarea', saveonenterkeypress: true } ));
     },
 
     click: function() {
       // alert ('Story clicked ' + this.model.get('id'));
-    },
-
-    // keep track if field has changed as no need for server round trip if nothing has changed
-    beforeChange: function(value, settings, target)
-    {
-      var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
-      this.beforeChangeValue[fieldId] = value; // store value in elem
-      console.log('Before - ' + this.id + ': ' + value + ' --> ' + fieldId);
-      return (value);
-    },
-
-    contentUpdated: function(value, settings, target)
-    {
-      var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
-      console.log('changed id: ' + fieldId);
-      if (value != this.beforeChangeValue[fieldId]) {
-        console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value);
-        var attributes = {};
-        attributes[fieldId] = value;
-        console.log(this.model.get('i_want_to'));
-        this.model.set(attributes);
-        this.model.save();
-      }
-      return (value);
     }
   })
 };
