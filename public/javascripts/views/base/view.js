@@ -1,6 +1,12 @@
 App.Views.BaseView = Backbone.View.extend({
+  defaultEditableOptions: {
+    onblur: 'submit',
+    tooltip: 'Click to edit',
+    placeholder: '[edit]',
+    lesswidth: 5
+  },
+
   initialize: function() {
-    console.log('BaseView initialize');
     this.model = this.options.model;
     this.beforeChangeValue = {};
     _.bindAll(this, 'beforeChange', 'contentUpdated');
@@ -10,7 +16,7 @@ App.Views.BaseView = Backbone.View.extend({
   beforeChange: function(value, settings, target)
   {
     var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
-    this.beforeChangeValue[fieldId] = value; // store value in elem
+    this.beforeChangeValue[fieldId] = value;
     return (value);
   },
 
@@ -20,9 +26,7 @@ App.Views.BaseView = Backbone.View.extend({
     var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
     var fieldWithValue = $(target);
     var beforeChangeValue = this.beforeChangeValue[fieldId];
-    console.log(fieldWithValue);
 
-    console.log('changed id: ' + fieldId);
     if (value != beforeChangeValue) {
       console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value);
       var attributes = {};

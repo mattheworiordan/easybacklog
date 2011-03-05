@@ -75,5 +75,5 @@ ul.themes {
           ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
             list-style: none;
             margin: 0; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.acceptance-criteria {
+            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
               margin: 0; }

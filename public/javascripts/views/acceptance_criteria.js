@@ -21,22 +21,32 @@ App.Views.AcceptanceCriteria = {
     }
   }),
 
-  Show: Backbone.View.extend({
+  Show: App.Views.BaseView.extend({
     tagName: 'li',
-    className: 'acceptance-criteria',
+    className: 'criterion',
 
     events: {
       "click": "click"
     },
 
     initialize: function() {
-      this.model = this.options.model;
+      App.Views.BaseView.prototype.initialize.call(this);
     },
 
     render: function() {
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
-      $(this.el).editable();
+
+      this.makeFieldsEditable();
       return (this);
+    },
+
+    makeFieldsEditable: function() {
+      var show_view = this;
+      var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
+      var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
+      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
+
+      $(this.el).find('>div').editable(contentUpdatedFunc, defaultOptions);
     },
 
     click: function() {

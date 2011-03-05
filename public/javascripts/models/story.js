@@ -9,6 +9,5 @@ var Story = Backbone.Model.extend({
       this._acceptance_criteria = new AcceptanceCriteriaCollection(this.get('acceptance_criteria'), { story: this });
     }
     return (this._acceptance_criteria);
-  },
-
+  }
 });

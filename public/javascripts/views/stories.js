@@ -52,11 +52,11 @@ App.Views.Stories = {
       var show_view = this;
       var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
       var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = { onblur: 'submit', tooltip: 'Click to edit', placeholder: '[edit]', data: beforeChangeFunc, lesswidth: 5 };
+      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
 
-      this.$('>div.unique-id div, >div.score-50 div, >div.score-90 div').editable( contentUpdatedFunc, _.extend(defaultOptions, {}) );
-      this.$('>div.comments div, >div.user-story div div.data').editable( contentUpdatedFunc, _.extend(defaultOptions, { 
-        type: 'textarea', saveonenterkeypress: true } ));
+      this.$('>div.unique-id div, >div.score-50 div, >div.score-90 div').editable(contentUpdatedFunc, defaultOptions);
+      this.$('>div.comments div, >div.user-story div div.data').editable(contentUpdatedFunc,
+        _.extend(defaultOptions, { type: 'textarea', saveonenterkeypress: true } ));
     },
 
     click: function() {

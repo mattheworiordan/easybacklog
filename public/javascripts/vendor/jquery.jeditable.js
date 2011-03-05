@@ -169,7 +169,6 @@
                 }
                 if (settings.lesswidth) {
                   settings.width -= settings.lesswidth;
-                  console.log(settings.width + ' - ' + settings.lesswidth);
                 }
                 if (settings.lessheight) {
                   settings.width -= settings.lessheight;
