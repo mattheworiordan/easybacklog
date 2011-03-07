@@ -26,11 +26,14 @@ App.Views.Stories = {
     className: 'story',
 
     events: {
-      "click": "click"
+      // "click": "click"
     },
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
+      _.bindAll(this, 'changeEvent');
+      var changeEvent = this.changeEvent;
+      this.model.bind('all', function(eventName) { changeEvent(eventName, this); });
     },
 
     render: function() {
@@ -59,8 +62,12 @@ App.Views.Stories = {
         _.extend(defaultOptions, { type: 'textarea', saveonenterkeypress: true } ));
     },
 
-    click: function() {
-      // alert ('Story clicked ' + this.model.get('id'));
+    changeEvent: function(eventName, model) {
+      if (eventName.substring(0,7) == 'change:') {
+        var fieldChanged = eventName.substring(7);
+        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(this.model.get(fieldChanged));
+        console.log('Field changed: ' + fieldChanged);
+      }
     }
   })
 };

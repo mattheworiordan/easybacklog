@@ -1,8 +1,10 @@
+/*global $, _, App, event, JST, Backbone, Story */ // for jslint.com
+
 App.Views.Themes = {
   Index: Backbone.View.extend({
     tagName: "div",
     className: "themes",
-    childId: function(model) { return 'theme-' + model.get('id') },
+    childId: function(model) { return 'theme-' + model.get('id'); },
 
     initialize: function() {
       this.collection = this.options.collection;
@@ -15,7 +17,7 @@ App.Views.Themes = {
       this.collection.each(function(model) {
         var view = new App.Views.Themes.Show({ model: model, id: parentView.childId(model) });
         parentView.$('>ul').append(view.render().el);
-      })
+      });
 
       return(this);
     }
@@ -26,7 +28,7 @@ App.Views.Themes = {
     className: 'theme',
 
     events: {
-      "click": "click"
+      "click div.stories ul.stories .actions a.new-story": "newStory"
     },
 
     initialize: function() {
@@ -38,8 +40,11 @@ App.Views.Themes = {
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
       this.$('>.stories').html(view.render().el);
 
-      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
       var show_view = this;
+
+      this.$('>.stories ul.stories').append(JST['stories/new']());
+
+      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
       show_view.$('>.name').css('width', $('table th.theme').outerWidth());
 
       this.makeFieldsEditable();
@@ -54,8 +59,12 @@ App.Views.Themes = {
 
       this.$('>.name div').editable(contentUpdatedFunc, defaultOptions);
     },
-    click: function() {
-      // alert ('Theme clicked ' + this.model.get('id'));
+
+    newStory: function() {
+      event.preventDefault();
+      var model = new Story();
+      this.model.Stories().add(model);
+      this.$('>.stories ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
     }
   })
 };

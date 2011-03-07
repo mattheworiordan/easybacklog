@@ -13,7 +13,7 @@ table#themes-container {
 }
 
 @mixin table-col($width) {
-  width: $width * 100 / 80;
+  width: $width * 100 / 80; /* all story elements use up 80% of total width */
   float: left;
   &>div {
     margin: 1px;
@@ -22,15 +22,21 @@ table#themes-container {
   }
 }
 
+$add-button-color: green;
+$delete-story-color: darken(red, 20%);
+
 ul.themes {;
   list-style: none;
   margin: 0;
-  li.theme:nth-child(1n+2) {
-    padding: 5px 0 0 0;
-  }
+  /* theme row */
   li.theme {
+    /* add padding to every theme row after the first */
+    &:nth-child(1n+2) {
+      padding: 5px 0 0 0;
+    }
     margin: 0;
     clear: left;
+    /* theme name field */
     &>div.name {
       @include table-col(15% / 100 * 80);
       padding-left: 1px;
@@ -41,10 +47,32 @@ ul.themes {;
       ul.stories {
         list-style: none;
         margin: 0;
-        li.story:nth-child(1n+2) {
-          padding: 5px 0 0 0;
+        li.actions {
+          clear: left;
+          margin: 0 0 10px 0;
+          padding-top: 5px;
+          a {
+            font-weight: bold;
+            font-size: 90%;
+            text-decoration: none;
+            color: $add-button-color;
+            border: 1px solid $add-button-color;
+            background-color: lighten($add-button-color, 60%);
+            padding: 3px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            &:hover {
+              color: darken($add-button-color, 50%);
+              border-color: darken($add-button-color, 50%);
+            };
+          }
         }
+        /* story row */
         li.story {
+          /* add padding to every story row after the first */
+          &:nth-child(1n+2) {
+            padding: 5px 0 0 0;
+          }
           clear: left;
           margin: 0;
           &>div.user-story, &>div.acceptance-criteria, &>div.comments {
@@ -54,14 +82,19 @@ ul.themes {;
             @include table-col(5%);
           }
           &>div.user-story {
+            /* ensure div wraps the children */
             &>div {
               overflow: hidden;
             }
+            /* as a, i want to, so i can text */
             .heading {
               float: left;
               clear: left;
               padding-right: 0.25em;
+              color: #666;
+              font-style: italic;
             }
+            /* actual fields which contain editable text */
             .data {
               width: auto;
             }
@@ -69,8 +102,20 @@ ul.themes {;
           ul.acceptance-criteria {
             list-style: none;
             margin: 0;
+            /* acceptance criteria row */
             li.criterion {
               margin: 0;
+            }
+          }
+          >div.unique-id div.delete-story {
+            border: none;
+            a {
+              font-size: 90%;
+              color: $delete-story-color;
+              text-decoration:none;
+              &:hover {
+                text-decoration: underline;
+              };
             }
           }
         }
