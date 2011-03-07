@@ -26,7 +26,7 @@ App.Views.Stories = {
     className: 'story',
 
     events: {
-      // "click": "click"
+      "click .delete-story>a": "deleteStory"
     },
 
     initialize: function() {
@@ -57,8 +57,8 @@ App.Views.Stories = {
       var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
       var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
 
-      this.$('>div.unique-id div, >div.score-50 div, >div.score-90 div').editable(contentUpdatedFunc, defaultOptions);
-      this.$('>div.comments div, >div.user-story div div.data').editable(contentUpdatedFunc,
+      this.$('>div.unique-id .data, >div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
+      this.$('>div.comments .data, >div.user-story div .data').editable(contentUpdatedFunc,
         _.extend(defaultOptions, { type: 'textarea', saveonenterkeypress: true } ));
     },
 
@@ -66,8 +66,59 @@ App.Views.Stories = {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
         this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(this.model.get(fieldChanged));
-        console.log('Field changed: ' + fieldChanged);
+        console.log('Field changed and updated view: ' + fieldChanged);
       }
+    },
+
+    deleteStory: function() {
+      event.preventDefault();
+      var view = this;
+
+      if (view.model.isNew()) { // not saved to server yet
+        view.model.collection.remove(view.model);
+        $(view.el).remove(); // remove HTML for story
+        $(dialog_obj).dialog("close"); // hide the dialog
+      } else {
+        $('#dialog-delete-story').dialog({
+          resizable: false,
+          height:140,
+          modal: true,
+          buttons: {
+            Delete: function() {
+              view.deleteStoryAction(this, view);
+            },
+
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          }
+        });
+      }
+      return (false);
+    },
+
+    deleteStoryAction: function(dialog_obj, view) {
+      var model_collection = view.model.collection;
+
+      console.log(dialog_obj);
+      // tell the user we're deleting as it may take a second
+      $(dialog_obj).find('p').html('Deleting...<br />Please wait.');
+
+      view.model.destroy({
+        error: function(model, response) {
+          var errorMessage = 'Unable to delete story...'
+          try {
+            errorMessage = eval('responseText = ' + response.responseText).message;
+          } catch (e) { console.log(e); }
+          new App.Views.Error({ message: errorMessage});
+          $(dialog_obj).dialog("close"); // hide the dialog
+        },
+        success: function(model, response) {
+          model_collection.remove(view.model);
+          $(view.el).remove(); // remove HTML for story
+          $(dialog_obj).dialog("close"); // hide the dialog
+        }
+      });
     }
   })
 };

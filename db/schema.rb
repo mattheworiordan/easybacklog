@@ -10,12 +10,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110217214120) do
+ActiveRecord::Schema.define(:version => 20110307170142) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
     t.string  "criterion", :null => false
-    t.integer "position",  :null => false
+    t.integer "position"
   end
 
   add_index "acceptance_criteria", ["story_id"], :name => "index_acceptance_criteria_on_story_id"
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(:version => 20110217214120) do
     t.string   "comments"
     t.integer  "score_50"
     t.integer  "score_90"
-    t.integer  "position",   :null => false
+    t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
