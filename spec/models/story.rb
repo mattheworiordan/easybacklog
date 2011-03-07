@@ -2,32 +2,43 @@ require 'spec_helper'
 
 describe Story do
   it 'should create a unique ID sequentially and fill up gaps' do
-    story1_themeA = Factory.create(:story)
-    theme_A = story1_themeA.theme
-    story2_themeA = Factory.create(:story, :theme => theme_A)
-
+    # create 2 stories without IDs, so should be 1,2
+    Factory.create(:theme, :name => "Theme A")
+    story1_themeA = Factory.create(:story, :comments => 'Story 1', :theme => Theme.find_by_name('Theme A'))
+    story2_themeA = Factory.create(:story, :comments => 'Story 2', :theme => Theme.find_by_name('Theme A'))
     story1_themeA.unique_id.should eql(1)
     story2_themeA.unique_id.should eql(2)
 
+    # delete unique ID 2, then create a new story, should now be story => 1,story3 => 2
     story2_themeA.delete
-    story3_themeA = Factory.create(:story, :theme => theme_A) # new story should take place of of deleted story
+    story3_themeA = Factory.create(:story, :comments => 'Story 3', :theme => Theme.find_by_name('Theme A')) # new story should take place of of deleted story
     story3_themeA.unique_id.should eql(2)
 
-    story4_themeA = Factory.create(:story, :theme => theme_A) # new story should take place of of deleted story
+    # create story 4, should have id 3, then delete story1 (unique_id 1), create a new story5 which should take unique_id1
+    story4_themeA = Factory.create(:story, :comments => 'Story 4', :theme => Theme.find_by_name('Theme A')) # new story should take place of of deleted story
     story1_themeA.delete
-    story5_themeA = Factory.create(:story, :theme => theme_A) # new story should take place of of deleted story
+    story5_themeA = Factory.create(:story, :comments => 'Story 5', :theme => Theme.find_by_name('Theme A')) # new story should take place of of deleted story
     story4_themeA.unique_id.should eql(3)
     story5_themeA.unique_id.should eql(1)
+
+    # change orders of unique_ids and make sure next story is higher, create in order 2,4,3,1
+    new_story = Factory.create(:story, :comments => 'Story anonymous', :theme => Theme.find_by_name('Theme A'), :unique_id => 100)
+    [ [story3_themeA, 2], [story4_themeA, 4], [story5_themeA, 3], [new_story, 1] ].each do |story, unique_id|
+      story.unique_id = unique_id
+      story.save!
+    end
+    Factory.create(:story, :theme => Theme.find_by_name('Theme A')).unique_id.should eql(5)
   end
 
-  it 'should create a unique ID unique only to the theme' do
-    story1_themeA = Factory.create(:story)
-    theme_A = story1_themeA.theme
-    story2_themeA = Factory.create(:story, :theme => theme_A)
+  it 'should create a unique ID scoped to the theme' do
+    Factory.create(:theme, :name => 'A')
+    Factory.create(:theme, :name => 'B')
 
-    story1_themeB = Factory.create(:story)
-    theme_B = story1_themeB.theme
-    story2_themeB = Factory.create(:story, :theme => theme_B)
+    story1_themeA = Factory.create(:story, :theme => Theme.find_by_name('A'))
+    story2_themeA = Factory.create(:story, :theme => Theme.find_by_name('A'))
+
+    story1_themeB = Factory.create(:story, :theme => Theme.find_by_name('B'))
+    story2_themeB = Factory.create(:story, :theme => Theme.find_by_name('B'))
 
     story1_themeA.unique_id.should eql(1)
     story2_themeA.unique_id.should eql(2)
