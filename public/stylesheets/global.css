@@ -184,6 +184,8 @@ ul.themes {
       ul.themes li.actions a:hover {
         color: black;
         border-color: black; }
+      ul.themes li.actions a.new-acceptance-criterion {
+        padding: 0 5px 0 5px; }
   ul.themes li.theme {
     /* add padding to every theme row after the first */
     margin: 0;
@@ -253,11 +255,13 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > div.user-story .data {
               width: auto; }
           ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
-            list-style: none;
-            margin: 0;
+            list-style: lower-alpha;
+            margin: 0 0 0 1.5em;
             /* acceptance criteria row */ }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
               margin: 0; }
+            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li:last-child {
+              list-style: none; }
           ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story {
             border: none; }
             ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story a {
