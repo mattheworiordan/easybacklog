@@ -141,8 +141,12 @@ ul.themes {;
             li.criterion {
               margin: 0;
             }
+            li.actions {
+              margin-bottom: 4px;
+            }
             li:last-child {
               list-style: none;
+              margin-left: -1.3em;
             }
           }
           >div.unique-id div.delete-story {
