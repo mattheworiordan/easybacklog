@@ -65,8 +65,7 @@ App.Views.Stories = {
     changeEvent: function(eventName, model) {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
-        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(this.model.get(fieldChanged));
-        console.log('Field changed and updated view: ' + fieldChanged);
+        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
       }
     },
 
@@ -100,10 +99,10 @@ App.Views.Stories = {
     deleteStoryAction: function(dialog_obj, view) {
       var model_collection = view.model.collection;
 
-      console.log(dialog_obj);
       // tell the user we're deleting as it may take a second
-      $(dialog_obj).find('p').html('Deleting...<br />Please wait.');
-
+      $(dialog_obj).find('>p').html('Deleting story...<br />Please wait.');
+      $(dialog_obj).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Close');
+      $(dialog_obj).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
       view.model.destroy({
         error: function(model, response) {
           var errorMessage = 'Unable to delete story...'
