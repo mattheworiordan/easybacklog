@@ -15,11 +15,6 @@ h2 {
   font-weight: normal;
   margin-bottom: 0.5em; }
 
-h2 input {
-  font-size: 1em;
-  font-family: Sans-Serif;
-  font-weight: normal; }
-
 p {
   margin-bottom: 0.85em; }
 
@@ -83,12 +78,3 @@ ul li {
 
 .small a {
   color: #666; }
-
-.title-area .back-action {
-  float: right; }
-
-.title-area h2 {
-  position: relative; }
-
-.body-area {
-  clear: left; }

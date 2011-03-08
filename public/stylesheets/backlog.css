@@ -1,3 +1,12 @@
+#backlog-container {
+  clear: left; }
+
+#backlog-data-area .back-action {
+  float: right; }
+#backlog-data-area h2.name {
+  position: relative;
+  width: 20em; }
+
 table#themes-container {
   width: 100%; }
   table#themes-container th {
@@ -26,7 +35,25 @@ table#themes-container {
 ul.themes {
   list-style: none;
   margin: 0;
+  /* buttons for adding theme / story */
   /* theme row */ }
+  ul.themes li.actions {
+    clear: left;
+    margin: 0 0 10px 0;
+    padding-top: 5px; }
+    ul.themes li.actions a {
+      font-weight: bold;
+      font-size: 90%;
+      text-decoration: none;
+      color: green;
+      border: 1px solid green;
+      background-color: #b3ffb3;
+      padding: 3px;
+      -moz-border-radius: 5px;
+      border-radius: 5px; }
+      ul.themes li.actions a:hover {
+        color: black;
+        border-color: black; }
   ul.themes li.theme {
     /* add padding to every theme row after the first */
     margin: 0;
@@ -38,11 +65,20 @@ ul.themes {
       width: 15%;
       /* all story elements use up 80% of total width */
       float: left;
-      padding-left: 1px; }
+      padding-left: 1px;
+      /* delete theme link */ }
       ul.themes li.theme > div.name > div {
         margin: 1px;
         padding: 2px;
         border: 1px solid #CCC; }
+      ul.themes li.theme > div.name div.delete-theme {
+        border: none; }
+        ul.themes li.theme > div.name div.delete-theme a {
+          font-size: 90%;
+          color: #990000;
+          text-decoration: none; }
+          ul.themes li.theme > div.name div.delete-theme a:hover {
+            text-decoration: underline; }
     ul.themes li.theme > div.stories {
       float: left;
       width: 80%; }
@@ -50,23 +86,6 @@ ul.themes {
         list-style: none;
         margin: 0;
         /* story row */ }
-        ul.themes li.theme > div.stories ul.stories li.actions {
-          clear: left;
-          margin: 0 0 10px 0;
-          padding-top: 5px; }
-          ul.themes li.theme > div.stories ul.stories li.actions a {
-            font-weight: bold;
-            font-size: 90%;
-            text-decoration: none;
-            color: green;
-            border: 1px solid green;
-            background-color: #b3ffb3;
-            padding: 3px;
-            -moz-border-radius: 5px;
-            border-radius: 5px; }
-            ul.themes li.theme > div.stories ul.stories li.actions a:hover {
-              color: black;
-              border-color: black; }
         ul.themes li.theme > div.stories ul.stories li.story {
           /* add padding to every story row after the first */
           clear: left;

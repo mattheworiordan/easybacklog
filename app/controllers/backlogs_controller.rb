@@ -2,7 +2,13 @@ class BacklogsController < ApplicationController
   before_filter :authenticate_user!, :set_company_and_protect
 
   def show
-    @backlog = @company.backlogs.find(params[:id])
+    @backlog = @company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
+    respond_to do |format|
+      format.html
+      format.js do
+        render :json => @backlog.to_json(:include => { :themes => { :include => { :stories => { :include => :acceptance_criteria } } } })
+      end
+    end
   end
 
   def new
@@ -22,18 +28,14 @@ class BacklogsController < ApplicationController
     end
   end
 
+  # only supports JSON updates
   def update
     @backlog = @company.backlogs.find(params[:id])
-    case params[:data_type]
-    when 'backlog-name'
-      @backlog.name = params[:new_value]
-    end
-    if !@backlog.changed?
-      render :json => { :result => 'failure', :reason => 'No changes were detected'}
-    elsif @backlog.save
-      render :json => { :result => 'success' }
+    @backlog.update_attributes params
+    if @backlog.save
+      render :json => @backlog
     else
-      render :json => { :result => 'failure', :reason => @backlog.errors.full_messages.join(', ') }
+      send_json_error @backlog.errors.full_messages.join(', ')
     end
   end
 

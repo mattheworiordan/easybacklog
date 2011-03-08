@@ -1,11 +1,12 @@
 - title 'View backlog'
 
-.title-area
+#backlog-data-area
   .back-action
     =link_to 'Back to backlogs', company_path(@backlog.company)
-  %h2.backlog-name.editable= @backlog.name
+  %h2.name
+    .data= @backlog.name
 
-.body-area
+#backlog-container
   = render :partial => 'themes_container'
 
 %input{:type => 'hidden', :value => "#{company_backlog_path(@backlog.company, @backlog)}", :name => 'ajax-data-path', :id => 'ajax-data-path'}
@@ -14,14 +15,20 @@
   %p
     %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
     This story will be permanently deleted and cannot be recovered. Are you sure?
+#dialog-delete-theme.dialog{:title=>"Delete theme?"}
+  %p
+    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
+    This theme and all its stories will be permanently deleted and cannot be recovered. Are you sure?
 
 :javascript
   $(document).ready(function() {
-    App.Collections.Themes = new ThemesCollection({}, { backlog_id: #{@backlog.id} });
-    App.Collections.Themes.fetch({
-      success: function() {
-        var view = new App.Views.Themes.Index({ collection: App.Collections.Themes });
-        $('#themes-container td.themes').html(view.render().el);
+    App.Collections.Backlogs = new BacklogsCollection({}, { company_id: #{@backlog.company.id} });
+    var backlog = new Backlog({ id: #{@backlog.id} });
+    App.Collections.Backlogs.add(backlog);
+    backlog.fetch({
+      success: function(model, response) {
+        var view = new App.Views.Backlogs.Show({ model: model, el: $('#backlog-container') });
+        view.render();
       },
       error: function() {
         new App.Views.Error({ message: 'The data could not be loaded from the server'});

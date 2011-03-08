@@ -1,16 +1,16 @@
 var ThemesCollection = Backbone.Collection.extend({
   model: Theme,
-  backlog_id: null,
+  backlog: null,
 
   url: function() {
-    if (!this.backlog_id) {
-      new App.View.Error('Error, missing necesary ID to display Theme');
+    if (!this.backlog) {
+      new App.View.Error('Error, cannot find Backlog and thus cannot load Theme');
     } else {
-      return '/backlogs/' + this.backlog_id + '/themes';
+      return '/backlogs/' + this.backlog.get('id') + '/themes';
     }
   },
 
   initialize: function(models, options) {
-    this.backlog_id = options ? options.backlog_id : null;
+    this.backlog = options ? options.backlog : null;
   }
 });

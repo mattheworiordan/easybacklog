@@ -39,10 +39,37 @@ App.Views.BaseView = Backbone.View.extend({
             errorMessage = eval('responseText = ' + response.responseText).message;
           } catch (e) { console.log(e); }
           new App.Views.Error({ message: errorMessage});
-          fieldWithValue.text(beforeChangeValue);
+          fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
         }
       });
     }
     return (value);
-  }
+  },
+
+  // handle user clicking to delete object
+  delete: function() {
+    event.preventDefault();
+    var view = this;
+
+    if (view.model.isNew()) { // not saved to server yet
+      view.model.collection.remove(view.model);
+      $(view.el).remove(); // remove HTML for story
+    } else {
+      $(this.deleteDialogSelector).dialog({
+        resizable: false,
+        height:170,
+        modal: true,
+        buttons: {
+          Delete: function() {
+            view.deleteAction(this, view);
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
+        }
+      });
+    }
+    return (false);
+  },
 });

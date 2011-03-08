@@ -24,15 +24,18 @@ App.Views.Stories = {
   Show: App.Views.BaseView.extend({
     tagName: 'li',
     className: 'story',
+    deleteDialogSelector: '#dialog-delete-story',
 
     events: {
-      "click .delete-story>a": "deleteStory"
+      "click .delete-story>a": "delete"
     },
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
+
       _.bindAll(this, 'changeEvent');
       var changeEvent = this.changeEvent;
+      // if anything happens to the model pass on a change event
       this.model.bind('all', function(eventName) { changeEvent(eventName, this); });
     },
 
@@ -69,34 +72,7 @@ App.Views.Stories = {
       }
     },
 
-    deleteStory: function() {
-      event.preventDefault();
-      var view = this;
-
-      if (view.model.isNew()) { // not saved to server yet
-        view.model.collection.remove(view.model);
-        $(view.el).remove(); // remove HTML for story
-        $(dialog_obj).dialog("close"); // hide the dialog
-      } else {
-        $('#dialog-delete-story').dialog({
-          resizable: false,
-          height:140,
-          modal: true,
-          buttons: {
-            Delete: function() {
-              view.deleteStoryAction(this, view);
-            },
-
-            Cancel: function() {
-              $(this).dialog("close");
-            }
-          }
-        });
-      }
-      return (false);
-    },
-
-    deleteStoryAction: function(dialog_obj, view) {
+    deleteAction: function(dialog_obj, view) {
       var model_collection = view.model.collection;
 
       // tell the user we're deleting as it may take a second

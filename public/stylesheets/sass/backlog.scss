@@ -1,3 +1,17 @@
+#backlog-container {
+  clear: left;
+}
+
+#backlog-data-area {
+  .back-action {
+    float: right;
+  }
+  h2.name {
+    position: relative;
+    width: 20em;
+  }
+}
+
 table#themes-container {
   width: 100%;
   th { background-color: #CCC; padding: 3px; border: 1px solid white;}
@@ -23,11 +37,34 @@ table#themes-container {
 }
 
 $add-button-color: green;
-$delete-story-color: darken(red, 20%);
+$delete-link-color: darken(red, 20%);
 
 ul.themes {;
   list-style: none;
   margin: 0;
+
+  /* buttons for adding theme / story */
+  li.actions {
+    clear: left;
+    margin: 0 0 10px 0;
+    padding-top: 5px;
+    a {
+      font-weight: bold;
+      font-size: 90%;
+      text-decoration: none;
+      color: $add-button-color;
+      border: 1px solid $add-button-color;
+      background-color: lighten($add-button-color, 60%);
+      padding: 3px;
+      -moz-border-radius: 5px;
+      border-radius: 5px;
+      &:hover {
+        color: darken($add-button-color, 50%);
+        border-color: darken($add-button-color, 50%);
+      };
+    }
+  }
+
   /* theme row */
   li.theme {
     /* add padding to every theme row after the first */
@@ -36,37 +73,32 @@ ul.themes {;
     }
     margin: 0;
     clear: left;
+
     /* theme name field */
     &>div.name {
       @include table-col(15% / 100 * 80);
       padding-left: 1px;
+
+      /* delete theme link */
+      div.delete-theme {
+        border: none;
+        a {
+          font-size: 90%;
+          color: $delete-link-color;
+          text-decoration:none;
+          &:hover {
+            text-decoration: underline;
+          };
+        }
+      }
     }
+
     &>div.stories {
       float: left;
       width: 80%;
       ul.stories {
         list-style: none;
         margin: 0;
-        li.actions {
-          clear: left;
-          margin: 0 0 10px 0;
-          padding-top: 5px;
-          a {
-            font-weight: bold;
-            font-size: 90%;
-            text-decoration: none;
-            color: $add-button-color;
-            border: 1px solid $add-button-color;
-            background-color: lighten($add-button-color, 60%);
-            padding: 3px;
-            -moz-border-radius: 5px;
-            border-radius: 5px;
-            &:hover {
-              color: darken($add-button-color, 50%);
-              border-color: darken($add-button-color, 50%);
-            };
-          }
-        }
         /* story row */
         li.story {
           /* add padding to every story row after the first */
@@ -111,7 +143,7 @@ ul.themes {;
             border: none;
             a {
               font-size: 90%;
-              color: $delete-story-color;
+              color: $delete-link-color;
               text-decoration:none;
               &:hover {
                 text-decoration: underline;
