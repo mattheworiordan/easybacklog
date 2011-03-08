@@ -34,7 +34,7 @@ class Theme < ActiveRecord::Base
       taken_codes = (if new_record?
         backlog.themes
       else
-        backlog.themes.where('id <> ?', this.id)
+        backlog.themes.where('id <> ?', self.id)
       end).map(&:code).sort
 
       self.code = code.upcase

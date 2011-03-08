@@ -20,7 +20,7 @@ class Story < ActiveRecord::Base
           taken_ids = (if new_record?
             theme.stories
           else
-            theme.stories.where('id <> ?', this.id)
+            theme.stories.where('id <> ?', self.id)
           end).map(&:unique_id).sort
 
           self.unique_id = if taken_ids.empty?
