@@ -46,8 +46,8 @@ App.Views.BaseView = Backbone.View.extend({
     return (value);
   },
 
-  // handle user clicking to delete object
-  delete: function() {
+  // handle user clicking to remove object
+  remove: function() {
     event.preventDefault();
     var view = this;
 
@@ -71,5 +71,5 @@ App.Views.BaseView = Backbone.View.extend({
       });
     }
     return (false);
-  },
+  }
 });

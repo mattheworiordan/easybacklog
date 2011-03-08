@@ -30,7 +30,7 @@ App.Views.Themes = {
 
     events: {
       "click div.stories ul.stories .actions a.new-story": "newStory",
-      "click .delete-theme>a": "delete"
+      "click .delete-theme>a": "remove"
     },
 
     initialize: function() {

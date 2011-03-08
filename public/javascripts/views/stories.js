@@ -28,7 +28,7 @@ App.Views.Stories = {
 
     events: {
       "click div.acceptance-criteria ul.acceptance-criteria .actions a.new-acceptance-criterion": "newAcceptanceCriterion",
-      "click .delete-story>a": "delete"
+      "click .delete-story>a": "remove"
     },
 
     initialize: function() {
