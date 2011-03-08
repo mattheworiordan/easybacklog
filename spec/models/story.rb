@@ -46,7 +46,7 @@ describe Story do
     story2_themeB.unique_id.should eql(2)
   end
 
-  it 'should enforoce Fibonacci sequence' do
+  it 'should enforce Fibonacci sequence' do
     story = Factory.create(:story)
     story.should validate_format_of(:score_50).with('1').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
     story.should validate_format_of(:score_50).with('21').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
