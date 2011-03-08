@@ -35,4 +35,14 @@ describe Theme do
     theme.should allow_value('123').for(:code)
     theme.should allow_value('AbC').for(:code)
   end
+
+  it 'should ensure days and costs are accurate based on the stories' do
+    backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
+    theme = Factory.create(:theme, :backlog => backlog)
+    story = Factory.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
+    Factory.create(:story, :theme => story.theme(true), :score_50 => 1, :score_90 => 2)
+    Factory.create(:story, :theme => story.theme(true), :score_50 => 3, :score_90 => 3)
+    story.theme(true).days.should be_within(0.1).of(4.05)
+    story.theme(true).cost.should be_within(1).of(3243)
+  end
 end

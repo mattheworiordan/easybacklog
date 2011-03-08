@@ -55,4 +55,21 @@ describe Story do
     story.should validate_format_of(:score_50).not_with('aa').with_message(/is not a number/)
     story.should validate_format_of(:score_50).with('').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
   end
+
+  it 'should ensure score 50 is greater than score 90' do
+    story = Factory.create(:story)
+    story.score_50 = 13
+    story.score_90 = 1
+    story.should have(1).error_on(:score_90)
+    story.score_50 = 1
+    story.should have(0).errors_on(:score_90)
+  end
+
+  it 'should ensure days and costs are accurate' do
+    backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
+    theme = Factory.create(:theme, :backlog => backlog)
+    story = Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
+    story.cost.should be_within(0.4).of(533)
+    story.days.should be_within(0.01).of(0.67)
+  end
 end

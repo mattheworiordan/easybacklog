@@ -15,6 +15,16 @@ class Theme < ActiveRecord::Base
 
   attr_accessible :name, :code
 
+  def days
+    total_score_diff = stories.inject(0) { |val, story| val + story.score_diff }
+    total_lowest_score = stories.inject(0) { |val, story| val + story.lowest_score }
+    ( Math.sqrt(total_score_diff) + total_lowest_score ) / backlog.velocity
+  end
+
+  def cost
+    days * backlog.rate
+  end
+
   private
     def assign_code_if_blank
       if code.blank?

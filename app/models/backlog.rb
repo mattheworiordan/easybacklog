@@ -11,6 +11,14 @@ class Backlog < ActiveRecord::Base
 
   attr_accessible :company, :name, :rate, :velocity
 
+  def days
+    themes.inject(0) { |val, theme| val + theme.days }
+  end
+
+  def cost
+    themes.inject(0) { |val, theme| val + theme.cost }
+  end
+
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|
       destination.themes << theme
