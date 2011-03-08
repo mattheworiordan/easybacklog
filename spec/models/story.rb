@@ -69,7 +69,8 @@ describe Story do
     backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
     theme = Factory.create(:theme, :backlog => backlog)
     story = Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
-    story.cost.should be_within(0.4).of(533)
+    story.points.should be_within(0.01).of(2)
     story.days.should be_within(0.01).of(0.67)
+    story.cost.should be_within(0.4).of(533)
   end
 end

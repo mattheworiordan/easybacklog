@@ -42,7 +42,8 @@ describe Theme do
     story = Factory.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
     Factory.create(:story, :theme => story.theme(true), :score_50 => 1, :score_90 => 2)
     Factory.create(:story, :theme => story.theme(true), :score_50 => 3, :score_90 => 3)
-    story.theme(true).days.should be_within(0.1).of(4.05)
-    story.theme(true).cost.should be_within(1).of(3243)
+    story.theme(true).points.should be_within(0.01).of(12.16)
+    story.theme.days.should be_within(0.1).of(4.05)
+    story.theme.cost.should be_within(1).of(3243)
   end
 end

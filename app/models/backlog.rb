@@ -15,6 +15,10 @@ class Backlog < ActiveRecord::Base
     themes.inject(0) { |val, theme| val + theme.days }
   end
 
+  def points
+    themes.inject(0) { |val, theme| val + theme.points }
+  end
+
   def cost
     themes.inject(0) { |val, theme| val + theme.cost }
   end

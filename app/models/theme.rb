@@ -15,10 +15,14 @@ class Theme < ActiveRecord::Base
 
   attr_accessible :name, :code
 
-  def days
+  def points
     total_score_diff = stories.inject(0) { |val, story| val + story.score_diff }
     total_lowest_score = stories.inject(0) { |val, story| val + story.lowest_score }
-    ( Math.sqrt(total_score_diff) + total_lowest_score ) / backlog.velocity
+    Math.sqrt(total_score_diff) + total_lowest_score
+  end
+
+  def days
+    points / backlog.velocity
   end
 
   def cost

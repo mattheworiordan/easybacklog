@@ -18,8 +18,12 @@ class Story < ActiveRecord::Base
     days * theme.backlog.rate
   end
 
+  def points
+    Math.sqrt(score_diff) + lowest_score
+  end
+
   def days
-    ( Math.sqrt(score_diff) + lowest_score ) / theme.backlog.velocity
+    points / theme.backlog.velocity
   end
 
   def lowest_score

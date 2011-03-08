@@ -26,7 +26,8 @@ describe Backlog do
     Factory.create(:story, :theme => story.theme(true), :score_50 => 3, :score_90 => 3)
     theme2 = Factory.create(:theme, :backlog => backlog)
     Factory.create(:story, :theme => theme2, :score_50 => 1, :score_90 => 2)
-    theme.backlog(true).days.should be_within(0.1).of(4.72)
-    theme.backlog(true).cost.should be_within(1).of(3776)
+    theme.backlog(true).points.should be_within(0.01).of(14.16)
+    theme.backlog.days.should be_within(0.1).of(4.72)
+    theme.backlog.cost.should be_within(1).of(3776)
   end
 end
