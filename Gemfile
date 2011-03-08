@@ -20,7 +20,7 @@ end
 group :test, :cucumber do
   gem 'rspec','>=2.0.0'
   gem 'rspec-rails','>=2.0.0'
-  gem 'shoulda'
+  gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'webrat'
   gem 'cucumber-rails'
