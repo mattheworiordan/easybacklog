@@ -27,6 +27,7 @@ App.Views.Stories = {
     deleteDialogSelector: '#dialog-delete-story',
 
     events: {
+      "click div.acceptance-criteria ul.acceptance-criteria .actions a.new-acceptance-criterion": "newAcceptanceCriterion",
       "click .delete-story>a": "delete"
     },
 
@@ -41,8 +42,10 @@ App.Views.Stories = {
 
     render: function() {
       $(this.el).html( JST['stories/show']({ model: this.model }) );
+
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
       this.$('.acceptance-criteria').html(view.render().el);
+      this.$('.acceptance-criteria ul.acceptance-criteria').append(JST['acceptance_criteria/new']());
 
       // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
       var show_view = this;
@@ -70,6 +73,15 @@ App.Views.Stories = {
         var fieldChanged = eventName.substring(7);
         this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
       }
+    },
+
+    newAcceptanceCriterion: function() {
+      event.preventDefault();
+      var model = new AcceptanceCriterion();
+      this.model.AcceptanceCriteria().add(model);
+      var newElem = new App.Views.AcceptanceCriteria.Show({ model: model}).render().el;
+      this.$('ul.acceptance-criteria li:last').before(newElem);
+      $(newElem).find('.data').click(); // put focus onto new added element
     },
 
     deleteAction: function(dialog_obj, view) {

@@ -41,9 +41,30 @@ App.Views.AcceptanceCriteria = {
     },
 
     makeFieldsEditable: function() {
-      var show_view = this;
-      var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
-      var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
+      var ac_view = this;
+      var contentUpdatedFunc = function() {
+        var newVal = arguments[0];
+        var model_collection = ac_view.model.collection;
+        if (_.isEmpty(newVal)) {
+          $(ac_view.el).remove(); // remove HTML for story
+          if (ac_view.model.isNew()) {
+            model_collection.remove(ac_view.model);
+          } else {
+            ac_view.model.destroy({
+              error: function(model, response) {
+                var errorMessage = 'Unable to delete story...  Please refresh.'
+                try {
+                  errorMessage = eval('responseText = ' + response.responseText).message;
+                } catch (e) { console.log(e); }
+                new App.Views.Error({ message: errorMessage});
+              }
+            });
+          };
+        } else {
+          return ac_view.contentUpdated(newVal, arguments[1], this);
+        }
+      };
+      var beforeChangeFunc = function() { return ac_view.beforeChange(arguments[0], arguments[1], this); };
       var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
 
       $(this.el).find('>div').editable(contentUpdatedFunc, defaultOptions);
