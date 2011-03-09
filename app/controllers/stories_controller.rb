@@ -19,7 +19,7 @@ class StoriesController < ApplicationController
   def create
     @story = @theme.stories.new(params)
     if @story.save
-      render :json => @story
+      render :json => @story.to_json(:methods => [:score_statistics])
     else
       send_json_error @theme.errors.full_messages.join(', ')
     end
@@ -29,7 +29,7 @@ class StoriesController < ApplicationController
     @story = @theme.stories.find(params[:id])
     @story.update_attributes params
     if @story.save
-      render :json => @story
+      render :json => @story.to_json(:methods => [:score_statistics])
     else
       send_json_error @story.errors.full_messages.join(', ')
     end
@@ -38,7 +38,7 @@ class StoriesController < ApplicationController
   def destroy
     @story = @theme.stories.find(params[:id])
     @story.destroy
-    send_json_notice "Story deleted"
+    send_json_notice "Story deleted", :score_statistics => @theme.score_statistics(:force => true)
   end
 
   private

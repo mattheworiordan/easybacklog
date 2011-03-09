@@ -21,6 +21,8 @@ App.Views.Backlogs = {
       this.$('#themes-container ul.themes').append(JST['themes/new']());
 
       this.makeFieldsEditable();
+      this.updateStatistics();
+
       return (this);
     },
 
@@ -38,6 +40,17 @@ App.Views.Backlogs = {
       var model = new Theme();
       this.model.Themes().add(model);
       this.$('.themes ul.themes li:last').before(new App.Views.Themes.Show({ model: model}).render().el);
+    },
+
+    changeEvent: function(eventName, model) {
+      if (eventName.substring(0,7) == 'change:') {
+        var fieldChanged = eventName.substring(7);
+        App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
+      }
+    },
+
+    updateStatistics: function() {
+      $('#backlog-data-area .backlog-stats div').html( JST['backlogs/stats']({ model: this.model }) )
     }
   })
 };

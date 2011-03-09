@@ -14,6 +14,8 @@ class Story < ActiveRecord::Base
 
   attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90
 
+  include ScoreStatistics
+
   def cost
     days * theme.backlog.rate
   end

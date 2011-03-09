@@ -11,6 +11,8 @@ class Backlog < ActiveRecord::Base
 
   attr_accessible :company, :name, :rate, :velocity
 
+  include ScoreStatistics
+
   def days
     themes.inject(0) { |val, theme| val + theme.days }
   end

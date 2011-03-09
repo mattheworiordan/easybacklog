@@ -9,7 +9,19 @@ App.Views.BaseView = Backbone.View.extend({
   initialize: function() {
     this.model = this.options.model;
     this.beforeChangeValue = {};
-    _.bindAll(this, 'beforeChange', 'contentUpdated');
+    _.bindAll(this, 'beforeChange', 'contentUpdated'); // obligatory methods if inherit from base
+
+    if (this.changeEvent) {
+      _.bindAll(this, 'changeEvent');
+      var changeEvent = this.changeEvent;
+      // if anything happens to the model pass on a change event
+      this.model.bind('all', function(eventName) { changeEvent(eventName, this); });
+    }
+
+    if (this.updateStatistics) {
+      _.bindAll(this, 'updateStatistics');
+      this.model.bind('statisticsUpdated', this.updateStatistics);
+    }
   },
 
   // keep track if field has changed as no need for server round trip if nothing has changed

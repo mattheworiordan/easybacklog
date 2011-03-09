@@ -1,14 +1,40 @@
+@mixin table-col($width) {
+  width: $width * 100 / 80; /* all story elements use up 80% of total width */
+  float: left;
+  &>div {
+    margin: 1px;
+    padding: 2px;
+    border: 1px solid #CCC;
+  }
+}
+
+$add-button-color: green;
+$delete-link-color: darken(red, 20%);
+$stats-bg-color: #EEE;
+
 #backlog-container {
   clear: left;
 }
 
 #backlog-data-area {
+  border-bottom: 1px solid #EEE;
+  overflow: hidden;
+  margin-bottom: 5px;
   .back-action {
     float: right;
   }
   h2.name {
     position: relative;
     width: 20em;
+  }
+  .backlog-stats {
+    background-color: $stats-bg-color;
+    clear: left;
+    float: right;
+    margin: 0 1px 0 0;
+    div {
+      padding: 5px;
+    }
   }
 }
 
@@ -25,19 +51,6 @@ table#themes-header {
   th.cost { width: 5%; }
   th.days { width: 5%; }
 }
-
-@mixin table-col($width) {
-  width: $width * 100 / 80; /* all story elements use up 80% of total width */
-  float: left;
-  &>div {
-    margin: 1px;
-    padding: 2px;
-    border: 1px solid #CCC;
-  }
-}
-
-$add-button-color: green;
-$delete-link-color: darken(red, 20%);
 
 ul.themes {;
   list-style: none;
@@ -97,7 +110,7 @@ ul.themes {;
     }
 
     .story-stats {
-      background-color: #EEE;
+      background-color: $stats-bg-color;
       width: 100%;
       text-align: right;
       div {

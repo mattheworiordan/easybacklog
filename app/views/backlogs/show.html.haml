@@ -5,6 +5,8 @@
     =link_to 'Back to backlogs', company_path(@backlog.company)
   %h2.name
     .data= @backlog.name
+  .backlog-stats
+    %div &nbsp;
 
 #backlog-container
   = render :partial => 'themes_container'

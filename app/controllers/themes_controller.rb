@@ -19,7 +19,7 @@ class ThemesController < ApplicationController
   def create
     @theme = @backlog.themes.new(params)
     if @theme.save
-      render :json => @theme
+      render :json => @theme.to_json(:methods => [:score_statistics])
     else
       send_json_error @theme.errors.full_messages.join(', ')
     end
@@ -29,7 +29,7 @@ class ThemesController < ApplicationController
     @theme = @backlog.themes.find(params[:id])
     @theme.update_attributes params
     if @theme.save
-      render :json => @theme
+      render :json => @theme.to_json(:methods => [:score_statistics])
     else
       send_json_error @theme.errors.full_messages.join(', ')
     end
@@ -38,7 +38,7 @@ class ThemesController < ApplicationController
   def destroy
     @theme = @backlog.themes.find(params[:id])
     @theme.destroy
-    send_json_notice 'Theme deleted'
+    send_json_notice 'Theme deleted', :score_statistics => @backlog.score_statistics(:force => true)
   end
 
   private

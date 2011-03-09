@@ -75,6 +75,9 @@ ul li {
   margin-left: 2em;
   margin-bottom: 0.35em; }
 
+strong {
+  font-weight: bold; }
+
 /* dialogs */
 .dialog {
   display: none; }
@@ -131,11 +134,22 @@ ul li {
 #backlog-container {
   clear: left; }
 
-#backlog-data-area .back-action {
-  float: right; }
-#backlog-data-area h2.name {
-  position: relative;
-  width: 20em; }
+#backlog-data-area {
+  border-bottom: 1px solid #EEE;
+  overflow: hidden;
+  margin-bottom: 5px; }
+  #backlog-data-area .back-action {
+    float: right; }
+  #backlog-data-area h2.name {
+    position: relative;
+    width: 20em; }
+  #backlog-data-area .backlog-stats {
+    background-color: #eeeeee;
+    clear: left;
+    float: right;
+    margin: 0 1px 0 0; }
+    #backlog-data-area .backlog-stats div {
+      padding: 5px; }
 
 table#themes-header {
   width: 100%; }
@@ -212,7 +226,7 @@ ul.themes {
           ul.themes li.theme > div.name div.delete-theme a:hover {
             text-decoration: underline; }
     ul.themes li.theme .story-stats {
-      background-color: #EEE;
+      background-color: #eeeeee;
       width: 100%;
       text-align: right; }
       ul.themes li.theme .story-stats div {

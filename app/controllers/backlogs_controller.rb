@@ -52,7 +52,7 @@ class BacklogsController < ApplicationController
     @backlog = @company.backlogs.find(params[:id])
     @backlog.update_attributes params
     if @backlog.save
-      render :json => @backlog
+      render :json => @backlog.to_json(:methods => [:score_statistics])
     else
       send_json_error @backlog.errors.full_messages.join(', ')
     end

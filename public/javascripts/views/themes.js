@@ -35,11 +35,6 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-
-      _.bindAll(this, 'changeEvent');
-      var changeEvent = this.changeEvent;
-      // if anything happens to the model pass on a change event
-      this.model.bind('all', function(eventName) { changeEvent(eventName, this); });
     },
 
     render: function() {
@@ -56,7 +51,7 @@ App.Views.Themes = {
       this.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
 
       this.makeFieldsEditable();
-      this.updateStats();
+      this.updateStatistics();
 
       return (this);
     },
@@ -81,6 +76,7 @@ App.Views.Themes = {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
         this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
+        App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
     },
 
@@ -104,12 +100,13 @@ App.Views.Themes = {
           model_collection.remove(view.model);
           $(view.el).remove(); // remove HTML for story
           $(dialog_obj).dialog("close"); // hide the dialog
+          App.Controllers.Statistics.updateStatistics(response.score_statistics);
         }
       });
     },
 
-    updateStats: function() {
-      this.$('.story-stats div').text( JST['themes/stats']({ model: this.model }) )
+    updateStatistics: function() {
+      this.$('.story-stats div').html( JST['themes/stats']({ model: this.model }) )
     }
   })
 };

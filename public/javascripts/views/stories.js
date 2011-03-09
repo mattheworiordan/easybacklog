@@ -33,11 +33,6 @@ App.Views.Stories = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-
-      _.bindAll(this, 'changeEvent');
-      var changeEvent = this.changeEvent;
-      // if anything happens to the model pass on a change event
-      this.model.bind('all', function(eventName) { changeEvent(eventName, this); });
     },
 
     render: function() {
@@ -72,6 +67,7 @@ App.Views.Stories = {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
         this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
+        App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
     },
 
@@ -104,6 +100,7 @@ App.Views.Stories = {
           model_collection.remove(view.model);
           $(view.el).remove(); // remove HTML for story
           $(dialog_obj).dialog("close"); // hide the dialog
+          App.Controllers.Statistics.updateStatistics(response.score_statistics);
         }
       });
     }
