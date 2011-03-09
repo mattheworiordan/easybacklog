@@ -71,9 +71,22 @@ describe Story do
     backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
     theme = Factory.create(:theme, :backlog => backlog)
     story = Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
+
     story.points.should be_within(0.01).of(2)
     story.days.should be_within(0.01).of(0.67)
     story.cost.should be_within(0.4).of(533)
     story.cost_formatted.should eql('£533.33')
+
+    story.score_statistics.should eql({
+      :points => story.points,
+      :cost_formatted => story.cost_formatted,
+      :days => story.days,
+      :themes => [{
+        :theme_id => 1,
+        :points => theme.points,
+        :cost_formatted => theme.cost_formatted,
+        :days => theme.days
+      }]
+    })
   end
 end

@@ -9,4 +9,5 @@ Factory.define :backlog do |a|
   a.association :company, :factory => :company
   a.association :author, :factory => :user
   a.association :last_modified_user, :factory => :user
+  a.after_create { |backlog| backlog.company.backlogs.reload } # parent model needs refreshing as it will not know a new model has been created
 end

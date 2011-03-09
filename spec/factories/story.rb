@@ -11,4 +11,5 @@ Factory.define :story do |a|
   a.score_50 5
   a.score_90 13
   a.association :theme, :factory => :theme
+  a.after_create { |story| story.theme.stories.reload; } # parent model needs refreshing as it will not know a new model has been created
 end

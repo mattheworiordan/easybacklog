@@ -17,17 +17,19 @@ describe Theme do
     theme = Factory.create(:theme, :name => 'T Example')
     theme.code.should eql('TEX')
 
+    backlog = theme.backlog
+
     # some combination as above, so use unique 2nd letter in order 1-9, then 10-99, then 100-999
-    Factory.create(:theme, :name => 'T Example2', :backlog => theme.backlog(true)).code.should eql('TE1')
+    Factory.create(:theme, :name => 'T Example2', :backlog => backlog).code.should eql('TE1')
 
     # fill up slots up to 24, next available should be T25
     (2..9).each do |index|
-      Factory.create(:theme, :name => "T Example #{index}", :backlog => theme.backlog(true), :code => "TE#{index}")
+      Factory.create(:theme, :name => "T Example #{index}", :backlog => backlog, :code => "TE#{index}")
     end
     (10..24).each do |index|
-      Factory.create(:theme, :name => "T Example #{index}", :backlog => theme.backlog(true), :code => "T#{index}")
+      Factory.create(:theme, :name => "T Example #{index}", :backlog => backlog, :code => "T#{index}")
     end
-    Factory.create(:theme, :name => 'T Example 25', :backlog => theme.backlog(true)).code.should eql('T25')
+    Factory.create(:theme, :name => 'T Example 25', :backlog => backlog).code.should eql('T25')
   end
 
   it 'should enforce a 3 letter code for the Theme code' do
@@ -42,11 +44,11 @@ describe Theme do
     backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
     theme = Factory.create(:theme, :backlog => backlog)
     story = Factory.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
-    Factory.create(:story, :theme => story.theme(true), :score_50 => 1, :score_90 => 2)
-    Factory.create(:story, :theme => story.theme(true), :score_50 => 3, :score_90 => 3)
-    story.theme(true).points.should be_within(0.01).of(12.16)
-    story.theme.days.should be_within(0.1).of(4.05)
-    story.theme.cost.should be_within(1).of(3243)
-    story.theme.cost_formatted.should eql('£3,243.27')
+    Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
+    Factory.create(:story, :theme => theme, :score_50 => 3, :score_90 => 3)
+    theme.points.should be_within(0.01).of(12.16)
+    theme.days.should be_within(0.1).of(4.05)
+    theme.cost.should be_within(1).of(3243)
+    theme.cost_formatted.should eql('£3,243.27')
   end
 end

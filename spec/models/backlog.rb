@@ -7,7 +7,7 @@ describe Backlog do
     # get a backlog set up with at least one story
     acceptance_criterion = Factory.create(:acceptance_criterion)
     new_backlog = Factory.create(:backlog)
-    backlog = acceptance_criterion.story.theme.backlog(true)
+    backlog = acceptance_criterion.story.theme.backlog
 
     backlog.copy_children_to_backlog(new_backlog)
 
@@ -23,14 +23,15 @@ describe Backlog do
   it 'should ensure days and costs are accurate based on the themes' do
     backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
     theme = Factory.create(:theme, :backlog => backlog)
-    story = Factory.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
-    Factory.create(:story, :theme => story.theme(true), :score_50 => 1, :score_90 => 2)
-    Factory.create(:story, :theme => story.theme(true), :score_50 => 3, :score_90 => 3)
+    Factory.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
+    Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
+    Factory.create(:story, :theme => theme, :score_50 => 3, :score_90 => 3)
     theme2 = Factory.create(:theme, :backlog => backlog)
     Factory.create(:story, :theme => theme2, :score_50 => 1, :score_90 => 2)
-    theme.backlog(true).points.should be_within(0.01).of(14.16)
-    theme.backlog.days.should be_within(0.1).of(4.72)
-    theme.backlog.cost.should be_within(1).of(3776)
-    theme.backlog.cost_formatted.should eql('£3,776.61')
+
+    backlog.points.should be_within(0.01).of(14.16)
+    backlog.days.should be_within(0.1).of(4.72)
+    backlog.cost.should be_within(1).of(3776)
+    backlog.cost_formatted.should eql('£3,776.61')
   end
 end
