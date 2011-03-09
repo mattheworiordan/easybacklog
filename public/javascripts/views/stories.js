@@ -50,7 +50,7 @@ App.Views.Stories = {
       // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
       var show_view = this;
       $.each(['unique-id','user-story','acceptance-criteria','comments','score-50','score-90'], function(elem, val) {
-        show_view.$('>div.' + val).css('width', $('table th.' + val).outerWidth());
+        show_view.$('>div.' + val).css('width', $('table#themes-header th.' + val).outerWidth());
       });
 
       this.makeFieldsEditable();

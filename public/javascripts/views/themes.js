@@ -45,16 +45,19 @@ App.Views.Themes = {
     render: function() {
       $(this.el).html( JST['themes/show']({ model: this.model }) );
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
-      this.$('>.stories').html(view.render().el);
+      this.$('>.stories').prepend(view.render().el);
 
-      var show_view = this;
-
+      // align the outer stories div with all columns other than theme
+      $(this.el).find('.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth() - 1);
+      // append new story
       this.$('>.stories ul.stories').append(JST['stories/new']());
 
       // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
-      show_view.$('>.name').css('width', $('table th.theme').outerWidth());
+      this.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
 
       this.makeFieldsEditable();
+      this.updateStats();
+
       return (this);
     },
 
@@ -103,6 +106,10 @@ App.Views.Themes = {
           $(dialog_obj).dialog("close"); // hide the dialog
         }
       });
+    },
+
+    updateStats: function() {
+      this.$('.story-stats div').text( JST['themes/stats']({ model: this.model }) )
     }
   })
 };

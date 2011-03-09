@@ -29,6 +29,10 @@ class Theme < ActiveRecord::Base
     days * backlog.rate
   end
 
+  def cost_formatted
+    (cost || 0).to_currency(:locale => backlog.company.locale.code.to_s)
+  end
+
   private
     def assign_code_if_blank
       if code.blank?

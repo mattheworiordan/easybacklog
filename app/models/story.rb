@@ -18,6 +18,10 @@ class Story < ActiveRecord::Base
     days * theme.backlog.rate
   end
 
+  def cost_formatted
+    (cost || 0).to_currency(:locale => theme.backlog.company.locale.code.to_s)
+  end
+
   def points
     Math.sqrt(score_diff) + lowest_score
   end

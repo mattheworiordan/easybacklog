@@ -6,7 +6,26 @@ class BacklogsController < ApplicationController
     respond_to do |format|
       format.html
       format.js do
-        render :json => @backlog.to_json(:include => { :themes => { :include => { :stories => { :include => :acceptance_criteria } } } })
+        backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
+        backlog_methods = [:points, :days, :cost_formatted]
+        theme_fields = [:id, :name, :code, :position]
+        story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position]
+        criteria_fields =  [:id, :criterion, :position]
+        render :json => @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
+          :include =>
+          { :themes =>
+            { :only => theme_fields,
+              :include =>
+              { :stories =>
+                { :only => story_fields,
+                  :include =>
+                  { :acceptance_criteria =>
+                    { :only => criteria_fields }
+                  }
+                }
+              }
+            }
+          })
       end
     end
   end

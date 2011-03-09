@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 
 describe Story do
@@ -72,5 +74,6 @@ describe Story do
     story.points.should be_within(0.01).of(2)
     story.days.should be_within(0.01).of(0.67)
     story.cost.should be_within(0.4).of(533)
+    story.cost_formatted.should eql('£533.33')
   end
 end

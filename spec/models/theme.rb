@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 
 describe Theme do
@@ -45,5 +47,6 @@ describe Theme do
     story.theme(true).points.should be_within(0.01).of(12.16)
     story.theme.days.should be_within(0.1).of(4.05)
     story.theme.cost.should be_within(1).of(3243)
+    story.theme.cost_formatted.should eql('£3,243.27')
   end
 end

@@ -14,11 +14,11 @@ App.Views.Backlogs = {
 
     render: function() {
       var view = new App.Views.Themes.Index({ collection: this.model.Themes() });
-      this.$('td.themes').html(view.render().el);
+      this.$('#themes-container').html(view.render().el);
 
       var show_view = this;
 
-      this.$('td.themes ul.themes').append(JST['themes/new']());
+      this.$('#themes-container ul.themes').append(JST['themes/new']());
 
       this.makeFieldsEditable();
       return (this);

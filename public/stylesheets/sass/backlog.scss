@@ -12,7 +12,7 @@
   }
 }
 
-table#themes-container {
+table#themes-header {
   width: 100%;
   th { background-color: #CCC; padding: 3px; border: 1px solid white;}
   th.theme { width: 15%; }
@@ -93,6 +93,15 @@ ul.themes {;
             text-decoration: underline;
           };
         }
+      }
+    }
+
+    .story-stats {
+      background-color: #EEE;
+      width: 100%;
+      text-align: right;
+      div {
+        padding: 5px;
       }
     }
 

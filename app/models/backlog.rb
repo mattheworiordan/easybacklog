@@ -23,6 +23,10 @@ class Backlog < ActiveRecord::Base
     themes.inject(0) { |val, theme| val + theme.cost }
   end
 
+  def cost_formatted
+    (cost || 0).to_currency(:locale => company.locale.code.to_s)
+  end
+
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|
       destination.themes << theme

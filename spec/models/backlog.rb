@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'spec_helper'
 
 describe Backlog do
@@ -29,5 +31,6 @@ describe Backlog do
     theme.backlog(true).points.should be_within(0.01).of(14.16)
     theme.backlog.days.should be_within(0.1).of(4.72)
     theme.backlog.cost.should be_within(1).of(3776)
+    theme.backlog.cost_formatted.should eql('£3,776.61')
   end
 end

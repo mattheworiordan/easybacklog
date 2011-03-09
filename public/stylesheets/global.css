@@ -137,29 +137,29 @@ ul li {
   position: relative;
   width: 20em; }
 
-table#themes-container {
+table#themes-header {
   width: 100%; }
-  table#themes-container th {
+  table#themes-header th {
     background-color: #CCC;
     padding: 3px;
     border: 1px solid white; }
-  table#themes-container th.theme {
+  table#themes-header th.theme {
     width: 15%; }
-  table#themes-container th.unique-id {
+  table#themes-header th.unique-id {
     width: 5%; }
-  table#themes-container th.user-story {
+  table#themes-header th.user-story {
     width: 20%; }
-  table#themes-container th.acceptance-criteria {
+  table#themes-header th.acceptance-criteria {
     width: 20%; }
-  table#themes-container th.comments {
+  table#themes-header th.comments {
     width: 20%; }
-  table#themes-container th.score-50 {
+  table#themes-header th.score-50 {
     width: 5%; }
-  table#themes-container th.score-90 {
+  table#themes-header th.score-90 {
     width: 5%; }
-  table#themes-container th.cost {
+  table#themes-header th.cost {
     width: 5%; }
-  table#themes-container th.days {
+  table#themes-header th.days {
     width: 5%; }
 
 ul.themes {
@@ -211,6 +211,12 @@ ul.themes {
           text-decoration: none; }
           ul.themes li.theme > div.name div.delete-theme a:hover {
             text-decoration: underline; }
+    ul.themes li.theme .story-stats {
+      background-color: #EEE;
+      width: 100%;
+      text-align: right; }
+      ul.themes li.theme .story-stats div {
+        padding: 5px; }
     ul.themes li.theme > div.stories {
       float: left;
       width: 80%; }
