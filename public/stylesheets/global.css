@@ -183,8 +183,12 @@ table#themes-header {
 ul.themes {
   list-style: none;
   margin: 0;
+  /* ensure data elements don't jump when editing */
   /* buttons for adding theme / story */
   /* theme row */ }
+  ul.themes .data input, ul.themes .data textarea {
+    position: absolute;
+    margin-top: -3px; }
   ul.themes li.actions {
     clear: left;
     margin: 0 0 10px 0;
@@ -288,6 +292,8 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li:last-child {
               list-style: none;
               margin-left: -1.3em; }
+            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data input, ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data textarea {
+              margin-top: -14px; }
           ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story {
             border: none; }
             ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story a {

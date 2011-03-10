@@ -63,8 +63,15 @@ App.Views.Stories = {
       var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
 
       this.$('>div.unique-id .data, >div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
-      this.$('>div.comments .data, >div.user-story div .data').editable(contentUpdatedFunc,
-        _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true } ));
+      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true } ));
+      // make the user story fields less wide so they fit with the heading
+      _.each(['as-a','i-want-to','so-i-can'], function(elem) {
+        _.defer(function() { // wait until elements have rendered
+          var width = show_view.$('>div.user-story .' + elem + ' .heading').outerWidth() + 10;
+          var options = _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, lesswidth: width });
+          show_view.$('>div.user-story .' + elem + ' .data').editable(contentUpdatedFunc, options);
+        });
+      });
     },
 
     // Tab or Enter key pressed so let's move on

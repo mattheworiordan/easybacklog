@@ -66,6 +66,14 @@ ul.themes {;
   list-style: none;
   margin: 0;
 
+  /* ensure data elements don't jump when editing */
+  .data {
+    input, textarea {
+      position: absolute;
+      margin-top: -3px;
+    }
+  }
+
   /* buttons for adding theme / story */
   li.actions {
     clear: left;
@@ -178,6 +186,11 @@ ul.themes {;
             li:last-child {
               list-style: none;
               margin-left: -1.3em;
+            }
+            .data {
+              input, textarea {
+                margin-top: -14px;
+              }
             }
           }
           >div.unique-id div.delete-story {

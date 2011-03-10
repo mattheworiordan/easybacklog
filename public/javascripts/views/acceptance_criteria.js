@@ -42,6 +42,8 @@ App.Views.AcceptanceCriteria = {
 
     makeFieldsEditable: function() {
       var ac_view = this;
+      // Acceptance criteria behave differently to other views as they automatically
+      //  delete themselves if empty
       var contentUpdatedFunc = function() {
         var newVal = arguments[0];
         var model_collection = ac_view.model.collection;
@@ -65,7 +67,7 @@ App.Views.AcceptanceCriteria = {
         }
       };
       var beforeChangeFunc = function() { return ac_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
+      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc, lesswidth: 10 });
 
       $(this.el).find('>div').editable(contentUpdatedFunc, defaultOptions);
     },
