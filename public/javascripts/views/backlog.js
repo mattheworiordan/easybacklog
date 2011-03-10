@@ -10,6 +10,7 @@ App.Views.Backlogs = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
+      _.bindAll(this, 'moveEvent');
     },
 
     render: function() {
@@ -22,6 +23,7 @@ App.Views.Backlogs = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
+      $('#backlog-data-area h2.name div.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
 
       return (this);
     },
@@ -32,7 +34,7 @@ App.Views.Backlogs = {
       var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
       var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
 
-      $('#backlog-data-area h2.name div.data').editable(contentUpdatedFunc, _.extend(defaultOptions, { cssclass: 'inherit' }));
+      $('#backlog-data-area h2.name div.data').editable(contentUpdatedFunc, defaultOptions);
     },
 
     newTheme: function() {
@@ -51,6 +53,22 @@ App.Views.Backlogs = {
 
     updateStatistics: function() {
       $('#backlog-data-area .backlog-stats div').html( JST['backlogs/stats']({ model: this.model }) )
+    },
+
+    // Tab or Enter key pressed so let's move on
+    moveEvent: function(event) {
+      if (event.keyCode == 9) {
+        if (!event.shiftKey) { // moving -->
+          event.preventDefault();
+          $(event.target).blur();
+          var firstTheme = $('#themes-container ul.themes li.theme:first>.name .data');
+          if (firstTheme.length) {
+            firstTheme.click();
+          } else {
+            $('#themes-container ul.themes li.actions a.new-theme').focus();
+          }
+        } // back can use default functionality as nothing above this
+      }
     }
   })
 };

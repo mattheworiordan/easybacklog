@@ -53,7 +53,7 @@ App.Views.Themes = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
-      this.$('.name>.data textarea').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
+      this.$('.name>.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
       this.$('ul.stories li.actions a.new-story').live('keydown', this.moveEvent); // hook up the add story button
 
       return (this);
@@ -74,22 +74,7 @@ App.Views.Themes = {
         $(event.target).blur();
         event.preventDefault();
 
-        if ($(event.target).hasClass('new-story')) {
-          // Behaviour for new story button
-          if (!event.shiftKey) { // going -->
-            // currently on add story
-            var nextThemeLi = $(event.target).parents('li.theme').next();
-            if (nextThemeLi.hasClass('theme')) {
-              // focus on next theme's name
-              nextThemeLi.find('>.name .data').click();
-            } else {
-              // focus on the add theme button as no more themes
-              nextThemeLi.find('a.new-theme').focus();
-            }
-          } else { // going <--
-            $(this.el).find('ul.stories li.story:last .score-90 .data').click(); // JQuery bug, :last-child did not work
-          }
-        } else {
+        if (!$(event.target).hasClass('new-story')) {
           // Behaviour for Theme view
           if (!event.shiftKey) { // going -->
             // currently on theme name field
@@ -115,6 +100,25 @@ App.Views.Themes = {
               $('#backlog-data-area h2.name .data').click();
             }
           }
+        } else {
+          // Behaviour for new story button
+          if (!event.shiftKey) { // going -->
+            var nextThemeLi = $(event.target).parents('li.theme').next();
+            if (nextThemeLi.hasClass('theme')) {
+              // focus on next theme's name
+              nextThemeLi.find('>.name .data').click();
+            } else {
+              // focus on the add theme button as no more themes
+              nextThemeLi.find('a.new-theme').focus();
+            }
+          } else { // going <--
+            var previous_story = $(this.el).find('ul.stories li.story:last .score-90 .data'); // JQuery bug, :last-child did not work
+            if (previous_story.length) {
+              previous_story.click()
+            } else {
+              $(this.el).find('>.name .data').click();
+            }
+          }
         }
       }
     },
@@ -124,6 +128,7 @@ App.Views.Themes = {
       var model = new Story();
       this.model.Stories().add(model);
       this.$('>.stories ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
+      $(this.el).find('ul.stories li.story:last .as-a .data').click();
     },
 
     changeEvent: function(eventName, model) {
