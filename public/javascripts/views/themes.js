@@ -46,7 +46,7 @@ App.Views.Themes = {
       // align the outer stories div with all columns other than theme
       $(this.el).find('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
       // append new story
-      this.$('>.stories ul.stories').append(JST['stories/new']());
+      if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
 
       // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
       this.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
@@ -136,6 +136,9 @@ App.Views.Themes = {
         var fieldChanged = eventName.substring(7);
         this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
+        if (!this.$('ul.stories li.actions .new-story').length) { // not yet added the Add Story button as theme not created
+          if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
+        }
       }
     },
 
