@@ -64,7 +64,7 @@ App.Views.Stories = {
 
       this.$('>div.unique-id .data, >div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
       this.$('>div.comments .data, >div.user-story div .data').editable(contentUpdatedFunc,
-        _.extend(defaultOptions, { type: 'textarea', saveonenterkeypress: true } ));
+        _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true } ));
     },
 
     // Tab or Enter key pressed so let's move on

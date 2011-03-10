@@ -3,7 +3,8 @@ App.Views.BaseView = Backbone.View.extend({
     onblur: 'submit',
     tooltip: 'Click to edit',
     placeholder: '[edit]',
-    lesswidth: 5
+    lesswidth: 5,
+    type: 'text'
   },
 
   initialize: function() {
