@@ -58,6 +58,9 @@ App.Views.BaseView = Backbone.View.extend({
             } catch (e) { console.log(e); }
             new App.Views.Error({ message: errorMessage});
             fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
+            var valBack = {};
+            valBack[fieldId] = _.isEmpty(beforeChangeValue) ? null : beforeChangeVavlue;
+            this_model.set(valBack); // reset model value back as well
           }
         });
       }
