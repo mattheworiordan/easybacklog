@@ -10,6 +10,10 @@
   #backlog-data-area h2.name {
     position: relative;
     width: 20em; }
+    #backlog-data-area h2.name div {
+      padding: 2px; }
+    #backlog-data-area h2.name:hover {
+      background-color: #FFA; }
   #backlog-data-area .backlog-stats {
     background-color: #eeeeee;
     clear: left;

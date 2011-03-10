@@ -12,6 +12,12 @@ $add-button-color: green;
 $delete-link-color: darken(red, 20%);
 $stats-bg-color: #EEE;
 
+@mixin editable-field {
+  &:hover {
+    background-color: #FFA;
+  }
+}
+
 #backlog-container {
   clear: left;
 }
@@ -26,6 +32,10 @@ $stats-bg-color: #EEE;
   h2.name {
     position: relative;
     width: 20em;
+    div {
+      padding: 2px;
+    }
+    @include editable-field;
   }
   .backlog-stats {
     background-color: $stats-bg-color;
