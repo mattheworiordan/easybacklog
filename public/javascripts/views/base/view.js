@@ -45,16 +45,27 @@ App.Views.BaseView = Backbone.View.extend({
       var attributes = {};
       attributes[fieldId] = value;
       this.model.set(attributes);
-      this.model.save({}, { 
-        error: function(model, response) {
-          var errorMessage = 'Unable to save changes...'
-          try {
-            errorMessage = eval('responseText = ' + response.responseText).message;
-          } catch (e) { console.log(e); }
-          new App.Views.Error({ message: errorMessage});
-          fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
-        }
-      });
+
+      // create a callback to this save function as if the mode has beforeSave function we call that first
+      // this is used whereby a parent model is not yet saved and needs to be first i.e. criterion added to unsaved story
+      var this_model = this.model;
+      var saveModelFunc = function() {
+        this_model.save({}, {
+          error: function(model, response) {
+            var errorMessage = 'Unable to save changes...'
+            try {
+              errorMessage = eval('responseText = ' + response.responseText).message;
+            } catch (e) { console.log(e); }
+            new App.Views.Error({ message: errorMessage});
+            fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
+          }
+        });
+      }
+      if (this.model.beforeSave) {
+        this.model.beforeSave(saveModelFunc);
+      } else {
+        saveModelFunc();
+      }
     }
     return (value);
   },
