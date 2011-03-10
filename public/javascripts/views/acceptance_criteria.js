@@ -25,18 +25,18 @@ App.Views.AcceptanceCriteria = {
     tagName: 'li',
     className: 'criterion',
 
-    events: {
-      "click": "click"
-    },
+    events: {},
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
+      _.bindAll(this, 'moveEvent');
     },
 
     render: function() {
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
 
       this.makeFieldsEditable();
+      this.$('.data input, .data textarea').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
       return (this);
     },
 
@@ -70,8 +70,20 @@ App.Views.AcceptanceCriteria = {
       $(this.el).find('>div').editable(contentUpdatedFunc, defaultOptions);
     },
 
-    click: function() {
-      // alert ('Acceptance criteria clicked ' + this.model.get('id'));
+    // Tab or Enter key pressed so let's move on
+    moveEvent: function(event) {
+      if (event.keyCode == 9) {
+        event.preventDefault();
+        $(event.target).blur();
+        var liElem = $(event.target).parents('.data').parent();
+        if ( _.first(liElem) != _.last(liElem.parent('ul').find('li.criterion')) ) {
+          // move to next item
+          liElem.next().find('.data').click();
+        } else {
+          // move back to comments field
+          $(this.el).parents('li.story').find('div.comments .data').click();
+        }
+      }
     }
   })
 };

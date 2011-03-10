@@ -35,6 +35,7 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
+      _.bindAll(this, 'moveEvent');
     },
 
     render: function() {
@@ -52,6 +53,8 @@ App.Views.Themes = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
+      this.$('.name>.data textarea').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
+      this.$('ul.stories li.actions a.new-story').live('keydown', this.moveEvent); // hook up the add story button
 
       return (this);
     },
@@ -63,6 +66,38 @@ App.Views.Themes = {
       var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
 
       this.$('>.name div.data').editable(contentUpdatedFunc, defaultOptions);
+    },
+
+    // Tab or Enter key pressed so let's move on
+    moveEvent: function(event) {
+      if (event.keyCode == 9) {
+        $(event.target).blur();
+        event.preventDefault();
+
+        if ($(event.target).hasClass('new-story')) {
+          // currently on add story
+          var nextThemeLi = $(event.target).parents('li.theme').next();
+          if (nextThemeLi.hasClass('theme')) {
+            // focus on next theme's name
+            nextThemeLi.find('>.name .data').click();
+          } else {
+            // focus on the add theme button as no more themes
+            nextThemeLi.find('a.new-theme').focus();
+          }
+        } else {
+          // currently on theme name field
+          var storyElem = $(this.el).find('li.story:first-child')
+          if (storyElem.length) {
+            // move to story item
+            storyElem.find('.unique-id .data').click();
+          } else {
+            // focus on next theme button
+            $(this.el).next().find('a.new-theme').focus();
+            // and if a new story button exists move focus to that
+            $(this.el).find('ul.stories li a.new-story').focus();
+          }
+        }
+      }
     },
 
     newStory: function() {

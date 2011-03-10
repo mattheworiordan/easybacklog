@@ -33,6 +33,7 @@ App.Views.Stories = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
+      _.bindAll(this, 'moveEvent');
     },
 
     render: function() {
@@ -49,6 +50,9 @@ App.Views.Stories = {
       });
 
       this.makeFieldsEditable();
+      // make all input and textarea fields respond to Tab/Enter
+      var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
+      _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.moveEvent); }); 
       return (this);
     },
 
@@ -61,6 +65,42 @@ App.Views.Stories = {
       this.$('>div.unique-id .data, >div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
       this.$('>div.comments .data, >div.user-story div .data').editable(contentUpdatedFunc,
         _.extend(defaultOptions, { type: 'textarea', saveonenterkeypress: true } ));
+    },
+
+    // Tab or Enter key pressed so let's move on
+    moveEvent: function(event) {
+      if (event.keyCode == 9) {
+        event.preventDefault();
+        // set up array of all elements in this view in the tab order
+        var viewElements = [
+          'unique-id .data',
+          'as-a .data',
+          'i-want-to .data',
+          'so-i-can .data',
+          'acceptance-criteria ul.acceptance-criteria li:first-child>*',
+          'comments .data',
+          'score-50 .data',
+          'score-90 .data'
+        ];
+        var dataClass = $(event.target).parents('.data').parent().attr('class');
+        var dataElem = _.detect(viewElements, function(id) { return (_.first(id.split(' ')) == dataClass); });
+        $(event.target).blur();
+        if (dataElem) { // user has tabbed from a data element
+          if (dataElem != _.last(viewElements)) {
+            // move to next element
+            this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
+          } else {
+            // move onto next view as we're at the last element
+            var sibling = $(this.el).next();
+            if (sibling.find('a.new-story').length) {
+              // just a new story button
+              sibling.find('a.new-story').focus();
+            } else {
+              sibling.find('.' + _.first(viewElements)).click();
+            }
+          }
+        }
+      }
     },
 
     changeEvent: function(eventName, model) {
