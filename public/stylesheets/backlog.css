@@ -136,8 +136,7 @@ ul.themes {
               border: 1px solid #CCC; }
           ul.themes li.theme > div.stories ul.stories li.story > div.user-story {
             /* ensure div wraps the children */
-            /* as a, i want to, so i can text */
-            /* actual fields which contain editable text */ }
+            /* as a, i want to, so i can text */ }
             ul.themes li.theme > div.stories ul.stories li.story > div.user-story > div {
               overflow: hidden; }
             ul.themes li.theme > div.stories ul.stories li.story > div.user-story .heading {
@@ -146,8 +145,6 @@ ul.themes {
               padding-right: 0.25em;
               color: #666;
               font-style: italic; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.user-story .data {
-              width: auto; }
           ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
             list-style: lower-alpha;
             margin: 0 0 0 1.5em;

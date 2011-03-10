@@ -128,7 +128,8 @@ App.Views.Themes = {
       var model = new Story();
       this.model.Stories().add(model);
       this.$('>.stories ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
-      $(this.el).find('ul.stories li.story:last .as-a .data').click();
+      var this_view = this;
+      _.defer(function() { this_view.$('li.story:last > .user-story > .as-a > .data').click() }); // browser bug, needs to defer
     },
 
     changeEvent: function(eventName, model) {
