@@ -60,7 +60,7 @@ App.Views.Stories = {
       var show_view = this;
       var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
       var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
       this.$('>div.unique-id .data, >div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
       this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true } ));

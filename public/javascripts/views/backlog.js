@@ -32,7 +32,7 @@ App.Views.Backlogs = {
       var show_view = this;
       var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
       var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
       $('#backlog-data-area h2.name div.data').editable(contentUpdatedFunc, defaultOptions);
     },

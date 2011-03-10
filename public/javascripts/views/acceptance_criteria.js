@@ -67,7 +67,7 @@ App.Views.AcceptanceCriteria = {
         }
       };
       var beforeChangeFunc = function() { return ac_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(this.defaultEditableOptions, { data: beforeChangeFunc, lesswidth: 10 });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: 10 });
 
       $(this.el).find('>div').editable(contentUpdatedFunc, defaultOptions);
     },
