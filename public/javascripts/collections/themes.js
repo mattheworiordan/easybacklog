@@ -4,7 +4,7 @@ var ThemesCollection = Backbone.Collection.extend({
 
   url: function() {
     if (!this.backlog) {
-      new App.View.Error('Error, cannot find Backlog and thus cannot load Theme');
+      new App.Views.Error('Error, cannot find Backlog and thus cannot load Theme');
     } else {
       return '/backlogs/' + this.backlog.get('id') + '/themes';
     }
