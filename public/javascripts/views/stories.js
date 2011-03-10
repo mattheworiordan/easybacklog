@@ -71,6 +71,8 @@ App.Views.Stories = {
     moveEvent: function(event) {
       if (event.keyCode == 9) {
         event.preventDefault();
+        $(event.target).blur();
+
         // set up array of all elements in this view in the tab order
         var viewElements = [
           'unique-id .data',
@@ -82,21 +84,34 @@ App.Views.Stories = {
           'score-50 .data',
           'score-90 .data'
         ];
+
         var dataClass = $(event.target).parents('.data').parent().attr('class');
         var dataElem = _.detect(viewElements, function(id) { return (_.first(id.split(' ')) == dataClass); });
-        $(event.target).blur();
+
         if (dataElem) { // user has tabbed from a data element
-          if (dataElem != _.last(viewElements)) {
-            // move to next element
-            this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
-          } else {
-            // move onto next view as we're at the last element
-            var sibling = $(this.el).next();
-            if (sibling.find('a.new-story').length) {
-              // just a new story button
-              sibling.find('a.new-story').focus();
+          if (!event.shiftKey) { // moving -->
+            if (dataElem != _.last(viewElements)) {
+              // move to next element
+              this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
             } else {
-              sibling.find('.' + _.first(viewElements)).click();
+              // move onto next view as we're at the last element
+              var sibling = $(this.el).next();
+              if (sibling.find('a.new-story').length) {
+                // just a new story button
+                sibling.find('a.new-story').focus();
+              } else {
+                sibling.find('.' + _.first(viewElements)).click();
+              }
+            }
+          } else { // moving --<
+            if (dataElem != _.first(viewElements)) {
+              // move to previous element
+              var previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
+              previousSelector = previousSelector.replace('li:first-child','li.criterion:last'); // we need to move to the last item
+              this.$('.' + previousSelector).click();
+            } else {
+              // move to theme field name
+              $(this.el).parents('li.theme').find('>.name .data').click();
             }
           }
         }

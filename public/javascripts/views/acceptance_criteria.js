@@ -75,13 +75,23 @@ App.Views.AcceptanceCriteria = {
       if (event.keyCode == 9) {
         event.preventDefault();
         $(event.target).blur();
+
         var liElem = $(event.target).parents('.data').parent();
-        if ( _.first(liElem) != _.last(liElem.parent('ul').find('li.criterion')) ) {
-          // move to next item
-          liElem.next().find('.data').click();
-        } else {
-          // move back to comments field
-          $(this.el).parents('li.story').find('div.comments .data').click();
+        if (!event.shiftKey) { // moving -->
+          if ( _.first(liElem) != _.last(liElem.parent('ul').find('li.criterion')) ) {
+            // move to next item
+            liElem.next().find('.data').click();
+          } else {
+            // move back to comments field
+            $(this.el).parents('li.story').find('div.comments .data').click();
+          }
+        } else { // moving <--
+          if ( _.first(liElem) == _.first(liElem.parent('ul').find('li.criterion')) ) {
+            // move to user story field so-i-can
+            $(this.el).parents('li.story').find('div.so-i-can .data').click();
+          } else {
+            liElem.prev().find('.data').click();
+          }
         }
       }
     }

@@ -75,26 +75,45 @@ App.Views.Themes = {
         event.preventDefault();
 
         if ($(event.target).hasClass('new-story')) {
-          // currently on add story
-          var nextThemeLi = $(event.target).parents('li.theme').next();
-          if (nextThemeLi.hasClass('theme')) {
-            // focus on next theme's name
-            nextThemeLi.find('>.name .data').click();
-          } else {
-            // focus on the add theme button as no more themes
-            nextThemeLi.find('a.new-theme').focus();
+          // Behaviour for new story button
+          if (!event.shiftKey) { // going -->
+            // currently on add story
+            var nextThemeLi = $(event.target).parents('li.theme').next();
+            if (nextThemeLi.hasClass('theme')) {
+              // focus on next theme's name
+              nextThemeLi.find('>.name .data').click();
+            } else {
+              // focus on the add theme button as no more themes
+              nextThemeLi.find('a.new-theme').focus();
+            }
+          } else { // going <--
+            $(this.el).find('ul.stories li.story:last .score-90 .data').click(); // JQuery bug, :last-child did not work
           }
         } else {
-          // currently on theme name field
-          var storyElem = $(this.el).find('li.story:first-child')
-          if (storyElem.length) {
-            // move to story item
-            storyElem.find('.unique-id .data').click();
-          } else {
-            // focus on next theme button
-            $(this.el).next().find('a.new-theme').focus();
-            // and if a new story button exists move focus to that
-            $(this.el).find('ul.stories li a.new-story').focus();
+          // Behaviour for Theme view
+          if (!event.shiftKey) { // going -->
+            // currently on theme name field
+            var storyElem = $(this.el).find('li.story:first-child')
+            if (storyElem.length) {
+              // move to story item
+              storyElem.find('.unique-id .data').click();
+            } else {
+              // focus on next theme button
+              $(this.el).next().find('a.new-theme').focus();
+              // and if a new story button exists move focus to that
+              $(this.el).find('ul.stories li a.new-story').focus();
+            }
+          } else { // going <--
+            var prev = $(this.el).prev();
+            if (prev.length) { // previous theme exists
+              if (prev.find('ul.stories li.actions a.new-story')) {
+                prev.find('ul.stories li.actions a.new-story').focus();
+              } else {
+                prev.find('>.name .data').click();
+              }
+            } else { // no previous theme
+              $('#backlog-data-area h2.name .data').click();
+            }
           }
         }
       }
