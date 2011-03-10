@@ -43,7 +43,7 @@ App.Views.Themes = {
       this.$('>.stories').prepend(view.render().el);
 
       // align the outer stories div with all columns other than theme
-      $(this.el).find('.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth() - 1);
+      $(this.el).find('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
       // append new story
       this.$('>.stories ul.stories').append(JST['stories/new']());
 

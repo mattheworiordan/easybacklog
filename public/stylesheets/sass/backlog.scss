@@ -2,7 +2,7 @@
   width: $width * 100 / 80; /* all story elements use up 80% of total width */
   float: left;
   &>div {
-    margin: 1px;
+    margin: 1px 0 1px 1px;
     padding: 2px;
     border: 1px solid #CCC;
   }
@@ -93,7 +93,6 @@ ul.themes {;
     /* theme name field */
     &>div.name {
       @include table-col(15% / 100 * 80);
-      padding-left: 1px;
 
       /* delete theme link */
       div.delete-theme {
