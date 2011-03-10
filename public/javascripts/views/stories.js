@@ -107,8 +107,19 @@ App.Views.Stories = {
             if (dataElem != _.first(viewElements)) {
               // move to previous element
               var previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
-              previousSelector = previousSelector.replace('li:first-child','li.criterion:last'); // we need to move to the last item
-              this.$('.' + previousSelector).click();
+              if (previousSelector.indexOf('acceptance-criteria') == 0) {
+                // exception, we need to move to acceptance criteria
+                var lastCriterion = this.$('.acceptance-criteria ul.acceptance-criteria li.criterion:last>*');
+                if (lastCriterion.length) {
+                  // a criterion exists, jump to this
+                  lastCriterion.click();
+                } else {
+                  // create a new blank criteria
+                  this.$('.acceptance-criteria ul.acceptance-criteria li:last a').click();
+                }
+              } else {
+                this.$('.' + previousSelector).click();
+              }
             } else {
               // move to theme field name
               $(this.el).parents('li.theme').find('>.name .data').click();
