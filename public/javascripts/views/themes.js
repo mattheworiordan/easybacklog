@@ -172,13 +172,16 @@ App.Views.Themes = {
     },
 
     resizeEvent: function() {
-      // align the outer stories div with all columns other than theme
-      this.$('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
-      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
-      this.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
+      var this_view = this;
+      _.defer(function() {
+        // align the outer stories div with all columns other than theme
+        this_view.$('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
+        // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
+        this_view.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
 
-      this.model.Stories().each(function(story) { // now resize children stories
-        story.trigger('resize');
+        this_view.model.Stories().each(function(story) { // now resize children stories
+          story.trigger('resize');
+        });
       });
     }
   })
