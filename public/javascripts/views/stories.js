@@ -33,7 +33,8 @@ App.Views.Stories = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent');
+      _.bindAll(this, 'moveEvent','resizeEvent');
+      this.model.bind('resize', this.resizeEvent); // resize event on model triggers view to update itself
     },
 
     render: function() {
@@ -43,14 +44,10 @@ App.Views.Stories = {
       this.$('.acceptance-criteria').html(view.render().el);
       this.$('.acceptance-criteria ul.acceptance-criteria').append(JST['acceptance_criteria/new']());
 
-      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
-      var show_view = this;
-      $.each(['unique-id','user-story','acceptance-criteria','comments','score-50','score-90'], function(elem, val) {
-        show_view.$('>div.' + val).css('width', $('table#themes-header th.' + val).outerWidth());
-      });
-
+      this.resizeEvent();
       this.makeFieldsEditable();
       // make all input and textarea fields respond to Tab/Enter
+      var show_view = this;
       var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
       _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.moveEvent); }); 
       return (this);
@@ -175,6 +172,14 @@ App.Views.Stories = {
           $(dialog_obj).dialog("close"); // hide the dialog
           App.Controllers.Statistics.updateStatistics(response.score_statistics);
         }
+      });
+    },
+
+    resizeEvent: function() {
+      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
+      var show_view = this;
+      $.each(['unique-id','user-story','acceptance-criteria','comments','score-50','score-90'], function(elem, val) {
+        show_view.$('>div.' + val).css('width', $('table#themes-header th.' + val).outerWidth());
       });
     }
   })

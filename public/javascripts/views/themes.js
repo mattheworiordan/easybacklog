@@ -35,7 +35,8 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent');
+      _.bindAll(this, 'moveEvent','resizeEvent');
+      this.model.bind('resize', this.resizeEvent); // resize event on model triggers view to update itself
     },
 
     render: function() {
@@ -43,14 +44,10 @@ App.Views.Themes = {
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
       this.$('>.stories').prepend(view.render().el);
 
-      // align the outer stories div with all columns other than theme
-      $(this.el).find('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
       // append new story
       if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
 
-      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
-      this.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
-
+      this.resizeEvent(); // align to table
       this.makeFieldsEditable();
       this.updateStatistics();
       this.$('.name>.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
@@ -170,6 +167,17 @@ App.Views.Themes = {
 
     updateStatistics: function() {
       this.$('.story-stats div').html( JST['themes/stats']({ model: this.model }) )
+    },
+
+    resizeEvent: function() {
+      // align the outer stories div with all columns other than theme
+      this.$('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
+      // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
+      this.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
+
+      this.model.Stories().each(function(story) { // now resize children stories
+        story.trigger('resize');
+      });
     }
   })
 };
