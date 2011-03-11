@@ -19,6 +19,8 @@ var AcceptanceCriterion = Backbone.Model.extend({
           callback();
         }
       });
+    } else {
+      callback();
     }
   }
 });
