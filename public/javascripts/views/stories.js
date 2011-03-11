@@ -126,7 +126,13 @@ App.Views.Stories = {
               }
             } else {
               // move to theme field name
-              $(this.el).parents('li.theme').find('>.name .data').click();
+              if ($(this.el).prev().length) {
+                // jump to end of previous story
+                $(this.el).prev().find('.score-90 .data').click();
+              } else {
+                // no previous stories so jump to theme
+                $(this.el).parents('li.theme').find('>.name .data').click();
+              }
             }
           }
         }
