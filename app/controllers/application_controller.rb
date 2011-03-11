@@ -14,8 +14,7 @@ class ApplicationController < ActionController::Base
     render :status => 400, :json => { :status => 'error', :message => error_message }
   end
 
-  def send_json_notice(notice_message, payload)
-    payload = payload || {}
+  def send_json_notice(notice_message, payload = {})
     render :json => { :status => 'notice', :message => notice_message }.merge(payload)
   end
 end
