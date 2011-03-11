@@ -74,13 +74,13 @@ App.Views.BaseView = Backbone.View.extend({
   },
 
   // handle user clicking to remove object
-  remove: function() {
+  remove: function(event) {
     event.preventDefault();
     var view = this;
 
     if (view.model.isNew()) { // not saved to server yet
       view.model.collection.remove(view.model);
-      $(view.el).remove(); // remove HTML for story
+      $(view.el).slideUp('fast', function() { $(view.el).remove() }); // remove HTML for story, had to animate & delay, some strange issue where page was reloading
     } else {
       $(this.deleteDialogSelector).dialog({
         resizable: false,

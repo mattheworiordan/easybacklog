@@ -43,7 +43,10 @@ App.Views.Backlogs = {
       var model = new Theme();
       this.model.Themes().add(model);
       this.$('.themes ul.themes li:last').before(new App.Views.Themes.Show({ model: model}).render().el);
-      $(this.el).find('ul.themes li.theme:last>.name .data').click();
+      var this_view = this;
+      this_view.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
+        $(this_view.el).find('ul.themes li.theme:last>.name .data').click();
+      });
     },
 
     changeEvent: function(eventName, model) {

@@ -126,7 +126,9 @@ App.Views.Themes = {
       this.model.Stories().add(model);
       this.$('>.stories ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
       var this_view = this;
-      _.defer(function() { this_view.$('li.story:last > .user-story > .as-a > .data').click() }); // browser bug, needs to defer
+      this_view.$('li.story:last').css('display','none').slideDown('fast', function() {
+        this_view.$('li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
+      });
     },
 
     changeEvent: function(eventName, model) {
