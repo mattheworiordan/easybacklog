@@ -40,7 +40,7 @@ App.Views.AcceptanceCriteria = {
         var elemId = _.last($(elem).attr('id').split('-'));
         orderIndexesWithIds[elemId] = index + 1;
       });
-      console.log('Order changed and saving');
+      console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
       this.collection.saveOrder(orderIndexesWithIds);
     }
   }),
@@ -62,6 +62,12 @@ App.Views.AcceptanceCriteria = {
       this.makeFieldsEditable();
       this.$('.data input, .data textarea').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
       return (this);
+    },
+
+    changeEvent: function(eventName, model) {
+      if (eventName == 'change:id') {
+        $(this.el).attr('id', 'acceptance-criteria-' + model.get('id'));
+      }
     },
 
     makeFieldsEditable: function() {
