@@ -185,7 +185,8 @@ App.Views.Stories = {
       // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
       var show_view = this;
       _.defer (function() {
-        $.each(['unique-id','user-story','acceptance-criteria','comments','score-50','score-90','cost','days'], function(elem, val) {
+        $.each(['unique-id','user-story','acceptance-criteria','comments','score-50','score-90','cost-formatted','days-formatted'], function(elem, val) {
+          console.log(val);
           show_view.$('>div.' + val).css('width', $('table#themes-header th.' + val).outerWidth());
         });
       });

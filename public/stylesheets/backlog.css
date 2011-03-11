@@ -42,9 +42,9 @@ table#themes-header {
     width: 3%; }
   table#themes-header th.score-90 {
     width: 3%; }
-  table#themes-header th.cost {
+  table#themes-header th.cost-formatted {
     width: 6%; }
-  table#themes-header th.days {
+  table#themes-header th.days-formatted {
     width: 3%; }
 
 ul.themes {
