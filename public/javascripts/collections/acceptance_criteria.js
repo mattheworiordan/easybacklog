@@ -12,5 +12,17 @@ var AcceptanceCriteriaCollection = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.story = options ? options.story : null;
+    _.bindAll(this, 'saveOrder');
+  },
+
+  saveOrder: function(idOrderCollection) {
+    var thisCollection = this;
+    _.each(idOrderCollection, function(index, key) {
+      var criterion = thisCollection.get(key);
+      if (criterion) { // might not exist as not yet saved
+        criterion.set({ 'position': idOrderCollection[key] });
+        criterion.save();
+      }
+    });
   }
 });

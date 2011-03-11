@@ -3,5 +3,5 @@ class AcceptanceCriterion < ActiveRecord::Base
 
   belongs_to :story
 
-  attr_accessible :criterion
+  attr_accessible :criterion, :position
 end

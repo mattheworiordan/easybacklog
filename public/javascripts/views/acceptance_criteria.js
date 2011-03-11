@@ -6,6 +6,7 @@ App.Views.AcceptanceCriteria = {
 
     initialize: function() {
       this.collection = this.options.collection;
+      _.bindAll(this, 'orderChanged');
     },
 
     render: function() {
@@ -17,7 +18,30 @@ App.Views.AcceptanceCriteria = {
         parentView.$('ul').append(view.render().el);
       })
 
+      var orderChangedEvent = this.orderChanged;
+      this.$('ul.acceptance-criteria').disableSelection().sortable({
+        stop: function(event, ui) {
+          // stop jeditable from assuming the element needs to now be editable as this item has just been dragged
+          $(event.originalEvent.target).data('disabled.editable.once','true').find('.data').data('disabled.editable.once','true');
+          orderChangedEvent();
+        },
+        placeholder: 'target-order-highlight'
+      });
+      // sortable interferes with jeditable, so have to attach new blur events strangel
+      this.$('ul.acceptance-criteria li input').live('blur', function(event) {
+        _.delay(function() { if ($(event.target).length) { $(event.target).blur(); } }, 200); // no idea what is going on, reloads page unless there is a delay
+      })
       return(this);
+    },
+
+    orderChanged: function() {
+      var orderIndexesWithIds = {};
+      this.$('li.criterion').each(function(index, elem) {
+        var elemId = _.last($(elem).attr('id').split('-'));
+        orderIndexesWithIds[elemId] = index + 1;
+      });
+      console.log('Order changed and saving');
+      this.collection.saveOrder(orderIndexesWithIds);
     }
   }),
 

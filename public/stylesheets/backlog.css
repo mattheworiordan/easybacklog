@@ -158,6 +158,10 @@ ul.themes {
               margin-left: -1.3em; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data input, ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data textarea {
               margin-top: -14px; }
+            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
+              background-color: #EEE;
+              margin: 0;
+              list-style: circle; }
           ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story {
             border: none; }
             ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story a {

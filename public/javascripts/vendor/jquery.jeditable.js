@@ -126,7 +126,11 @@
             }
             
             $(this).bind(settings.event, function(e) {
-                
+                if ($(this).data('disabled.editable.once') == 'true') {
+                  $(this).data('disabled.editable.once',false);
+                  return;
+                }
+
                 /* abort if disabled for this element */
                 if (true === $(this).data('disabled.editable')) {
                     return;
