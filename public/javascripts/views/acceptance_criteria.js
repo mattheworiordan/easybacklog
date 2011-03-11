@@ -74,7 +74,7 @@ App.Views.AcceptanceCriteria = {
 
     // Tab or Enter key pressed so let's move on
     moveEvent: function(event) {
-      if (event.keyCode == 9) {
+      if (_.include([9,13], event.keyCode)) {
         event.preventDefault();
         $(event.target).blur();
 
