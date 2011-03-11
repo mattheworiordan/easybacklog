@@ -21,7 +21,7 @@ class Story < ActiveRecord::Base
   end
 
   def cost_formatted
-    (cost || 0).to_currency(:locale => theme.backlog.company.locale.code.to_s)
+    (cost || 0).to_currency(:precision => 0, :locale => theme.backlog.company.locale.code.to_s)
   end
 
   def points
@@ -30,6 +30,10 @@ class Story < ActiveRecord::Base
 
   def days
     points / theme.backlog.velocity
+  end
+
+  def days_formatted
+    format('%0.1f', days)
   end
 
   def lowest_score

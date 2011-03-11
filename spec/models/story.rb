@@ -74,8 +74,9 @@ describe Story do
 
     story.points.should be_within(0.01).of(2)
     story.days.should be_within(0.01).of(0.67)
+    story.days_formatted.should eql('0.7')
     story.cost.should be_within(0.4).of(533)
-    story.cost_formatted.should eql('£533.33')
+    story.cost_formatted.should eql('£533')
 
     story.score_statistics.should eql({
       :points => story.points,

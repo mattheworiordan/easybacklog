@@ -49,6 +49,6 @@ describe Theme do
     theme.points.should be_within(0.01).of(12.16)
     theme.days.should be_within(0.1).of(4.05)
     theme.cost.should be_within(1).of(3243)
-    theme.cost_formatted.should eql('£3,243.27')
+    theme.cost_formatted.should eql('£3,243')
   end
 end

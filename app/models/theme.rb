@@ -32,7 +32,7 @@ class Theme < ActiveRecord::Base
   end
 
   def cost_formatted
-    (cost || 0).to_currency(:locale => backlog.company.locale.code.to_s)
+    (cost || 0).to_currency(:precision => 0, :locale => backlog.company.locale.code.to_s)
   end
 
   private

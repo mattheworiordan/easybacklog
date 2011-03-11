@@ -1,5 +1,5 @@
 @mixin table-col($width) {
-  width: $width * 100 / 80; /* all story elements use up 80% of total width */
+  width: $width * 100 / 88; /* all story elements use up 90% of total width */
   float: left;
   &>div {
     margin: 1px 0 1px 1px;
@@ -51,15 +51,15 @@ $stats-bg-color: #EEE;
 table#themes-header {
   width: 100%;
   th { background-color: #CCC; padding: 3px; border: 1px solid white;}
-  th.theme { width: 15%; }
-  th.unique-id { width: 5%; }
-  th.user-story { width: 20%; }
-  th.acceptance-criteria { width: 20%; }
-  th.comments { width: 20%; }
-  th.score-50 { width: 5%; }
-  th.score-90 { width: 5%; }
-  th.cost { width: 5%; }
-  th.days { width: 5%; }
+  th.theme { width: 12%; }
+  th.unique-id { width: 7%; }
+  th.user-story { width: 22%; }
+  th.acceptance-criteria { width: 22%; }
+  th.comments { width: 22%; }
+  th.score-50 { width: 3%; }
+  th.score-90 { width: 3%; }
+  th.cost { width: 6%; }
+  th.days { width: 3%; }
 }
 
 ul.themes {;
@@ -110,7 +110,7 @@ ul.themes {;
 
     /* theme name field */
     &>div.name {
-      @include table-col(15% / 100 * 80);
+      @include table-col(12% / 100 * 80);
 
       /* delete theme link */
       div.delete-theme {
@@ -149,12 +149,11 @@ ul.themes {;
           }
           clear: left;
           margin: 0;
-          &>div.user-story, &>div.acceptance-criteria, &>div.comments {
-            @include table-col(20%);
-          }
-          &>div.unique-id, &>div.score-50, &>div.score-90, &>div.cost, &>div.days {
-            @include table-col(5%);
-          }
+          &>div.unique-id { @include table-col(7%) }
+          &>div.user-story, &>div.acceptance-criteria, &>div.comments { @include table-col(22%); }
+          &>div.score-50, &>div.score-90, &>div.days-formatted { @include table-col(3%); text-align: right; }
+          &>div.cost-formatted { @include table-col(6%); text-align: right; }
+
           &>div.user-story {
             /* ensure div wraps the children */
             &>div {

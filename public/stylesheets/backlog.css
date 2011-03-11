@@ -29,23 +29,23 @@ table#themes-header {
     padding: 3px;
     border: 1px solid white; }
   table#themes-header th.theme {
-    width: 15%; }
+    width: 12%; }
   table#themes-header th.unique-id {
-    width: 5%; }
+    width: 7%; }
   table#themes-header th.user-story {
-    width: 20%; }
+    width: 22%; }
   table#themes-header th.acceptance-criteria {
-    width: 20%; }
+    width: 22%; }
   table#themes-header th.comments {
-    width: 20%; }
+    width: 22%; }
   table#themes-header th.score-50 {
-    width: 5%; }
+    width: 3%; }
   table#themes-header th.score-90 {
-    width: 5%; }
+    width: 3%; }
   table#themes-header th.cost {
-    width: 5%; }
+    width: 6%; }
   table#themes-header th.days {
-    width: 5%; }
+    width: 3%; }
 
 ul.themes {
   list-style: none;
@@ -83,8 +83,8 @@ ul.themes {
     ul.themes li.theme:nth-child(1n+2) {
       padding: 5px 0 0 0; }
     ul.themes li.theme > div.name {
-      width: 15%;
-      /* all story elements use up 80% of total width */
+      width: 10.909%;
+      /* all story elements use up 90% of total width */
       float: left;
       /* delete theme link */ }
       ul.themes li.theme > div.name > div {
@@ -118,19 +118,37 @@ ul.themes {
           margin: 0; }
           ul.themes li.theme > div.stories ul.stories li.story:nth-child(1n+2) {
             padding: 5px 0 0 0; }
+          ul.themes li.theme > div.stories ul.stories li.story > div.unique-id {
+            width: 7.955%;
+            /* all story elements use up 90% of total width */
+            float: left; }
+            ul.themes li.theme > div.stories ul.stories li.story > div.unique-id > div {
+              margin: 1px 0 1px 1px;
+              padding: 2px;
+              border: 1px solid #CCC; }
           ul.themes li.theme > div.stories ul.stories li.story > div.user-story, ul.themes li.theme > div.stories ul.stories li.story > div.acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > div.comments {
             width: 25%;
-            /* all story elements use up 80% of total width */
+            /* all story elements use up 90% of total width */
             float: left; }
             ul.themes li.theme > div.stories ul.stories li.story > div.user-story > div, ul.themes li.theme > div.stories ul.stories li.story > div.acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > div.comments > div {
               margin: 1px 0 1px 1px;
               padding: 2px;
               border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.unique-id, ul.themes li.theme > div.stories ul.stories li.story > div.score-50, ul.themes li.theme > div.stories ul.stories li.story > div.score-90, ul.themes li.theme > div.stories ul.stories li.story > div.cost, ul.themes li.theme > div.stories ul.stories li.story > div.days {
-            width: 6.25%;
-            /* all story elements use up 80% of total width */
-            float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.unique-id > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > div.cost > div, ul.themes li.theme > div.stories ul.stories li.story > div.days > div {
+          ul.themes li.theme > div.stories ul.stories li.story > div.score-50, ul.themes li.theme > div.stories ul.stories li.story > div.score-90, ul.themes li.theme > div.stories ul.stories li.story > div.days-formatted {
+            width: 3.409%;
+            /* all story elements use up 90% of total width */
+            float: left;
+            text-align: right; }
+            ul.themes li.theme > div.stories ul.stories li.story > div.score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > div.days-formatted > div {
+              margin: 1px 0 1px 1px;
+              padding: 2px;
+              border: 1px solid #CCC; }
+          ul.themes li.theme > div.stories ul.stories li.story > div.cost-formatted {
+            width: 6.818%;
+            /* all story elements use up 90% of total width */
+            float: left;
+            text-align: right; }
+            ul.themes li.theme > div.stories ul.stories li.story > div.cost-formatted > div {
               margin: 1px 0 1px 1px;
               padding: 2px;
               border: 1px solid #CCC; }

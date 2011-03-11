@@ -18,6 +18,7 @@ class BacklogsController < ApplicationController
               :include =>
               { :stories =>
                 { :only => story_fields,
+                  :methods => [:cost_formatted, :days_formatted],
                   :include =>
                   { :acceptance_criteria =>
                     { :only => criteria_fields }

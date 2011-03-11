@@ -26,7 +26,7 @@ class Backlog < ActiveRecord::Base
   end
 
   def cost_formatted
-    (cost || 0).to_currency(:locale => company.locale.code.to_s)
+    (cost || 0).to_currency(:precision => 0, :locale => company.locale.code.to_s)
   end
 
   def copy_children_to_backlog(destination)
