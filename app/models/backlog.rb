@@ -29,9 +29,18 @@ class Backlog < ActiveRecord::Base
     (cost || 0).to_currency(:precision => 0, :locale => company.locale.code.to_s)
   end
 
+  # simply copy all themes, stories and acceptance criteria to destination backlog
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|
-      destination.themes << theme
+      new_theme = theme.clone
+      destination.themes << new_theme
+      theme.stories.each do |story|
+        new_story = story.clone
+        new_theme.stories << new_story
+        story.acceptance_criteria.each do |criterion|
+          new_story.acceptance_criteria << criterion.clone
+        end
+      end
     end
   end
 end
