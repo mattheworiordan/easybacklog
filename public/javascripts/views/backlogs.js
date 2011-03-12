@@ -24,7 +24,6 @@ App.Views.Backlogs = {
       this.makeFieldsEditable();
       this.updateStatistics();
       $('#backlog-data-area h2.name div.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
-      $(document).resize(this.resizeEvent); // uses resize plugin which detects resizes of elements
 
       return (this);
     },
@@ -74,12 +73,6 @@ App.Views.Backlogs = {
           }
         } // back can use default functionality as nothing above this
       }
-    },
-
-    resizeEvent: function(event) {
-      this.model.Themes().each(function(theme) {
-        theme.trigger('resize');
-      });
     }
   })
 };

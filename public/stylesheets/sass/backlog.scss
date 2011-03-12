@@ -1,16 +1,28 @@
+$add-button-color: green;
+$delete-link-color: darken(red, 20%);
+$stats-bg-color: #EEE;
+$table-first-col-width: 88%;
+
 @mixin table-col($width) {
-  width: $width * 100 / 88; /* all story elements use up 90% of total width */
+  width: $width * 100% / $table-first-col-width; /* all story elements use up % of total width as embedded in another elem */
   float: left;
   &>div {
-    margin: 1px 0 1px 1px;
+    margin: 0 0 1px 1px;
     padding: 2px;
     border: 1px solid #CCC;
   }
 }
 
-$add-button-color: green;
-$delete-link-color: darken(red, 20%);
-$stats-bg-color: #EEE;
+@mixin table-head($width) {
+  background-color: #CCC;
+  width: $width;
+  float: left;
+  margin: 0;
+  &>div {
+    padding: 2px;
+    border-right: 1px solid white;
+  }
+}
 
 @mixin editable-field {
   &:hover {
@@ -48,18 +60,23 @@ $stats-bg-color: #EEE;
   }
 }
 
-table#themes-header {
+#themes-header {
   width: 100%;
-  th { background-color: #CCC; padding: 3px; border: 1px solid white;}
-  th.theme { width: 12%; }
-  th.unique-id { width: 7%; }
-  th.user-story { width: 22%; }
-  th.acceptance-criteria { width: 22%; }
-  th.comments { width: 22%; }
-  th.score-50 { width: 3%; }
-  th.score-90 { width: 3%; }
-  th.cost-formatted { width: 6%; }
-  th.days-formatted { width: 3%; }
+  overflow: hidden;
+  .theme { @include table-head(12%); }
+  .unique-id { @include table-head(7%); }
+  .user-story, .acceptance-criteria, .comments { @include table-head(21%); }
+  .score-50, .score-90 { @include table-head(3%); &>div { text-align: right; } }
+  .cost-formatted { @include table-head(6%); &>div { text-align: right; } }
+  .days-formatted {
+    background-color: #CCC;
+    margin: 0;
+    width: auto;
+    &>div {
+      text-align: right;
+      padding: 2px;
+    }
+  }
 }
 
 ul.themes {;
@@ -107,10 +124,15 @@ ul.themes {;
     }
     margin: 0;
     clear: left;
+    overflow: hidden;
 
     /* theme name field */
     &>div.name {
-      @include table-col(12% / 100 * 80);
+      @include table-col(12% / 100% * $table-first-col-width);
+      margin: 1px 0 1px 0;
+      &>.data {
+        margin-left: 0px;
+      }
 
       /* delete theme link */
       div.delete-theme {
@@ -137,7 +159,7 @@ ul.themes {;
 
     &>div.stories {
       float: left;
-      width: 80%;
+      width: $table-first-col-width;
       ul.stories {
         list-style: none;
         margin: 0;
@@ -149,10 +171,17 @@ ul.themes {;
           }
           clear: left;
           margin: 0;
-          &>div.unique-id { @include table-col(7%) }
-          &>div.user-story, &>div.acceptance-criteria, &>div.comments { @include table-col(22%); }
-          &>div.score-50, &>div.score-90, &>div.days-formatted { @include table-col(3%); text-align: right; }
-          &>div.cost-formatted { @include table-col(6%); text-align: right; }
+          &>.unique-id { @include table-col(7%) }
+          &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(21%); }
+          &>.score-50, &>.score-90 { @include table-col(3%); text-align: right; }
+          &>.cost-formatted { @include table-col(6%); text-align: right; &>div { border: none; padding: 3px; } }
+          &>.days-formatted {
+            &>div {
+              margin: 1px 0 1px 1px;
+              padding: 3px;
+            }
+            text-align: right;
+          }
 
           &>div.user-story {
             /* ensure div wraps the children */

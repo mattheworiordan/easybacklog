@@ -155,30 +155,60 @@ strong {
     #backlog-data-area .backlog-stats div {
       padding: 5px; }
 
-table#themes-header {
-  width: 100%; }
-  table#themes-header th {
+#themes-header {
+  width: 100%;
+  overflow: hidden; }
+  #themes-header .theme {
     background-color: #CCC;
-    padding: 3px;
-    border: 1px solid white; }
-  table#themes-header th.theme {
-    width: 12%; }
-  table#themes-header th.unique-id {
-    width: 7%; }
-  table#themes-header th.user-story {
-    width: 22%; }
-  table#themes-header th.acceptance-criteria {
-    width: 22%; }
-  table#themes-header th.comments {
-    width: 22%; }
-  table#themes-header th.score-50 {
-    width: 3%; }
-  table#themes-header th.score-90 {
-    width: 3%; }
-  table#themes-header th.cost-formatted {
-    width: 6%; }
-  table#themes-header th.days-formatted {
-    width: 3%; }
+    width: 12%;
+    float: left;
+    margin: 0; }
+    #themes-header .theme > div {
+      padding: 2px;
+      border-right: 1px solid white; }
+  #themes-header .unique-id {
+    background-color: #CCC;
+    width: 7%;
+    float: left;
+    margin: 0; }
+    #themes-header .unique-id > div {
+      padding: 2px;
+      border-right: 1px solid white; }
+  #themes-header .user-story, #themes-header .acceptance-criteria, #themes-header .comments {
+    background-color: #CCC;
+    width: 21%;
+    float: left;
+    margin: 0; }
+    #themes-header .user-story > div, #themes-header .acceptance-criteria > div, #themes-header .comments > div {
+      padding: 2px;
+      border-right: 1px solid white; }
+  #themes-header .score-50, #themes-header .score-90 {
+    background-color: #CCC;
+    width: 3%;
+    float: left;
+    margin: 0; }
+    #themes-header .score-50 > div, #themes-header .score-90 > div {
+      padding: 2px;
+      border-right: 1px solid white; }
+    #themes-header .score-50 > div, #themes-header .score-90 > div {
+      text-align: right; }
+  #themes-header .cost-formatted {
+    background-color: #CCC;
+    width: 6%;
+    float: left;
+    margin: 0; }
+    #themes-header .cost-formatted > div {
+      padding: 2px;
+      border-right: 1px solid white; }
+    #themes-header .cost-formatted > div {
+      text-align: right; }
+  #themes-header .days-formatted {
+    background-color: #CCC;
+    margin: 0;
+    width: auto; }
+    #themes-header .days-formatted > div {
+      text-align: right;
+      padding: 2px; }
 
 ul.themes {
   list-style: none;
@@ -212,18 +242,22 @@ ul.themes {
     /* add padding to every theme row after the first */
     margin: 0;
     clear: left;
+    overflow: hidden;
     /* theme name field */ }
     ul.themes li.theme:nth-child(1n+2) {
       padding: 5px 0 0 0; }
     ul.themes li.theme > div.name {
-      width: 10.909%;
-      /* all story elements use up 90% of total width */
+      width: 12.0%;
+      /* all story elements use up % of total width as embedded in another elem */
       float: left;
+      margin: 1px 0 1px 0;
       /* delete theme link */ }
       ul.themes li.theme > div.name > div {
-        margin: 1px 0 1px 1px;
+        margin: 0 0 1px 1px;
         padding: 2px;
         border: 1px solid #CCC; }
+      ul.themes li.theme > div.name > .data {
+        margin-left: 0px; }
       ul.themes li.theme > div.name div.delete-theme {
         border: none; }
         ul.themes li.theme > div.name div.delete-theme a {
@@ -240,7 +274,7 @@ ul.themes {
         padding: 5px; }
     ul.themes li.theme > div.stories {
       float: left;
-      width: 80%; }
+      width: 88%; }
       ul.themes li.theme > div.stories ul.stories {
         list-style: none;
         margin: 0;
@@ -251,40 +285,48 @@ ul.themes {
           margin: 0; }
           ul.themes li.theme > div.stories ul.stories li.story:nth-child(1n+2) {
             padding: 5px 0 0 0; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.unique-id {
+          ul.themes li.theme > div.stories ul.stories li.story > .unique-id {
             width: 7.955%;
-            /* all story elements use up 90% of total width */
+            /* all story elements use up % of total width as embedded in another elem */
             float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.unique-id > div {
-              margin: 1px 0 1px 1px;
+            ul.themes li.theme > div.stories ul.stories li.story > .unique-id > div {
+              margin: 0 0 1px 1px;
               padding: 2px;
               border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.user-story, ul.themes li.theme > div.stories ul.stories li.story > div.acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > div.comments {
-            width: 25%;
-            /* all story elements use up 90% of total width */
+          ul.themes li.theme > div.stories ul.stories li.story > .user-story, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > .comments {
+            width: 23.864%;
+            /* all story elements use up % of total width as embedded in another elem */
             float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.user-story > div, ul.themes li.theme > div.stories ul.stories li.story > div.acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > div.comments > div {
-              margin: 1px 0 1px 1px;
+            ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
+              margin: 0 0 1px 1px;
               padding: 2px;
               border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.score-50, ul.themes li.theme > div.stories ul.stories li.story > div.score-90, ul.themes li.theme > div.stories ul.stories li.story > div.days-formatted {
+          ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90 {
             width: 3.409%;
-            /* all story elements use up 90% of total width */
+            /* all story elements use up % of total width as embedded in another elem */
             float: left;
             text-align: right; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > div.score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > div.days-formatted > div {
-              margin: 1px 0 1px 1px;
+            ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
+              margin: 0 0 1px 1px;
               padding: 2px;
               border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.cost-formatted {
+          ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
             width: 6.818%;
-            /* all story elements use up 90% of total width */
+            /* all story elements use up % of total width as embedded in another elem */
             float: left;
             text-align: right; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.cost-formatted > div {
-              margin: 1px 0 1px 1px;
+            ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
+              margin: 0 0 1px 1px;
               padding: 2px;
               border: 1px solid #CCC; }
+            ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
+              border: none;
+              padding: 3px; }
+          ul.themes li.theme > div.stories ul.stories li.story > .days-formatted {
+            text-align: right; }
+            ul.themes li.theme > div.stories ul.stories li.story > .days-formatted > div {
+              margin: 1px 0 1px 1px;
+              padding: 3px; }
           ul.themes li.theme > div.stories ul.stories li.story > div.user-story {
             /* ensure div wraps the children */
             /* as a, i want to, so i can text */ }

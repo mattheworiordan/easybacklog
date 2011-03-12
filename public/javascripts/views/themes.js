@@ -35,8 +35,7 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent','resizeEvent');
-      this.model.bind('resize', this.resizeEvent); // resize event on model triggers view to update itself
+      _.bindAll(this, 'moveEvent');
     },
 
     render: function() {
@@ -47,7 +46,6 @@ App.Views.Themes = {
       // append new story
       if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
 
-      this.resizeEvent(); // align to table
       this.makeFieldsEditable();
       this.updateStatistics();
       this.$('.name>.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
@@ -169,20 +167,6 @@ App.Views.Themes = {
 
     updateStatistics: function() {
       this.$('.story-stats div').html( JST['themes/stats']({ model: this.model }) )
-    },
-
-    resizeEvent: function() {
-      var this_view = this;
-      _.defer(function() {
-        // align the outer stories div with all columns other than theme
-        this_view.$('>.stories').css('width', $('table#themes-header').outerWidth() - $('table#themes-header th.theme').outerWidth());
-        // fix the widths of the DIVs to exactly the widths of the table headers as they fall out of alignment
-        this_view.$('>.name').css('width', $('table#themes-header th.theme').outerWidth());
-
-        this_view.model.Stories().each(function(story) { // now resize children stories
-          story.trigger('resize');
-        });
-      });
     }
   })
 };
