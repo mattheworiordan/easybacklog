@@ -40,6 +40,7 @@ App.Views.BaseView = Backbone.View.extend({
     var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
     var fieldWithValue = $(target);
     var beforeChangeValue = this.beforeChangeValue[fieldId];
+    var view = this;
 
     if (value != beforeChangeValue) {
       console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value);
@@ -58,6 +59,8 @@ App.Views.BaseView = Backbone.View.extend({
               errorMessage = eval('responseText = ' + response.responseText).message;
             } catch (e) { console.log(e); }
             new App.Views.Error({ message: errorMessage});
+            // exception to deal with unique-id showing code from parent model in value
+            if (fieldId == 'unique_id') { beforeChangeValue = view.model.Theme().get('code') + beforeChangeValue; }
             fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
             var valBack = {};
             valBack[fieldId] = _.isEmpty(beforeChangeValue) ? null : beforeChangeVavlue;

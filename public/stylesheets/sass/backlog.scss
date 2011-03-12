@@ -235,15 +235,17 @@ ul.themes {
               height: 1em;
             }
           }
-          >div.unique-id div.delete-story {
-            border: none;
-            a {
-              font-size: 90%;
-              color: $delete-link-color;
-              text-decoration:none;
-              &:hover {
-                text-decoration: underline;
-              };
+          >div.unique-id {
+            div.delete-story {
+              border: none;
+              a {
+                font-size: 90%;
+                color: $delete-link-color;
+                text-decoration:none;
+                &:hover {
+                  text-decoration: underline;
+                };
+              }
             }
           }
         }

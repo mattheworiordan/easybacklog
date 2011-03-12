@@ -68,11 +68,17 @@ App.Views.Stories = {
 
     makeFieldsEditable: function() {
       var show_view = this;
-      var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
-      var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
+      var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); }
+      var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); }
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
-      this.$('>div.unique-id .data, >div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
+      // for unique ID, we need to remove the code before editing and insert back in after editing
+      var uniqueIdContentUpdatedFunc = function(value, settings) { return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value, settings)); }
+      var uniqueIdBeforeChangeFunc = function(value, settings) { return beforeChangeFunc.call(this, value.substring(3), settings); }
+      var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc });
+      this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
+
+      this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
       this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true } ));
       // make the user story fields less wide so they fit with the heading
       _.each(['as-a','i-want-to','so-i-can'], function(elem) {
@@ -155,7 +161,9 @@ App.Views.Stories = {
     changeEvent: function(eventName, model) {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
-        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
+        var newValue = this.model.get(fieldChanged);
+        if (fieldChanged == 'unique_id') { newValue = this.model.Theme().get('code') + newValue; }
+        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(newValue);
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
     },
