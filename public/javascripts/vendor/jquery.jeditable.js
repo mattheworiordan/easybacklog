@@ -186,6 +186,8 @@
                                 
                 self.editing    = true;
                 self.revert     = $(self).html();
+                // ensure height & width is retained by creating a new element that is appened after the input element
+                var spaceItem = $('<div>&nbsp;</div').css('width', $(self).width()).css('height', $(self).height());
                 $(self).html('');
 
                 /* create the form object */
@@ -257,6 +259,8 @@
          
                 /* add created form to self */
                 $(self).append(form);
+                // add space item after form so that size of element is retained
+                $(self).append(spaceItem);
          
                 /* attach 3rd party plugin if requested */
                 plugin.apply(form, [settings, self]);
