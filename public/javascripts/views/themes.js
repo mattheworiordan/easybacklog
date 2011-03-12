@@ -6,6 +6,10 @@ App.Views.Themes = {
     className: "themes",
     childId: function(model) { return 'theme-' + model.get('id'); },
 
+    events: {
+      "click ul.themes .actions a.new-theme": "createNew"
+    },
+
     initialize: function() {
       this.collection = this.options.collection;
     },
@@ -19,7 +23,20 @@ App.Views.Themes = {
         parentView.$('>ul').append(view.render().el);
       });
 
+      this.$('ul.themes').append(JST['themes/new']());
+
       return(this);
+    },
+
+    createNew: function() {
+      event.preventDefault();
+      var model = new Theme();
+      this.collection.add(model);
+      this.$('ul.themes li:last').before(new App.Views.Themes.Show({ model: model}).render().el);
+      var this_view = this;
+      this_view.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
+        $(this_view.el).find('ul.themes li.theme:last>.name .data').click();
+      });
     }
   }),
 
@@ -29,7 +46,6 @@ App.Views.Themes = {
     deleteDialogSelector: '#dialog-delete-theme',
 
     events: {
-      "click div.stories ul.stories .actions a.new-story": "newStory",
       "click .delete-theme>a": "remove"
     },
 
@@ -42,9 +58,6 @@ App.Views.Themes = {
       $(this.el).html( JST['themes/show']({ model: this.model }) );
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
       this.$('>.stories').prepend(view.render().el);
-
-      // append new story
-      if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
 
       this.makeFieldsEditable();
       this.updateStatistics();
@@ -116,17 +129,6 @@ App.Views.Themes = {
           }
         }
       }
-    },
-
-    newStory: function() {
-      event.preventDefault();
-      var model = new Story();
-      this.model.Stories().add(model);
-      this.$('>.stories ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
-      var this_view = this;
-      this_view.$('li.story:last').css('display','none').slideDown('fast', function() {
-        this_view.$('li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
-      });
     },
 
     changeEvent: function(eventName, model) {

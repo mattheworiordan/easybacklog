@@ -4,6 +4,10 @@ App.Views.Stories = {
     className: 'stories',
     childId: function(model) { return 'story-' + model.get('id') },
 
+    events: {
+      "click ul.stories .actions a.new-story": "createNew",
+    },
+
     initialize: function() {
       this.collection = this.options.collection;
     },
@@ -14,11 +18,24 @@ App.Views.Stories = {
 
       this.collection.each(function(model) {
         var view = new App.Views.Stories.Show({ model: model, id: parentView.childId(model) });
-        parentView.$('>ul').append(view.render().el);
-      })
+        parentView.$('ul.stories').append(view.render().el);
+      });
+
+      if (!this.collection.theme.isNew()) { this.$('ul.stories').append(JST['stories/new']()); }
 
       return(this);
-    }
+    },
+
+    createNew: function(event) {
+      event.preventDefault();
+      var model = new Story();
+      this.collection.add(model);
+      this.$('ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
+      var this_view = this;
+      this.$('ul.stories li.story:last').css('display','none').slideDown('fast', function() {
+        this_view.$('ul.stories li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
+      });
+    },
   }),
 
   Show: App.Views.BaseView.extend({

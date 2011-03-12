@@ -9,6 +9,7 @@ App.Views.BaseView = Backbone.View.extend({
 
   initialize: function() {
     this.model = this.options.model;
+    this.parentView = this.options.parentView; // sometimes need a reference to the parent
     this.beforeChangeValue = {};
     _.bindAll(this, 'beforeChange', 'contentUpdated'); // obligatory methods if inherit from base
 
