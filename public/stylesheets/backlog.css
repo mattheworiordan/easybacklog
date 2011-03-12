@@ -206,8 +206,8 @@ ul.themes {
               color: #666;
               font-style: italic; }
           ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
-            list-style: lower-alpha;
-            margin: 0 0 0 1.5em;
+            margin: 0;
+            list-style: none;
             /* acceptance criteria row */ }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
               margin: 0; }
@@ -215,13 +215,21 @@ ul.themes {
               margin-bottom: 4px; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li:last-child {
               list-style: none;
-              margin-left: -1.3em; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data input, ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data textarea {
-              margin-top: -14px; }
+              margin: 0 0 3px 0; }
+            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .index {
+              width: 1.5em;
+              cursor: move;
+              float: left;
+              clear: left; }
+            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data {
+              clear: right;
+              cursor: text;
+              margin-left: 1.5em; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
-              background-color: #EEE;
+              background-color: #FFC;
               margin: 0;
-              list-style: circle; }
+              list-style: none;
+              height: 1em; }
           ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story {
             border: none; }
             ul.themes li.theme > div.stories ul.stories li.story > div.unique-id div.delete-story a {

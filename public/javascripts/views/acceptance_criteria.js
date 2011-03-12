@@ -4,18 +4,23 @@ App.Views.AcceptanceCriteria = {
     className: 'acceptance-criteria',
     childId: function(model) { return 'acceptance-criteria-' + model.get('id') },
 
+    events: {
+      "click .actions a.new-acceptance-criterion": "createNew",
+    },
+
     initialize: function() {
       this.collection = this.options.collection;
-      _.bindAll(this, 'orderChanged');
+      _.bindAll(this, 'orderChanged', 'displayOrderIndexes');
     },
 
     render: function() {
       var parentView = this;
       $(this.el).html(JST['acceptance_criteria/index']({ collection: this.collection.models }));
+      this.$('ul').append(JST['acceptance_criteria/new']());
 
       this.collection.each(function(model) {
         var view = new App.Views.AcceptanceCriteria.Show({ model: model, id: parentView.childId(model) });
-        parentView.$('ul').append(view.render().el);
+        parentView.$('ul li:last').before(view.render().el);
       })
 
       var orderChangedEvent = this.orderChanged;
@@ -25,13 +30,22 @@ App.Views.AcceptanceCriteria = {
           $(event.originalEvent.target).data('disabled.editable.once','true').find('.data').data('disabled.editable.once','true');
           orderChangedEvent();
         },
-        placeholder: 'target-order-highlight'
+        placeholder: 'target-order-highlight',
+        axis: 'y',
+        handle: '.index'
       });
-      // sortable interferes with jeditable, so have to attach new blur events strangel
-      this.$('ul.acceptance-criteria li input').live('blur', function(event) {
-        _.delay(function() { if ($(event.target).length) { $(event.target).blur(); } }, 200); // no idea what is going on, reloads page unless there is a delay
-      })
+      this.displayOrderIndexes();
       return(this);
+    },
+
+    createNew: function(event) {
+      event.preventDefault();
+      var model = new AcceptanceCriterion();
+      this.collection.add(model);
+      var newElem = new App.Views.AcceptanceCriteria.Show({ model: model}).render().el;
+      this.$('ul li:last').before(newElem);
+      this.displayOrderIndexes();
+      $(newElem).find('.data').click(); // put focus onto new added element
     },
 
     orderChanged: function() {
@@ -42,6 +56,15 @@ App.Views.AcceptanceCriteria = {
       });
       console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
       this.collection.saveOrder(orderIndexesWithIds);
+      this.displayOrderIndexes();
+    },
+
+    // instead of using an ordered list which presented issues with drag handles
+    //  we use div.index where we manually insert the index
+    displayOrderIndexes: function() {
+      this.$('li.criterion').each(function(index, elem) {
+        $(elem).find('.index').html((index + 1) + '.');
+      });
     }
   }),
 
@@ -97,9 +120,9 @@ App.Views.AcceptanceCriteria = {
         }
       };
       var beforeChangeFunc = function() { return ac_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: 10 });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, type: 'textarea' });
 
-      $(this.el).find('>div').editable(contentUpdatedFunc, defaultOptions);
+      $(this.el).find('>div.data').editable(contentUpdatedFunc, defaultOptions);
     },
 
     // Tab or Enter key pressed so let's move on

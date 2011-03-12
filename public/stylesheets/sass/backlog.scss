@@ -198,8 +198,8 @@ ul.themes {;
             }
           }
           ul.acceptance-criteria {
-            list-style: lower-alpha;
-            margin: 0 0 0 1.5em;
+            margin: 0;
+            list-style: none;
             /* acceptance criteria row */
             li.criterion {
               margin: 0;
@@ -209,17 +209,24 @@ ul.themes {;
             }
             li:last-child {
               list-style: none;
-              margin-left: -1.3em;
+              margin: 0 0 3px 0;
+            }
+            .index {
+              width: 1.5em;
+              cursor: move;
+              float: left;
+              clear: left;
             }
             .data {
-              input, textarea {
-                margin-top: -14px;
-              }
+              clear: right;
+              cursor: text;
+              margin-left: 1.5em;
             }
             li.target-order-highlight {
-              background-color: #EEE;
+              background-color: #FFC;
               margin: 0;
-              list-style: circle;
+              list-style: none;
+              height: 1em;
             }
           }
           >div.unique-id div.delete-story {
