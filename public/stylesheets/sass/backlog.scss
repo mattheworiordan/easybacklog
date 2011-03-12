@@ -79,7 +79,7 @@ $table-first-col-width: 88%;
   }
 }
 
-ul.themes {;
+ul.themes {
   list-style: none;
   margin: 0;
 
@@ -89,6 +89,12 @@ ul.themes {;
       position: absolute;
       margin-top: -3px;
     }
+  }
+
+  /* styling for an empty editable field with edit text in it */
+  .editable-blank {
+    font-size: 80%;
+    color: #666;
   }
 
   /* buttons for adding theme / story */

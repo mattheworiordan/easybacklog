@@ -2,7 +2,7 @@ App.Views.BaseView = Backbone.View.extend({
   defaultEditableOptions: {
     onblur: 'submit',
     tooltip: 'Click to edit',
-    placeholder: '[edit]',
+    placeholder: '<span class="editable-blank">[edit]</span>',
     lesswidth: 5,
     type: 'text'
   },

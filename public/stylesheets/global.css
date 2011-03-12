@@ -214,11 +214,15 @@ ul.themes {
   list-style: none;
   margin: 0;
   /* ensure data elements don't jump when editing */
+  /* styling for an empty editable field with edit text in it */
   /* buttons for adding theme / story */
   /* theme row */ }
   ul.themes .data input, ul.themes .data textarea {
     position: absolute;
     margin-top: -3px; }
+  ul.themes .editable-blank {
+    font-size: 80%;
+    color: #666; }
   ul.themes li.actions {
     clear: left;
     margin: 0 0 10px 0;
