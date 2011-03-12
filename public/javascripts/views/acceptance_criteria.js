@@ -16,12 +16,13 @@ App.Views.AcceptanceCriteria = {
     render: function() {
       var parentView = this;
       $(this.el).html(JST['acceptance_criteria/index']({ collection: this.collection.models }));
-      this.$('ul').append(JST['acceptance_criteria/new']());
 
       this.collection.each(function(model) {
-        var view = new App.Views.AcceptanceCriteria.Show({ model: model, id: parentView.childId(model) });
-        parentView.$('ul li:last').before(view.render().el);
+        var view = new App.Views.AcceptanceCriteria.Show({ model: model, id: parentView.childId(model), parentView: parentView });
+        parentView.$('ul').append(view.render().el);
       })
+
+      this.$('ul').append(JST['acceptance_criteria/new']());
 
       var orderChangedEvent = this.orderChanged;
       this.$('ul.acceptance-criteria').disableSelection().sortable({
@@ -40,12 +41,27 @@ App.Views.AcceptanceCriteria = {
 
     createNew: function(event) {
       event.preventDefault();
+      var lastCriterion = this.$('li.criterion:last');
       var model = new AcceptanceCriterion();
+      var this_view = this;
       this.collection.add(model);
-      var newElem = new App.Views.AcceptanceCriteria.Show({ model: model}).render().el;
-      this.$('ul li:last').before(newElem);
-      this.displayOrderIndexes();
-      $(newElem).find('.data').click(); // put focus onto new added element
+      var newElem = new App.Views.AcceptanceCriteria.Show({ model: model, parentView: this }).render().el;
+
+      if ( (lastCriterion.find('.data textarea').length) && (lastCriterion.find('.data textarea').val() == '') ) {
+        // we have to delay this because we have to wait for the empty item which has lost focus to dissapear
+        _.delay(function() {
+          this_view.$('ul li:last').before(newElem);
+          this_view.displayOrderIndexes();
+          $(newElem).find('.data').click();
+        }, 250);
+      } else {
+        this.$('ul li:last').before(newElem);
+        this.displayOrderIndexes();
+
+        this.$('ul li.criterion:last').css('display','none').slideDown('fast', function() {
+          $(newElem).find('.data').click(); // put focus onto new added element
+        });
+      }
     },
 
     orderChanged: function() {
@@ -101,20 +117,23 @@ App.Views.AcceptanceCriteria = {
         var newVal = arguments[0];
         var model_collection = ac_view.model.collection;
         if (_.isEmpty(newVal)) {
-          $(ac_view.el).remove(); // remove HTML for story
-          if (ac_view.model.isNew()) {
-            model_collection.remove(ac_view.model);
-          } else {
-            ac_view.model.destroy({
-              error: function(model, response) {
-                var errorMessage = 'Unable to delete story...  Please refresh.'
-                try {
-                  errorMessage = eval('responseText = ' + response.responseText).message;
-                } catch (e) { console.log(e); }
-                new App.Views.Error({ message: errorMessage});
-              }
-            });
-          };
+          $(ac_view.el).slideUp('fast', function() {
+            $(ac_view.el).remove(); // remove HTML for story
+            if (ac_view.model.isNew()) {
+              model_collection.remove(ac_view.model);
+            } else {
+              ac_view.model.destroy({
+                error: function(model, response) {
+                  var errorMessage = 'Unable to delete story...  Please refresh.'
+                  try {
+                    errorMessage = eval('responseText = ' + response.responseText).message;
+                  } catch (e) { console.log(e); }
+                  new App.Views.Error({ message: errorMessage});
+                }
+              });
+            };
+            ac_view.parentView.displayOrderIndexes();
+          })
         } else {
           return ac_view.contentUpdated(newVal, arguments[1], this);
         }
