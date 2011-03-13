@@ -61,7 +61,7 @@ App.Views.Themes = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
-      this.$('.name>.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
+      this.$('.theme-data .name>.data input, .theme-data .code>.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
       this.$('ul.stories li.actions a.new-story').live('keydown', this.moveEvent); // hook up the add story button
 
       return (this);
@@ -69,11 +69,21 @@ App.Views.Themes = {
 
     makeFieldsEditable: function() {
       var show_view = this;
-      var contentUpdatedFunc = function() { return show_view.contentUpdated(arguments[0], arguments[1], this); };
-      var beforeChangeFunc = function() { return show_view.beforeChange(arguments[0], arguments[1], this); };
+      var contentUpdatedFunc = function(value, settings) {
+        var newVal = show_view.contentUpdated(value, settings, this);
+        var fieldId = $(this).parent().attr('class').replace(/\-/g, '_');
+        if (fieldId == 'code') { // code needs updating of story views
+          show_view.model.Stories().each(function(story, index) {
+            story.trigger('change:unique_id'); // trigger unique ID change so field is updated
+          })
+        }
+        return (newVal);
+      };
+      var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
-      this.$('>.name div.data').editable(contentUpdatedFunc, defaultOptions);
+      this.$('.theme-data .name div.data').editable(contentUpdatedFunc, defaultOptions);
+      this.$('.theme-data .code div.data').editable(contentUpdatedFunc, _.extend(defaultOptions, { lesswidth: -10 }));
     },
 
     // Tab or Enter key pressed so let's move on
@@ -97,15 +107,20 @@ App.Views.Themes = {
               $(this.el).find('ul.stories li a.new-story').focus();
             }
           } else { // going <--
-            var prev = $(this.el).prev();
-            if (prev.length) { // previous theme exists
-              if (prev.find('ul.stories li.actions a.new-story')) {
-                prev.find('ul.stories li.actions a.new-story').focus();
-              } else {
-                prev.find('>.name .data').click();
+            var dataClass = $(event.target).parents('.data').parent().attr('class');
+            if (dataClass == 'name') {
+              var prev = $(this.el).prev();
+              if (prev.length) { // previous theme exists
+                if (prev.find('ul.stories li.actions a.new-story')) {
+                  prev.find('ul.stories li.actions a.new-story').focus();
+                } else {
+                  prev.find('.theme-data >.name .data').click();
+                }
+              } else { // no previous theme
+                $('#backlog-data-area h2.name .data').click();
               }
-            } else { // no previous theme
-              $('#backlog-data-area h2.name .data').click();
+            } else {
+              this.$('.theme-data >.name .data').click();
             }
           }
         } else {

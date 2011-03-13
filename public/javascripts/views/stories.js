@@ -150,7 +150,7 @@ App.Views.Stories = {
                 $(this.el).prev().find('.score-90 .data').click();
               } else {
                 // no previous stories so jump to theme
-                $(this.el).parents('li.theme').find('>.name .data').click();
+                $(this.el).parents('li.theme').find('.theme-data >.name .data').click();
               }
             }
           }
@@ -162,8 +162,20 @@ App.Views.Stories = {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
         var newValue = this.model.get(fieldChanged);
-        if (fieldChanged == 'unique_id') { newValue = this.model.Theme().get('code') + newValue; }
-        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(newValue);
+        if (fieldChanged == 'unique_id') {
+          // check if field is being edited as we tab straight from code to unique_id
+          if (this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').length == 0)
+          {
+            // unique_id is not being edited so updated with new value
+            newValue = this.model.Theme().get('code') + newValue;
+            this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(newValue);
+          } else {
+            // unique_id is being edited, so just update the ID as no code is shown when editing unique_id
+            this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').val(newValue);
+          }
+        } else {
+          this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(newValue);
+        }
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
     },

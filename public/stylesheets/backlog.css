@@ -117,25 +117,37 @@ ul.themes {
     /* theme name field */ }
     ul.themes li.theme:nth-child(1n+2) {
       padding: 5px 0 0 0; }
-    ul.themes li.theme > div.name {
+    ul.themes li.theme > div.theme-data {
       width: 12.0%;
       /* all story elements use up % of total width as embedded in another elem */
       float: left;
       margin: 1px 0 1px 0;
       /* delete theme link */ }
-      ul.themes li.theme > div.name > div {
+      ul.themes li.theme > div.theme-data > div {
         margin: 0 0 1px 1px;
         padding: 2px;
         border: 1px solid #CCC; }
-      ul.themes li.theme > div.name > .data {
+      ul.themes li.theme > div.theme-data .name > .data {
         margin-left: 0px; }
-      ul.themes li.theme > div.name div.delete-theme {
+      ul.themes li.theme > div.theme-data .code {
+        color: #666;
+        font-size: 80%;
         border: none; }
-        ul.themes li.theme > div.name div.delete-theme a {
+        ul.themes li.theme > div.theme-data .code .heading {
+          float: left;
+          padding-right: 0.4em; }
+        ul.themes li.theme > div.theme-data .code .data {
+          float: left; }
+          ul.themes li.theme > div.theme-data .code .data input {
+            font-size: 95%; }
+      ul.themes li.theme > div.theme-data div.delete-theme {
+        border: none;
+        clear: left; }
+        ul.themes li.theme > div.theme-data div.delete-theme a {
           font-size: 90%;
           color: #990000;
           text-decoration: none; }
-          ul.themes li.theme > div.name div.delete-theme a:hover {
+          ul.themes li.theme > div.theme-data div.delete-theme a:hover {
             text-decoration: underline; }
     ul.themes li.theme .story-stats {
       background-color: #eeeeee;

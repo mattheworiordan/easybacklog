@@ -133,16 +133,32 @@ ul.themes {
     overflow: hidden;
 
     /* theme name field */
-    &>div.name {
+    &>div.theme-data {
       @include table-col(12% / 100% * $table-first-col-width);
       margin: 1px 0 1px 0;
-      &>.data {
+      .name>.data {
         margin-left: 0px;
       }
 
+      .code {
+        color: #666;
+        font-size: 80%;
+        border: none;
+        .heading {
+          float: left;
+          padding-right: 0.4em;
+        }
+        .data {
+          float: left;
+          input {
+            font-size: 95%;
+          }
+        }
+      }
       /* delete theme link */
       div.delete-theme {
         border: none;
+        clear: left;
         a {
           font-size: 90%;
           color: $delete-link-color;

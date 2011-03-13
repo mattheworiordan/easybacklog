@@ -63,8 +63,14 @@ App.Views.BaseView = Backbone.View.extend({
             if (fieldId == 'unique_id') { beforeChangeValue = view.model.Theme().get('code') + beforeChangeValue; }
             fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
             var valBack = {};
-            valBack[fieldId] = _.isEmpty(beforeChangeValue) ? null : beforeChangeVavlue;
+            valBack[fieldId] = _.isEmpty(beforeChangeValue) ? null : beforeChangeValue;
             this_model.set(valBack); // reset model value back as well
+            if (fieldId == 'code') { // Theme: code has reverted so update code to old code in all children stories
+              view.model.Stories().each(function(story, index) {
+                console.log(story);
+                story.trigger('change:unique_id'); // trigger unique ID change so field is updated
+              })
+            }
           }
         });
       }
