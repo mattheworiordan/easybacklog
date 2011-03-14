@@ -58,7 +58,7 @@ App.Views.AcceptanceCriteria = {
         this.$('ul li:last').before(newElem);
         this.displayOrderIndexes();
 
-        this.$('ul li.criterion:last').css('display','none').slideDown('fast', function() {
+        this.$('ul li.criterion:last').css('display','none').slideDown(100, function() {
           $(newElem).find('.data').click(); // put focus onto new added element
         });
       }
@@ -152,12 +152,20 @@ App.Views.AcceptanceCriteria = {
 
         var liElem = $(event.target).parents('.data').parent();
         if (!event.shiftKey) { // moving -->
+          // not on the last item
           if ( _.first(liElem) != _.last(liElem.parent('ul').find('li.criterion')) ) {
             // move to next item
             liElem.next().find('.data').click();
           } else {
-            // move back to comments field
-            $(this.el).parents('li.story').find('div.comments .data').click();
+            console.log(this.$('textarea'));
+            if ($.trim(this.$('textarea').val()) == '') // current last criterion is empty
+            {
+              // move back to comments field
+              $(this.el).parents('li.story').find('div.comments .data').click();
+            } else {
+              // last criterion is not empty so give the user a new blank criterion
+              this.parentView.createNew(event);
+            }
           }
         } else { // moving <--
           if ( _.first(liElem) == _.first(liElem.parent('ul').find('li.criterion')) ) {
