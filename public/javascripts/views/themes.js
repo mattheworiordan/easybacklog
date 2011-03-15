@@ -35,7 +35,7 @@ App.Views.Themes = {
       this.$('ul.themes li:last').before(new App.Views.Themes.Show({ model: model}).render().el);
       var this_view = this;
       this_view.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
-        $(this_view.el).find('ul.themes li.theme:last>.name .data').click();
+        $(this_view.el).find('ul.themes li.theme:last>.theme-data .name .data').click();
       });
     }
   }),
@@ -149,7 +149,7 @@ App.Views.Themes = {
     changeEvent: function(eventName, model) {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
-        this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
+        this.$('>.theme-data>.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
         if (!this.$('ul.stories li.actions .new-story').length) { // not yet added the Add Story button as theme not created
           if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
