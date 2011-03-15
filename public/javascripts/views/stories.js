@@ -10,6 +10,7 @@ App.Views.Stories = {
 
     initialize: function() {
       this.collection = this.options.collection;
+      _.bindAll(this, 'orderChanged', 'displayOrderIndexes');
     },
 
     render: function() {
@@ -22,6 +23,25 @@ App.Views.Stories = {
       });
 
       if (!this.collection.theme.isNew()) { this.$('ul.stories').append(JST['stories/new']()); }
+
+      var orderChangedEvent = this.orderChanged;
+      var actionsElem;
+      // allow stories to be sorted using JQuery UI
+      this.$('ul.stories').disableSelection().sortable({
+        start: function(event, ui) {
+          // hide the new story button when dragging
+          actionsElem = parentView.$('ul.stories>.actions').clone();
+          parentView.$('ul.stories>.actions').remove();
+        },
+        stop: function(event, ui) {
+          orderChangedEvent();
+          // show the new story button again
+          parentView.$('ul.stories').append(actionsElem);
+        },
+        placeholder: 'target-order-highlight',
+        axis: 'y',
+        handle: '.move'
+      });
 
       return(this);
     },
@@ -36,6 +56,18 @@ App.Views.Stories = {
         this_view.$('ul.stories li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
       });
     },
+
+    orderChanged: function() {
+      var orderIndexesWithIds = {};
+      this.$('li.story').each(function(index, elem) {
+        var elemId = _.last($(elem).attr('id').split('-'));
+        if (!isNaN(parseInt(elemId))) { // unless story is new and not saved yet
+          orderIndexesWithIds[elemId] = index + 1;
+        }
+      });
+      console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      this.collection.saveOrder(orderIndexesWithIds);
+    }
   }),
 
   Show: App.Views.BaseView.extend({
@@ -175,6 +207,9 @@ App.Views.Stories = {
           }
         } else {
           this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(newValue);
+        }
+        if (eventName == 'change:id') {
+          $(this.el).attr('id', 'story-' + model.get('id'));
         }
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
