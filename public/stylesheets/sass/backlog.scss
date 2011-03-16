@@ -79,6 +79,31 @@ $table-first-col-width: 88%;
   }
 }
 
+/* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
+.stop-ordering {
+  display: none;
+  padding-top: 5px;
+  clear: left;
+  a {
+    font-weight: bold;
+    font-size: 90%;
+    text-decoration: none;
+    color: $add-button-color;
+    border: 1px solid $add-button-color;
+    background-color: lighten($add-button-color, 60%);
+    padding: 3px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    &:hover {
+      color: darken($add-button-color, 50%);
+      border-color: darken($add-button-color, 50%);
+    };
+    &.new-acceptance-criterion {
+      padding: 0 5px 0 5px;
+    }
+  }
+}
+
 ul.themes {
   list-style: none;
   margin: 0;
@@ -98,7 +123,7 @@ ul.themes {
   }
 
   /* buttons for adding theme / story */
-  li.actions {
+  li.actions, stop-ordering {
     clear: left;
     margin: 0 0 10px 0;
     padding-top: 5px;
@@ -122,6 +147,15 @@ ul.themes {
     }
   }
 
+  /* re-ordering target li item */
+  li.target-order-highlight {
+    background-color: #FFC;
+    margin: 0;
+    list-style: none;
+    height: 3em;
+    clear: left;
+  }
+
   /* theme row */
   li.theme {
     /* add padding to every theme row after the first */
@@ -132,6 +166,17 @@ ul.themes {
     clear: left;
     overflow: hidden;
 
+    /* this box appears when in theme re-order mode */
+    .move-theme {
+      display: none;
+      border: 1px solid #CCC;
+      background-color: #EEE;
+      text-align: center;
+      float: left;
+      margin: 1px;
+      padding: 2px;
+      cursor: move;
+    }
     /* theme name field */
     &>div.theme-data {
       @include table-col(12% / 100% * $table-first-col-width);
@@ -155,18 +200,41 @@ ul.themes {
           }
         }
       }
-      /* delete theme link */
-      div.delete-theme {
+      >.theme-actions {
         border: none;
+        margin: 0;
+        padding: 0 0 0 3px;
         clear: left;
-        a {
-          font-size: 90%;
-          color: $delete-link-color;
-          text-decoration:none;
-          &:hover {
-            text-decoration: underline;
-          };
-        }
+      }
+    }
+
+    /* generic style for moving link */
+    div.move-story {
+      border: none;
+      cursor: move;
+      margin: 0;
+      padding-top: 0;
+      a {
+        font-size: 90%;
+        color: #666;
+        cursor: move;
+        text-decoration: none;
+        &:hover {
+          text-decoration: none;
+        };
+      }
+    }
+
+    /* generic style for deleting link */
+    div.delete-theme, div.delete-story {
+      clear: left;
+      a {
+        font-size: 90%;
+        color: $delete-link-color;
+        text-decoration:none;
+        &:hover {
+          text-decoration: underline;
+        };
       }
     }
 
@@ -186,13 +254,6 @@ ul.themes {
       ul.stories {
         list-style: none;
         margin: 0;
-        li.target-order-highlight {
-          background-color: #FFC;
-          margin: 0;
-          list-style: none;
-          height: 3em;
-          clear: left;
-        }
         /* story row */
         li.story {
           /* add padding to every story row after the first */
@@ -201,7 +262,14 @@ ul.themes {
           }
           clear: left;
           margin: 0;
-          &>.unique-id { @include table-col(7%) }
+          &>.unique-id {
+            @include table-col(7%);
+            >.story-actions {
+              border: none;
+              margin: 0;
+              padding: 0 0 0 3px;
+            }
+          }
           &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(21%); }
           &>.score-50, &>.score-90 { @include table-col(3%); text-align: right; }
           &>.cost-formatted { @include table-col(6%); text-align: right; &>div { border: none; padding: 3px; } }
@@ -253,35 +321,7 @@ ul.themes {
               margin-left: 1.5em;
             }
             li.target-order-highlight {
-              background-color: #FFC;
-              margin: 0;
-              list-style: none;
               height: 1em;
-            }
-          }
-          >div.unique-id {
-            div.move, div.delete-story {
-              border: none;
-              a {
-                font-size: 90%;
-                color: $delete-link-color;
-                text-decoration:none;
-                &:hover {
-                  text-decoration: underline;
-                };
-              }
-            }
-            div.move {
-              cursor: move;
-              margin: 0;
-              padding-top: 0;
-              a {
-                color: #666;
-                cursor: move;
-                &:hover {
-                  text-decoration: none;
-                };
-              }
             }
           }
         }

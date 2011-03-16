@@ -12,6 +12,7 @@ App.Views.Themes = {
 
     initialize: function() {
       this.collection = this.options.collection;
+      _.bindAll(this, 'orderChanged', 'displayOrderIndexes');
     },
 
     render: function() {
@@ -25,6 +26,38 @@ App.Views.Themes = {
 
       this.$('ul.themes').append(JST['themes/new']());
 
+      var orderChangedEvent = this.orderChanged;
+      var actionsElem;
+      // allow themes to be sorted using JQuery UI
+      this.$('ul.themes').disableSelection().sortable({
+        start: function(event, ui) {
+          // hide the new theme button when dragging
+          // actionsElem = parentView.$('ul.themes>.actions').clone();
+          // parentView.$('ul.themes>.actions').remove();
+        },
+        stop: function(event, ui) {
+          orderChangedEvent();
+          // show the new theme button again
+          parentView.$('ul.themes').append(actionsElem);
+        },
+        placeholder: 'target-order-highlight',
+        axis: 'y',
+        handle: '.move-theme'
+      });
+
+      /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
+      this.$('ul.themes .actions .reorder-themes').click(function(event) {
+        parentView.$('ul.stories,.story-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
+          parentView.$('.move-theme').css('display', 'block');
+          parentView.$('.stop-ordering').css('display', 'block');
+        });
+      });
+      /* ordering has finished as user clicked on stop ordering link */
+      this.$('>.stop-ordering').click(function(event) {
+        parentView.$('.move-theme').css('display', 'none');
+        parentView.$('.stop-ordering').css('display', 'none');
+        parentView.$('ul.stories,.story-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideDown(250);
+      })
       return(this);
     },
 
@@ -37,6 +70,19 @@ App.Views.Themes = {
       this_view.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
         $(this_view.el).find('ul.themes li.theme:last>.theme-data .name .data').click();
       });
+    },
+
+    // method is called after JQuery UI re-ordering
+    orderChanged: function() {
+      var orderIndexesWithIds = {};
+      this.$('li.theme').each(function(index, elem) {
+        var elemId = _.last($(elem).attr('id').split('-'));
+        if (!isNaN(parseInt(elemId))) { // unless story is new and not saved yet
+          orderIndexesWithIds[elemId] = index + 1;
+        }
+      });
+      console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      this.collection.saveOrder(orderIndexesWithIds);
     }
   }),
 
@@ -154,6 +200,9 @@ App.Views.Themes = {
         if (!this.$('ul.stories li.actions .new-story').length) { // not yet added the Add Story button as theme not created
           if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
         }
+      }
+      if (eventName == 'change:id') {
+        $(this.el).attr('id', 'theme-' + model.get('id'));
       }
     },
 

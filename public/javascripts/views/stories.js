@@ -40,7 +40,7 @@ App.Views.Stories = {
         },
         placeholder: 'target-order-highlight',
         axis: 'y',
-        handle: '.move'
+        handle: '.move-story'
       });
 
       return(this);
@@ -57,6 +57,7 @@ App.Views.Stories = {
       });
     },
 
+    // method is called after JQuery UI re-ordering
     orderChanged: function() {
       var orderIndexesWithIds = {};
       this.$('li.story').each(function(index, elem) {

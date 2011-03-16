@@ -13,7 +13,7 @@ class Theme < ActiveRecord::Base
 
   before_save :assign_code_if_blank
 
-  attr_accessible :name, :code
+  attr_accessible :name, :code, :position
 
   include ScoreStatistics
 

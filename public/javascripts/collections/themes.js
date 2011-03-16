@@ -12,5 +12,16 @@ var ThemesCollection = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.backlog = options ? options.backlog : null;
+  },
+
+  saveOrder: function(idOrderCollection) {
+    var thisCollection = this;
+    _.each(idOrderCollection, function(index, key) {
+      var theme = thisCollection.get(key);
+      if (theme) { // might not exist as not yet saved
+        theme.set({ 'position': idOrderCollection[key] });
+        theme.save();
+      }
+    });
   }
 });
