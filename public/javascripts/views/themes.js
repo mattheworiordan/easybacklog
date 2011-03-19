@@ -7,7 +7,8 @@ App.Views.Themes = {
     childId: function(model) { return 'theme-' + model.get('id'); },
 
     events: {
-      "click ul.themes .actions a.new-theme": "createNew"
+      "click ul.themes .actions a.new-theme": "createNew",
+      "keydown ul.themes .actions a.new-theme": "themeKeyPress"
     },
 
     initialize: function() {
@@ -61,7 +62,7 @@ App.Views.Themes = {
       return(this);
     },
 
-    createNew: function() {
+    createNew: function(event) {
       event.preventDefault();
       var model = new Theme();
       this.collection.add(model);
@@ -70,6 +71,27 @@ App.Views.Themes = {
       this_view.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
         $(this_view.el).find('ul.themes li.theme:last>.theme-data .name .data').click();
       });
+    },
+
+    themeKeyPress: function(event) {
+      if (9 == event.keyCode) { // tab pressed
+        if (event.shiftKey) { // <-- moving back
+          event.preventDefault();
+          if (this.$('li.theme').length > 0) { // one or more themes exist
+            var lastTheme = $('li.theme:last');
+            if (lastTheme.has('li.actions a.new-story').length) {
+              lastTheme.find('li.actions a.new-story').focus();
+            } else {
+              lastTheme.find('.theme-data .name .data').click();
+            }
+          } else {
+            $('#backlog-data-area h2.name .data').click(); // focus on backlog name
+          }
+        }
+        // do nothing as moving forwards, browser will move to re-order themes button anyway
+      } else if (13 == event.keyCode) { // enter pressed
+        this.createNew(event);
+      }
     },
 
     // method is called after JQuery UI re-ordering
