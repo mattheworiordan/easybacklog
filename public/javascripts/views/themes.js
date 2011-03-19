@@ -197,8 +197,11 @@ App.Views.Themes = {
         var fieldChanged = eventName.substring(7);
         this.$('>.theme-data>.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
-        if (!this.$('ul.stories li.actions .new-story').length) { // not yet added the Add Story button as theme not created
-          if (!this.model.isNew()) { this.$('>.stories ul.stories').append(JST['stories/new']()); }
+        if (!this.$('ul.stories li.actions .new-story').length) {
+          // not yet added the Add Story button as theme not created so add now
+          if (!this.model.isNew()) {
+            this.$('>.stories ul.stories').append(JST['stories/new']()).find('.actions a').focus();
+          }
         }
       }
       if (eventName == 'change:id') {
