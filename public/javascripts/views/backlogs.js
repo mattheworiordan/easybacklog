@@ -39,7 +39,7 @@ App.Views.Backlogs = {
     },
 
     updateStatistics: function() {
-      $('#backlog-data-area .backlog-stats div').html( JST['backlogs/stats']({ model: this.model }) )
+      $('#backlog-data-area .backlog-stats div.output').html( JST['backlogs/stats']({ model: this.model }) )
     },
 
     // Tab or Enter key pressed so let's move on

@@ -1,13 +1,20 @@
 #backlog-container {
+  margin-top: 5.5em;
   clear: left; }
 
 #backlog-data-area {
-  border-bottom: 1px solid #EEE;
+  position: fixed;
+  top: 0;
+  left: 0;
   overflow: hidden;
-  margin-bottom: 5px; }
+  height: 4.5em;
+  width: 100%;
+  background-color: #FFF; }
   #backlog-data-area .back-action {
+    margin: 0.5em;
     float: right; }
   #backlog-data-area h2.name {
+    margin: 0.25em 0 0 0.25em;
     position: relative;
     width: 20em; }
     #backlog-data-area h2.name > div {
@@ -21,63 +28,75 @@
     clear: left;
     float: right;
     margin: 0 1px 0 0; }
-    #backlog-data-area .backlog-stats div {
-      padding: 5px; }
+    #backlog-data-area .backlog-stats div.title {
+      padding: 5px 0 5px 5px;
+      float: left; }
+    #backlog-data-area .backlog-stats div.output {
+      padding: 5px;
+      float: left; }
 
 #themes-header {
+  position: fixed;
+  top: 4.25em;
+  left: 0;
   width: 100%;
-  overflow: hidden; }
-  #themes-header .theme {
-    background-color: #CCC;
-    width: 12%;
-    float: left;
-    margin: 0; }
-    #themes-header .theme > div {
-      padding: 2px;
-      border-right: 1px solid white; }
-  #themes-header .unique-id {
-    background-color: #CCC;
-    width: 7%;
-    float: left;
-    margin: 0; }
-    #themes-header .unique-id > div {
-      padding: 2px;
-      border-right: 1px solid white; }
-  #themes-header .user-story, #themes-header .acceptance-criteria, #themes-header .comments {
-    background-color: #CCC;
-    width: 21%;
-    float: left;
-    margin: 0; }
-    #themes-header .user-story > div, #themes-header .acceptance-criteria > div, #themes-header .comments > div {
-      padding: 2px;
-      border-right: 1px solid white; }
-  #themes-header .score-50, #themes-header .score-90 {
-    background-color: #CCC;
-    width: 3%;
-    float: left;
-    margin: 0; }
-    #themes-header .score-50 > div, #themes-header .score-90 > div {
-      padding: 2px;
-      border-right: 1px solid white; }
-    #themes-header .score-50 > div, #themes-header .score-90 > div {
-      text-align: right; }
-  #themes-header .cost-formatted {
-    background-color: #CCC;
-    width: 6%;
-    float: left;
-    margin: 0; }
-    #themes-header .cost-formatted > div {
-      padding: 2px;
-      border-right: 1px solid white; }
-    #themes-header .cost-formatted > div {
-      text-align: right; }
-  #themes-header .days-formatted {
-    background-color: #CCC;
-    margin: 0;
-    width: auto; }
-    #themes-header .days-formatted > div {
-      text-align: right;
-      padding: 2px; }
+  margin: 0;
+  overflow: hidden;
+  background-color: #CCC;
+  border-bottom: 1px solid white; }
+  #themes-header .columns {
+    margin: 0 0.5em 0 0.5em; }
+    #themes-header .columns .theme {
+      background-color: #CCC;
+      width: 12%;
+      float: left;
+      margin: 0; }
+      #themes-header .columns .theme > div {
+        padding: 2px;
+        border-right: 1px solid white; }
+    #themes-header .columns .unique-id {
+      background-color: #CCC;
+      width: 7%;
+      float: left;
+      margin: 0; }
+      #themes-header .columns .unique-id > div {
+        padding: 2px;
+        border-right: 1px solid white; }
+    #themes-header .columns .user-story, #themes-header .columns .acceptance-criteria, #themes-header .columns .comments {
+      background-color: #CCC;
+      width: 22%;
+      float: left;
+      margin: 0; }
+      #themes-header .columns .user-story > div, #themes-header .columns .acceptance-criteria > div, #themes-header .columns .comments > div {
+        padding: 2px;
+        border-right: 1px solid white; }
+    #themes-header .columns .score-50, #themes-header .columns .score-90 {
+      background-color: #CCC;
+      width: 3%;
+      float: left;
+      margin: 0; }
+      #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
+        padding: 2px;
+        border-right: 1px solid white; }
+      #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
+        text-align: right; }
+    #themes-header .columns .cost-formatted {
+      background-color: #CCC;
+      width: 5%;
+      float: left;
+      margin: 0; }
+      #themes-header .columns .cost-formatted > div {
+        padding: 2px;
+        border-right: 1px solid white; }
+      #themes-header .columns .cost-formatted > div {
+        text-align: right; }
+    #themes-header .columns .days-formatted {
+      background-color: #CCC;
+      margin: 0;
+      width: auto; }
+      #themes-header .columns .days-formatted > div {
+        text-align: right;
+        padding: 2px; }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
 .stop-ordering {
@@ -114,24 +133,29 @@ ul.themes {
   ul.themes .editable-blank {
     font-size: 80%;
     color: #666; }
-  ul.themes li.actions, ul.themes stop-ordering {
+  ul.themes li.actions, ul.themes .calc
+  stop-ordering {
     clear: left;
     margin: 0 0 10px 0;
-    padding-top: 5px; }
-    ul.themes li.actions a, ul.themes stop-ordering a {
+    padding-top: 3px; }
+    ul.themes li.actions a, ul.themes .calc
+    stop-ordering a {
       font-weight: bold;
       font-size: 90%;
       text-decoration: none;
       color: green;
       border: 1px solid green;
       background-color: #b3ffb3;
-      padding: 3px;
+      padding: 1px 3px 2px 3px;
       -moz-border-radius: 5px;
-      border-radius: 5px; }
-      ul.themes li.actions a:hover, ul.themes stop-ordering a:hover {
+      border-radius: 5px;
+      margin: 0 2px 0 2px; }
+      ul.themes li.actions a:hover, ul.themes .calc
+      stop-ordering a:hover {
         color: black;
         border-color: black; }
-      ul.themes li.actions a.new-acceptance-criterion, ul.themes stop-ordering a.new-acceptance-criterion {
+      ul.themes li.actions a.new-acceptance-criterion, ul.themes .calc
+      stop-ordering a.new-acceptance-criterion {
         padding: 0 5px 0 5px; }
   ul.themes li.target-order-highlight {
     background-color: #FFC;
@@ -249,7 +273,7 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a:hover .hint {
               display: block; }
           ul.themes li.theme > div.stories ul.stories li.story > .user-story, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > .comments {
-            width: 23.864%;
+            width: 25%;
             /* all story elements use up % of total width as embedded in another elem */
             float: left; }
             ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
@@ -266,7 +290,7 @@ ul.themes {
               padding: 2px;
               border: 1px solid #CCC; }
           ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
-            width: 6.818%;
+            width: 5.682%;
             /* all story elements use up % of total width as embedded in another elem */
             float: left;
             text-align: right; }

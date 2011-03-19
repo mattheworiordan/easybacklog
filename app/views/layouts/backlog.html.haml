@@ -1,12 +1,11 @@
 # encoding: utf-8
 != render :partial => '/layouts/head'
-%div.body
-  #alert-space
-    - if notice
-      %div.notice
-        = notice
-    - if alert
-      %div.alert
-        = alert
+#alert-space
+  - if notice
+    %div.notice
+      = notice
+  - if alert
+    %div.alert
+      = alert
 
-  = yield
+= yield

@@ -1,7 +1,7 @@
 /* generic & fix from reset */
 body {
   font-family: Sans-Serif;
-  padding: 1em;
+  padding: 0.25em 0.25em 0.5em 0.25em;
   font-size: 75%; }
 
 h1 {
@@ -39,7 +39,9 @@ strong {
 
 /* styles */
 .main-title-logo {
-  float: left; }
+  float: left;
+  padding: 0.75em;
+}
 
 .account-info {
   float: right;
@@ -47,7 +49,8 @@ strong {
 
 .body {
   clear: both;
-  padding-top: 0.5em; }
+  padding: 0.75em 0.75em 0.5em 0.75em;
+}
 
 .notice, .alert {
   position: absolute;

@@ -31,17 +31,24 @@ $table-first-col-width: 88%;
 }
 
 #backlog-container {
+  margin-top: 5.5em;
   clear: left;
 }
 
 #backlog-data-area {
-  border-bottom: 1px solid #EEE;
+  position: fixed;
+  top: 0;
+  left: 0;
   overflow: hidden;
-  margin-bottom: 5px;
+  height: 4.5em;
+  width: 100%;
+  background-color: #FFF;
   .back-action {
+    margin: 0.5em;
     float: right;
   }
   h2.name {
+    margin: 0.25em 0 0 0.25em;
     position: relative;
     width: 20em;
     >div {
@@ -57,27 +64,41 @@ $table-first-col-width: 88%;
     clear: left;
     float: right;
     margin: 0 1px 0 0;
-    div {
+    div.title {
+      padding: 5px 0 5px 5px;
+      float: left;
+    }
+    div.output {
       padding: 5px;
+      float: left;
     }
   }
 }
 
 #themes-header {
+  position: fixed;
+  top: 4.25em;
+  left: 0;
   width: 100%;
+  margin: 0;
   overflow: hidden;
-  .theme { @include table-head(12%); }
-  .unique-id { @include table-head(7%); }
-  .user-story, .acceptance-criteria, .comments { @include table-head(21%); }
-  .score-50, .score-90 { @include table-head(3%); &>div { text-align: right; } }
-  .cost-formatted { @include table-head(6%); &>div { text-align: right; } }
-  .days-formatted {
-    background-color: #CCC;
-    margin: 0;
-    width: auto;
-    &>div {
-      text-align: right;
-      padding: 2px;
+  background-color: #CCC;
+  border-bottom: 1px solid white;
+  .columns {
+    margin: 0 0.5em 0 0.5em;
+    .theme { @include table-head(12%); }
+    .unique-id { @include table-head(7%); }
+    .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
+    .score-50, .score-90 { @include table-head(3%); &>div { text-align: right; } }
+    .cost-formatted { @include table-head(5%); &>div { text-align: right; } }
+    .days-formatted {
+      background-color: #CCC;
+      margin: 0;
+      width: auto;
+      &>div {
+        text-align: right;
+        padding: 2px;
+      }
     }
   }
 }
@@ -126,10 +147,11 @@ ul.themes {
   }
 
   /* buttons for adding theme / story */
-  li.actions, stop-ordering {
+  li.actions, .calc
+  stop-ordering {
     clear: left;
     margin: 0 0 10px 0;
-    padding-top: 5px;
+    padding-top: 3px;
     a {
       font-weight: bold;
       font-size: 90%;
@@ -137,9 +159,10 @@ ul.themes {
       color: $add-button-color;
       border: 1px solid $add-button-color;
       background-color: lighten($add-button-color, 60%);
-      padding: 3px;
+      padding: 1px 3px 2px 3px;
       -moz-border-radius: 5px;
       border-radius: 5px;
+      margin: 0 2px 0 2px;
       &:hover {
         color: darken($add-button-color, 50%);
         border-color: darken($add-button-color, 50%);
@@ -287,9 +310,9 @@ ul.themes {
               }
             }
           }
-          &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(21%); }
+          &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(22%); }
           &>.score-50, &>.score-90 { @include table-col(3%); text-align: right; }
-          &>.cost-formatted { @include table-col(6%); text-align: right; &>div { border: none; padding: 3px; } }
+          &>.cost-formatted { @include table-col(5%); text-align: right; &>div { border: none; padding: 3px; } }
           &>.days-formatted {
             &>div {
               margin: 1px 0 1px 1px;
