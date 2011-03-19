@@ -44,8 +44,11 @@ $table-first-col-width: 88%;
   h2.name {
     position: relative;
     width: 20em;
-    div {
+    >div {
       padding: 2px;
+      input {
+        position: absolute;
+      }
     }
     @include editable-field;
   }

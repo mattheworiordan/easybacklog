@@ -48,7 +48,7 @@ App.Views.Backlogs = {
         if (!event.shiftKey) { // moving -->
           event.preventDefault();
           $(event.target).blur();
-          var firstTheme = $('#themes-container ul.themes li.theme:first>.name .data');
+          var firstTheme = $('#themes-container ul.themes li.theme:first>.theme-data .name .data');
           if (firstTheme.length) {
             firstTheme.click();
           } else {
