@@ -4,7 +4,7 @@ class BacklogsController < ApplicationController
   def show
     @backlog = @company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
     respond_to do |format|
-      format.html
+      format.html { render :layout => 'backlog' }
       format.js do
         backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
         backlog_methods = [:points, :days, :cost_formatted]
