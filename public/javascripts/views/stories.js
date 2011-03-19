@@ -151,11 +151,20 @@ App.Views.Stories = {
 
       this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
       this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, autoResize: true } ));
+
+      // callback to get a list of all as_a values for autocomplete
+      var autoCompleteData = function() {
+        var asAValues = [];
+        show_view.model.Theme().collection.each(function(theme) {
+          asAValues = asAValues.concat(theme.Stories().pluck('as_a'));
+        });
+        return _.uniq(_.compact(asAValues)).sort();
+      }
       // make the user story fields less wide so they fit with the heading
       _.each(['as-a','i-want-to','so-i-can'], function(elem) {
         _.defer(function() { // wait until elements have rendered
           var width = show_view.$('>div.user-story .' + elem + ' .heading').outerWidth() + 10;
-          var options = _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, lesswidth: width, autoResize: true });
+          var options = _.extend(_.clone(defaultOptions), { type: (elem == 'as-a' ? 'text' : 'textarea'), saveonenterkeypress: true, lesswidth: width, autoResize: true, autoComplete: autoCompleteData });
           show_view.$('>div.user-story .' + elem + ' .data').editable(contentUpdatedFunc, options);
         });
       });
