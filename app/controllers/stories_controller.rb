@@ -19,7 +19,7 @@ class StoriesController < ApplicationController
   def create
     @story = @theme.stories.new(params)
     if @story.save
-      render :json => @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted], :except => [:updated_at, :created_at])
+      render :json => story_json
     else
       send_json_error @theme.errors.full_messages.join(', ')
     end
@@ -29,10 +29,27 @@ class StoriesController < ApplicationController
     @story = @theme.stories.find(params[:id])
     @story.update_attributes params
     if @story.save
-      render :json => @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted], :except => [:updated_at, :created_at])
+      render :json => story_json
     else
       send_json_error @story.errors.full_messages.join(', ')
     end
+  end
+
+  # move a story to a new theme
+  def move_to_theme
+    @story = @theme.stories.find(params[:id])
+    new_theme = Theme.find(params[:new_theme_id])
+
+    # ensure unique ID is empty first as we will need to assign a new one
+    @story.unique_id = nil
+    # assign to new theme, note: using new_theme.stories << self failed
+    new_theme.stories << @story
+    # now move to last item
+    @story.move_to_bottom
+
+    render :json => story_json
+  rescue Exception => e
+    send_json_error "Server error trying to move theme #{e}"
   end
 
   def destroy
@@ -50,5 +67,9 @@ class StoriesController < ApplicationController
         flash[:error] = 'You do not have permission to view this story'
         redirect_to companies_path
       end
+    end
+
+    def story_json()
+      @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted], :except => [:updated_at, :created_at])
     end
 end

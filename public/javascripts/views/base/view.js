@@ -74,6 +74,7 @@ App.Views.BaseView = Backbone.View.extend({
           }
         });
       }
+      // allow an event to be fired before saving the model to allow for any last minute changes
       if (this.model.beforeSave) {
         this.model.beforeSave(saveModelFunc);
       } else {

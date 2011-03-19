@@ -1,0 +1,15 @@
+<div id="dialog-move-story" title="Move story">
+  <p>
+    <span class="ui-icon ui-icon-arrow-4" style="float:left; margin:0 7px 20px 0;" />
+    Move story '<%=story.Theme().get('code') + story.get('unique_id')%>' to which theme?
+  </p>
+  <p>
+    <form>
+    <select id="theme-target">
+      <% themes.each(function(theme) { %>
+        <option id="<%=theme.get('id')%>"<%=(theme == story.Theme() ? ' selected=""' : '') %>><%=theme.get('name')%></option>
+      <% }); %>
+    </select>
+    </form>
+  </p>
+</div>

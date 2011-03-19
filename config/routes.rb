@@ -13,7 +13,11 @@ Ibacklog::Application.routes.draw do
     resources :themes
   end
   resources :themes, :only => [:show] do
-    resources :stories
+    resources :stories do
+      member do
+        match 'move-to-theme/:new_theme_id' => 'stories#move_to_theme', :via => [:post]
+      end
+    end
   end
   resources :stories, :only => [:show] do
     resources :acceptance_criteria

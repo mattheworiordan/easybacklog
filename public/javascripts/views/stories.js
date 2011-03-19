@@ -14,12 +14,12 @@ App.Views.Stories = {
     },
 
     render: function() {
-      var parentView = this;
+      var view = this;
       $(this.el).html(JST['stories/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
-        var view = new App.Views.Stories.Show({ model: model, id: parentView.childId(model) });
-        parentView.$('ul.stories').append(view.render().el);
+        var storyView = new App.Views.Stories.Show({ model: model, id: view.childId(model) });
+        view.$('ul.stories').append(storyView.render().el);
       });
 
       if (!this.collection.theme.isNew()) { this.$('ul.stories').append(JST['stories/new']()); }
@@ -27,16 +27,20 @@ App.Views.Stories = {
       var orderChangedEvent = this.orderChanged;
       var actionsElem;
       // allow stories to be sorted using JQuery UI
-      this.$('ul.stories').disableSelection().sortable({
+      this.$('ul.stories').sortable({
         start: function(event, ui) {
           // hide the new story button when dragging
-          actionsElem = parentView.$('ul.stories>.actions').clone();
-          parentView.$('ul.stories>.actions').remove();
+          actionsElem = view.$('ul.stories>.actions').clone();
+          view.$('ul.stories>.actions').remove();
+          view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
+          view.$('.move-story .hint').css('visibility','hidden'); // hide the hint when dragging
         },
         stop: function(event, ui) {
+          App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
           orderChangedEvent();
           // show the new story button again
-          parentView.$('ul.stories').append(actionsElem);
+          view.$('ul.stories').append(actionsElem);
+          view.$('.move-story .hint').css('visibility','visible'); // allow hint to be visible now
         },
         placeholder: 'target-order-highlight',
         axis: 'y',
@@ -82,7 +86,7 @@ App.Views.Stories = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent');
+      _.bindAll(this, 'moveEvent', 'moveToThemeDialog', 'moveToTheme');
     },
 
     render: function() {
@@ -96,6 +100,16 @@ App.Views.Stories = {
       var show_view = this;
       var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
       _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.moveEvent); }); 
+
+      this.$('.move-story a').mousedown(function(event) {
+        App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
+      }).click(function(event) {
+        event.preventDefault();
+        if (!App.Views.Stories.Index.stopMoveEvent) {
+          show_view.moveToThemeDialog();
+        }
+      });
+
       return (this);
     },
 
@@ -239,6 +253,46 @@ App.Views.Stories = {
           App.Controllers.Statistics.updateStatistics(response.score_statistics);
         }
       });
+    },
+
+    // user has clicked move so ask them where we are moving to
+    moveToThemeDialog: function() {
+      console.log('Requested to move');
+      var view = this;
+      $('#dialog-move-story').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST['stories/move-dialog']({ story: this.model, themes: this.model.Theme().Backlog().Themes() }));
+      $('#dialog-move-story').dialog({
+        resizable: false,
+        height:170,
+        modal: true,
+        buttons: {
+          Move: function() {
+            view.moveToTheme(this);
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
+        }
+      });
+    },
+
+    // user has responded to
+    moveToTheme: function(dialog) {
+      var themeId = $(dialog).find('select#theme-target option:selected').attr('id');
+      if (themeId != this.model.Theme().get('id')) {
+        console.log('Moving to theme-' + themeId);
+        $(this.el).insertBefore($('li.theme#theme-' + themeId + ' ul.stories>li:last'));
+        this.model.MoveToTheme(themeId, {
+          success: function(model, response) {
+            new App.Views.Notice({ message: 'The story was moved successfully.'});
+          },
+          error: function() {
+            new App.Views.Error({ message: 'The story move failed.  Please refresh your browser.'});
+          }
+        });
+      }
+      $(dialog).dialog("close");
     }
   })
 };

@@ -236,6 +236,16 @@ ul.themes {
               border: none;
               margin: 0;
               padding: 0 0 0 3px; }
+            ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a .hint {
+              display: none;
+              position: absolute;
+              margin: 0 0 0 -95px;
+              width: 80px;
+              background: #FFE;
+              padding: 3px;
+              border: 1px solid #999; }
+            ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a:hover .hint {
+              display: block; }
           ul.themes li.theme > div.stories ul.stories li.story > .user-story, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > .comments {
             width: 23.864%;
             /* all story elements use up % of total width as embedded in another elem */
