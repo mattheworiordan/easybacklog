@@ -97,7 +97,7 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent');
+      _.bindAll(this, 'navigateEvent');
     },
 
     render: function() {
@@ -107,8 +107,8 @@ App.Views.Themes = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
-      this.$('.theme-data .name>.data input, .theme-data .code>.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
-      this.$('ul.stories li.actions a.new-story').live('keydown', this.moveEvent); // hook up the add story button
+      this.$('.theme-data .name>.data input, .theme-data .code>.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
 
       return (this);
     },
@@ -133,7 +133,7 @@ App.Views.Themes = {
     },
 
     // Tab or Enter key pressed so let's move on
-    moveEvent: function(event) {
+    navigateEvent: function(event) {
       if (_.include([9,13], event.keyCode)) {
         $(event.target).blur();
         event.preventDefault();

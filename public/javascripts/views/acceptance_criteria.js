@@ -92,14 +92,14 @@ App.Views.AcceptanceCriteria = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent');
+      _.bindAll(this, 'navigateEvent');
     },
 
     render: function() {
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
 
       this.makeFieldsEditable();
-      this.$('.data input, .data textarea').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
+      this.$('.data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
       return (this);
     },
 
@@ -145,7 +145,7 @@ App.Views.AcceptanceCriteria = {
     },
 
     // Tab or Enter key pressed so let's move on
-    moveEvent: function(event) {
+    navigateEvent: function(event) {
       if (_.include([9,13], event.keyCode)) {
         event.preventDefault();
         $(event.target).blur();

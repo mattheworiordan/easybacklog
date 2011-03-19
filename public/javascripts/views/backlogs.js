@@ -6,7 +6,7 @@ App.Views.Backlogs = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent','resizeEvent');
+      _.bindAll(this, 'navigateEvent','resizeEvent');
     },
 
     render: function() {
@@ -17,7 +17,7 @@ App.Views.Backlogs = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
-      $('#backlog-data-area h2.name div.data input').live('keydown', this.moveEvent); // make all input and textarea fields respond to Tab/Enter
+      $('#backlog-data-area h2.name div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
 
       return (this);
     },
@@ -43,7 +43,7 @@ App.Views.Backlogs = {
     },
 
     // Tab or Enter key pressed so let's move on
-    moveEvent: function(event) {
+    navigateEvent: function(event) {
       if (_.include([9,13], event.keyCode)) {
         if (!event.shiftKey) { // moving -->
           event.preventDefault();

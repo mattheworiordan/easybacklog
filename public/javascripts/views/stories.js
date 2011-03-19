@@ -86,7 +86,7 @@ App.Views.Stories = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'moveEvent', 'moveToThemeDialog', 'moveToTheme');
+      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme');
     },
 
     render: function() {
@@ -99,7 +99,7 @@ App.Views.Stories = {
       // make all input and textarea fields respond to Tab/Enter
       var show_view = this;
       var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
-      _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.moveEvent); }); 
+      _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent); });
 
       this.$('.move-story a').mousedown(function(event) {
         App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
@@ -138,7 +138,7 @@ App.Views.Stories = {
     },
 
     // Tab or Enter key pressed so let's move on
-    moveEvent: function(event) {
+    navigateEvent: function(event) {
       if (_.include([9,13], event.keyCode)) {
         event.preventDefault();
         $(event.target).blur();
