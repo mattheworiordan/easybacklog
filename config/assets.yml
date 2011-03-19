@@ -17,3 +17,4 @@ javascripts:
 stylesheets:
   common:
     - public/stylesheets/global.css
+    - public/stylesheets/ui-lightness/jquery-ui-1.8.9.custom.css
