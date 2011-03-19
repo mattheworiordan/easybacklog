@@ -46,17 +46,16 @@
                         position: 'absolute',
                         top: 0,
                         left: -9999
-                    }).css(propOb).attr('tabIndex','-1').insertBefore(textarea);
+                    }).css(propOb).attr('tabIndex','-1').insertAfter('body');
 					
                 })(),
                 lastScrollTop = null,
                 updateSize = function() {
-					
                     // Prepare the clone:
                     clone.height(0).val($(this).val()).scrollTop(10000);
 					
                     // Find the height of text:
-                    var scrollTop = Math.max(clone.scrollTop(), origHeight) + settings.extraSpace,
+                    var scrollTop = Math.max(clone.scrollTop(), (settings.origHeight ? settings.origHeight : origHeight) ) + settings.extraSpace,
                         toChange = $(this).add(clone);
 						
                     // Don't do anything if scrollTip hasen't changed:

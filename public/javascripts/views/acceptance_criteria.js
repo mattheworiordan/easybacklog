@@ -139,14 +139,14 @@ App.Views.AcceptanceCriteria = {
         }
       };
       var beforeChangeFunc = function() { return ac_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, type: 'textarea' });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, type: 'textarea', autoResize: true });
 
       $(this.el).find('>div.data').editable(contentUpdatedFunc, defaultOptions);
     },
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      if (_.include([9,13], event.keyCode)) {
+      if (_.include([9,13], event.keyCode) && (!event.ctrlKey)) {
         event.preventDefault();
         $(event.target).blur();
 
@@ -157,7 +157,6 @@ App.Views.AcceptanceCriteria = {
             // move to next item
             liElem.next().find('.data').click();
           } else {
-            console.log(this.$('textarea'));
             if ($.trim(this.$('textarea').val()) == '') // current last criterion is empty
             {
               // move back to comments field

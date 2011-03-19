@@ -150,12 +150,12 @@ App.Views.Stories = {
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
       this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
-      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true } ));
+      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, autoResize: true } ));
       // make the user story fields less wide so they fit with the heading
       _.each(['as-a','i-want-to','so-i-can'], function(elem) {
         _.defer(function() { // wait until elements have rendered
           var width = show_view.$('>div.user-story .' + elem + ' .heading').outerWidth() + 10;
-          var options = _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, lesswidth: width });
+          var options = _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, lesswidth: width, autoResize: true });
           show_view.$('>div.user-story .' + elem + ' .data').editable(contentUpdatedFunc, options);
         });
       });
