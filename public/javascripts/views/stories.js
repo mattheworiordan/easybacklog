@@ -6,6 +6,7 @@ App.Views.Stories = {
 
     events: {
       "click ul.stories .actions a.new-story": "createNew",
+      "keydown ul.stories .actions a.new-story": "storyKeyPress"
     },
 
     initialize: function() {
@@ -59,6 +60,29 @@ App.Views.Stories = {
       this.$('ul.stories li.story:last').css('display','none').slideDown('fast', function() {
         this_view.$('ul.stories li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
       });
+    },
+
+    storyKeyPress: function(event) {
+      if (9 == event.keyCode) { // tab pressed
+        if (event.shiftKey) { // <-- moving back
+          event.preventDefault();
+          var thisTheme = $(this.el).parents('li.theme');
+          if (thisTheme.has('li.story:last .score-90 .data').length) {
+            thisTheme.find('li.story:last .score-90 .data').click();
+          } else {
+            thisTheme.find('.theme-data .name .data').click();
+          }
+        } else { // --> moving forward
+          var nextTheme = $(this.el).parents('li.theme').next();
+          if (nextTheme.length) {
+            // next theme exists, focus on the theme name field
+            nextTheme.find('.theme-data .name .data').click();
+          }
+          // else do nothing as browser will take the user to the Add Theme button
+        }
+      } else if (13 == event.keyCode) { // enter pressed
+        this.createNew(event);
+      }
     },
 
     // method is called after JQuery UI re-ordering
