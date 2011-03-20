@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  after_filter :log_last_page_viewed
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
@@ -17,4 +18,9 @@ class ApplicationController < ActionController::Base
   def send_json_notice(notice_message, payload = {})
     render :json => { :status => 'notice', :message => notice_message }.merge(payload)
   end
+
+  private
+    def log_last_page_viewed
+      session[:last_url] = request.path
+    end
 end
