@@ -240,7 +240,8 @@ App.Views.Stories = {
     },
 
     changeEvent: function(eventName, model) {
-      if (eventName.substring(0,7) == 'change:') {
+      // only update specific field changes and ignore acceptance criteria as changes are made in that view and model
+      if ( (eventName.substring(0,7) == 'change:') && (eventName != 'change:acceptance_criteria') ) {
         var fieldChanged = eventName.substring(7);
         var newValue = this.model.get(fieldChanged);
         if (fieldChanged == 'unique_id') {
@@ -254,8 +255,10 @@ App.Views.Stories = {
             // unique_id is being edited, so just update the ID as no code is shown when editing unique_id
             this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').val(newValue);
           }
-        } else {
-          this.$('div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(multiLineHtmlEncode(newValue));
+        } else if (_.isString(newValue)){
+          var newValue = multiLineHtmlEncode(newValue);
+          if (newValue == '') { newValue = this.defaultEditableOptions.placeholder; } // if empty, put editable placeholder back in field
+          this.$('div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(newValue);
         }
         if (eventName == 'change:id') {
           $(this.el).attr('id', 'story-' + model.get('id'));

@@ -15,7 +15,7 @@ function addCommas(nStr)
 // credit to http://stackoverflow.com/questions/1219860/javascript-jquery-html-encoding
 function htmlEncode(value){
   if (value) {
-    return jQuery('<div/>').text(value).html();
+    return $('<span/>').text(value).html();
   } else {
     return '';
   }
