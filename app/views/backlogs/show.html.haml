@@ -5,6 +5,13 @@
     =link_to 'Back to backlogs', company_path(@backlog.company)
   %h2.name
     .data= @backlog.name
+  #backlog-settings
+    #backlog-rate.rate
+      .title Rate:
+      .data= @backlog.rate_formatted
+    #backlog-velocity.velocity
+      .title Velocity:
+      .data= @backlog.velocity
   .backlog-stats
     %div.title Backlog total:
     %div.output &nbsp;

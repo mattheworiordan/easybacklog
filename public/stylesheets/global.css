@@ -143,23 +143,40 @@ strong {
   overflow: hidden;
   height: 4.5em;
   width: 100%;
-  background-color: #FFF; }
+  background-color: #FFF;
+  /* position editable input as global to avoid jumping */ }
   #backlog-data-area .back-action {
     margin: 0.5em;
     float: right; }
+  #backlog-data-area input {
+    position: absolute; }
   #backlog-data-area h2.name {
     margin: 0.25em 0 0 0.25em;
     position: relative;
     width: 20em; }
     #backlog-data-area h2.name > div {
       padding: 2px; }
-      #backlog-data-area h2.name > div input {
-        position: absolute; }
     #backlog-data-area h2.name:hover {
       background-color: #FFA; }
+  #backlog-data-area #backlog-settings {
+    float: left;
+    margin: 0.5em; }
+    #backlog-data-area #backlog-settings #backlog-rate, #backlog-data-area #backlog-settings #backlog-velocity {
+      float: left;
+      overflow: hidden; }
+    #backlog-data-area #backlog-settings #backlog-velocity {
+      padding-left: 2.5em; }
+    #backlog-data-area #backlog-settings .title {
+      float: left;
+      padding-right: 0.25em;
+      padding: 2px; }
+    #backlog-data-area #backlog-settings .data {
+      float: left;
+      padding: 2px; }
+      #backlog-data-area #backlog-settings .data:hover {
+        background-color: #FFA; }
   #backlog-data-area .backlog-stats {
     background-color: #eeeeee;
-    clear: left;
     float: right;
     margin: 0 1px 0 0; }
     #backlog-data-area .backlog-stats div.title {

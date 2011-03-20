@@ -7,7 +7,7 @@ class BacklogsController < ApplicationController
       format.html { render :layout => 'backlog' }
       format.js do
         backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
-        backlog_methods = [:points, :days, :cost_formatted]
+        backlog_methods = [:points, :days, :cost_formatted, :rate_formatted]
         theme_fields = [:id, :name, :code, :position]
         story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position]
         criteria_fields =  [:id, :criterion, :position]
@@ -53,7 +53,7 @@ class BacklogsController < ApplicationController
     @backlog = @company.backlogs.find(params[:id])
     @backlog.update_attributes params
     if @backlog.save
-      render :json => @backlog.to_json(:methods => [:score_statistics])
+      render :json => @backlog.to_json(:methods => [:score_statistics, :rate_formatted])
     else
       send_json_error @backlog.errors.full_messages.join(', ')
     end

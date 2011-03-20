@@ -29,6 +29,10 @@ class Backlog < ActiveRecord::Base
     (cost || 0).to_currency(:precision => 0, :locale => company.locale.code.to_s)
   end
 
+  def rate_formatted
+    (rate || 0).to_currency(:precision => 0, :locale => company.locale.code.to_s)
+  end
+
   # simply copy all themes, stories and acceptance criteria to destination backlog
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|

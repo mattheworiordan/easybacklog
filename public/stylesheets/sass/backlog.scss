@@ -47,21 +47,42 @@ $table-first-col-width: 88%;
     margin: 0.5em;
     float: right;
   }
+  /* position editable input as global to avoid jumping */
+  input {
+    position: absolute;
+  }
   h2.name {
     margin: 0.25em 0 0 0.25em;
     position: relative;
     width: 20em;
     >div {
       padding: 2px;
-      input {
-        position: absolute;
-      }
     }
     @include editable-field;
   }
+  #backlog-settings {
+    float: left;
+    margin: 0.5em;
+    #backlog-rate, #backlog-velocity {
+      float: left;
+      overflow: hidden;
+    }
+    #backlog-velocity {
+      padding-left: 2.5em;
+    }
+    .title {
+      float: left;
+      padding-right: 0.25em;
+      padding: 2px;
+    }
+    .data {
+      float: left;
+      padding: 2px;
+      @include editable-field;
+    }
+  }
   .backlog-stats {
     background-color: $stats-bg-color;
-    clear: left;
     float: right;
     margin: 0 1px 0 0;
     div.title {
