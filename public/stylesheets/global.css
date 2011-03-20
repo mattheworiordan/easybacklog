@@ -242,7 +242,8 @@ section.for-backlog section.main-content-pod {
 
 #backlog-container {
   margin-top: 4.5em;
-  clear: left; }
+  clear: left;
+  font-size: 90%; }
 
 #backlog-data-area {
   position: fixed;
