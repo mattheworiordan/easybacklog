@@ -19,6 +19,12 @@ App.Views.Backlogs = {
       this.updateStatistics();
       $('#backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
 
+      var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
+      if (firstEditableElem.length) {
+        firstEditableElem.click();
+      } else {
+        $('ul.themes li.actions a.new-theme').focus();
+      }
       return (this);
     },
 
