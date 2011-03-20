@@ -218,6 +218,7 @@ App.Views.Themes = {
       if (eventName.substring(0,7) == 'change:') {
         var fieldChanged = eventName.substring(7);
         this.$('>.theme-data>.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
+        this.updateStatistics(); // force update in case name has changed
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
         if (!this.$('ul.stories li.actions .new-story').length) {
           // not yet added the Add Story button as theme not created so add now
