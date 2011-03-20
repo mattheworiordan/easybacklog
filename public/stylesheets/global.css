@@ -361,23 +361,27 @@ section.for-backlog section.main-content-pod {
         padding: 2px; }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
-.stop-ordering {
+.themes .stop-ordering {
   display: none;
   padding-top: 5px;
   clear: left; }
-  .stop-ordering a {
-    font-weight: bold;
-    font-size: 90%;
+  .themes .stop-ordering a {
+    font-weight: normal;
     text-decoration: none;
     color: green;
-    border: 1px solid green;
-    background-color: #b3ffb3;
-    padding: 3px;
-    -moz-border-radius: 5px;
-    border-radius: 5px; }
-    .stop-ordering a:hover {
-      color: black;
-      border-color: black; }
+    border: 2px solid green;
+    background-color: #e6ffe6;
+    padding: 3px 10px 3px 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 1px 5px 1px 5px;
+    font-size: 90%;
+    border-width: 1px; }
+    .themes .stop-ordering a:hover {
+      color: #004d00;
+      border-color: #004d00; }
+    .themes .stop-ordering a:hover {
+      text-decoration: none; }
 
 ul.themes {
   list-style: none;
@@ -398,21 +402,22 @@ ul.themes {
     margin: 1em 0 0 0;
     padding-top: 3px; }
     ul.themes li.actions a {
-      font-weight: bold;
-      font-size: 90%;
+      font-weight: normal;
       text-decoration: none;
       color: green;
-      border: 1px solid green;
-      background-color: #b3ffb3;
-      padding: 1px 3px 2px 3px;
-      -moz-border-radius: 5px;
-      border-radius: 5px;
-      margin: 0 2px 0 2px; }
+      border: 2px solid green;
+      background-color: #e6ffe6;
+      padding: 3px 10px 3px 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      padding: 1px 5px 1px 5px;
+      font-size: 90%;
+      border-width: 1px; }
       ul.themes li.actions a:hover {
-        color: black;
-        border-color: black; }
+        color: #004d00;
+        border-color: #004d00; }
       ul.themes li.actions a.new-acceptance-criterion {
-        padding: 0 5px 0 5px; }
+        padding: 0 10px 0 10px; }
   ul.themes li.target-order-highlight {
     background-color: #FFC;
     margin: 0;

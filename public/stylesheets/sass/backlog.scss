@@ -145,23 +145,17 @@ section.for-backlog {
 }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
-.stop-ordering {
+.themes .stop-ordering {
   display: none;
   padding-top: 5px;
   clear: left;
   a {
-    font-weight: bold;
+    @include button-style;
+    padding: 1px 5px 1px 5px;
     font-size: 90%;
-    text-decoration: none;
-    color: $add-button-color;
-    border: 1px solid $add-button-color;
-    background-color: lighten($add-button-color, 60%);
-    padding: 3px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
+    border-width: 1px;
     &:hover {
-      color: darken($add-button-color, 50%);
-      border-color: darken($add-button-color, 50%);
+      text-decoration: none;
     };
   }
 }
@@ -190,22 +184,12 @@ ul.themes {
     margin: 1em 0 0 0;
     padding-top: 3px;
     a {
-      font-weight: bold;
+      @include button-style;
+      padding: 1px 5px 1px 5px;
       font-size: 90%;
-      text-decoration: none;
-      color: $add-button-color;
-      border: 1px solid $add-button-color;
-      background-color: lighten($add-button-color, 60%);
-      padding: 1px 3px 2px 3px;
-      -moz-border-radius: 5px;
-      border-radius: 5px;
-      margin: 0 2px 0 2px;
-      &:hover {
-        color: darken($add-button-color, 50%);
-        border-color: darken($add-button-color, 50%);
-      };
+      border-width: 1px;
       &.new-acceptance-criterion {
-        padding: 0 5px 0 5px;
+        padding: 0 10px 0 10px;
       }
     }
   }
