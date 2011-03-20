@@ -186,7 +186,8 @@
                                 
                 self.editing    = true;
                 self.revert     = $(self).html();
-                // ensure height & width is retained by creating a new element that is appened after the input element
+                self.text       = $(self).text();
+                // ensure height & width is retained by creating a new element that is appended after the input element
                 var spaceItem = $('<div>&nbsp;</div').css('width', $(self).width()).css('height', $(self).height());
                 $(self).html('');
 
@@ -227,7 +228,7 @@
                     var loaddata = {};
                     loaddata[settings.id] = self.id;
                     if ($.isFunction(settings.loaddata)) {
-                        $.extend(loaddata, settings.loaddata.apply(self, [self.revert, settings]));
+                        $.extend(loaddata, settings.loaddata.apply(self, [self.text, settings]));
                     } else {
                         $.extend(loaddata, settings.loaddata);
                     }
@@ -245,10 +246,10 @@
                 } else if (settings.data) {
                     input_content = settings.data;
                     if ($.isFunction(settings.data)) {
-                        input_content = settings.data.apply(self, [self.revert, settings]);
+                        input_content = settings.data.apply(self, [self.text, settings]);
                     }
                 } else {
-                    input_content = self.revert; 
+                    input_content = self.text;
                 }
                 content.apply(form, [input_content, settings, self]);
 
@@ -324,11 +325,10 @@
                         /* custom inputs call before submit hook. */
                         /* if it returns false abort submitting */
                         if (false !== submit.apply(form, [settings, self])) { 
-
                           /* check if given target is function */
                           if ($.isFunction(settings.target)) {
                               var str = settings.target.apply(self, [input.val(), settings]);
-                              $(self).html(str);
+                              $(self).html(multiLineHtmlEncode(str));
                               self.editing = false;
                               callback.apply(self, [self.innerHTML, settings]);
                               /* TODO: this is not dry */                              
@@ -363,7 +363,7 @@
                                   url     : settings.target,
                                   success : function(result, status) {
                                       if (ajaxoptions.dataType == 'html') {
-                                        $(self).html(result);
+                                        $(self).html(multiLineHtmlEncode(result));
                                       }
                                       self.editing = false;
                                       callback.apply(self, [result, settings]);

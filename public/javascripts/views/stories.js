@@ -172,7 +172,8 @@ App.Views.Stories = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      if (_.include([9,13], event.keyCode)) {
+      var isInput = $(event.target).is('input'); // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
+      if (_.include([9,13], event.keyCode) && (!event.ctrlKey || isInput) ) {
         event.preventDefault();
         $(event.target).blur();
 
@@ -254,7 +255,7 @@ App.Views.Stories = {
             this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').val(newValue);
           }
         } else {
-          this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(newValue);
+          this.$('div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(multiLineHtmlEncode(newValue));
         }
         if (eventName == 'change:id') {
           $(this.el).attr('id', 'story-' + model.get('id'));

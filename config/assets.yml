@@ -6,6 +6,7 @@ javascripts:
     - public/javascripts/vendor/underscore.js
     - public/javascripts/vendor/jquery-1.5.js
     - public/javascripts/vendor/*.js
+    - public/javascripts/utilities.js
     - public/javascripts/application.js
     - app/views/**/*.jst
     - public/javascripts/models/**/*.js
