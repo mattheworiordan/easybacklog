@@ -96,13 +96,13 @@ strong {
   padding: 0.75em 0.75em 0.5em 0.75em; }
 
 .notice, .alert {
-  position: absolute;
-  margin: auto;
+  position: fixed;
   left: 50%;
   margin-left: -200px;
   width: 400px;
   top: 10px;
-  text-align: center; }
+  text-align: center;
+  z-index: 5; }
 
 .notice, .alert, .form_errors {
   border: 1px solid green;
