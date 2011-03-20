@@ -19,7 +19,7 @@ class ThemesController < ApplicationController
   def create
     @theme = @backlog.themes.new(params)
     if @theme.save
-      render :json => @theme.to_json(:methods => [:score_statistics])
+      render :json => themes_json
     else
       send_json_error @theme.errors.full_messages.join(', ')
     end
@@ -29,7 +29,7 @@ class ThemesController < ApplicationController
     @theme = @backlog.themes.find(params[:id])
     @theme.update_attributes params
     if @theme.save
-      render :json => @theme.to_json(:methods => [:score_statistics])
+      render :json => themes_json
     else
       send_json_error @theme.errors.full_messages.join(', ')
     end
@@ -50,5 +50,9 @@ class ThemesController < ApplicationController
         flash[:error] = 'You do not have permission to view this theme'
         redirect_to companies_path
       end
+    end
+
+    def themes_json()
+      @theme.to_json(:methods => [:score_statistics], :except => [:updated_at, :created_at])
     end
 end
