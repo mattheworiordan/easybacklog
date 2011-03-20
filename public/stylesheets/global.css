@@ -258,7 +258,7 @@ section.for-backlog section.main-content-pod {
   background-color: #edfeed;
   /* position editable input as global to avoid jumping */ }
   #backlog-data-area .back-action {
-    margin: 0.5em;
+    margin: 6px 12px 6px 6px;
     float: right; }
   #backlog-data-area input {
     position: absolute; }
