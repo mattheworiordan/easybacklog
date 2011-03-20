@@ -1,89 +1,95 @@
-/* generic & fix from reset */
-body {
-  font-family: Sans-Serif;
-  padding: 0.25em 0.25em 0.5em 0.25em;
-  font-size: 75%; }
+/*
+Syntax error: Undefined variable: "$link-button-color".
+        on line 102 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss
 
-h1 {
-  font-size: 150%;
-  font-weight: bold; }
+97:   font-size: 110%;
+98:   .links-container {
+99:     padding-top: 1em;
+100:   }
+101:   a {
+102:     color: $link-button-color;
+103:     text-decoration: none;
+104:     &:hover {
+105:       text-decoration: underline;
+106:       color: darken($link-button-color, 10%);
+107:     };
 
-h2 {
-  font-size: 135%;
-  margin-right: 1em;
-  font-family: Sans-Serif;
-  font-weight: normal;
-  margin-bottom: 0.5em; }
-
-h2 input {
-  font-size: 1em;
-  font-family: Sans-Serif;
-  font-weight: normal; }
-
-p {
-  margin-bottom: 0.85em; }
-
-ul {
-  list-style: disc;
-  margin-top: 0.25em; }
-
-ul li {
-  margin-left: 2em;
-  margin-bottom: 0.35em; }
-
-strong {
-  font-weight: bold; }
-
-/* dialogs */
-.dialog {
-  display: none; }
-
-/* styles */
-.main-title-logo {
-  float: left;
-  padding: 0.75em; }
-
-.account-info {
-  float: right;
-  font-size: 90%; }
-
-.body {
-  clear: both;
-  padding: 0.75em 0.75em 0.5em 0.75em; }
-
-.notice, .alert {
-  position: fixed;
-  left: 50%;
-  margin-left: -200px;
-  width: 400px;
-  top: 10px;
-  text-align: center;
-  z-index: 5; }
-
-.notice, .alert, .form_errors {
-  border: 1px solid green;
-  padding: 8px;
-  display: block;
-  background-color: #ccffcc;
-  font-weight: bold; }
-
-.alert, .form_errors {
-  border-color: red;
-  background-color: #ffcccc; }
-
-.field_with_errors {
-  display: inline; }
-
-.field_with_errors label {
-  color: red; }
-
-.field_with_errors input {
-  border: 2px solid red; }
-
-.small {
-  display: inline;
-  padding-left: 0.5em;
-  font-size: 85%; }
-
-.small a {
-  color: #666; }
+Backtrace:
+/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss:102
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/variable.rb:39:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/node.rb:61:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/prop_node.rb:132:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:59:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:37:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:29:in `render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:223:in `update_stylesheet'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:88:in `block (2 levels) in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `block in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:50:in `check_for_updates'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin/rack.rb:40:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:35:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:34:in `catch'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:34:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/head.rb:14:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/methodoverride.rb:24:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/flash.rb:182:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/session/abstract_store.rb:149:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/cookies.rb:295:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:32:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/connection_adapters/abstract/query_cache.rb:28:in `cache'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:12:in `cache'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:31:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:353:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/callbacks.rb:46:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activesupport-3.0.3/lib/active_support/callbacks.rb:415:in `_run_call_callbacks'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/callbacks.rb:44:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/sendfile.rb:107:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/remote_ip.rb:48:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/show_exceptions.rb:46:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/rack/logger.rb:13:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/runtime.rb:17:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activesupport-3.0.3/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/lock.rb:11:in `block in call'
+<internal:prelude>:10:in `synchronize'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/lock.rb:11:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/static.rb:30:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/application.rb:168:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/application.rb:77:in `method_missing'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/rack/log_tailer.rb:14:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/content_length.rb:13:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/handler/webrick.rb:52:in `service'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined variable: \"$link-button-color\".\A         on line 102 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss\A \A 97:   font-size: 110%;\A 98:   .links-container {\A 99:     padding-top: 1em;\A 100:   }\A 101:   a {\A 102:     color: $link-button-color;\A 103:     text-decoration: none;\A 104:     &:hover {\A 105:       text-decoration: underline;\A 106:       color: darken($link-button-color, 10%);\A 107:     };"; }

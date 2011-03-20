@@ -1,13 +1,12 @@
 - title @company.name
 
-%h2 
-  = @company.name
-- if @companies_count > 1
-  = link_to "Back to companies", companies_path
+- content_for :title do
+  - if @companies_count > 1
+    = link_to "Back to companies", companies_path, { :class => 'back' }
+  %h1
+    = @company.name
 
-%p
-
-%h3
+%h2
   Backlogs
 - if @backlogs.empty?
   %p
@@ -21,9 +20,9 @@
           = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :confirm => 'Are you sure you want to delete this backlog?  This cannot be undone.'
         .small
           = link_to "Duplicate", duplicate_company_backlog_path(@company, backlog)
-%p
+%br/
 
-= link_to "Create a new backlog", new_company_backlog_path(@company)
+= link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }
 
 #dialog-confirm.dialog{:title=>"Delete backlog?"}
   %p

@@ -1,4 +1,19 @@
-%h2 Home
+- content_for :title do
+  %h1
+    iBacklog
+    .description : Simple backlog management
 
-- if user_signed_in?
-  = link_to "Dashboard", companies_path
+%p
+  iBacklog is a very simple backlog management tool aimed at teams and agencies who adopt agile methodologies.
+%p
+  The product is currently running in open beta, so please do sign up and start using the product.
+%p
+  We welcome your suggestions and feedback.
+
+.links-container
+  - if user_signed_in?
+    = link_to "View my dashboard", companies_path, { :class => 'button' }
+  - else
+    = link_to "Sign up for free", new_user_registration_path, { :class => 'button' }
+    OR
+    = link_to "Log in", new_user_session_path

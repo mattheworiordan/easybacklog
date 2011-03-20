@@ -1,6 +1,7 @@
 - title 'Duplicate a backlog'
 
-%h2 Duplicate backlog #{@backlog.name}
+- content_for :title do
+  %h1 Duplicate backlog #{@backlog.name}
 
 %p Please enter a new unique name for the duplicated backlog
 

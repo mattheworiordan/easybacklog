@@ -1,358 +1,95 @@
-#backlog-container {
-  margin-top: 5.5em;
-  clear: left; }
+/*
+Syntax error: Undefined mixin 'drop-shadow'.
+        on line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss, in `drop-shadow'
+        from line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss
 
-#backlog-data-area {
-  position: fixed;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  height: 4.5em;
-  width: 100%;
-  background-color: #FFF;
-  /* position editable input as global to avoid jumping */ }
-  #backlog-data-area .back-action {
-    margin: 0.5em;
-    float: right; }
-  #backlog-data-area input {
-    position: absolute; }
-  #backlog-data-area h2.name {
-    margin: 0.25em 0 0 0.25em;
-    position: relative;
-    width: 20em; }
-    #backlog-data-area h2.name > div {
-      padding: 2px; }
-    #backlog-data-area h2.name:hover {
-      background-color: #FFA; }
-  #backlog-data-area #backlog-settings {
-    float: left;
-    margin: 0.5em; }
-    #backlog-data-area #backlog-settings #backlog-rate, #backlog-data-area #backlog-settings #backlog-velocity {
-      float: left;
-      overflow: hidden; }
-    #backlog-data-area #backlog-settings #backlog-velocity {
-      padding-left: 2.5em; }
-    #backlog-data-area #backlog-settings .title {
-      float: left;
-      padding-right: 0.25em;
-      padding: 2px; }
-    #backlog-data-area #backlog-settings .data {
-      float: left;
-      padding: 2px; }
-      #backlog-data-area #backlog-settings .data:hover {
-        background-color: #FFA; }
-  #backlog-data-area .backlog-stats {
-    background-color: #eeeeee;
-    float: right;
-    margin: 0 1px 0 0; }
-    #backlog-data-area .backlog-stats div.title {
-      padding: 5px 0 5px 5px;
-      float: left; }
-    #backlog-data-area .backlog-stats div.output {
-      padding: 5px;
-      float: left; }
+43:   }
+44: }
+45: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
+46: section.for-backlog {
+47:   section.main-content-pod {
+48:     @include drop-shadow(0px, 0px);
+49:   }
+50: }
+51: 
+52: #backlog-container {
+53:   margin-top: 4.5em;
 
-#themes-header {
-  position: fixed;
-  top: 4.25em;
-  left: 0;
-  width: 100%;
-  margin: 0;
-  overflow: hidden;
-  background-color: #CCC;
-  border-bottom: 1px solid white; }
-  #themes-header .columns {
-    margin: 0 0.5em 0 0.5em; }
-    #themes-header .columns .theme {
-      background-color: #CCC;
-      width: 12%;
-      float: left;
-      margin: 0; }
-      #themes-header .columns .theme > div {
-        padding: 2px;
-        border-right: 1px solid white; }
-    #themes-header .columns .unique-id {
-      background-color: #CCC;
-      width: 7%;
-      float: left;
-      margin: 0; }
-      #themes-header .columns .unique-id > div {
-        padding: 2px;
-        border-right: 1px solid white; }
-    #themes-header .columns .user-story, #themes-header .columns .acceptance-criteria, #themes-header .columns .comments {
-      background-color: #CCC;
-      width: 22%;
-      float: left;
-      margin: 0; }
-      #themes-header .columns .user-story > div, #themes-header .columns .acceptance-criteria > div, #themes-header .columns .comments > div {
-        padding: 2px;
-        border-right: 1px solid white; }
-    #themes-header .columns .score-50, #themes-header .columns .score-90 {
-      background-color: #CCC;
-      width: 3%;
-      float: left;
-      margin: 0; }
-      #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
-        padding: 2px;
-        border-right: 1px solid white; }
-      #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
-        text-align: right; }
-    #themes-header .columns .cost-formatted {
-      background-color: #CCC;
-      width: 5%;
-      float: left;
-      margin: 0; }
-      #themes-header .columns .cost-formatted > div {
-        padding: 2px;
-        border-right: 1px solid white; }
-      #themes-header .columns .cost-formatted > div {
-        text-align: right; }
-    #themes-header .columns .days-formatted {
-      background-color: #CCC;
-      margin: 0;
-      width: auto; }
-      #themes-header .columns .days-formatted > div {
-        text-align: right;
-        padding: 2px; }
-
-/* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
-.stop-ordering {
-  display: none;
-  padding-top: 5px;
-  clear: left; }
-  .stop-ordering a {
-    font-weight: bold;
-    font-size: 90%;
-    text-decoration: none;
-    color: green;
-    border: 1px solid green;
-    background-color: #b3ffb3;
-    padding: 3px;
-    -moz-border-radius: 5px;
-    border-radius: 5px; }
-    .stop-ordering a:hover {
-      color: black;
-      border-color: black; }
-    .stop-ordering a.new-acceptance-criterion {
-      padding: 0 5px 0 5px; }
-
-ul.themes {
-  list-style: none;
-  margin: 0;
-  /* ensure data elements don't jump when editing */
-  /* styling for an empty editable field with edit text in it */
-  /* buttons for adding theme / story */
-  /* re-ordering target li item */
-  /* theme row */ }
-  ul.themes .data input, ul.themes .data textarea {
-    position: absolute;
-    margin-top: -3px; }
-  ul.themes .editable-blank {
-    font-size: 80%;
-    color: #666; }
-  ul.themes li.actions, ul.themes .calc
-  stop-ordering {
-    clear: left;
-    margin: 0 0 10px 0;
-    padding-top: 3px; }
-    ul.themes li.actions a, ul.themes .calc
-    stop-ordering a {
-      font-weight: bold;
-      font-size: 90%;
-      text-decoration: none;
-      color: green;
-      border: 1px solid green;
-      background-color: #b3ffb3;
-      padding: 1px 3px 2px 3px;
-      -moz-border-radius: 5px;
-      border-radius: 5px;
-      margin: 0 2px 0 2px; }
-      ul.themes li.actions a:hover, ul.themes .calc
-      stop-ordering a:hover {
-        color: black;
-        border-color: black; }
-      ul.themes li.actions a.new-acceptance-criterion, ul.themes .calc
-      stop-ordering a.new-acceptance-criterion {
-        padding: 0 5px 0 5px; }
-  ul.themes li.target-order-highlight {
-    background-color: #FFC;
-    margin: 0;
-    list-style: none;
-    height: 3em;
-    clear: left; }
-  ul.themes li.theme {
-    /* add padding to every theme row after the first */
-    margin: 0;
-    clear: left;
-    overflow: hidden;
-    /* this box appears when in theme re-order mode */
-    /* theme name field */
-    /* generic style for moving link */
-    /* generic style for deleting link */ }
-    ul.themes li.theme:nth-child(1n+2) {
-      padding: 5px 0 0 0; }
-    ul.themes li.theme .move-theme {
-      display: none;
-      border: 1px solid #CCC;
-      background-color: #EEE;
-      text-align: center;
-      float: left;
-      margin: 1px;
-      padding: 2px;
-      cursor: move; }
-    ul.themes li.theme > div.theme-data {
-      width: 12.0%;
-      /* all story elements use up % of total width as embedded in another elem */
-      float: left;
-      margin: 1px 0 1px 0; }
-      ul.themes li.theme > div.theme-data > div {
-        margin: 0 0 1px 1px;
-        padding: 2px;
-        border: 1px solid #CCC; }
-      ul.themes li.theme > div.theme-data .name > .data {
-        margin-left: 0px; }
-      ul.themes li.theme > div.theme-data .code {
-        color: #666;
-        font-size: 80%;
-        border: none; }
-        ul.themes li.theme > div.theme-data .code .heading {
-          float: left;
-          padding-right: 0.4em; }
-        ul.themes li.theme > div.theme-data .code .data {
-          float: left; }
-          ul.themes li.theme > div.theme-data .code .data input {
-            font-size: 95%; }
-      ul.themes li.theme > div.theme-data > .theme-actions {
-        border: none;
-        margin: 0;
-        padding: 0 0 0 3px;
-        clear: left; }
-    ul.themes li.theme div.move-story {
-      border: none;
-      cursor: move;
-      margin: 0;
-      padding-top: 0; }
-      ul.themes li.theme div.move-story a {
-        font-size: 90%;
-        color: #666;
-        cursor: move;
-        text-decoration: none; }
-        ul.themes li.theme div.move-story a:hover {
-          text-decoration: none; }
-    ul.themes li.theme div.delete-theme, ul.themes li.theme div.delete-story {
-      clear: left; }
-      ul.themes li.theme div.delete-theme a, ul.themes li.theme div.delete-story a {
-        font-size: 90%;
-        color: #990000;
-        text-decoration: none; }
-        ul.themes li.theme div.delete-theme a:hover, ul.themes li.theme div.delete-story a:hover {
-          text-decoration: underline; }
-    ul.themes li.theme .story-stats {
-      background-color: #eeeeee;
-      width: 100%;
-      text-align: right;
-      clear: left; }
-      ul.themes li.theme .story-stats div {
-        padding: 5px; }
-    ul.themes li.theme > div.stories {
-      float: left;
-      width: 88%; }
-      ul.themes li.theme > div.stories ul.stories {
-        list-style: none;
-        margin: 0;
-        /* story row */ }
-        ul.themes li.theme > div.stories ul.stories li.story {
-          /* add padding to every story row after the first */
-          clear: left;
-          margin: 0; }
-          ul.themes li.theme > div.stories ul.stories li.story:nth-child(1n+2) {
-            padding: 5px 0 0 0; }
-          ul.themes li.theme > div.stories ul.stories li.story > .unique-id {
-            width: 7.955%;
-            /* all story elements use up % of total width as embedded in another elem */
-            float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > .unique-id > div {
-              margin: 0 0 1px 1px;
-              padding: 2px;
-              border: 1px solid #CCC; }
-            ul.themes li.theme > div.stories ul.stories li.story > .unique-id > .story-actions {
-              border: none;
-              margin: 0;
-              padding: 0 0 0 3px; }
-            ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a .hint {
-              display: none;
-              position: absolute;
-              margin: 0 0 0 -95px;
-              width: 80px;
-              background: #FFE;
-              padding: 3px;
-              border: 1px solid #999; }
-            ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a:hover .hint {
-              display: block; }
-          ul.themes li.theme > div.stories ul.stories li.story > .user-story, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > .comments {
-            width: 25%;
-            /* all story elements use up % of total width as embedded in another elem */
-            float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
-              margin: 0 0 1px 1px;
-              padding: 2px;
-              border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90 {
-            width: 3.409%;
-            /* all story elements use up % of total width as embedded in another elem */
-            float: left;
-            text-align: right; }
-            ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
-              margin: 0 0 1px 1px;
-              padding: 2px;
-              border: 1px solid #CCC; }
-          ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
-            width: 5.682%;
-            /* all story elements use up % of total width as embedded in another elem */
-            float: left;
-            text-align: right; }
-            ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
-              margin: 0 0 1px 1px;
-              padding: 2px;
-              border: 1px solid #CCC; }
-            ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
-              border: none;
-              padding: 3px; }
-          ul.themes li.theme > div.stories ul.stories li.story > .days-formatted {
-            text-align: right; }
-            ul.themes li.theme > div.stories ul.stories li.story > .days-formatted > div {
-              margin: 1px 0 1px 1px;
-              padding: 3px; }
-          ul.themes li.theme > div.stories ul.stories li.story > div.user-story {
-            /* ensure div wraps the children */
-            /* as a, i want to, so i can text */ }
-            ul.themes li.theme > div.stories ul.stories li.story > div.user-story > div {
-              overflow: hidden; }
-            ul.themes li.theme > div.stories ul.stories li.story > div.user-story .heading {
-              float: left;
-              clear: left;
-              padding-right: 0.25em;
-              color: #666;
-              font-style: italic; }
-          ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
-            margin: 0;
-            list-style: none;
-            /* acceptance criteria row */ }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
-              margin: 0; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.actions {
-              margin-bottom: 4px; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li:last-child {
-              list-style: none;
-              margin: 0 0 3px 0; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .index {
-              width: 1.5em;
-              cursor: move;
-              float: left;
-              clear: left; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data {
-              clear: right;
-              cursor: text;
-              margin-left: 1.5em; }
-            ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
-              height: 1em; }
+Backtrace:
+/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss:48:in `drop-shadow'
+/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss:48
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/mixin_node.rb:62:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:59:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:37:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:29:in `render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:223:in `update_stylesheet'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:88:in `block (2 levels) in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `block in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:50:in `check_for_updates'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin/rack.rb:40:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:35:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:34:in `catch'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:34:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/head.rb:14:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/methodoverride.rb:24:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/flash.rb:182:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/session/abstract_store.rb:149:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/cookies.rb:295:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:32:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/connection_adapters/abstract/query_cache.rb:28:in `cache'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:12:in `cache'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:31:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:353:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/callbacks.rb:46:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activesupport-3.0.3/lib/active_support/callbacks.rb:415:in `_run_call_callbacks'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/callbacks.rb:44:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/sendfile.rb:107:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/remote_ip.rb:48:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/show_exceptions.rb:46:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/rack/logger.rb:13:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/runtime.rb:17:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activesupport-3.0.3/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/lock.rb:11:in `block in call'
+<internal:prelude>:10:in `synchronize'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/lock.rb:11:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/static.rb:30:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/application.rb:168:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/application.rb:77:in `method_missing'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/rack/log_tailer.rb:14:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/content_length.rb:13:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/handler/webrick.rb:52:in `service'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined mixin 'drop-shadow'.\A         on line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss, in `drop-shadow'\A         from line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss\A \A 43:   }\A 44: }\A 45: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 46: section.for-backlog {\A 47:   section.main-content-pod {\A 48:     @include drop-shadow(0px, 0px);\A 49:   }\A 50: }\A 51: \A 52: #backlog-container {\A 53:   margin-top: 4.5em;"; }

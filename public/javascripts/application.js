@@ -24,5 +24,11 @@ $(document).ready(function() {
       }
     });
     return (false);
-  })
+  });
+
+  // hide notices & alerts after some time
+  var alertNotice = $('#alert-space .notice, #alert-space .alert');
+  alertNotice.css('display','none').slideDown(function() {
+    _.delay(function() { alertNotice.slideUp() }, 5000);
+  });
 })

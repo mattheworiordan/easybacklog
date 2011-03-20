@@ -1,0 +1,23 @@
+$link-button-color: green;
+$title-area-color: #EDFEED;
+
+@mixin drop-shadow($offset, $size) {
+  -moz-box-shadow: $offset $offset $size #888;
+  -webkit-box-shadow: $offset $offset $size #888;
+  box-shadow: $offset $offset $size #888
+}
+
+@mixin button-style {
+  font-weight: normal;
+  text-decoration: none;
+  color: $link-button-color;
+  border: 2px solid $link-button-color;
+  background-color: lighten($link-button-color, 70%);
+  padding: 3px 10px 3px 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  &:hover {
+    color: darken($link-button-color, 10%);
+    border-color: darken($link-button-color, 10%);
+  };
+}

@@ -45,24 +45,28 @@ table {
 /* generic & fix from reset */
 body {
   font-family: Sans-Serif;
-  padding: 0.25em 0.25em 0.5em 0.25em;
-  font-size: 75%; }
+  padding: 0em 0em 0.5em 0em;
+  font-size: 75%;
+  background-color: #DDD; }
 
 h1 {
-  font-size: 150%;
-  font-weight: bold; }
+  font-size: 160%; }
+  h1 .description {
+    display: inline;
+    font-size: 90%;
+    color: #666; }
 
 h2 {
   font-size: 135%;
   margin-right: 1em;
   font-family: Sans-Serif;
   font-weight: normal;
-  margin-bottom: 0.5em; }
-
-h2 input {
-  font-size: 1em;
-  font-family: Sans-Serif;
-  font-weight: normal; }
+  margin-bottom: 0.5em;
+  /* style for editable title on backlog page */ }
+  h2 input {
+    font-size: 1em;
+    font-family: Sans-Serif;
+    font-weight: normal; }
 
 p {
   margin-bottom: 0.85em; }
@@ -70,80 +74,178 @@ p {
 ul {
   list-style: disc;
   margin-top: 0.25em; }
+  ul li {
+    margin-left: 2em;
+    margin-bottom: 0.35em; }
 
-ul li {
-  margin-left: 2em;
-  margin-bottom: 0.35em; }
-
-strong {
+b, strong {
   font-weight: bold; }
+
+i {
+  font-style: italic; }
+
+sup {
+  vertical-align: top;
+  font-size: 80%; }
 
 /* dialogs */
 .dialog {
   display: none; }
 
-/* styles */
-.main-title-logo {
-  float: left;
-  padding: 0.75em; }
+/* header styles */
+header {
+  overflow: hidden;
+  background-color: #000;
+  padding: 0.5em 0.5em 0.5em 1em;
+  color: #666; }
+  header a {
+    color: #CCC;
+    text-decoration: none; }
+    header a:hover {
+      color: #FFF;
+      text-decoration: underline; }
+  header sup {
+    color: #DD6; }
+  header .main-title-logo {
+    float: left;
+    font-size: 110%; }
+  header .account-info {
+    float: right; }
 
-.account-info {
-  float: right;
-  font-size: 90%; }
-
-.body {
+/* main body styles */
+section.content {
   clear: both;
-  padding: 0.75em 0.75em 0.5em 0.75em; }
+  padding: 1em;
+  font-size: 110%; }
+  section.content .links-container {
+    padding-top: 1em; }
+  section.content a {
+    color: green;
+    text-decoration: none;
+    /* back link in title area */ }
+    section.content a:hover {
+      text-decoration: underline;
+      color: #004d00; }
+    section.content a.button {
+      font-weight: normal;
+      text-decoration: none;
+      color: green;
+      border: 2px solid green;
+      background-color: #e6ffe6;
+      padding: 3px 10px 3px 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px; }
+      section.content a.button:hover {
+        color: #004d00;
+        border-color: #004d00; }
+    section.content a.back {
+      float: right; }
+  section.content input[type=submit] {
+    font-weight: normal;
+    text-decoration: none;
+    color: green;
+    border: 2px solid green;
+    background-color: #e6ffe6;
+    padding: 3px 10px 3px 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    font-size: 100%; }
+    section.content input[type=submit]:hover {
+      color: #004d00;
+      border-color: #004d00; }
 
+section.title {
+  margin: -1em -1em 0 -1em;
+  background-color: #edfeed;
+  padding: 1em; }
+
+section.main-content-pod {
+  background-color: white;
+  padding: 1em 1em 3em 1em;
+  clear: left;
+  margin-top: 1em;
+  -moz-box-shadow: 5px 5px 5px #888888;
+  -webkit-box-shadow: 5px 5px 5px #888888;
+  box-shadow: 5px 5px 5px #888888; }
+
+/* footer styles */
+footer {
+  padding: 0 1em 1em 1em;
+  color: #666; }
+  footer a {
+    color: #000;
+    text-decoration: none; }
+    footer a:hover {
+      text-decoration: underline; }
+
+/* alerts, notices and form errors */
 .notice, .alert {
   position: fixed;
   left: 50%;
   margin-left: -200px;
   width: 400px;
-  top: 10px;
+  top: 3px;
   text-align: center;
   z-index: 5; }
 
 .notice, .alert, .form_errors {
-  border: 1px solid green;
-  padding: 8px;
+  padding: 3px;
   display: block;
   background-color: #ccffcc;
-  font-weight: bold; }
+  font-weight: bold;
+  -moz-border-radius: 10px;
+  border-radius: 10px; }
 
 .alert, .form_errors {
-  border-color: red;
   background-color: #ffcccc; }
+
+.form_errors {
+  padding: 1em;
+  margin-bottom: 1em; }
 
 .field_with_errors {
   display: inline; }
-
-.field_with_errors label {
-  color: red; }
-
-.field_with_errors input {
-  border: 2px solid red; }
+  .field_with_errors label {
+    color: red; }
+  .field_with_errors input {
+    border: 2px solid red; }
 
 .small {
   display: inline;
   padding-left: 0.5em;
   font-size: 85%; }
+  .small a {
+    color: #666; }
 
-.small a {
-  color: #666; }
+/* on the backlog page we need to move the header to a fixed position */
+header.for-backlog {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  padding: 0;
+  overflow: hidden; }
+  header.for-backlog .padded-container {
+    overflow: hidden;
+    padding: 0.5em 0.5em 0.5em 1em; }
+
+/* hide the drop shadow on main content area for backlog as we already have a drop shadow */
+section.for-backlog section.main-content-pod {
+  -moz-box-shadow: 0px 0px 0px #888888;
+  -webkit-box-shadow: 0px 0px 0px #888888;
+  box-shadow: 0px 0px 0px #888888; }
 
 #backlog-container {
-  margin-top: 5.5em;
+  margin-top: 4.5em;
   clear: left; }
 
 #backlog-data-area {
   position: fixed;
-  top: 0;
+  top: 2em;
   left: 0;
   overflow: hidden;
   height: 4.5em;
   width: 100%;
-  background-color: #FFF;
+  background-color: #edfeed;
   /* position editable input as global to avoid jumping */ }
   #backlog-data-area .back-action {
     margin: 0.5em;
@@ -151,16 +253,16 @@ strong {
   #backlog-data-area input {
     position: absolute; }
   #backlog-data-area h2.name {
-    margin: 0.25em 0 0 0.25em;
+    margin: 0.25em 0 0 0.5em;
     position: relative;
     width: 20em; }
     #backlog-data-area h2.name > div {
       padding: 2px; }
     #backlog-data-area h2.name:hover {
-      background-color: #FFA; }
+      background-color: #c9fcc9; }
   #backlog-data-area #backlog-settings {
     float: left;
-    margin: 0.5em; }
+    margin: 0.5em 0 0 0.75em; }
     #backlog-data-area #backlog-settings #backlog-rate, #backlog-data-area #backlog-settings #backlog-velocity {
       float: left;
       overflow: hidden; }
@@ -174,9 +276,9 @@ strong {
       float: left;
       padding: 2px; }
       #backlog-data-area #backlog-settings .data:hover {
-        background-color: #FFA; }
+        background-color: #c9fcc9; }
   #backlog-data-area .backlog-stats {
-    background-color: #eeeeee;
+    background-color: #FFF;
     float: right;
     margin: 0 1px 0 0; }
     #backlog-data-area .backlog-stats div.title {
@@ -188,17 +290,20 @@ strong {
 
 #themes-header {
   position: fixed;
-  top: 4.25em;
+  top: 6.5em;
   left: 0;
   width: 100%;
   margin: 0;
   overflow: hidden;
-  background-color: #CCC;
-  border-bottom: 1px solid white; }
+  background-color: #DDD;
+  border-bottom: 1px solid white;
+  -moz-box-shadow: 3px 3px 3px #888888;
+  -webkit-box-shadow: 3px 3px 3px #888888;
+  box-shadow: 3px 3px 3px #888888; }
   #themes-header .columns {
-    margin: 0 0.5em 0 0.5em; }
+    margin: 0 2em 0 2em; }
     #themes-header .columns .theme {
-      background-color: #CCC;
+      background-color: #DDD;
       width: 12%;
       float: left;
       margin: 0; }
@@ -206,7 +311,7 @@ strong {
         padding: 2px;
         border-right: 1px solid white; }
     #themes-header .columns .unique-id {
-      background-color: #CCC;
+      background-color: #DDD;
       width: 7%;
       float: left;
       margin: 0; }
@@ -214,7 +319,7 @@ strong {
         padding: 2px;
         border-right: 1px solid white; }
     #themes-header .columns .user-story, #themes-header .columns .acceptance-criteria, #themes-header .columns .comments {
-      background-color: #CCC;
+      background-color: #DDD;
       width: 22%;
       float: left;
       margin: 0; }
@@ -222,7 +327,7 @@ strong {
         padding: 2px;
         border-right: 1px solid white; }
     #themes-header .columns .score-50, #themes-header .columns .score-90 {
-      background-color: #CCC;
+      background-color: #DDD;
       width: 3%;
       float: left;
       margin: 0; }
@@ -232,7 +337,7 @@ strong {
       #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
         text-align: right; }
     #themes-header .columns .cost-formatted {
-      background-color: #CCC;
+      background-color: #DDD;
       width: 5%;
       float: left;
       margin: 0; }
@@ -242,7 +347,7 @@ strong {
       #themes-header .columns .cost-formatted > div {
         text-align: right; }
     #themes-header .columns .days-formatted {
-      background-color: #CCC;
+      background-color: #DDD;
       margin: 0;
       width: auto; }
       #themes-header .columns .days-formatted > div {
@@ -267,8 +372,6 @@ strong {
     .stop-ordering a:hover {
       color: black;
       border-color: black; }
-    .stop-ordering a.new-acceptance-criterion {
-      padding: 0 5px 0 5px; }
 
 ul.themes {
   list-style: none;
@@ -284,13 +387,11 @@ ul.themes {
   ul.themes .editable-blank {
     font-size: 80%;
     color: #666; }
-  ul.themes li.actions, ul.themes .calc
-  stop-ordering {
+  ul.themes li.actions {
     clear: left;
     margin: 0 0 10px 0;
     padding-top: 3px; }
-    ul.themes li.actions a, ul.themes .calc
-    stop-ordering a {
+    ul.themes li.actions a {
       font-weight: bold;
       font-size: 90%;
       text-decoration: none;
@@ -301,18 +402,16 @@ ul.themes {
       -moz-border-radius: 5px;
       border-radius: 5px;
       margin: 0 2px 0 2px; }
-      ul.themes li.actions a:hover, ul.themes .calc
-      stop-ordering a:hover {
+      ul.themes li.actions a:hover {
         color: black;
         border-color: black; }
-      ul.themes li.actions a.new-acceptance-criterion, ul.themes .calc
-      stop-ordering a.new-acceptance-criterion {
+      ul.themes li.actions a.new-acceptance-criterion {
         padding: 0 5px 0 5px; }
   ul.themes li.target-order-highlight {
     background-color: #FFC;
     margin: 0;
     list-style: none;
-    height: 3em;
+    height: 2em;
     clear: left; }
   ul.themes li.theme {
     /* add padding to every theme row after the first */
@@ -342,7 +441,7 @@ ul.themes {
       ul.themes li.theme > div.theme-data > div {
         margin: 0 0 1px 1px;
         padding: 2px;
-        border: 1px solid #CCC; }
+        border: 1px solid #DDD; }
       ul.themes li.theme > div.theme-data .name > .data {
         margin-left: 0px; }
       ul.themes li.theme > div.theme-data .code {
@@ -408,7 +507,7 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > .unique-id > div {
               margin: 0 0 1px 1px;
               padding: 2px;
-              border: 1px solid #CCC; }
+              border: 1px solid #DDD; }
             ul.themes li.theme > div.stories ul.stories li.story > .unique-id > .story-actions {
               border: none;
               margin: 0;
@@ -430,7 +529,7 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
               margin: 0 0 1px 1px;
               padding: 2px;
-              border: 1px solid #CCC; }
+              border: 1px solid #DDD; }
           ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90 {
             width: 3.409%;
             /* all story elements use up % of total width as embedded in another elem */
@@ -439,7 +538,7 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
               margin: 0 0 1px 1px;
               padding: 2px;
-              border: 1px solid #CCC; }
+              border: 1px solid #DDD; }
           ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
             width: 5.682%;
             /* all story elements use up % of total width as embedded in another elem */
@@ -448,7 +547,7 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
               margin: 0 0 1px 1px;
               padding: 2px;
-              border: 1px solid #CCC; }
+              border: 1px solid #DDD; }
             ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
               border: none;
               padding: 3px; }

@@ -9,12 +9,12 @@ $table-first-col-width: 88%;
   &>div {
     margin: 0 0 1px 1px;
     padding: 2px;
-    border: 1px solid #CCC;
+    border: 1px solid #DDD;
   }
 }
 
 @mixin table-head($width) {
-  background-color: #CCC;
+  background-color: #DDD;
   width: $width;
   float: left;
   margin: 0;
@@ -26,23 +26,42 @@ $table-first-col-width: 88%;
 
 @mixin editable-field {
   &:hover {
-    background-color: #FFA;
+    background-color: darken($title-area-color,7.5%);
+  }
+}
+
+/* on the backlog page we need to move the header to a fixed position */
+header.for-backlog {
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  .padded-container {
+    overflow: hidden;
+    padding: 0.5em 0.5em 0.5em 1em;
+  }
+}
+/* hide the drop shadow on main content area for backlog as we already have a drop shadow */
+section.for-backlog {
+  section.main-content-pod {
+    @include drop-shadow(0px, 0px);
   }
 }
 
 #backlog-container {
-  margin-top: 5.5em;
+  margin-top: 4.5em;
   clear: left;
 }
 
 #backlog-data-area {
   position: fixed;
-  top: 0;
+  top: 2em;
   left: 0;
   overflow: hidden;
   height: 4.5em;
   width: 100%;
-  background-color: #FFF;
+  background-color: $title-area-color;
   .back-action {
     margin: 0.5em;
     float: right;
@@ -52,7 +71,7 @@ $table-first-col-width: 88%;
     position: absolute;
   }
   h2.name {
-    margin: 0.25em 0 0 0.25em;
+    margin: 0.25em 0 0 0.5em;
     position: relative;
     width: 20em;
     >div {
@@ -62,7 +81,7 @@ $table-first-col-width: 88%;
   }
   #backlog-settings {
     float: left;
-    margin: 0.5em;
+    margin: 0.5em 0 0 0.75em;
     #backlog-rate, #backlog-velocity {
       float: left;
       overflow: hidden;
@@ -82,7 +101,7 @@ $table-first-col-width: 88%;
     }
   }
   .backlog-stats {
-    background-color: $stats-bg-color;
+    background-color: #FFF;
     float: right;
     margin: 0 1px 0 0;
     div.title {
@@ -98,22 +117,22 @@ $table-first-col-width: 88%;
 
 #themes-header {
   position: fixed;
-  top: 4.25em;
+  top: 6.5em;
   left: 0;
   width: 100%;
   margin: 0;
   overflow: hidden;
-  background-color: #CCC;
+  background-color: #DDD;
   border-bottom: 1px solid white;
   .columns {
-    margin: 0 0.5em 0 0.5em;
+    margin: 0 2em 0 2em;
     .theme { @include table-head(12%); }
     .unique-id { @include table-head(7%); }
     .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
     .score-50, .score-90 { @include table-head(3%); &>div { text-align: right; } }
     .cost-formatted { @include table-head(5%); &>div { text-align: right; } }
     .days-formatted {
-      background-color: #CCC;
+      background-color: #DDD;
       margin: 0;
       width: auto;
       &>div {
@@ -122,6 +141,7 @@ $table-first-col-width: 88%;
       }
     }
   }
+  @include drop-shadow(3px, 3px);
 }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
@@ -143,9 +163,6 @@ $table-first-col-width: 88%;
       color: darken($add-button-color, 50%);
       border-color: darken($add-button-color, 50%);
     };
-    &.new-acceptance-criterion {
-      padding: 0 5px 0 5px;
-    }
   }
 }
 
@@ -168,8 +185,7 @@ ul.themes {
   }
 
   /* buttons for adding theme / story */
-  li.actions, .calc
-  stop-ordering {
+  li.actions {
     clear: left;
     margin: 0 0 10px 0;
     padding-top: 3px;
@@ -199,7 +215,7 @@ ul.themes {
     background-color: #FFC;
     margin: 0;
     list-style: none;
-    height: 3em;
+    height: 2em;
     clear: left;
   }
 
