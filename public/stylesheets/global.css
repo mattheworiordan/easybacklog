@@ -161,7 +161,7 @@ section.title {
 
 section.main-content-pod {
   background-color: white;
-  padding: 1em 1em 3em 1em;
+  padding: 1em 1em 1em 1em;
   clear: left;
   margin-top: 1em;
   -moz-box-shadow: 5px 5px 5px #888888;
@@ -389,7 +389,7 @@ ul.themes {
     color: #666; }
   ul.themes li.actions {
     clear: left;
-    margin: 0 0 10px 0;
+    margin: 1em 0 10px 0;
     padding-top: 3px; }
     ul.themes li.actions a {
       font-weight: bold;
