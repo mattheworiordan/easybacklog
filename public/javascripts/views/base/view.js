@@ -60,7 +60,6 @@ App.Views.BaseView = Backbone.View.extend({
             } catch (e) { console.log(e); }
             new App.Views.Error({ message: errorMessage});
             // exception to deal with unique-id showing code from parent model in value
-            if (fieldId == 'unique_id') { beforeChangeValue = view.model.Theme().get('code') + beforeChangeValue; }
             fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
             var valBack = {};
             valBack[fieldId] = _.isEmpty(beforeChangeValue) ? null : beforeChangeValue;
