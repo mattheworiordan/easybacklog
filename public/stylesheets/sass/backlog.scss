@@ -39,7 +39,7 @@ header.for-backlog {
   overflow: hidden;
   .padded-container {
     overflow: hidden;
-    padding: 0.5em 0.5em 0.5em 1em;
+    padding: $standard-header-padding;
   }
 }
 /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
@@ -72,7 +72,7 @@ section.for-backlog {
     position: absolute;
   }
   h2.name {
-    margin: 0.25em 0 0 0.5em;
+    margin: 6px 0 0 10px;
     position: relative;
     width: 20em;
     >div {
@@ -82,7 +82,7 @@ section.for-backlog {
   }
   #backlog-settings {
     float: left;
-    margin: 0.5em 0 0 0.75em;
+    margin: 3px 0 0 12px;
     #backlog-rate, #backlog-velocity {
       float: left;
       overflow: hidden;
@@ -92,8 +92,7 @@ section.for-backlog {
     }
     .title {
       float: left;
-      padding-right: 0.25em;
-      padding: 2px;
+      padding: 2px 0.25em 2px 0;
     }
     .data {
       float: left;
@@ -104,7 +103,7 @@ section.for-backlog {
   .backlog-stats {
     background-color: #FFF;
     float: right;
-    margin: 0 1px 0 0;
+    margin: 0 12px 0 0;
     div.title {
       padding: 5px 0 5px 5px;
       float: left;
@@ -125,8 +124,9 @@ section.for-backlog {
   overflow: hidden;
   background-color: #DDD;
   border-bottom: 1px solid white;
+  border-top: 1px solid white;
   .columns {
-    margin: 0 2em 0 2em;
+    margin: 0 24px 0 24px;
     .theme { @include table-head(12%); }
     .unique-id { @include table-head(7%); }
     .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
@@ -286,14 +286,20 @@ ul.themes {
       }
     }
 
-    .story-stats {
+    .theme-stats {
       background-color: $stats-bg-color;
       width: 100%;
       text-align: right;
       clear: left;
-      margin-top: 0.75em;
-      div {
+      overflow: hidden;
+      div.title {
         padding: 5px;
+        float: left;
+        color: #666;
+      }
+      div.metrics {
+        padding: 5px;
+        float: right;
       }
     }
 
@@ -303,6 +309,10 @@ ul.themes {
       ul.stories {
         list-style: none;
         margin: 0;
+        li.actions {
+          margin: 0 0 1em 3px;
+        }
+
         /* story row */
         li.story {
           /* add padding to every story row after the first */

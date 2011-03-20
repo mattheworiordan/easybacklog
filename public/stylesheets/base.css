@@ -1,31 +1,24 @@
 /*
-Syntax error: Undefined variable: "$link-button-color".
-        on line 102 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss
+Syntax error: Undefined variable: "$standard-header-padding".
+        on line 67 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss
 
-97:   font-size: 110%;
-98:   .links-container {
-99:     padding-top: 1em;
-100:   }
-101:   a {
-102:     color: $link-button-color;
-103:     text-decoration: none;
-104:     &:hover {
-105:       text-decoration: underline;
-106:       color: darken($link-button-color, 10%);
-107:     };
+62: 
+63: /* header styles */
+64: header {
+65:   overflow: hidden;
+66:   background-color: #000;
+67:   padding: $standard-header-padding;
+68:   color: #666;
+69: 
+70:   a {
+71:     color: #CCC;
+72:     text-decoration: none;
 
 Backtrace:
-/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss:102
+/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss:67
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/variable.rb:39:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/node.rb:61:in `perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/prop_node.rb:132:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
@@ -92,4 +85,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$link-button-color\".\A         on line 102 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss\A \A 97:   font-size: 110%;\A 98:   .links-container {\A 99:     padding-top: 1em;\A 100:   }\A 101:   a {\A 102:     color: $link-button-color;\A 103:     text-decoration: none;\A 104:     &:hover {\A 105:       text-decoration: underline;\A 106:       color: darken($link-button-color, 10%);\A 107:     };"; }
+  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 67 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/base.scss\A \A 62: \A 63: /* header styles */\A 64: header {\A 65:   overflow: hidden;\A 66:   background-color: #000;\A 67:   padding: $standard-header-padding;\A 68:   color: #666;\A 69: \A 70:   a {\A 71:     color: #CCC;\A 72:     text-decoration: none;"; }

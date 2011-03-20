@@ -42,6 +42,9 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+/* links and buttons that are styled */
+/* area beneath the black toolbar */
+/* padding for the black header area */
 /* generic & fix from reset */
 body {
   font-family: Sans-Serif;
@@ -96,7 +99,7 @@ sup {
 header {
   overflow: hidden;
   background-color: #000;
-  padding: 0.5em 0.5em 0.5em 1em;
+  padding: 6px 12px 6px 12px;
   color: #666; }
   header a {
     color: #CCC;
@@ -115,7 +118,7 @@ header {
 /* main body styles */
 section.content {
   clear: both;
-  padding: 1em;
+  padding: 12px;
   font-size: 110%; }
   section.content .links-container {
     padding-top: 1em; }
@@ -155,15 +158,15 @@ section.content {
       border-color: #004d00; }
 
 section.title {
-  margin: -1em -1em 0 -1em;
+  margin: -12px -12px 0 -12px;
   background-color: #edfeed;
-  padding: 1em; }
+  padding: 12px; }
 
 section.main-content-pod {
   background-color: white;
-  padding: 1em 1em 1.5em 1em;
+  padding: 12px 12px 18px 12px;
   clear: left;
-  margin-top: 1em;
+  margin-top: 12px;
   -moz-box-shadow: 5px 5px 5px #888888;
   -webkit-box-shadow: 5px 5px 5px #888888;
   box-shadow: 5px 5px 5px #888888; }
@@ -232,7 +235,7 @@ header.for-backlog {
   overflow: hidden; }
   header.for-backlog .padded-container {
     overflow: hidden;
-    padding: 0.5em 0.5em 0.5em 1em; }
+    padding: 6px 12px 6px 12px; }
 
 /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
 section.for-backlog section.main-content-pod {
@@ -260,7 +263,7 @@ section.for-backlog section.main-content-pod {
   #backlog-data-area input {
     position: absolute; }
   #backlog-data-area h2.name {
-    margin: 0.25em 0 0 0.5em;
+    margin: 6px 0 0 10px;
     position: relative;
     width: 20em; }
     #backlog-data-area h2.name > div {
@@ -269,7 +272,7 @@ section.for-backlog section.main-content-pod {
       background-color: #c9fcc9; }
   #backlog-data-area #backlog-settings {
     float: left;
-    margin: 0.5em 0 0 0.75em; }
+    margin: 3px 0 0 12px; }
     #backlog-data-area #backlog-settings #backlog-rate, #backlog-data-area #backlog-settings #backlog-velocity {
       float: left;
       overflow: hidden; }
@@ -277,8 +280,7 @@ section.for-backlog section.main-content-pod {
       padding-left: 2.5em; }
     #backlog-data-area #backlog-settings .title {
       float: left;
-      padding-right: 0.25em;
-      padding: 2px; }
+      padding: 2px 0.25em 2px 0; }
     #backlog-data-area #backlog-settings .data {
       float: left;
       padding: 2px; }
@@ -287,7 +289,7 @@ section.for-backlog section.main-content-pod {
   #backlog-data-area .backlog-stats {
     background-color: #FFF;
     float: right;
-    margin: 0 1px 0 0; }
+    margin: 0 12px 0 0; }
     #backlog-data-area .backlog-stats div.title {
       padding: 5px 0 5px 5px;
       float: left; }
@@ -304,11 +306,12 @@ section.for-backlog section.main-content-pod {
   overflow: hidden;
   background-color: #DDD;
   border-bottom: 1px solid white;
+  border-top: 1px solid white;
   -moz-box-shadow: 3px 3px 3px #888888;
   -webkit-box-shadow: 3px 3px 3px #888888;
   box-shadow: 3px 3px 3px #888888; }
   #themes-header .columns {
-    margin: 0 2em 0 2em; }
+    margin: 0 24px 0 24px; }
     #themes-header .columns .theme {
       background-color: #DDD;
       width: 12%;
@@ -492,14 +495,19 @@ ul.themes {
         text-decoration: none; }
         ul.themes li.theme div.delete-theme a:hover, ul.themes li.theme div.delete-story a:hover {
           text-decoration: underline; }
-    ul.themes li.theme .story-stats {
+    ul.themes li.theme .theme-stats {
       background-color: #eeeeee;
       width: 100%;
       text-align: right;
       clear: left;
-      margin-top: 0.75em; }
-      ul.themes li.theme .story-stats div {
-        padding: 5px; }
+      overflow: hidden; }
+      ul.themes li.theme .theme-stats div.title {
+        padding: 5px;
+        float: left;
+        color: #666; }
+      ul.themes li.theme .theme-stats div.metrics {
+        padding: 5px;
+        float: right; }
     ul.themes li.theme > div.stories {
       float: left;
       width: 88%; }
@@ -507,6 +515,8 @@ ul.themes {
         list-style: none;
         margin: 0;
         /* story row */ }
+        ul.themes li.theme > div.stories ul.stories li.actions {
+          margin: 0 0 1em 3px; }
         ul.themes li.theme > div.stories ul.stories li.story {
           /* add padding to every story row after the first */
           clear: left;

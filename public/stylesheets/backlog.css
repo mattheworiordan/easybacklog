@@ -1,24 +1,24 @@
 /*
-Syntax error: Undefined mixin 'drop-shadow'.
-        on line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss, in `drop-shadow'
-        from line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss
+Syntax error: Undefined variable: "$standard-header-padding".
+        on line 42 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss
 
+37:   width: 100%;
+38:   padding: 0;
+39:   overflow: hidden;
+40:   .padded-container {
+41:     overflow: hidden;
+42:     padding: $standard-header-padding;
 43:   }
 44: }
 45: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
 46: section.for-backlog {
 47:   section.main-content-pod {
-48:     @include drop-shadow(0px, 0px);
-49:   }
-50: }
-51: 
-52: #backlog-container {
-53:   margin-top: 4.5em;
 
 Backtrace:
-/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss:48:in `drop-shadow'
-/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss:48
-/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/mixin_node.rb:62:in `perform!'
+/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss:42
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/variable.rb:39:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/node.rb:61:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/prop_node.rb:132:in `perform!'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
@@ -92,4 +92,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined mixin 'drop-shadow'.\A         on line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss, in `drop-shadow'\A         from line 48 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss\A \A 43:   }\A 44: }\A 45: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 46: section.for-backlog {\A 47:   section.main-content-pod {\A 48:     @include drop-shadow(0px, 0px);\A 49:   }\A 50: }\A 51: \A 52: #backlog-container {\A 53:   margin-top: 4.5em;"; }
+  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 42 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss\A \A 37:   width: 100%;\A 38:   padding: 0;\A 39:   overflow: hidden;\A 40:   .padded-container {\A 41:     overflow: hidden;\A 42:     padding: $standard-header-padding;\A 43:   }\A 44: }\A 45: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 46: section.for-backlog {\A 47:   section.main-content-pod {"; }

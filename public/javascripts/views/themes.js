@@ -48,7 +48,7 @@ App.Views.Themes = {
 
       /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
       this.$('ul.themes .actions .reorder-themes').click(function(event) {
-        parentView.$('ul.stories,.story-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
+        parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
           parentView.$('.move-theme').css('display', 'block');
           parentView.$('.stop-ordering').css('display', 'block');
         });
@@ -57,7 +57,7 @@ App.Views.Themes = {
       this.$('>.stop-ordering').click(function(event) {
         parentView.$('.move-theme').css('display', 'none');
         parentView.$('.stop-ordering').css('display', 'none');
-        parentView.$('ul.stories,.story-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideDown(250);
+        parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideDown(250);
       })
       return(this);
     },
@@ -257,7 +257,7 @@ App.Views.Themes = {
     },
 
     updateStatistics: function() {
-      this.$('.story-stats div').html( JST['themes/stats']({ model: this.model }) )
+      this.$('.theme-stats div').html( JST['themes/stats']({ model: this.model }) )
     }
   })
 };

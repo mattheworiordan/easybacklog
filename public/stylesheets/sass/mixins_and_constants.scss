@@ -1,5 +1,6 @@
-$link-button-color: green;
-$title-area-color: #EDFEED;
+$link-button-color: green; /* links and buttons that are styled */
+$title-area-color: #EDFEED; /* area beneath the black toolbar */
+$standard-header-padding: 6px 12px 6px 12px; /* padding for the black header area */
 
 @mixin drop-shadow($offset, $size) {
   -moz-box-shadow: $offset $offset $size #888;
