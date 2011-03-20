@@ -217,6 +217,12 @@ footer {
   .small a {
     color: #666; }
 
+/* feedback styling */
+#ue-feedback-tab {
+  -moz-box-shadow: 0 0 5px #888;
+  -webkit-box-shadow: 0 0 5px#888;
+  box-shadow: 0 0 5px #888; }
+
 /* on the backlog page we need to move the header to a fixed position */
 header.for-backlog {
   position: fixed;
@@ -484,7 +490,8 @@ ul.themes {
       background-color: #eeeeee;
       width: 100%;
       text-align: right;
-      clear: left; }
+      clear: left;
+      margin-top: 0.75em; }
       ul.themes li.theme .story-stats div {
         padding: 5px; }
     ul.themes li.theme > div.stories {

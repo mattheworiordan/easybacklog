@@ -192,3 +192,10 @@ footer {
     color: #666;
   }
 }
+
+/* feedback styling */
+#ue-feedback-tab {
+  -moz-box-shadow: 0 0 5px #888;
+  -webkit-box-shadow: 0 0 5px#888;
+  box-shadow: 0 0 5px #888;
+}
