@@ -38,10 +38,10 @@ class Theme < ActiveRecord::Base
   private
     def assign_code_if_blank
       if code.blank?
-        # take 1st letter of each word to make up 3 chars
+        # take 1st letter of each alphanumeric word to make up 3 chars
         # if less than 3 words, take more letters from words
         # take from latter words if first word is single letter
-        words = name.split(/[ _-]/)
+        words = name.gsub(/[^a-z0-9 ]/i,' ').strip.split(/[ ]+/).compact
         self.code = case words.length
           when 3 then words[0].first + words[1].first + words[2].first
           when 2 then words[0].first(2) + words[1].first(words[0].length > 1 ? 1 : 2)

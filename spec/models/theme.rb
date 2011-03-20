@@ -12,6 +12,9 @@ describe Theme do
 
     # take 1st 3 letters from 1st word
     Factory.create(:theme, :name => 'Visitors').code.should eql('VIS')
+    
+    # ignore punctuation and treat as words
+    Factory.create(:theme, :name => 'Here-is////A').code.should eql('HIA')
 
     # take 1st letter from 1st word, 2nd two letters from 2nd word
     theme = Factory.create(:theme, :name => 'T Example')
