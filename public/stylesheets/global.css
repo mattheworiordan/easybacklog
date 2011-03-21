@@ -458,7 +458,7 @@ ul.themes {
       width: 12.0%;
       /* all story elements use up % of total width as embedded in another elem */
       float: left;
-      margin: 1px 0 1px 0; }
+      margin: 0 0 1px 0; }
       ul.themes li.theme > div.theme-data > div {
         margin: 0 0 1px 1px;
         padding: 2px;
@@ -502,18 +502,21 @@ ul.themes {
         ul.themes li.theme div.delete-theme a:hover, ul.themes li.theme div.delete-story a:hover {
           text-decoration: underline; }
     ul.themes li.theme .theme-stats {
-      background-color: #eeeeee;
       width: 100%;
-      text-align: right;
       clear: left;
-      overflow: hidden; }
-      ul.themes li.theme .theme-stats div.title {
-        padding: 5px;
-        float: left;
-        color: #666; }
-      ul.themes li.theme .theme-stats div.metrics {
-        padding: 5px;
-        float: right; }
+      overflow: hidden;
+      margin: -2px 0 8px 0; }
+      ul.themes li.theme .theme-stats .container {
+        margin-left: 7.955%;
+        overflow: hidden;
+        background-color: #eeeeee; }
+        ul.themes li.theme .theme-stats .container div.title {
+          padding: 5px;
+          float: left;
+          color: #666; }
+        ul.themes li.theme .theme-stats .container div.metrics {
+          padding: 5px;
+          float: right; }
     ul.themes li.theme > div.stories {
       float: left;
       width: 88%; }
@@ -522,13 +525,13 @@ ul.themes {
         margin: 0;
         /* story row */ }
         ul.themes li.theme > div.stories ul.stories li.actions {
-          margin: 0 0 1em 3px; }
+          margin: 0 0 1em 3px;
+          position: absolute; }
         ul.themes li.theme > div.stories ul.stories li.story {
-          /* add padding to every story row after the first */
+          padding: 0 0 5px 0;
+          overflow: hidden;
           clear: left;
           margin: 0; }
-          ul.themes li.theme > div.stories ul.stories li.story:nth-child(1n+2) {
-            padding: 5px 0 0 0; }
           ul.themes li.theme > div.stories ul.stories li.story > .unique-id {
             width: 7.955%;
             /* all story elements use up % of total width as embedded in another elem */
@@ -603,7 +606,8 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
               margin: 0; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.actions {
-              margin-bottom: 4px; }
+              margin-bottom: 4px;
+              position: relative; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li:last-child {
               list-style: none;
               margin: 0 0 3px 0; }
