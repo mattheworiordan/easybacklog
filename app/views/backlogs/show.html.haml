@@ -21,15 +21,6 @@
 
 %input{:type => 'hidden', :value => "#{company_backlog_path(@backlog.company, @backlog)}", :name => 'ajax-data-path', :id => 'ajax-data-path'}
 
-#dialog-delete-story.dialog{:title=>"Delete story?"}
-  %p
-    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
-    This story will be permanently deleted and cannot be recovered. Are you sure?
-#dialog-delete-theme.dialog{:title=>"Delete theme?"}
-  %p
-    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
-    This theme and all its stories will be permanently deleted and cannot be recovered. Are you sure?
-
 :javascript
   $(document).ready(function() {
     App.Collections.Backlogs = new BacklogsCollection({}, { company_id: #{@backlog.company.id} });

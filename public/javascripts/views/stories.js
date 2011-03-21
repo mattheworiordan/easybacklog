@@ -102,7 +102,7 @@ App.Views.Stories = {
   Show: App.Views.BaseView.extend({
     tagName: 'li',
     className: 'story',
-    deleteDialogSelector: '#dialog-delete-story',
+    deleteDialogTemplate: 'stories/delete-dialog',
 
     events: {
       "click .delete-story>a": "remove"
@@ -275,7 +275,7 @@ App.Views.Stories = {
       var model_collection = view.model.collection;
 
       // tell the user we're deleting as it may take a second
-      $(dialog_obj).find('>p').html('Deleting story...<br />Please wait.');
+      $(dialog_obj).find('>p').html('Deleting story...<br /><br />Please wait.');
       $(dialog_obj).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Close');
       $(dialog_obj).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
       view.model.destroy({

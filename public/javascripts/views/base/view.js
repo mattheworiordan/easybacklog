@@ -92,7 +92,9 @@ App.Views.BaseView = Backbone.View.extend({
       view.model.collection.remove(view.model);
       $(view.el).slideUp('fast', function() { $(view.el).remove() }); // remove HTML for story, had to animate & delay, some strange issue where page was reloading
     } else {
-      $(this.deleteDialogSelector).dialog({
+      $('#dialog-delete').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST[this.deleteDialogTemplate]({ model: this.model }));
+      $('#dialog-delete').dialog({
         resizable: false,
         height:170,
         modal: true,
