@@ -333,20 +333,6 @@ ul.themes {
               margin: 0;
               padding: 0 0 0 3px;
             }
-            .move-story a {
-              .hint {
-                display: none;
-                position: absolute;
-                margin: 0 0 0 -95px;
-                width: 80px;
-                background: #FFE;
-                padding: 3px;
-                border: 1px solid #999;
-              }
-              &:hover .hint {
-                display: block;
-              }
-            }
           }
           &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(22%); }
           &>.score-50, &>.score-90 { @include table-col(3%); text-align: right; }
