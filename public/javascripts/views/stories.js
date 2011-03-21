@@ -123,7 +123,7 @@ App.Views.Stories = {
       // make all input and textarea fields respond to Tab/Enter
       var show_view = this;
       var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
-      _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent); });
+      _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent); });
 
       this.$('.move-story a').mousedown(function(event) {
         App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
@@ -173,9 +173,11 @@ App.Views.Stories = {
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
       var isInput = $(event.target).is('input'); // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
-      if (_.include([9,13], event.keyCode) && (!event.ctrlKey || isInput) ) {
-        event.preventDefault();
+      if (_.include([9,13,27], event.keyCode) && (!event.ctrlKey || isInput) ) { // tab, enter, esc
         $(event.target).blur();
+        try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
+          event.preventDefault();
+        } catch (e) { }
 
         // set up array of all elements in this view in the tab order
         var viewElements = [
@@ -189,7 +191,9 @@ App.Views.Stories = {
           'score-90 .data'
         ];
 
-        var dataClass = $(event.target).parents('.data').parent().attr('class');
+        var dataClass = $(event.target);
+        if (!dataClass.hasClass('data')) { dataClass = dataClass.parents('.data'); } // if event has come from esc, we're already on .data
+        dataClass = dataClass.parent().attr('class'); // get to the parent to get the class name which indicates the field name
         var dataElem = _.detect(viewElements, function(id) { return (_.first(id.split(' ')) == dataClass); });
 
         if (dataElem) { // user has tabbed from a data element

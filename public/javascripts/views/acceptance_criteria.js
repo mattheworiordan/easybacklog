@@ -99,7 +99,7 @@ App.Views.AcceptanceCriteria = {
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
 
       this.makeFieldsEditable();
-      this.$('.data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      this.$('.data, .data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
       return (this);
     },
 
@@ -146,9 +146,11 @@ App.Views.AcceptanceCriteria = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      if (_.include([9,13], event.keyCode) && (!event.ctrlKey)) {
-        event.preventDefault();
+      if (_.include([9,13,27], event.keyCode) && (!event.ctrlKey)) { // tab, enter, esc
         $(event.target).blur();
+        try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
+          event.preventDefault();
+        } catch (e) { }
 
         var liElem = $(event.target).parents('.data').parent();
         if (!event.shiftKey) { // moving -->

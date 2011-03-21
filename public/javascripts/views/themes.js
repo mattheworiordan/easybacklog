@@ -129,7 +129,10 @@ App.Views.Themes = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
-      this.$('.theme-data .name>.data input, .theme-data .code>.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      var self = this;
+      _.each(['.name', '.code'], function(elem) {
+        self.$('.theme-data ' + elem + '>.data, .theme-data ' + elem + '>.data input').live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      });
       this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
 
       return (this);
@@ -156,9 +159,11 @@ App.Views.Themes = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      if (_.include([9,13], event.keyCode)) {
+      if (_.include([9,13,27], event.keyCode)) { // tab, enter, esc
         $(event.target).blur();
-        event.preventDefault();
+        try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
+          event.preventDefault();
+        } catch (e) { }
 
         if (!$(event.target).hasClass('new-story')) {
           // Behaviour for Theme view

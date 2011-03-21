@@ -280,6 +280,8 @@
                         e.preventDefault();
                         //self.reset();
                         reset.apply(form, [settings, self]);
+                        // MO hack: propogate esc event to the original item so we can deal with esc
+                        $(self).trigger(event);
                     }
                 });
 

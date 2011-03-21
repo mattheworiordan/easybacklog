@@ -17,7 +17,7 @@ App.Views.Backlogs = {
 
       this.makeFieldsEditable();
       this.updateStatistics();
-      $('#backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
 
       var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
       if (firstEditableElem.length) {
@@ -65,9 +65,12 @@ App.Views.Backlogs = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      if (_.include([9,13], event.keyCode)) {
-        event.preventDefault();
+      if (_.include([9,13,27], event.keyCode)) { // tab, enter, esc
         $(event.target).blur();
+        try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
+          event.preventDefault();
+        } catch (e) { }
+
         if (!event.shiftKey) { // moving -->
           var firstTheme = $('#themes-container ul.themes li.theme:first>.theme-data .name .data');
           if (firstTheme.length) {
