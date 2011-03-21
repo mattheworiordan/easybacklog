@@ -28,6 +28,11 @@ App.Views.Notice = Backbone.View.extend({
 });
 
 App.Views.Error = App.Views.Notice.extend({
-    className: "alert",
+    className: "error",
     defaultMessage: 'Uh oh! Something went wrong. Please try again.'
+});
+
+App.Views.Warning = App.Views.Notice.extend({
+    className: "warning",
+    defaultMessage: 'Unfortunately we could not perform that action.'
 });

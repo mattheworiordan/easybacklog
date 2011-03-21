@@ -27,7 +27,7 @@ $(document).ready(function() {
   });
 
   // hide notices & alerts after some time
-  var alertNotice = $('#alert-space .notice, #alert-space .alert');
+  var alertNotice = $('#alert-space .notice, #alert-space .error, #alert-space .warning');
   alertNotice.css('display','none').slideDown(function() {
     _.delay(function() { alertNotice.slideUp() }, 5000);
   });

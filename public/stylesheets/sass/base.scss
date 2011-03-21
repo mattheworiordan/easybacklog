@@ -145,8 +145,8 @@ footer {
   }
 }
 
-/* alerts, notices and form errors */
-.notice, .alert {
+/* errors, notices, warnings and inline form errors */
+.notice, .error, .warning {
   position: fixed;
   left: 50%;
   margin-left: -200px;
@@ -156,7 +156,7 @@ footer {
   z-index: 5;
 }
 
-.notice, .alert, .form_errors {
+.notice, .error, .warning, .form_errors {
   padding: 3px;
   display: block;
   background-color: #ccffcc;
@@ -165,8 +165,12 @@ footer {
   border-radius: 10px;
 }
 
-.alert, .form_errors {
-  background-color: #ffcccc; 
+.error, .form_errors {
+  background-color: #F55656;
+}
+
+.warning {
+  background-color: #FFB300; 
 }
 
 .form_errors {
