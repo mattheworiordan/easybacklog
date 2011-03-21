@@ -48,10 +48,14 @@ App.Views.Themes = {
 
       /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
       this.$('ul.themes .actions .reorder-themes').click(function(event) {
-        parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
-          parentView.$('.move-theme').css('display', 'block');
-          parentView.$('.stop-ordering').css('display', 'block');
-        });
+        if ($('ul.themes li.theme').length < 2) {
+          new App.Views.Warning({ message: 'You need more than one theme to reorder'});
+        } else {
+          parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
+            parentView.$('.move-theme').css('display', 'block');
+            parentView.$('.stop-ordering').css('display', 'block');
+          });
+        }
       });
       /* ordering has finished as user clicked on stop ordering link */
       this.$('>.stop-ordering').click(function(event) {
