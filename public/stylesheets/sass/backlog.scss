@@ -37,6 +37,7 @@ header.for-backlog {
   width: 100%;
   padding: 0;
   overflow: hidden;
+  z-index: 1;
   .padded-container {
     overflow: hidden;
     padding: $standard-header-padding;
@@ -57,12 +58,13 @@ section.for-backlog {
 
 #backlog-data-area {
   position: fixed;
-  top: 2em;
+  top: 24px;
   left: 0;
   overflow: hidden;
   height: 4.5em;
   width: 100%;
   background-color: $title-area-color;
+  z-index: 1;
   .back-action {
     margin: 6px 12px 6px 6px;
     float: right;
@@ -117,7 +119,8 @@ section.for-backlog {
 
 #themes-header {
   position: fixed;
-  top: 6.5em;
+  z-index: 1;
+  top: 75px;
   left: 0;
   width: 100%;
   margin: 0;
