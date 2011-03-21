@@ -12,14 +12,17 @@
   %p
     There are no backlogs yet in this account.
 - else
-  %ul
+  %ul.backlog-list
     - @backlogs.each do |backlog|
       %li
         = link_to backlog.name, company_backlog_path(@company, backlog)
-        .small
+        .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
+        .action
+          (
           = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :confirm => 'Are you sure you want to delete this backlog?  This cannot be undone.'
-        .small
+          |
           = link_to "Duplicate", duplicate_company_backlog_path(@company, backlog)
+          )
 %br/
 
 = link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }

@@ -235,7 +235,8 @@ header.for-backlog {
   top: 0px;
   width: 100%;
   padding: 0;
-  overflow: hidden; }
+  overflow: hidden;
+  z-index: 1; }
   header.for-backlog .padded-container {
     overflow: hidden;
     padding: 6px 12px 6px 12px; }
@@ -253,12 +254,13 @@ section.for-backlog section.main-content-pod {
 
 #backlog-data-area {
   position: fixed;
-  top: 2em;
+  top: 24px;
   left: 0;
   overflow: hidden;
   height: 4.5em;
   width: 100%;
   background-color: #edfeed;
+  z-index: 1;
   /* position editable input as global to avoid jumping */ }
   #backlog-data-area .back-action {
     margin: 6px 12px 6px 6px;
@@ -302,7 +304,8 @@ section.for-backlog section.main-content-pod {
 
 #themes-header {
   position: fixed;
-  top: 6.5em;
+  z-index: 1;
+  top: 75px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -615,3 +618,14 @@ ul.themes {
               margin-left: 1.5em; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
               height: 1em; }
+
+ul.backlog-list {
+  list-style: none; }
+  ul.backlog-list li {
+    margin: 0 0 0.5em 0; }
+    ul.backlog-list li .last-update {
+      color: #999;
+      display: inline; }
+    ul.backlog-list li .action {
+      display: inline;
+      font-size: 85%; }

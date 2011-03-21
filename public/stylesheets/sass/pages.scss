@@ -1,0 +1,14 @@
+ul.backlog-list {
+  list-style: none;
+  li {
+    margin: 0 0 0.5em 0;
+    .last-update {
+      color: #999;
+      display: inline;
+    }
+    .action {
+      display: inline;
+      font-size: 85%;
+    }
+  }
+}

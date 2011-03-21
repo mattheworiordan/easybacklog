@@ -1,0 +1,10 @@
+ul.backlog-list {
+  list-style: none; }
+  ul.backlog-list li {
+    margin: 0 0 0.5em 0; }
+    ul.backlog-list li .last-update {
+      color: #999;
+      display: inline; }
+    ul.backlog-list li .action {
+      display: inline;
+      font-size: 85%; }
