@@ -21,8 +21,6 @@
 #backlog-container
   = render :partial => 'themes_container'
 
-%input{:type => 'hidden', :value => "#{company_backlog_path(@backlog.company, @backlog)}", :name => 'ajax-data-path', :id => 'ajax-data-path'}
-
 :javascript
   $(document).ready(function() {
     App.Collections.Backlogs = new BacklogsCollection({}, { company_id: #{@backlog.company.id} });
