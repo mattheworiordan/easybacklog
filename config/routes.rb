@@ -7,7 +7,7 @@ Ibacklog::Application.routes.draw do
         match 'duplicate' => 'backlogs#duplicate', :via => [:get, :post], :as => 'duplicate'
       end
       member do
-        # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls so that IE uses a helpful filename
+        # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls or .pdf so that IE uses a helpful filename
         match ':file_name' => 'backlogs#show', :via => [:get], :as => 'download'
       end
     end

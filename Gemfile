@@ -12,6 +12,8 @@ gem 'acts_as_list' # orderable items
 
 gem 'jammit'
 
+gem 'prawn', :git => "git://github.com/sandal/prawn.git", :tag => '0.10.2', :submodules => true
+
 group :development, :test, :cucumber do
   # gem 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'

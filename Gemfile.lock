@@ -1,4 +1,13 @@
 GIT
+  remote: git://github.com/sandal/prawn.git
+  revision: 89ba0ebf7ac3705756330a25ab4c88e4c71e36d8
+  tag: 0.10.2
+  submodules: true
+  specs:
+    prawn (0.10.2)
+      pdf-reader (>= 0.8.1)
+
+GIT
   remote: http://github.com/michaeldv/awesome_print.git
   revision: 0f14846fcd7356cabde6bfb40be6c5529eccfbdf
   specs:
@@ -7,6 +16,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    Ascii85 (1.0.0)
     Selenium (1.1.14)
     ZenTest (4.4.2)
     abstract (1.0.0)
@@ -111,6 +121,8 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     nokogiri (1.4.4)
+    pdf-reader (0.9.1)
+      Ascii85 (>= 0.9)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-mount (0.6.13)
@@ -206,6 +218,7 @@ DEPENDENCIES
   heroku_san
   hpricot
   jammit
+  prawn!
   rails (= 3.0.3)
   rspec (>= 2.0.0)
   rspec-rails (>= 2.0.0)

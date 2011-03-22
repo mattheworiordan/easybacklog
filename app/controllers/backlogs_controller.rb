@@ -9,16 +9,16 @@ class BacklogsController < ApplicationController
       # download an Excel file
       format.xls do
         filename = "#{@backlog.name.parameterize}.xls"
-        headers["Content-type"] = "application/msexcel"
-        if request.env['HTTP_USER_AGENT'] =~ /msie/i
-          headers['Pragma'] = 'public'
-          headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
-          headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
-          headers['Expires'] = "0"
-        else
-          headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
-        end
+        set_download_headers filename
         render :layout => false
+      end
+
+      # download a PDF of the user story cards
+      format.pdf do
+        filename = "#{@backlog.name.parameterize}.pdf"
+        set_download_headers filename
+        output = StoryCardsReport.new.to_pdf(@backlog)
+        send_data output, :filename => filename, :type => "application/pdf"
       end
 
       format.js do
@@ -104,6 +104,15 @@ class BacklogsController < ApplicationController
       if @company.users.find(current_user.id).blank?
         flash[:error] = 'You do not have permission to view this backlog'
         redirect_to companies_path
+      end
+    end
+
+    def set_download_headers(filename)
+      headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+      if request.env['HTTP_USER_AGENT'] =~ /msie/i
+        headers['Pragma'] = 'public'
+        headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
+        headers['Expires'] = "0"
       end
     end
 end
