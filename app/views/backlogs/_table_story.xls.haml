@@ -1,0 +1,22 @@
+%td{:valign => 'top'}
+  = "#{story.theme.code}#{story.unique_id}"
+%td{:valign => 'top'}
+  = "As a #{story.as_a}"
+  %br{ :style => 'mso-data-placement:same-cell;' }
+  = "I want to #{story.i_want_to}"
+  %br{ :style => 'mso-data-placement:same-cell;' }
+  = "So I can #{story.so_i_can}"
+%td{:valign => 'top'}
+  - story.acceptance_criteria.each_with_index do |criterion, index|
+    = "#{index+1}. #{criterion.criterion}"
+    %br{ :style => 'mso-data-placement:same-cell;' }
+%td{:valign => 'top'}
+  = story.comments
+%td{:valign => 'top'}
+  = story.score_50
+%td{:valign => 'top'}
+  = story.score_90
+%td{:valign => 'top'}
+  = story.cost_formatted
+%td{:valign => 'top'}
+  = story.days_formatted

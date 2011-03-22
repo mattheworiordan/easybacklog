@@ -35,6 +35,10 @@ class Theme < ActiveRecord::Base
     (cost || 0).to_currency(:precision => 0, :locale => backlog.company.locale.code.to_s)
   end
 
+  def days_formatted
+    format('%0.1f', days)
+  end
+
   private
     def assign_code_if_blank
       if code.blank?

@@ -1,0 +1,29 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name=ProgId content=Excel.Sheet>
+    <meta name=Generator content="Microsoft Excel 11">
+ 
+    <!--[if gte mso 9]><xml>
+      <x:ExcelWorkbook>
+        <x:ExcelWorksheets>
+          <x:ExcelWorksheet>
+            <x:Name>Backlog</x:Name>
+            <x:WorksheetOptions>
+            <x:Selected/>
+              <x:FreezePanes/>
+              <x:FrozenNoSplit/>
+              <x:SplitHorizontal>2</x:SplitHorizontal>
+              <x:TopRowBottomPane>2</x:TopRowBottomPane>
+            </x:WorksheetOptions>
+          </x:ExcelWorksheet>
+        </x:ExcelWorksheets>
+      </x:ExcelWorkbook>
+    </xml><![endif]-->
+ 
+</head>
+<body>
+  <%= render :partial => 'table_backlog', :locals => { :backlog => @backlog } %>
+</body>
+</html>

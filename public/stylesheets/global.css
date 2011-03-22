@@ -229,6 +229,23 @@ footer {
   -webkit-box-shadow: 0 0 5px#888;
   box-shadow: 0 0 5px #888; }
 
+p#vtip {
+  display: none;
+  position: absolute;
+  padding: 10px;
+  left: 5px;
+  font-size: 0.8em;
+  background-color: white;
+  border: 1px solid #a6c9e2;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  z-index: 9999; }
+
+p#vtip #vtipArrow {
+  position: absolute;
+  top: -10px;
+  left: 5px; }
+
 /* on the backlog page we need to move the header to a fixed position */
 header.for-backlog {
   position: fixed;
@@ -301,6 +318,9 @@ section.for-backlog section.main-content-pod {
     #backlog-data-area .backlog-stats div.output {
       padding: 5px;
       float: left; }
+  #backlog-data-area .actions {
+    float: right;
+    padding: 5px 15px 5px 5px; }
 
 #themes-header {
   position: fixed;
@@ -544,16 +564,6 @@ ul.themes {
               border: none;
               margin: 0;
               padding: 0 0 0 3px; }
-            ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a .hint {
-              display: none;
-              position: absolute;
-              margin: 0 0 0 -95px;
-              width: 80px;
-              background: #FFE;
-              padding: 3px;
-              border: 1px solid #999; }
-            ul.themes li.theme > div.stories ul.stories li.story > .unique-id .move-story a:hover .hint {
-              display: block; }
           ul.themes li.theme > div.stories ul.stories li.story > .user-story, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > .comments {
             width: 25%;
             /* all story elements use up % of total width as embedded in another elem */

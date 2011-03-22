@@ -5,6 +5,22 @@ class BacklogsController < ApplicationController
     @backlog = @company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
     respond_to do |format|
       format.html { render :layout => 'backlog' }
+
+      # download an Excel file
+      format.xls do
+        filename = "#{@backlog.name.parameterize}.xls"
+        headers["Content-type"] = "application/msexcel"
+        if request.env['HTTP_USER_AGENT'] =~ /msie/i
+          headers['Pragma'] = 'public'
+          headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
+          headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+          headers['Expires'] = "0"
+        else
+          headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+        end
+        render :layout => false
+      end
+
       format.js do
         backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
         backlog_methods = [:points, :days, :cost_formatted, :rate_formatted]
