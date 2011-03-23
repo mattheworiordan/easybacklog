@@ -25,7 +25,11 @@ App.Views.AcceptanceCriteria = {
       this.$('ul').append(JST['acceptance_criteria/new']());
 
       var orderChangedEvent = this.orderChanged;
-      this.$('ul.acceptance-criteria').disableSelection().sortable({
+      this.$('ul.acceptance-criteria').sortable({
+        start: function(event, ui) {
+          // ensure all editable fields lose focus and revert to normal divs whilst dragging
+          parentView.$('textarea, input').blur();
+        },
         stop: function(event, ui) {
           // stop jeditable from assuming the element needs to now be editable as this item has just been dragged
           $(event.originalEvent.target).data('disabled.editable.once','true').find('.data').data('disabled.editable.once','true');
@@ -34,7 +38,7 @@ App.Views.AcceptanceCriteria = {
         placeholder: 'target-order-highlight',
         axis: 'y',
         handle: '.index'
-      });
+      }).find('.index').disableSelection();
       this.displayOrderIndexes();
       return(this);
     },
