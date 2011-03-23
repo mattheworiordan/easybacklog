@@ -1,5 +1,5 @@
 var _ues = {
-host:'ibacklog.userecho.com',
+host:'easybacklog.userecho.com',
 forum:'4890',
 lang:'en',
 tab_icon_show:false,

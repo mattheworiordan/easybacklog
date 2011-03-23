@@ -96,6 +96,10 @@ sup {
   display: none; }
 
 /* header styles */
+span.easy {
+  font-style: italic;
+  padding-right: 0.1em; }
+
 header {
   overflow: hidden;
   background-color: #000;

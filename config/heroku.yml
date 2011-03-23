@@ -1,4 +1,4 @@
 apps:
   # shorthand: heroku app
-  production: ibacklog
-  staging: ibacklog-staging
+  production: easybacklog
+  staging: easybacklog-staging

@@ -1,5 +1,7 @@
 %div.main-title-logo
-  = link_to 'iBacklog', root_path
+  = link_to root_path do
+    %span.easy>="easy"
+    %span.backlog Backlog
   %sup BETA
 %div.account-info
   - if user_signed_in?
