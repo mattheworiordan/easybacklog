@@ -1,0 +1,44 @@
+<div id="dialog-print" title="Print story cards">
+  <form>
+    <p>
+      <span class="ui-icon ui-icon-print" style="float:left; margin:0 7px 30px 0;" />
+      Printing story cards requires the use of a printer that is capable of duplexing (double-sided printing).  Alternatively, and less favourably, you can glue each page pair together.
+    </p>
+    <p>
+      What would you like to print?
+    </p>
+    <p>
+      <select id="print-scope">
+        <option id="">All themes</option>
+        <optgroup label="Only the following theme">
+        <% backlog.Themes().each(function(theme) { %>
+          <option id="<%= theme.get('id') %>"><%= htmlEncode(theme.get('name')) %></option>
+        <% }); %>
+        </optgroup>
+      </select>
+      <br />
+    </p>
+    <p>
+      Please select your paper size
+    </p>
+    <p>
+      <select id="page-size">
+        <option id="A4"<%= ($.cookie("page-size-default") == 'A4') ? ' selected' : '' %>>A4</option>
+        <option id="LETTER"<%= ($.cookie("page-size-default") == 'LETTER') ? ' selected' : '' %>>Letter</option>
+      </select>
+      <br />
+    </p>
+    <p>
+      Which printer setting do you use for double-sided printing?
+    </p>
+    <p>
+      <select id="fold-side">
+        <option id="short"<%= ($.cookie("fold-side-default") == 'short') ? ' selected' : '' %>>Short side binding</option>
+        <option id="long"<%= ($.cookie("fold-side-default") == 'long') ? ' selected' : '' %>>Long side binding</option>
+      </select>
+      <br />
+    </p>
+    <p class="progress-placeholder">
+    </p>
+  </form>
+</div>

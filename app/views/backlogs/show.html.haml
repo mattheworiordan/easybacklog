@@ -18,7 +18,7 @@
   .actions
     = link_to "Export", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
     |
-    = link_to "Print", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip'
+    = link_to "Print", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
 
 #backlog-container
   = render :partial => 'themes_container'

@@ -17,7 +17,14 @@ class BacklogsController < ApplicationController
       format.pdf do
         filename = "#{@backlog.name.parameterize}.pdf"
         set_download_headers filename
-        output = StoryCardsReport.new.to_pdf(@backlog)
+        themes = if params[:print_scope].blank?
+          # print_scope is blank therefore display all themes
+          @backlog.themes
+        else
+          # print_scope has an ID so user has selected a single theme
+          @backlog.themes.select { |t| t.id.to_s == params[:print_scope] }
+        end
+        output = StoryCardsReport.new.to_pdf(themes, params[:page_size], params[:fold_side])
         send_data output, :filename => filename, :type => "application/pdf"
       end
 

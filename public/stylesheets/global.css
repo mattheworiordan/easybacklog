@@ -637,6 +637,9 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
               height: 1em; }
 
+#dialog-print .progress-placeholder {
+  font-weight: bold; }
+
 ul.backlog-list {
   list-style: none; }
   ul.backlog-list li {

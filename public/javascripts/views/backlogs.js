@@ -6,7 +6,7 @@ App.Views.Backlogs = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent','resizeEvent');
+      _.bindAll(this, 'navigateEvent','print');
     },
 
     render: function() {
@@ -19,12 +19,16 @@ App.Views.Backlogs = {
       this.updateStatistics();
       $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
 
+      // print link should show a dialog first
+      $('#backlog-data-area .actions #print').live('click', this.print);
+
       var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
       if (firstEditableElem.length) {
         firstEditableElem.click();
       } else {
         $('ul.themes li.actions a.new-theme').focus();
       }
+
       return (this);
     },
 
@@ -88,6 +92,48 @@ App.Views.Backlogs = {
           }
         }
       }
+    },
+
+    print: function(event) {
+      var view = this;
+      event.preventDefault();
+      $('#dialog-print').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST['backlogs/print-dialog']({ backlog: this.model }));
+      $('#dialog-print').dialog({
+        resizable: false,
+        height:350,
+        width: 400,
+        modal: true,
+        buttons: {
+          Print: function() {
+            // get the page size & fold side values from the select fields
+            var page_size = $(this).find('#page-size option:selected').attr('id');
+            var fold_side = $(this).find('#fold-side option:selected').attr('id');
+
+            // save the cookie so settings are remembered
+            $.cookie("fold-side-default", fold_side);
+            $.cookie("page-size-default", page_size);
+
+            // download the PDF in the background
+            var printUrl = $(event.target).attr('href');
+            printUrl += '?print_scope=' + $(this).find('#print-scope option:selected').attr('id')
+              + '&page_size=' + page_size
+              + '&fold_side=' + fold_side;
+            document.location.href = printUrl;
+
+            // update the dialog to say we're updating and then close after a short period
+            $(this).find('p.progress-placeholder').html('Please wait, we\'re preparing your PDF...');
+            $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
+            $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
+            var dialog = this;
+            _.delay(function() { $(dialog).dialog("close"); }, 2000);
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
+        }
+      });
     }
   })
 };
