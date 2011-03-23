@@ -348,7 +348,7 @@ section.for-backlog section.main-content-pod {
       float: left;
       margin: 0; }
       #themes-header .columns .theme > div {
-        padding: 2px;
+        padding: 3px 3px 1px 5px;
         border-right: 1px solid white; }
     #themes-header .columns .unique-id {
       background-color: #DDD;
@@ -356,7 +356,7 @@ section.for-backlog section.main-content-pod {
       float: left;
       margin: 0; }
       #themes-header .columns .unique-id > div {
-        padding: 2px;
+        padding: 3px 3px 1px 5px;
         border-right: 1px solid white; }
     #themes-header .columns .user-story, #themes-header .columns .acceptance-criteria, #themes-header .columns .comments {
       background-color: #DDD;
@@ -364,7 +364,7 @@ section.for-backlog section.main-content-pod {
       float: left;
       margin: 0; }
       #themes-header .columns .user-story > div, #themes-header .columns .acceptance-criteria > div, #themes-header .columns .comments > div {
-        padding: 2px;
+        padding: 3px 3px 1px 5px;
         border-right: 1px solid white; }
     #themes-header .columns .score-50, #themes-header .columns .score-90 {
       background-color: #DDD;
@@ -372,17 +372,15 @@ section.for-backlog section.main-content-pod {
       float: left;
       margin: 0; }
       #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
-        padding: 2px;
+        padding: 3px 3px 1px 5px;
         border-right: 1px solid white; }
-      #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
-        text-align: right; }
     #themes-header .columns .cost-formatted {
       background-color: #DDD;
       width: 5%;
       float: left;
       margin: 0; }
       #themes-header .columns .cost-formatted > div {
-        padding: 2px;
+        padding: 3px 3px 1px 5px;
         border-right: 1px solid white; }
       #themes-header .columns .cost-formatted > div {
         text-align: right; }
@@ -392,7 +390,7 @@ section.for-backlog section.main-content-pod {
       width: auto; }
       #themes-header .columns .days-formatted > div {
         text-align: right;
-        padding: 2px; }
+        padding: 3px 3px 1px 5px; }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
 .themes .stop-ordering {
@@ -581,8 +579,7 @@ ul.themes {
           ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90 {
             width: 3.409%;
             /* all story elements use up % of total width as embedded in another elem */
-            float: left;
-            text-align: right; }
+            float: left; }
             ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
               margin: 0 0 1px 1px;
               padding: 2px;

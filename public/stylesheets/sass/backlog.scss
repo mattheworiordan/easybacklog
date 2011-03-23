@@ -19,7 +19,7 @@ $table-first-col-width: 88%;
   float: left;
   margin: 0;
   &>div {
-    padding: 2px;
+    padding: 3px 3px 1px 5px;
     border-right: 1px solid white;
   }
 }
@@ -137,7 +137,7 @@ section.for-backlog {
     .theme { @include table-head(12%); }
     .unique-id { @include table-head(7%); }
     .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
-    .score-50, .score-90 { @include table-head(3%); &>div { text-align: right; } }
+    .score-50, .score-90 { @include table-head(3%); }
     .cost-formatted { @include table-head(5%); &>div { text-align: right; } }
     .days-formatted {
       background-color: #DDD;
@@ -145,7 +145,7 @@ section.for-backlog {
       width: auto;
       &>div {
         text-align: right;
-        padding: 2px;
+        padding: 3px 3px 1px 5px;
       }
     }
   }
@@ -341,7 +341,7 @@ ul.themes {
             }
           }
           &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(22%); }
-          &>.score-50, &>.score-90 { @include table-col(3%); text-align: right; }
+          &>.score-50, &>.score-90 { @include table-col(3%); }
           &>.cost-formatted { @include table-col(5%); text-align: right; &>div { border: none; padding: 3px; } }
           &>.days-formatted {
             &>div {
