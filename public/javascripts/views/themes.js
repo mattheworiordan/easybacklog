@@ -29,22 +29,18 @@ App.Views.Themes = {
 
       var orderChangedEvent = this.orderChanged;
       var actionsElem;
+      var moveThemeTitle;
       // allow themes to be sorted using JQuery UI
-      this.$('ul.themes').disableSelection().sortable({
+      this.$('ul.themes').sortable({
         start: function(event, ui) {
-          // hide the new theme button when dragging
-          // actionsElem = parentView.$('ul.themes>.actions').clone();
-          // parentView.$('ul.themes>.actions').remove();
         },
         stop: function(event, ui) {
           orderChangedEvent();
-          // show the new theme button again
-          parentView.$('ul.themes').append(actionsElem);
         },
         placeholder: 'target-order-highlight',
         axis: 'y',
         handle: '.move-theme'
-      });
+      }).find('.move-theme').disableSelection();
 
       /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
       this.$('ul.themes .actions .reorder-themes').click(function(event) {
