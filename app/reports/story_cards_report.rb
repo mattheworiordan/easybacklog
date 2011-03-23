@@ -11,8 +11,6 @@ class StoryCardsReport
   def to_pdf(themes, page_size, fold_side)
     page_size = 'A4' unless (PAGE_SIZES.has_key?((page_size || '').to_sym))
     fold_side = 'short' unless %w(short long).include?(fold_side)
-    ap page_size
-    ap fold_side
     page_dimensions = PAGE_SIZES[page_size.to_sym]
     document_options = { 
       :page_size => page_size, 
