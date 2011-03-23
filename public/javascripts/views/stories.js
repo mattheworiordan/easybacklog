@@ -35,6 +35,7 @@ App.Views.Stories = {
           view.$('ul.stories>.actions').remove();
           view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
           // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip won't do anything until dragging is over
+          $('#vtip').remove();
           view.$('.move-story.vtipActive').mouseleave();
           view.$('.move-story').removeClass('vtip');
         },
