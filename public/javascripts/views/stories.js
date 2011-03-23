@@ -34,19 +34,22 @@ App.Views.Stories = {
           actionsElem = view.$('ul.stories>.actions').clone();
           view.$('ul.stories>.actions').remove();
           view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
-          view.$('.move-story .hint').css('visibility','hidden'); // hide the hint when dragging
+          // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip won't do anything until dragging is over
+          view.$('.move-story.vtipActive').mouseleave();
+          view.$('.move-story').removeClass('vtip');
         },
         stop: function(event, ui) {
           App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
           orderChangedEvent();
           // show the new story button again
           view.$('ul.stories').append(actionsElem);
-          view.$('.move-story .hint').css('visibility','visible'); // allow hint to be visible now
+          // add the tips back in to work around jQuery UI and vTip conflict on Firefox
+          view.$('.move-story').addClass('vtip');
         },
         placeholder: 'target-order-highlight',
         axis: 'y',
         handle: '.move-story'
-      });
+      }).find('.move-story').disableSelection();
 
       return(this);
     },

@@ -12,6 +12,7 @@ this.vtip = function() {
             this.t = this.title;
             this.title = ''; 
             this.top = (e.pageY + yOffset); this.left = (e.pageX + xOffset);
+            $(this).addClass('vtipActive'); // workaround for JQuery UI where vtips were displaying whilst dragging and then emptying the title, so we need to tag which item is active
             
             $('body').append( '<p id="vtip"><img id="vtipArrow" />' + this.t + '</p>' );
                         
@@ -22,6 +23,7 @@ this.vtip = function() {
         function() {
             this.title = this.t;
             $("p#vtip").fadeOut("slow").remove();
+            $(this).removeClass('vtipActive');  // workaround for JQuery UI where vtips were displaying whilst dragging and then emptying the title, so we need to tag which item is active
         }
     ).live('mousemove',
         function(e) {
