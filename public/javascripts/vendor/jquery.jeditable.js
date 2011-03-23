@@ -513,7 +513,7 @@
                     // uses jquery autoresize plugin http://james.padolsey.com/javascript/jquery-plugin-autoresize/
                     if (settings.autoResize) {
                       textarea.css('dispay','block');
-                      textarea.autoResize({ limit: 150, extraSpace: 0, origHeight: 20 });
+                      textarea.autoResize({ limit: 150, extraSpace: 10, origHeight: 20 });
                     }
                     $(this).append(textarea);
                     return(textarea);

@@ -427,7 +427,8 @@ ul.themes {
     position: absolute;
     margin-top: -3px;
     font-family: Sans-Serif;
-    font-size: 100%; }
+    font-size: 100%;
+    z-index: 2; }
   ul.themes .editable-blank {
     font-size: 80%;
     color: #666; }
