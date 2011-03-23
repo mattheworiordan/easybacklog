@@ -75,13 +75,18 @@
                         toChange.stop().animate({height:scrollTop}, settings.animateDuration, settings.animateCallback)
                         : toChange.height(scrollTop);
                 };
+                remove = function() {
+                  // parent has lost focus so get rid of object from DOM now
+                  clone.remove();
+                }
             
             // Bind namespaced handlers to appropriate events:
             textarea
                 .unbind('.dynSiz')
                 .bind('keyup.dynSiz', updateSize)
                 .bind('keydown.dynSiz', updateSize)
-                .bind('change.dynSiz', updateSize);
+                .bind('change.dynSiz', updateSize)
+                .bind('blur', remove);
             
         });
         
