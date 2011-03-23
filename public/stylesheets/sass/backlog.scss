@@ -70,7 +70,7 @@ section.for-backlog {
     float: right;
   }
   /* position editable input as global to avoid jumping */
-  input {
+  input, textarea {
     position: absolute;
   }
   h2.name {
@@ -177,6 +177,8 @@ ul.themes {
     input, textarea {
       position: absolute;
       margin-top: -3px;
+      font-family: Sans-Serif;
+      font-size: 100%;
     }
   }
 
@@ -250,7 +252,7 @@ ul.themes {
         }
         .data {
           float: left;
-          input {
+          input, textarea {
             font-size: 95%;
           }
         }

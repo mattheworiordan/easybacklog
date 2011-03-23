@@ -286,7 +286,7 @@ section.for-backlog section.main-content-pod {
   #backlog-data-area .back-action {
     margin: 6px 12px 6px 6px;
     float: right; }
-  #backlog-data-area input {
+  #backlog-data-area input, #backlog-data-area textarea {
     position: absolute; }
   #backlog-data-area h2.name {
     margin: 6px 0 0 10px;
@@ -427,7 +427,9 @@ ul.themes {
   /* theme row */ }
   ul.themes .data input, ul.themes .data textarea {
     position: absolute;
-    margin-top: -3px; }
+    margin-top: -3px;
+    font-family: Sans-Serif;
+    font-size: 100%; }
   ul.themes .editable-blank {
     font-size: 80%;
     color: #666; }
@@ -498,7 +500,7 @@ ul.themes {
           padding-right: 0.4em; }
         ul.themes li.theme > div.theme-data .code .data {
           float: left; }
-          ul.themes li.theme > div.theme-data .code .data input {
+          ul.themes li.theme > div.theme-data .code .data input, ul.themes li.theme > div.theme-data .code .data textarea {
             font-size: 95%; }
       ul.themes li.theme > div.theme-data > .theme-actions {
         border: none;

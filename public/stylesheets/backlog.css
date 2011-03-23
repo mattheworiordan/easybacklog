@@ -1,6 +1,6 @@
 /*
 Syntax error: Undefined variable: "$standard-header-padding".
-        on line 43 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss
+        on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/backlog.scss
 
 38:   padding: 0;
 39:   overflow: hidden;
@@ -15,7 +15,7 @@ Syntax error: Undefined variable: "$standard-header-padding".
 48:   section.main-content-pod {
 
 Backtrace:
-/Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss:43
+/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/backlog.scss:43
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/variable.rb:39:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/node.rb:61:in `perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/prop_node.rb:132:in `perform!'
@@ -92,4 +92,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 43 of /Users/matthew/Projects/ibacklog/ibacklog/public/stylesheets/sass/backlog.scss\A \A 38:   padding: 0;\A 39:   overflow: hidden;\A 40:   z-index: 1;\A 41:   .padded-container {\A 42:     overflow: hidden;\A 43:     padding: $standard-header-padding;\A 44:   }\A 45: }\A 46: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 47: section.for-backlog {\A 48:   section.main-content-pod {"; }
+  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/backlog.scss\A \A 38:   padding: 0;\A 39:   overflow: hidden;\A 40:   z-index: 1;\A 41:   .padded-container {\A 42:     overflow: hidden;\A 43:     padding: $standard-header-padding;\A 44:   }\A 45: }\A 46: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 47: section.for-backlog {\A 48:   section.main-content-pod {"; }
