@@ -31,8 +31,6 @@ App.Views.AcceptanceCriteria = {
           parentView.$('textarea, input').blur();
         },
         stop: function(event, ui) {
-          // stop jeditable from assuming the element needs to now be editable as this item has just been dragged
-          $(event.originalEvent.target).data('disabled.editable.once','true').find('.data').data('disabled.editable.once','true');
           orderChangedEvent();
         },
         placeholder: 'target-order-highlight',
