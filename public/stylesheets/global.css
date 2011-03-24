@@ -124,8 +124,6 @@ section.content {
   clear: both;
   padding: 12px;
   font-size: 110%; }
-  section.content .links-container {
-    padding-top: 1em; }
   section.content a {
     color: green;
     text-decoration: none;
@@ -640,8 +638,10 @@ ul.themes {
 #dialog-print .progress-placeholder {
   font-weight: bold; }
 
+/* Company dashboard home */
 ul.backlog-list {
-  list-style: none; }
+  list-style: none;
+  padding-bottom: 1em; }
   ul.backlog-list li {
     margin: 0 0 0.5em 0; }
     ul.backlog-list li .last-update {
@@ -650,3 +650,36 @@ ul.backlog-list {
     ul.backlog-list li .action {
       display: inline;
       font-size: 85%; }
+
+/* Home page */
+#home {
+  /* 3 panels on the home page */ }
+  #home .sign-up {
+    width: 400px;
+    float: left;
+    padding: 10px 10px 15px 10px;
+    background-color: #CFC;
+    -moz-border-radius: 10px;
+    border-radius: 10px; }
+    #home .sign-up .button {
+      background-color: white; }
+  #home .or {
+    width: 40px;
+    float: left;
+    font-weight: bold;
+    font-size: 130%;
+    padding: 90px 0 0 10px;
+    text-align: center; }
+  #home .login {
+    width: 280px;
+    margin-left: 480px;
+    padding: 10px;
+    background-color: #D6D6D6;
+    -moz-border-radius: 10px;
+    border-radius: 10px; }
+    #home .login input[type=submit] {
+      background-color: #FFF;
+      border-color: #666;
+      color: #333; }
+  #home ul {
+    padding-bottom: 1em; }

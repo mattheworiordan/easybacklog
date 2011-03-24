@@ -5,17 +5,41 @@
     .description : Simple backlog management
 
 %p
-  easyBacklog is a very simple to use backlog management tool aimed at teams and agencies who primarily adopt agile methodologies.
+  easyBacklog is a very simple to use backlog management tool aimed at teams and agencies who adopt agile methodologies.
 %p
-  The product is currently running in open beta, so please feel free to sign up and start using the product.
+  We are currently running an open beta of easyBacklog so feel free to register an account for free.
 %p
   We welcome your
   = link_to 'suggestions and feedback.', contact_path
 
-.links-container
+#home
   - if user_signed_in?
+    %h2 Recent activity
+    - if @recent_backlogs.empty?
+      %p You have not created any backlogs yet so there is no recent activity.
+      %br/
+    - else
+      %ul.backlog-list
+        - @recent_backlogs.each do |backlog|
+          %li
+            = link_to backlog.name, company_backlog_path(backlog.company, backlog)
+            .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
     = link_to "View my dashboard", companies_path, { :class => 'button' }
   - else
-    = link_to "Sign up for free", new_user_registration_path, { :class => 'button' }
-    OR
-    = link_to "Log in", new_user_session_path
+    .sign-up
+      %h2 Create an account
+      %p
+        Set up an account for free and start managing your backlogs.
+      %p
+        Features of easyBacklog include:
+      %ul
+        %li Rich application interface for managing your backlogs
+        %li Versioning of your backlogs
+        %li Export to Excel for sharing
+        %li Print user story cards to share with your team
+      = link_to "Create an account now", new_user_registration_path, { :class => 'button' }
+    .or
+      OR
+    .login
+      %h2 Log in
+      = render :partial => '/devise/sessions/form'

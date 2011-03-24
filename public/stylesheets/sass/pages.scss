@@ -1,3 +1,4 @@
+/* Company dashboard home */
 ul.backlog-list {
   list-style: none;
   li {
@@ -10,5 +11,47 @@ ul.backlog-list {
       display: inline;
       font-size: 85%;
     }
+  }
+  padding-bottom: 1em;
+}
+
+/* Home page */
+#home {
+  /* 3 panels on the home page */
+  .sign-up {
+    width: 400px;
+    float: left;
+    padding: 10px 10px 15px 10px;
+    background-color: #CFC;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    .button {
+      background-color: white;
+    }
+  }
+  .or {
+    width: 40px;
+    float: left;
+    font-weight: bold;
+    font-size: 130%;
+    padding: 90px 0 0 10px;
+    text-align:center;
+  } 
+  .login {
+    width: 280px;
+    margin-left: 480px;
+    padding: 10px;
+    background-color: #D6D6D6;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    input[type=submit] {
+      background-color: #FFF;
+      border-color: #666;
+      color: #333;
+    }
+  }
+
+  ul {
+    padding-bottom: 1em;
   }
 }
