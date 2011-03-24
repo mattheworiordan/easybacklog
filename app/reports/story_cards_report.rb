@@ -60,7 +60,7 @@ class StoryCardsReport
           :width => pdf.bounds.width,
           :height => pdf.bounds.height * 0.1
         pdf.formatted_text_box [
-            {:text => "As a#{(story.as_a =~ /^[aeiou]/i) ? 'n' : ''} ", :color => '666666'}, {:text => "#{story.as_a}", :styles => [:bold]},
+            {:text => "As ", :color => '666666'}, {:text => "#{story.as_a}", :styles => [:bold]},
             {:text => "\nI want to ", :color => '666666'}, {:text => "#{story.i_want_to}", :styles => [:bold]},
             {:text => "\nSo I can ", :color => '666666'}, {:text => "#{story.so_i_can}", :styles => [:bold]}
           ],

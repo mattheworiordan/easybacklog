@@ -271,9 +271,6 @@ App.Views.Stories = {
         if (eventName == 'change:id') {
           $(this.el).attr('id', 'story-' + model.get('id'));
         }
-        if (eventName == 'change:as_a') {
-          this.$('.as-a .heading span.an').text(anHandler(newValue));
-        }
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
     },
