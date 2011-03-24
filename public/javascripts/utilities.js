@@ -32,3 +32,12 @@ function multiLineHtmlEncode(value) {
     return '';
   }
 }
+
+// returns a if word does not start with a vowel, and an if it does
+function anHandler(nextWord) {
+  if (nextWord.match(/^[aeiou]/i)) {
+    return ('an');
+  } else {
+    return ('a');
+  }
+}
