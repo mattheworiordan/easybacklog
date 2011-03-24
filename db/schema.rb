@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110307170142) do
+ActiveRecord::Schema.define(:version => 20110324162842) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -89,7 +89,6 @@ ActiveRecord::Schema.define(:version => 20110307170142) do
 
   create_table "users", :force => true do |t|
     t.string   "name",                                                :null => false
-    t.string   "company"
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
     t.string   "password_salt",                       :default => "", :null => false
