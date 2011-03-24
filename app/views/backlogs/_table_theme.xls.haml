@@ -6,7 +6,7 @@
       &nbsp;
   - else
     %td{ :rowspan => theme.stories.count + 1, :valign => 'top' }
-      = theme.name
+      %b= theme.name
     = render :partial => 'table_story', :locals => { :story => theme.stories.first }
     - theme.stories[1..-1].each do |story|
       %tr
