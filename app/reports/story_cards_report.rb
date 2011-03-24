@@ -150,7 +150,7 @@ class StoryCardsReport
     # set up the stsandard fields & bounding box for a card
     def standard_box_fields(story, pdf, box_offset, box_width, box_height, &block)
       pdf.bounding_box box_offset, :width => box_width, :height => box_height do
-        pdf.formatted_text_box [{:text => "#{story.theme.code}#{story.unique_id}", :styles => [:bold]}],
+        pdf.formatted_text_box [{:text => "#{story.theme.code}#{story.unique_id}", :styles => [:bold], :color => 'FF0000'}],
           :align => :right, :size => 16,
           :at => [pdf.bounds.width * 0.70, pdf.bounds.height * 0.93],
           :width => pdf.bounds.width/4,
