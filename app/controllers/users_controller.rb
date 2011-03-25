@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def update
     @user = @company.company_users.where(:user_id => params[:id]).first
     @user.update_attributes params
-    if !@user.save
+    if @user.save
       render :json => @user
     else
       send_json_error 'Error'
