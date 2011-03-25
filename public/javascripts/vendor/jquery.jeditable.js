@@ -143,7 +143,7 @@
                 
                 /* prevent default action and bubbling */
                 e.preventDefault();
-                e.stopPropagation();
+                // e.stopPropagation();
                 
                 /* remove tooltip */
                 if (settings.tooltip) {

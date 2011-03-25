@@ -32,7 +32,7 @@ class BacklogsController < ApplicationController
         backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
         backlog_methods = [:points, :days, :cost_formatted, :rate_formatted]
         theme_fields = [:id, :name, :code, :position]
-        story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position]
+        story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
         criteria_fields =  [:id, :criterion, :position]
         render :json => @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
           :include =>

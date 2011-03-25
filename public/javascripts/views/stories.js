@@ -114,7 +114,7 @@ App.Views.Stories = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme');
+      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme','changeColor');
     },
 
     render: function() {
@@ -138,6 +138,17 @@ App.Views.Stories = {
         }
       });
 
+      this.$('.color-picker-icon a').simpleColorPicker({
+        onChangeColor: function(col) { show_view.changeColor(col); },
+        colorsPerLine: 4,
+        colors: ['#ffffff', '#dddddd', '#bbbbbb', '#999999',
+                 '#ff0000', '#ff9900', '#ffff00', '#00ff00',
+                 '#00ffff', '#6666ff', '#9900ff', '#ff00ff',
+                 '#f4cccc', '#d9ead3', '#cfe2f3', '#ead1dc',
+                 '#ffe599', '#b6d7a8', '#b4a7d6', '#d5a6bd',
+                 '#e06666', '#f6b26b', '#ffd966', '#93c47d']
+      });
+      if (this.model.get('color')) { this.changeColor(this.model.get('color', { silent: true })); }
       return (this);
     },
 
@@ -338,6 +349,19 @@ App.Views.Stories = {
         });
       }
       $(dialog).dialog("close");
+    },
+
+    // change background color
+    // pass in { silent: true } as an option to not update the database
+    changeColor: function(color, options) {
+      var colorWithoutHex = (color.match(/^#/) ? color.substring(1) : color);
+      var colorWithHex = '#' + colorWithoutHex;
+      if (colorWithoutHex.toLowerCase() == 'ffffff') { colorWithoutHex = colorWithHex = '' };
+      $(this.el).css('background-color',colorWithHex);
+      if (!options || !options.silent) {
+        this.model.set({ color: colorWithoutHex });
+        this.model.save();
+      }
     }
   })
 };

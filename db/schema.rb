@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110324162842) do
+ActiveRecord::Schema.define(:version => 20110325124706) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20110324162842) do
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "color"
   end
 
   add_index "stories", ["as_a"], :name => "index_stories_on_as_a"

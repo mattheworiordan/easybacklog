@@ -1,12 +1,14 @@
 <div class="unique-id">
   <div class="data"><%= model.Theme().get('code')%><%= model.get('unique_id')%></div>
   <div class="story-actions">
+    <div class="color-picker-icon">
+      <a></a>
+    </div>
     <div class="delete-story">
-      <a href="#delete-story">delete</a>
+      <a href="#delete-story" class="ui-icon ui-icon-trash"></a>
     </div>
     <div class="move-story">
-      <a href="#move-story" class="vtip" title="Drag move to re-order this story, or click to move to another theme">move</a>
-    </div>
+      <a href="#move-story" class="vtip ui-icon ui-icon-arrow-4" title="Drag move to re-order this story, or click to move to another theme"></a>
     </div>
   </div>
 </div>

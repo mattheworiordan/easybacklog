@@ -12,7 +12,7 @@ class Story < ActiveRecord::Base
 
   before_save :assign_unique_id
 
-  attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position
+  attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color
 
   include ScoreStatistics
 

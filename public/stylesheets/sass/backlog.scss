@@ -238,30 +238,39 @@ ul.themes {
     /* theme name field */
     &>div.theme-data {
       @include table-col(12% / 100% * $table-first-col-width);
-      margin: 0 0 1px 0;
+      margin: 2px 0 1px 0;
+      &>div {
+        margin-right: 2px;
+      }
       .name>.data {
-        margin-left: 0px;
+        margin: 0px;
       }
 
       .code {
         color: #666;
         font-size: 80%;
         border: none;
+        padding: 2px 0 0 0;
         .heading {
           float: left;
-          padding-right: 0.4em;
+          padding: 2px 0.4em 2px 0.5em;
         }
         .data {
           float: left;
+          padding: 2px;
           input, textarea {
             font-size: 95%;
+          }
+          &:hover {
+            background-color: #CCC;
+            color: black;
           }
         }
       }
       >.theme-actions {
         border: none;
         margin: 0;
-        padding: 0 0 0 3px;
+        padding: 0;
         clear: left;
       }
     }
@@ -271,27 +280,29 @@ ul.themes {
       border: none;
       margin: 0;
       padding-top: 0;
+      float: left;
       a {
-        font-size: 90%;
-        color: #666;
         cursor: move;
-        text-decoration: none;
-        &:hover {
-          text-decoration: none;
-        };
       }
     }
 
     /* generic style for deleting link */
-    div.delete-theme, div.delete-story {
-      clear: left;
+    div.delete-theme {
+      float: left;
+    }
+
+    div.delete-story {
+      float: left;
+    }
+
+    div.color-picker-icon {
+      float: left;
+      padding: 3px;
       a {
-        font-size: 90%;
-        color: $delete-link-color;
-        text-decoration:none;
-        &:hover {
-          text-decoration: underline;
-        };
+        width: 11px;
+        height: 11px;
+        background: url(/images/color-picker.png);
+        display: block;
       }
     }
 
@@ -328,7 +339,7 @@ ul.themes {
         }
         /* story row */
         li.story {
-          padding: 0 0 5px 0;
+          padding: 2px 0 5px 1px;
           overflow: hidden;
           clear: left;
           margin: 0;
@@ -339,9 +350,10 @@ ul.themes {
               margin: 0;
               padding: 0 0 0 3px;
             }
+            &>div.data { background-color: rgba(255,255,255,0.6); }
           }
-          &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(22%); }
-          &>.score-50, &>.score-90 { @include table-col(3%); }
+          &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(22%); &>div { background-color: rgba(255,255,255,0.6); } }
+          &>.score-50, &>.score-90 { @include table-col(3%); &>div { background-color: rgba(255,255,255,0.6); } }
           &>.cost-formatted { @include table-col(5%); text-align: right; &>div { border: none; padding: 3px; } }
           &>.days-formatted {
             &>div {
