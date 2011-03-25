@@ -203,6 +203,13 @@ section.main-content-pod {
   -webkit-box-shadow: 5px 5px 5px #888888;
   box-shadow: 5px 5px 5px #888888; }
 
+.progress-icon {
+  background: url(/images/progress.gif);
+  width: 16px;
+  height: 16px;
+  overflow: hidden;
+  display: block; }
+
 /* footer styles */
 footer {
   padding: 0 1em 1em 1em;
@@ -218,7 +225,7 @@ footer {
   position: fixed;
   left: 50%;
   margin-left: -200px;
-  width: 400px;
+  width: 450px;
   top: 3px;
   text-align: center;
   z-index: 5; }
@@ -443,6 +450,17 @@ section.for-backlog section.main-content-pod {
       #themes-header .columns .days-formatted > div {
         text-align: right;
         padding: 3px 3px 1px 5px; }
+
+#themes-container {
+  overflow: hidden; }
+  #themes-container .loading {
+    margin: 20px auto 10px auto;
+    text-align: center;
+    width: 80px; }
+    #themes-container .loading .progress-icon {
+      float: left; }
+    #themes-container .loading p {
+      padding-top: 2px; }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
 .themes .stop-ordering {

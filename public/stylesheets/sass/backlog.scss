@@ -152,6 +152,20 @@ section.for-backlog {
   @include drop-shadow(3px, 3px);
 }
 
+#themes-container {
+  .loading {
+    margin: 20px auto 10px auto;
+    text-align: center;
+    width: 80px;
+    .progress-icon {
+      float: left;
+    }
+    p {
+      padding-top: 2px;
+    }
+  }
+  overflow: hidden;
+}
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
 .themes .stop-ordering {
   display: none;
