@@ -9,6 +9,6 @@
     /[if lt IE 9]
       = include_javascripts :ie_compatibility
       = include_stylesheets :ie_compatibility, :media => 'all'
+    = hoptoad_javascript_notifier
     = csrf_meta_tag
-
   %body

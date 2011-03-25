@@ -102,6 +102,9 @@ GEM
       rest-client (>= 1.4.0, < 1.7.0)
     heroku_san (1.0.8)
       heroku
+    hoptoad_notifier (2.4.8)
+      activesupport
+      builder
     hpricot (0.8.3)
     i18n (0.5.0)
     jammit (0.6.0)
@@ -216,6 +219,7 @@ DEPENDENCIES
   haml
   heroku
   heroku_san
+  hoptoad_notifier (>= 2.4.8)
   hpricot
   jammit
   prawn!
