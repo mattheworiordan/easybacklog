@@ -2,7 +2,7 @@
 
 - content_for :title do
   - if @companies_count > 1
-    = link_to "Back to companies", companies_path, { :class => 'back' }
+    = link_to "View other accounts", companies_path, { :class => 'back' }
   %h1
     = @company.name
 

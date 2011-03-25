@@ -71,6 +71,9 @@ header {
   background-color: #000;
   padding: $standard-header-padding;
   color: #666;
+  height: 25px;
+  font-size: 12px;
+  margin-bottom: -$standard-header-padding-height*2;
 
   a {
     color: #CCC;
@@ -85,13 +88,31 @@ header {
     color: #DD6;
   }
 
-  .main-title-logo {
+  .divider {
+    height: 25px;
     float: left;
-    font-size: 110%;
+    border-right: 1px solid #444;
+    margin: -$standard-header-padding-height 1em 0 1em;
+  }
+
+  .main-title-area {
+    .logo {
+      float: left;
+      font-size: 110%;
+    }
+    .company {
+      float: left;
+    }
   }
 
   .account-info {
     float: right;
+    &>div {
+      float: right;
+    }
+    .divider {
+      float: right;
+    }
   }
 }
 

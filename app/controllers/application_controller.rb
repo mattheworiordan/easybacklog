@@ -19,6 +19,12 @@ class ApplicationController < ActionController::Base
     render :json => { :status => 'notice', :message => notice_message }.merge(payload)
   end
 
+  # if instance variable for company is set then return it
+  def company
+    @company
+  end
+  helper_method :company
+
   private
     def log_last_page_viewed
       session[:last_url] = request.path

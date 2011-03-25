@@ -1,14 +1,20 @@
-%div.main-title-logo
-  = link_to root_path do
-    %span.easy>="easy"
-    %span.backlog Backlog
-  %sup BETA
-%div.account-info
+.main-title-area
+  .logo
+    = link_to root_path do
+      %span.easy>="easy"
+      %span.backlog Backlog
+    %sup BETA
+  - if company
+    .divider
+    .company
+      = link_to company.name, company_path(company)
+
+.account-info
   - if user_signed_in?
-    = link_to 'My info', edit_user_registration_path
-    |
-    = link_to 'Sign out', destroy_user_session_path
+    %div= link_to 'My info', edit_user_registration_path
+    .divider
+    %div= link_to 'Sign out', destroy_user_session_path
   - else
-    = link_to 'Log in', new_user_session_path
-    |
-    = link_to 'Sign up', new_user_registration_path
+    %div= link_to 'Log in', new_user_session_path
+    .divider
+    %div= link_to 'Sign up', new_user_registration_path

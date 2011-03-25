@@ -1,16 +1,16 @@
 - title 'Company'
 - if @companies.blank?
   - content_for :title do
-    %h1 No company account
+    %h1 No account exists
   %p
-    You do not have access to a company account yet.  Please #{link_to 'contact us', contact_path} to be added to a company account.
+    You do not have access to an account yet.  If you would like to get access to an existing account, please contact the person who manages the account and request an invite for access.
   %p 
-    Or alternatively you may #{link_to 'create a new company', new_company_path}.
+    Or alternatively you may #{link_to 'set up a new account', new_company_path} now.
 - else
   - content_for :title do
-    %h1 Please select a company account
+    %h1 Please select an account
   %p 
-    As you have access to more than one company account, please tell us which company's backlogs you wish to view.
+    As you have access to more than one account, please select the account you wish to access.
   %ul
     - @companies.each do |company|
       %li

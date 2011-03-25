@@ -9,10 +9,10 @@ Syntax error: Undefined variable: "$standard-header-padding".
 71:   background-color: #000;
 72:   padding: $standard-header-padding;
 73:   color: #666;
-74: 
-75:   a {
-76:     color: #CCC;
-77:     text-decoration: none;
+74:   height: 25px;
+75:   font-size: 12px;
+76:   margin-bottom: -$standard-header-padding-height*2;
+77: 
 
 Backtrace:
 /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss:72
@@ -85,4 +85,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 72 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss\A \A 67: }\A 68: \A 69: header {\A 70:   overflow: hidden;\A 71:   background-color: #000;\A 72:   padding: $standard-header-padding;\A 73:   color: #666;\A 74: \A 75:   a {\A 76:     color: #CCC;\A 77:     text-decoration: none;"; }
+  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 72 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss\A \A 67: }\A 68: \A 69: header {\A 70:   overflow: hidden;\A 71:   background-color: #000;\A 72:   padding: $standard-header-padding;\A 73:   color: #666;\A 74:   height: 25px;\A 75:   font-size: 12px;\A 76:   margin-bottom: -$standard-header-padding-height*2;\A 77: "; }
