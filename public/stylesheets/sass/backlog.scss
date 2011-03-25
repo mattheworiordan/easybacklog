@@ -234,6 +234,14 @@ ul.themes {
       margin: 1px;
       padding: 2px;
       cursor: move;
+      overflow: hidden;
+      .icon {
+        float: left;
+      }
+      .instructions {
+        float: left;
+        padding-top: 3px;
+      }
     }
     /* theme name field */
     &>div.theme-data {

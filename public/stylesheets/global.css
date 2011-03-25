@@ -530,7 +530,13 @@ ul.themes {
       float: left;
       margin: 1px;
       padding: 2px;
-      cursor: move; }
+      cursor: move;
+      overflow: hidden; }
+      ul.themes li.theme .move-theme .icon {
+        float: left; }
+      ul.themes li.theme .move-theme .instructions {
+        float: left;
+        padding-top: 3px; }
     ul.themes li.theme > div.theme-data {
       width: 12.0%;
       /* all story elements use up % of total width as embedded in another elem */
