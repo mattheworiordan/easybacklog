@@ -55,3 +55,26 @@ ul.backlog-list {
     padding-bottom: 1em;
   }
 }
+
+/* Company users management */
+table.users {
+  border-collapse:collapse;
+  th {
+    border: 1px solid white;
+    background-color: #CCC;
+    padding: 4px;
+    font-weight: bold;
+  }
+  td {
+    border: 1px solid white;
+    background-color: #EEE;
+    padding: 4px;
+    height: 1.2em;
+    &.action {
+      background-color: white;
+    }
+    &.admin {
+      padding-left: 2em;
+    }
+  }
+}

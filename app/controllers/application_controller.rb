@@ -33,6 +33,11 @@ class ApplicationController < ActionController::Base
   end
   helper_method :companies
 
+  def is_company_admin?
+    @company && user_signed_in? && !@company.company_users.where(:user_id => current_user.id, :admin => true).empty?
+  end
+  helper_method :is_company_admin?
+
   private
     def log_last_page_viewed
       session[:last_url] = request.path

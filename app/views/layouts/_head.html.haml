@@ -11,4 +11,5 @@
       = include_stylesheets :ie_compatibility, :media => 'all'
     = hoptoad_javascript_notifier
     = csrf_meta_tag
+    = yield(:head)
   %body

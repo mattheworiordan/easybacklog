@@ -15,10 +15,13 @@
 
 .account-info
   - if user_signed_in?
-    %div= link_to 'My info', edit_user_registration_path
-    .divider
     %div= link_to 'Sign out', destroy_user_session_path
-  - else
-    %div= link_to 'Log in', new_user_session_path
     .divider
+    %div= link_to 'My info', edit_user_registration_path
+    - if is_company_admin?
+      .divider
+      %div= link_to 'Users', company_users_path(@company)
+  - else
     %div= link_to 'Sign up', new_user_registration_path
+    .divider
+    %div= link_to 'Log in', new_user_session_path

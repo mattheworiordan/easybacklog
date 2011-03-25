@@ -1,5 +1,5 @@
 class BacklogsController < ApplicationController
-  before_filter :authenticate_user!, :set_company_and_protect
+  include CompanyResource
 
   def show
     @backlog = @company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
@@ -104,16 +104,6 @@ class BacklogsController < ApplicationController
   end
 
   private
-    # set the @company instance variable from nested route
-    # ensure user has access to this company
-    def set_company_and_protect
-      @company = Company.find(params[:company_id])
-      if @company.users.find(current_user.id).blank?
-        flash[:error] = 'You do not have permission to view this backlog'
-        redirect_to companies_path
-      end
-    end
-
     def set_download_headers(filename)
       headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
       if request.env['HTTP_USER_AGENT'] =~ /msie/i

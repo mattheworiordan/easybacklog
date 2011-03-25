@@ -278,30 +278,6 @@ p#vtip #vtipArrow {
   top: -10px;
   left: 5px; }
 
-div.color-picker {
-  border-left: 1px solid #000;
-  border-top: 1px solid #000;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  padding: 0px; }
-
-div.color-picker ul {
-  list-style: none;
-  padding: 0px;
-  margin: 0px;
-  float: left; }
-
-div.color-picker ul li {
-  display: block;
-  width: 15px;
-  height: 15px;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
-  margin: 0px;
-  float: left;
-  cursor: pointer; }
-
 /* on the backlog page we need to move the header to a fixed position */
 header.for-backlog {
   position: fixed;
@@ -755,3 +731,21 @@ ul.backlog-list {
       color: #333; }
   #home ul {
     padding-bottom: 1em; }
+
+/* Company users management */
+table.users {
+  border-collapse: collapse; }
+  table.users th {
+    border: 1px solid white;
+    background-color: #CCC;
+    padding: 4px;
+    font-weight: bold; }
+  table.users td {
+    border: 1px solid white;
+    background-color: #EEE;
+    padding: 4px;
+    height: 1.2em; }
+    table.users td.action {
+      background-color: white; }
+    table.users td.admin {
+      padding-left: 2em; }

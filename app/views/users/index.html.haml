@@ -1,0 +1,34 @@
+- title 'Users'
+- content_for :head do
+  = include_javascripts :users
+- if @users.blank?
+  - content_for :title do
+    %h1 No users have access
+- else
+  - content_for :title do
+    %h1 Account users
+  %p 
+    The following people have access to this account.
+  %form
+    %table.users
+      %tr
+        %th Name
+        %th Admin Rights?
+      - @users.each do |company_user|
+        %tr
+          %td
+            = company_user.user.name
+          - unless company_user.user == current_user
+            %td.admin
+              = check_box_tag "user-#{company_user.user.id}", 1, company_user.admin?, :title => 'Click to toggle admin rights', :class => 'admin vtip'
+              = label_tag "user-#{company_user.user.id}", (company_user.admin? ? 'Yes' : 'No'), :id => "label-user-#{company_user.user.id}", :title => 'Click to toggle admin rights', :class => 'vtip'
+            %td.action
+              = link_to '(remove)', company_user_path(@company, company_user.user), :method => 'delete', :confirm => 'Are you sure you want to remove this user from your account?'
+          - else
+            %td.admin
+              %b{ :title => 'You cannot turn off your own admin rights', :class => 'vtip' } Yes
+
+#dialog-confirm.dialog{:title=>"Remove user?"}
+  %p
+    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
+    Are you sure you want to remove this user from your account?

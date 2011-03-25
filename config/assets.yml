@@ -16,6 +16,8 @@ javascripts:
     - public/javascripts/views/*.js
   ie_compatibility:
     - public/javascripts/ie_compatibility/*
+  users:
+    - public/javascripts/sections/users.js
 stylesheets:
   common:
     - public/stylesheets/global.css

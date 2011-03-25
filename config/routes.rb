@@ -11,6 +11,7 @@ Ibacklog::Application.routes.draw do
         match ':file_name' => 'backlogs#show', :via => [:get], :as => 'download'
       end
     end
+    resources :users
   end
 
   resources :backlogs, :only => [:show] do
