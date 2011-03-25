@@ -558,7 +558,7 @@ ul.themes {
       width: 100%;
       clear: left;
       overflow: hidden;
-      margin: -2px 0 8px 0; }
+      margin: 2px 0 8px 0; }
       ul.themes li.theme .theme-stats .container {
         margin-left: 7.955%;
         overflow: hidden;
@@ -578,7 +578,7 @@ ul.themes {
         margin: 0;
         /* story row */ }
         ul.themes li.theme > div.stories ul.stories li.actions {
-          margin: 0 0 1em 3px;
+          margin: 2px 0 1em 3px;
           position: absolute; }
         ul.themes li.theme > div.stories ul.stories li.story {
           padding: 2px 0 5px 1px;
