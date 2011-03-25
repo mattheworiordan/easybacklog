@@ -49,7 +49,7 @@ App.Views.Stories = {
         },
         placeholder: 'target-order-highlight',
         axis: 'y',
-        handle: '.move-story'
+        handle: '.move-story a'
       }).find('.move-story').disableSelection();
 
       return(this);

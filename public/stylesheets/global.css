@@ -506,7 +506,6 @@ ul.themes {
         clear: left; }
     ul.themes li.theme div.move-story {
       border: none;
-      cursor: move;
       margin: 0;
       padding-top: 0; }
       ul.themes li.theme div.move-story a {
