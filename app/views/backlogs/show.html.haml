@@ -33,7 +33,8 @@
         var view = new App.Views.Backlogs.Show({ model: model, el: $('#backlog-container') });
         view.render();
       },
-      error: function() {
+      error: function(model, error) {
+        console.log(JSON.stringify(error));
         new App.Views.Error({ message: 'The data could not be loaded from the server'});
       }
     });

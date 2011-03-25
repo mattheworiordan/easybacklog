@@ -6,6 +6,9 @@
 
     = include_javascripts :workspace
     = include_stylesheets :common, :media => 'all'
+    /[if lt IE 9]
+      = include_javascripts :ie_compatibility
+      = include_stylesheets :ie_compatibility, :media => 'all'
     = csrf_meta_tag
 
   %body
