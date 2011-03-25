@@ -25,6 +25,14 @@ class ApplicationController < ActionController::Base
   end
   helper_method :company
 
+  # list of all companies a user has access to
+  def companies
+    if user_signed_in?
+      current_user.companies
+    end
+  end
+  helper_method :companies
+
   private
     def log_last_page_viewed
       session[:last_url] = request.path

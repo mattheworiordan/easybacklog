@@ -67,7 +67,6 @@ span.easy {
 }
 
 header {
-  overflow: hidden;
   background-color: #000;
   padding: $standard-header-padding;
   color: #666;
@@ -102,6 +101,28 @@ header {
     }
     .company {
       float: left;
+      ul {
+        position: absolute;
+        display: none;
+        list-style: none;
+        z-index: 20;
+        background-color: black;
+        margin: 0px -24px 0 -12px;
+        min-width: 200px;
+        li:first-child {
+          margin-top: 7px;
+        }
+        li {
+          margin: 0;
+          padding: 6px 12px 6px 12px;
+          border-top: 1px solid #444;
+        }
+      }
+      &:hover {
+        ul {
+          display: block;
+        }
+      };
     }
   }
 
@@ -134,6 +155,7 @@ section.content {
     /* back link in title area */
     &.back {
       float: right;
+      padding-top: 4px;
     }
   }
   input[type=submit] {

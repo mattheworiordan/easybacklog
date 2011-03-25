@@ -1,21 +1,21 @@
 /*
 Syntax error: Undefined variable: "$standard-header-padding".
-        on line 72 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss
+        on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss
 
+66:   padding-right: 0.1em;
 67: }
 68: 
 69: header {
-70:   overflow: hidden;
-71:   background-color: #000;
-72:   padding: $standard-header-padding;
-73:   color: #666;
-74:   height: 25px;
-75:   font-size: 12px;
-76:   margin-bottom: -$standard-header-padding-height*2;
-77: 
+70:   background-color: #000;
+71:   padding: $standard-header-padding;
+72:   color: #666;
+73:   height: 25px;
+74:   font-size: 12px;
+75:   margin-bottom: -$standard-header-padding-height*2;
+76: 
 
 Backtrace:
-/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss:72
+/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss:71
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/variable.rb:39:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/script/node.rb:61:in `perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/prop_node.rb:132:in `perform!'
@@ -85,4 +85,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 72 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss\A \A 67: }\A 68: \A 69: header {\A 70:   overflow: hidden;\A 71:   background-color: #000;\A 72:   padding: $standard-header-padding;\A 73:   color: #666;\A 74:   height: 25px;\A 75:   font-size: 12px;\A 76:   margin-bottom: -$standard-header-padding-height*2;\A 77: "; }
+  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss\A \A 66:   padding-right: 0.1em;\A 67: }\A 68: \A 69: header {\A 70:   background-color: #000;\A 71:   padding: $standard-header-padding;\A 72:   color: #666;\A 73:   height: 25px;\A 74:   font-size: 12px;\A 75:   margin-bottom: -$standard-header-padding-height*2;\A 76: "; }
