@@ -38,6 +38,8 @@ App.Views.Stories = {
           $('#vtip').remove();
           view.$('.move-story.vtipActive').mouseleave();
           view.$('.move-story').removeClass('vtip');
+          // because drag does not let events propogage the color picker remains, so manually hide
+          $('.color-picker').hide();
         },
         stop: function(event, ui) {
           App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
