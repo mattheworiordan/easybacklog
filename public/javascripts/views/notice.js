@@ -21,7 +21,7 @@ App.Views.Notice = Backbone.View.extend({
             _.delay(function() {
                 view.remove();
             }, 100);
-        }, this.displayLength);
+        }, (this.className == 'notice' ? this.displayLength : this.displayLength * 2))
         
         return this;
     }
