@@ -207,34 +207,41 @@ footer {
 }
 
 /* errors, notices, warnings and inline form errors */
-.notice, .error, .warning {
+#alert-space {
   position: fixed;
   left: 50%;
+  overflow: hidden;
   margin-left: -200px;
   width: 450px;
-  top: 3px;
-  text-align: center;
+  top: 0;
   z-index: 5;
-}
-
-.notice, .error, .warning, .form_errors {
-  padding: 3px;
-  display: block;
-  background-color: #ccffcc;
-  font-weight: bold;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-}
-
-.error, .form_errors {
-  background-color: #F55656;
-}
-
-.warning {
-  background-color: #FFB300; 
+  border: 3px solid black;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+  .notice, .error, .warning {
+    display: block;
+    text-align: center;
+    padding: 3px;
+    background-color: #ccffcc;
+    font-weight: bold;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+  }
+  .error {
+    background-color: #F55656;
+  }
+  .warning {
+    background-color: #FFB300;
+  }
 }
 
 .form_errors {
+  display: block;
+  font-weight: bold;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background-color: #FFAAAA;
+  color: #990000;
   padding: 1em;
   margin-bottom: 1em;
 }
