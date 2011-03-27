@@ -15,8 +15,11 @@ ul.backlog-list {
   padding-bottom: 1em;
 }
 
-/* Home page */
-#home {
+/* Home and invite landing page */
+#home, #invite {
+  overflow: hidden;
+  padding-bottom: 0.5em;
+
   /* 3 panels on the home page */
   .sign-up {
     width: 400px;
@@ -57,7 +60,7 @@ ul.backlog-list {
 }
 
 /* Company users management */
-table.users {
+table.users, table.invites {
   border-collapse:collapse;
   th {
     border: 1px solid white;
@@ -76,5 +79,12 @@ table.users {
     &.admin {
       padding-left: 2em;
     }
+  }
+}
+
+#new-user textarea {
+  font-family: Sans-Serif;
+  &#emails.empty {
+    color: #666;
   }
 }

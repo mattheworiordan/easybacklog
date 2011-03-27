@@ -1,0 +1,15 @@
+- title 'Access already granted'
+
+- content_for :title do
+  %h1 Access already granted
+
+%p
+  = "You already have access to the account #{@invite_company.name} on easyBacklog."
+
+%p
+  Please note that the invite you have been sent is now no longer valid as each invite can only be used once.
+
+%br/
+
+%p
+  = link_to "Go to #{@invite_company.name}'s dashboard", company_path(@invite_company), :class => 'button'

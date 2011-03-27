@@ -1,0 +1,11 @@
+- title "Access to #{@invite_company.name}"
+
+- content_for :title do
+  %h1= "Access to #{@invite_company.name}"
+
+%p
+  = "You have just been granted access to #{@invite_company.name}."
+
+%br/
+
+= link_to "Go to #{@invite_company.name} account", company_path(@invite_company), :class => 'button'

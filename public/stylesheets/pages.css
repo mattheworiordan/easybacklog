@@ -11,53 +11,60 @@ ul.backlog-list {
       display: inline;
       font-size: 85%; }
 
-/* Home page */
-#home {
+/* Home and invite landing page */
+#home, #invite {
+  overflow: hidden;
+  padding-bottom: 0.5em;
   /* 3 panels on the home page */ }
-  #home .sign-up {
+  #home .sign-up, #invite .sign-up {
     width: 400px;
     float: left;
     padding: 10px 10px 15px 10px;
     background-color: #CFC;
     -moz-border-radius: 10px;
     border-radius: 10px; }
-    #home .sign-up .button {
+    #home .sign-up .button, #invite .sign-up .button {
       background-color: white; }
-  #home .or {
+  #home .or, #invite .or {
     width: 40px;
     float: left;
     font-weight: bold;
     font-size: 130%;
     padding: 90px 0 0 10px;
     text-align: center; }
-  #home .login {
+  #home .login, #invite .login {
     width: 280px;
     margin-left: 480px;
     padding: 10px;
     background-color: #D6D6D6;
     -moz-border-radius: 10px;
     border-radius: 10px; }
-    #home .login input[type=submit] {
+    #home .login input[type=submit], #invite .login input[type=submit] {
       background-color: #FFF;
       border-color: #666;
       color: #333; }
-  #home ul {
+  #home ul, #invite ul {
     padding-bottom: 1em; }
 
 /* Company users management */
-table.users {
+table.users, table.invites {
   border-collapse: collapse; }
-  table.users th {
+  table.users th, table.invites th {
     border: 1px solid white;
     background-color: #CCC;
     padding: 4px;
     font-weight: bold; }
-  table.users td {
+  table.users td, table.invites td {
     border: 1px solid white;
     background-color: #EEE;
     padding: 4px;
     height: 1.2em; }
-    table.users td.action {
+    table.users td.action, table.invites td.action {
       background-color: white; }
-    table.users td.admin {
+    table.users td.admin, table.invites td.admin {
       padding-left: 2em; }
+
+#new-user textarea {
+  font-family: Sans-Serif; }
+  #new-user textarea#emails.empty {
+    color: #666; }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110325124706) do
+ActiveRecord::Schema.define(:version => 20110326103320) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -48,6 +48,17 @@ ActiveRecord::Schema.define(:version => 20110325124706) do
     t.boolean  "admin",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  add_index "company_users", ["company_id", "user_id"], :name => "index_company_users_on_company_id_and_user_id", :unique => true
+
+  create_table "invited_users", :force => true do |t|
+    t.string   "email",           :null => false
+    t.integer  "company_id",      :null => false
+    t.integer  "invitee_user_id", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "security_code",   :null => false
   end
 
   create_table "locales", :force => true do |t|

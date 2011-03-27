@@ -1,0 +1,18 @@
+- title 'Invalid invite'
+
+- content_for :title do
+  %h1 Invalid invite
+
+%p
+  Unfortunately the invite link you have followed is invalid.  This could be as a result of the invite being used already, or the invite being revoked by the person who invited you.
+
+%p
+  We recommend you contact the person who sent you the invite to have another invite sent to you.
+
+%p
+  Alternatively, you can
+  = link_to 'set up your own account', new_user_registration_path()
+  with easyBacklog now.
+
+%br/
+= link_to 'Home', root_path, :class => 'button'

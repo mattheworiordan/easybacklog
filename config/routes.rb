@@ -12,6 +12,11 @@ Ibacklog::Application.routes.draw do
       end
     end
     resources :users
+    resources :invites, :only => [:destroy] do
+      member do
+        match ':security_code' => 'invites#show', :via => :get, :as => 'show'
+      end
+    end
   end
 
   resources :backlogs, :only => [:show] do

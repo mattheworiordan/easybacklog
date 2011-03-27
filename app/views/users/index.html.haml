@@ -1,6 +1,7 @@
 - title 'Users'
 - content_for :head do
   = include_javascripts :users
+
 - if @users.blank?
   - content_for :title do
     %h1 No users have access
@@ -8,27 +9,43 @@
   - content_for :title do
     %h1 Account users
   %p 
-    The following people have access to this account.
+    The following people have access to this account:
   %form
     %table.users
       %tr
         %th Name
+        %th Email address
         %th Admin Rights?
       - @users.each do |company_user|
         %tr
           %td
             = company_user.user.name
+          %td
+            = company_user.user.email
           - unless company_user.user == current_user
             %td.admin
               = check_box_tag "user-#{company_user.user.id}", 1, company_user.admin?, :title => 'Click to toggle admin rights', :class => 'admin vtip'
               = label_tag "user-#{company_user.user.id}", (company_user.admin? ? 'Yes' : 'No'), :id => "label-user-#{company_user.user.id}", :title => 'Click to toggle admin rights', :class => 'vtip'
             %td.action
-              = link_to '(remove)', company_user_path(@company, company_user.user), :method => 'delete', :confirm => 'Are you sure you want to remove this user from your account?'
+              = link_to company_user_path(@company, company_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
+                %span.ui-icon.ui-icon-trash
           - else
             %td.admin
               %b{ :title => 'You cannot turn off your own admin rights', :class => 'vtip' } Yes
+  - unless @invites.empty?
+    %br/
+    %p
+      The following people have been invited to join but not yet signed up:
+      %table.invites
+        %tr
+          %th Email address
+        - @invites.each do |invite|
+          %tr
+            %td
+              = invite.email
+            %td.action
+              = link_to company_invite_path(@company, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
+                %span.ui-icon.ui-icon-trash
 
-#dialog-confirm.dialog{:title=>"Remove user?"}
-  %p
-    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
-    Are you sure you want to remove this user from your account?
+  %br/
+  = link_to 'Add users', new_company_user_path(@company), :class => 'button'

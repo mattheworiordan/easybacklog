@@ -2,6 +2,7 @@ class Company < ActiveRecord::Base
   has_many :company_users
   has_many :users, :through => :company_users
   has_many :backlogs
+  has_many :invited_users
   belongs_to :locale
 
   validates_uniqueness_of :name

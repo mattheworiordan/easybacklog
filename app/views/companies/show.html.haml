@@ -19,15 +19,10 @@
         .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
         .action
           (
-          = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :confirm => 'Are you sure you want to delete this backlog?  This cannot be undone.'
+          = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :title => 'Delete backlog?', :confirm => 'This backlog will be permanently deleted and cannot be recovered. Are you sure?'
           |
           = link_to "Duplicate", duplicate_company_backlog_path(@company, backlog)
           )
 %br/
 
 = link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }
-
-#dialog-confirm.dialog{:title=>"Delete backlog?"}
-  %p
-    %span.ui-icon.ui-icon-alert{:style => "float:left; margin:0 7px 20px 0;"}
-    This backlog will be permanently deleted and cannot be recovered. Are you sure?

@@ -1,0 +1,20 @@
+- title 'Add person to account'
+- content_for :head do
+  = include_javascripts :users
+
+- content_for :title do
+  %h1= "Add people to the #{@company.name} account"
+
+#new-user
+  %p Enter the email address(s) below of the people you would like to add to your account and give access to the backlogs.  Please use a comma to separate each email address if you would like to invite more than one person.
+
+  = form_tag(company_users_path(@company)) do
+    - if flash[:error]
+      .form_errors
+        = flash[:error]
+    %div{:class => (flash[:error] ? 'field_with_errors' : '')}
+      = text_area_tag :emails, @emails, :cols => 80, :rows => 6
+
+    %br/
+    = submit_tag "Send invites"
+    = link_to "cancel", company_users_path(@company)

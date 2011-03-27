@@ -28,5 +28,30 @@ $(document).ready(function() {
     };
 
     $.ajax(params);
-  })
+  });
+
+  var textareaText = 'Enter each email address here separated by commas'
+  $('#new-user textarea#emails').blur(function(event) {
+    var text = $(event.target);
+    if ($.trim(text.val()) == '') {
+      text.val(textareaText).addClass('empty');
+    }
+  }).focus(function(event) {
+    var text = $(event.target);
+    if (text.val() == textareaText) {
+      text.val('').removeClass('empty');
+    }
+  }).blur();
+
+  $('#new-user form').submit(function(event) {
+    var text = $(event.target).find('textarea#emails');
+    if ((text.val() == textareaText) || ('' == $.trim(text.val()))) {
+      event.preventDefault();
+      if (!$(event.target).has('.form_errors')) {
+        $(event.target).prepend('<div class="form_errors">');
+      }
+      $(event.target).find('.form_errors').text('We need you to enter one or more email addresses in the text area so that we can send our the invites.  Please correct this to continue');
+      text.wrap('<div class="field_with_errors">');
+    }
+  });
 });

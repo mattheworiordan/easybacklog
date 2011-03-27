@@ -8,7 +8,7 @@
     .divider
     .company
       = link_to company.name, company_path(company)
-      - if !companies.empty? && companies.count > 1
+      - if !companies.blank? && companies.count > 1
         %ul
           - (companies - [company]).each do |comp|
             %li= link_to comp.name, company_path(comp)
