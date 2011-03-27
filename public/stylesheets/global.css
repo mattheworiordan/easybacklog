@@ -762,6 +762,8 @@ ul.backlog-list {
     border-radius: 10px; }
     #home .sign-up .button, #invite .sign-up .button {
       background-color: white; }
+    #home .sign-up h2, #invite .sign-up h2 {
+      background-color: transparent; }
   #home .or, #invite .or {
     width: 40px;
     float: left;
@@ -780,6 +782,8 @@ ul.backlog-list {
       background-color: #FFF;
       border-color: #666;
       color: #333; }
+    #home .login h2, #invite .login h2 {
+      background-color: transparent; }
   #home ul, #invite ul {
     padding-bottom: 1em; }
 
