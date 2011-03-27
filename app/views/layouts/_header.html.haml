@@ -4,14 +4,16 @@
       %span.easy>="easy"
       %span.backlog Backlog
     %sup BETA
-  - if company
+  - if !companies.blank? && companies.count > 1
     .divider
     .company
-      = link_to company.name, company_path(company)
-      - if !companies.blank? && companies.count > 1
-        %ul
-          - (companies - [company]).each do |comp|
-            %li= link_to comp.name, company_path(comp)
+      - if company.blank?
+        .jump-to-company Jump to company
+      - else
+        = link_to company.name, company_path(company)
+      %ul
+        - (companies - [company]).each do |comp|
+          %li= link_to comp.name, company_path(comp)
 
 .account-info
   - if user_signed_in?

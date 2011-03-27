@@ -101,6 +101,9 @@ header {
     }
     .company {
       float: left;
+      .jump-to-company {
+        color: #999;
+      }
       ul {
         position: absolute;
         display: none;

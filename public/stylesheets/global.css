@@ -125,6 +125,8 @@ header {
     font-size: 110%; }
   header .main-title-area .company {
     float: left; }
+    header .main-title-area .company .jump-to-company {
+      color: #999; }
     header .main-title-area .company ul {
       position: absolute;
       display: none;
