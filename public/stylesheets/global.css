@@ -202,6 +202,9 @@ section.main-content-pod {
   -moz-box-shadow: 5px 5px 5px #888888;
   -webkit-box-shadow: 5px 5px 5px #888888;
   box-shadow: 5px 5px 5px #888888; }
+  section.main-content-pod h2 {
+    background-color: #E9E9E9;
+    padding: 3px; }
 
 .progress-icon {
   background: url(/images/progress.gif);
@@ -328,7 +331,7 @@ section.for-backlog section.main-content-pod {
   box-shadow: 0px 0px 0px #888888; }
 
 #backlog-container {
-  margin-top: 4.5em;
+  margin-top: 60px;
   clear: left;
   font-size: 90%; }
 
@@ -350,7 +353,8 @@ section.for-backlog section.main-content-pod {
   #backlog-data-area h2.name {
     margin: 6px 0 0 10px;
     position: relative;
-    width: 20em; }
+    width: 20em;
+    background-color: transparent; }
     #backlog-data-area h2.name > div {
       padding: 2px; }
     #backlog-data-area h2.name:hover {
@@ -388,7 +392,7 @@ section.for-backlog section.main-content-pod {
 #themes-header {
   position: fixed;
   z-index: 1;
-  top: 75px;
+  top: 80px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -465,7 +469,7 @@ section.for-backlog section.main-content-pod {
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
 .themes .stop-ordering {
   display: none;
-  padding-top: 5px;
+  padding: 5px 0 5px 0;
   clear: left; }
   .themes .stop-ordering a {
     font-weight: normal;
@@ -488,6 +492,7 @@ section.for-backlog section.main-content-pod {
 ul.themes {
   list-style: none;
   margin: 0;
+  padding-bottom: 5px;
   /* ensure data elements don't jump when editing */
   /* styling for an empty editable field with edit text in it */
   /* buttons for adding theme / story */
@@ -505,7 +510,7 @@ ul.themes {
   ul.themes li.actions {
     clear: left;
     margin: 1em 0 0 0;
-    padding-top: 3px; }
+    padding: 3px; }
     ul.themes li.actions a {
       font-weight: normal;
       text-decoration: none;

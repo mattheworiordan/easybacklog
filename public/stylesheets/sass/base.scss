@@ -175,6 +175,11 @@ section.main-content-pod {
   clear: left;
   margin-top: 12px;
   @include drop-shadow(5px, 5px);
+
+  h2 {
+    background-color: #E9E9E9;
+    padding: 3px;
+  }
 }
 
 .progress-icon {
