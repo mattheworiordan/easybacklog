@@ -2,7 +2,7 @@ class BacklogsController < ApplicationController
   include CompanyResource
 
   def show
-    @backlog = @company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
+    @backlog = current_company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
     respond_to do |format|
       format.html { render :layout => 'backlog' }
 
@@ -55,17 +55,17 @@ class BacklogsController < ApplicationController
   end
 
   def new
-    @backlog = @company.backlogs.new
-    @backlog.rate = @company.default_rate if @backlog.rate.blank?
-    @backlog.velocity = @company.default_velocity if @backlog.velocity.blank?
+    @backlog = current_company.backlogs.new
+    @backlog.rate = current_company.default_rate if @backlog.rate.blank?
+    @backlog.velocity = current_company.default_velocity if @backlog.velocity.blank?
   end
 
   def create
-    @backlog = @company.backlogs.new(params[:backlog])
+    @backlog = current_company.backlogs.new(params[:backlog])
     @backlog.author = @backlog.last_modified_user = current_user
     if @backlog.save
       flash[:notice] = 'Backlog was successfully created.'
-      redirect_to company_backlog_path(@company, @backlog)
+      redirect_to company_backlog_path(current_company, @backlog)
     else
       render :action => "new"
     end
@@ -73,7 +73,7 @@ class BacklogsController < ApplicationController
 
   # only supports JSON updates
   def update
-    @backlog = @company.backlogs.find(params[:id])
+    @backlog = current_company.backlogs.find(params[:id])
     @backlog.update_attributes params
     if @backlog.save
       render :json => @backlog.to_json(:methods => [:score_statistics, :rate_formatted])
@@ -83,23 +83,33 @@ class BacklogsController < ApplicationController
   end
 
   def destroy
-    @backlog = @company.backlogs.find(params[:id])
+    @backlog = current_company.backlogs.find(params[:id])
     @backlog.destroy
     flash[:notice] = 'Backlog was successfully deleted.'
-    redirect_to company_path(@company)
+    redirect_to company_path(current_company)
   end
 
   def duplicate
-    @backlog = @company.backlogs.find(params[:id])
-    @new_backlog = @company.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
+    @backlog = current_company.backlogs.find(params[:id])
+    @new_backlog = current_company.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
     @new_backlog.author = @backlog.author
     @new_backlog.last_modified_user = current_user
     if request.post?
       if @new_backlog.save
         @backlog.copy_children_to_backlog(@new_backlog)
         flash[:notice] = 'Backlog was duplicated successfully.'
-        redirect_to company_backlog_path(@company, @new_backlog)
+        redirect_to company_backlog_path(current_company, @new_backlog)
       end
+    end
+  end
+
+  # Used by AJAX form validator
+  def name_available
+    name = (params[:backlog] || {})[:name] || ''
+    if current_company.backlogs.where('UPPER(name) like ?', name.upcase).empty?
+      render :text => 'true'
+    else
+      render :text => 'false'
     end
   end
 

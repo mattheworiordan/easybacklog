@@ -1,4 +1,7 @@
 - title 'Create a backlog'
+- content_for :head do
+  = include_javascripts :validation
+  = include_javascripts :new_backlog
 
 - content_for :title do
   %h1 Create a backlog
@@ -8,19 +11,24 @@
 = form_for(@backlog, :url => company_backlogs_path(current_company, @backlog)) do |f|
   - unless @backlog.errors.blank?
     .form_errors
-      The form was not completed correctly.  Please correct the following fields to register:
+      We were unable to create a new backlog.  Please correct the following fields first:
       %ul
         - @backlog.errors.full_messages.each do |error|
           %li
             = error
+
   = f.label :name, "Backlog name"
-  = f.text_field :name
-  %br/
-  = f.label :rate, "Rate"
-  = f.text_field :rate
-  %br/
-  = f.label :velocity, "Velocity"
-  = f.text_field :velocity
+  .input-row
+    = f.text_field :name
+
+  = f.label :rate, "Rate", :class => 'spacer'
+  .input-row
+    = f.text_field :rate
+
+  = f.label :velocity, "Velocity", :class => 'spacer'
+  .input-row
+    = f.text_field :velocity
+
   %br/
   = f.submit "Create new backlog"
   = link_to "cancel", company_path(current_company)

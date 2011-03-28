@@ -10,6 +10,9 @@ Ibacklog::Application.routes.draw do
         # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls or .pdf so that IE uses a helpful filename
         match ':file_name' => 'backlogs#show', :via => [:get], :as => 'download'
       end
+      collection do
+        get 'name_available' => 'backlogs#name_available'
+      end
     end
     resources :users
     resources :invites, :only => [:destroy] do

@@ -20,6 +20,8 @@ javascripts:
     - public/javascripts/sections/users.js
   register:
     - public/javascripts/sections/register.js
+  new_backlog:
+    - public/javascripts/sections/new_backlog.js
   validation:
     - public/javascripts/vendor/conditional/jquery.validate.js
 stylesheets:
