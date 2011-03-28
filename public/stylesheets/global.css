@@ -168,7 +168,8 @@ section.content {
       background-color: #e6ffe6;
       padding: 3px 10px 3px 10px;
       -moz-border-radius: 10px;
-      border-radius: 10px; }
+      border-radius: 10px;
+      margin-bottom: 4px; }
       section.content a.button:hover {
         color: #004d00;
         border-color: #004d00; }
@@ -181,6 +182,7 @@ section.content {
     padding: 3px 10px 3px 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+    margin-bottom: 4px;
     font-size: 100%; }
     section.content input[type=submit]:hover {
       color: #004d00;
@@ -530,6 +532,7 @@ section.for-backlog section.main-content-pod {
     padding: 3px 10px 3px 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+    margin-bottom: 4px;
     padding: 1px 5px 1px 5px;
     font-size: 90%;
     border-width: 1px; }
@@ -570,6 +573,7 @@ ul.themes {
       padding: 3px 10px 3px 10px;
       -moz-border-radius: 10px;
       border-radius: 10px;
+      margin-bottom: 4px;
       padding: 1px 5px 1px 5px;
       font-size: 90%;
       border-width: 1px; }
