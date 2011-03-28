@@ -9,9 +9,11 @@ class UsersController < ApplicationController
     @invites = current_company.invited_users
   end
 
+  # Support JSON updates only
+  # Param editable is admin only as this is the only attribute on company_users
   def update
     @user = current_company.company_users.find_by_user_id(params[:id])
-    @user.update_attributes params
+    @user.update_attributes(:admin => params[:admin])
     if @user.save
       render :json => @user
     else
