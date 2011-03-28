@@ -36,6 +36,7 @@ group :test, :cucumber do
   gem 'culerity'
   gem 'Selenium'
   gem 'selenium-client'
+  gem 'timecop'
 end
 
 group :development do
