@@ -1,5 +1,6 @@
 class AcceptanceCriteriaController < ApplicationController
   before_filter :authenticate_user!, :set_theme_and_protect
+  after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
   def index
     @acceptance_criteria = @story.acceptance_criteria.all
@@ -50,5 +51,9 @@ class AcceptanceCriteriaController < ApplicationController
         flash[:error] = 'You do not have permission to view this acceptance criterion'
         redirect_to companies_path
       end
+    end
+
+    def update_backlog_metadata
+      @acceptance_criteria.story.theme.backlog.update_meta_data current_user
     end
 end

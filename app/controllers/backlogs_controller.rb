@@ -1,5 +1,6 @@
 class BacklogsController < ApplicationController
   include CompanyResource
+  after_filter :update_backlog_metadata, :only => [:update]
 
   def show
     @backlog = current_company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
@@ -62,7 +63,8 @@ class BacklogsController < ApplicationController
 
   def create
     @backlog = current_company.backlogs.new(params[:backlog])
-    @backlog.author = @backlog.last_modified_user = current_user
+    @backlog.author = current_user
+    @backlog.last_modified_user = current_user
     if @backlog.save
       flash[:notice] = 'Backlog was successfully created.'
       redirect_to company_backlog_path(current_company, @backlog)
@@ -121,5 +123,9 @@ class BacklogsController < ApplicationController
         headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
         headers['Expires'] = "0"
       end
+    end
+
+    def update_backlog_metadata
+      @backlog.update_meta_data current_user
     end
 end

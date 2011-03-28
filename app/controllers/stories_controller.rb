@@ -1,5 +1,6 @@
 class StoriesController < ApplicationController
   before_filter :authenticate_user!, :set_theme_and_protect
+  after_filter :update_backlog_metadata, :only => [:create, :update, :destroy, :move_to_theme]
 
   def index
     @stories = @theme.stories.find(:all, :include => [:acceptance_criteria])
@@ -71,5 +72,9 @@ class StoriesController < ApplicationController
 
     def story_json()
       @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted], :except => [:updated_at, :created_at])
+    end
+
+    def update_backlog_metadata
+      @theme.backlog.update_meta_data current_user
     end
 end

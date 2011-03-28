@@ -38,4 +38,17 @@ describe Backlog do
     backlog.cost.should be_within(1).of(3776)
     backlog.cost_formatted.should eql('£3,777')
   end
+
+  it 'should update meta data' do
+    backlog = nil
+    Timecop.travel(Time.now - 1.day) do
+      backlog = Factory.create(:backlog)
+    end
+    Timecop.travel(Time.now) do
+      user = Factory.create(:user)
+      backlog.update_meta_data user
+      backlog.updated_at.utc.to_s.should eql(Time.now.utc.to_s)
+      backlog.last_modified_user.should eql(user)
+    end
+  end
 end

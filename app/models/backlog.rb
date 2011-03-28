@@ -51,4 +51,10 @@ class Backlog < ActiveRecord::Base
       end
     end
   end
+
+  def update_meta_data(user)
+    self.updated_at = Time.now
+    self.last_modified_user = user
+    self.save!
+  end
 end

@@ -1,5 +1,6 @@
 class ThemesController < ApplicationController
   before_filter :authenticate_user!, :set_backlog_and_protect
+  after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
   def index
     @themes = @backlog.themes.find(:all, :include => [:stories, { :stories => :acceptance_criteria } ])
@@ -54,5 +55,9 @@ class ThemesController < ApplicationController
 
     def themes_json()
       @theme.to_json(:methods => [:score_statistics], :except => [:updated_at, :created_at])
+    end
+
+    def update_backlog_metadata
+      @backlog.update_meta_data current_user
     end
 end
