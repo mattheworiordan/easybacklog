@@ -5,6 +5,7 @@
   - if flash[:warning]
     %div.warning
       = flash[:warning]
-  - if flash[:error]
+  - if flash[:error] || flash[:alert]
     %div.error
       = flash[:error]
+      = flash[:alert]
