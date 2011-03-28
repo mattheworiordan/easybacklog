@@ -54,6 +54,11 @@ App.Views.Stories = {
         handle: '.move-story a'
       }).find('.move-story').disableSelection();
 
+      this.$('.color-picker-icon a').click(function(event) {
+        $('#vtip').remove();
+        $(event.target).mouseleave();
+      });
+
       return(this);
     },
 
