@@ -28,10 +28,10 @@ class ApplicationController < ActionController::Base
   end
 
   # if instance variable for company is set then return it
-  def company
-    @company
+  def current_company
+    @current_company
   end
-  helper_method :company
+  helper_method :current_company
 
   # list of all companies a user has access to
   def companies
@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   helper_method :companies
 
   def is_company_admin?
-    @company && user_signed_in? && !@company.company_users.where(:user_id => current_user.id, :admin => true).empty?
+    @current_company && user_signed_in? && !@current_company.company_users.where(:user_id => current_user.id, :admin => true).empty?
   end
   helper_method :is_company_admin?
 

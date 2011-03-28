@@ -4,11 +4,11 @@ module CompanyResource
   end
 
   private
-    # set the @company instance variable from nested route
+    # set the @current_company instance variable from nested route
     # ensure user has access to this company
     def set_company_and_protect
-      @company = Company.find(params[:company_id])
-      if @company.users.find(current_user.id).blank?
+      @current_company = Company.find(params[:company_id])
+      if @current_company.users.find(current_user.id).blank?
         flash[:error] = 'You do not have permission to view this backlog'
         redirect_to companies_path
       end

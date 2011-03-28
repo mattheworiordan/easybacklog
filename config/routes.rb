@@ -17,7 +17,12 @@ Ibacklog::Application.routes.draw do
         match ':security_code' => 'invites#show', :via => :get, :as => 'show'
       end
     end
+    collection do
+      get 'name_available' => 'companies#name_available'
+    end
   end
+
+  get '/users/email_available' => 'devise/users#email_available'
 
   resources :backlogs, :only => [:show] do
     resources :themes

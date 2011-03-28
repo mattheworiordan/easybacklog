@@ -18,6 +18,8 @@ javascripts:
     - public/javascripts/ie_compatibility/*
   users:
     - public/javascripts/sections/users.js
+  register:
+    - public/javascripts/sections/register.js
   validation:
     - public/javascripts/vendor/conditional/jquery.validate.js
 stylesheets:

@@ -10,4 +10,12 @@ class Company < ActiveRecord::Base
   validates_numericality_of :default_rate, :default_velocity
 
   attr_accessible :name, :default_rate, :default_velocity, :locale_id
+
+  def add_first_user(user)
+    self.company_users.create!(:user => user, :admin => true)
+  end
+
+  def add_user(user)
+    self.company_users.create!(:user => user, :admin => false)
+  end
 end

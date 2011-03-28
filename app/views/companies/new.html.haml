@@ -13,17 +13,8 @@
         - @company.errors.full_messages.each do |error|
           %li
             = error
-  = f.label :name, "Name"
-  = f.text_field :name
-  %br/
-  = f.label :locale_id, "Locale"
-  = select(:company, "locale_id", [[ 'Select a locale...', nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
-  %br/
-  = f.label :default_rate, "Default rate"
-  = f.text_field :default_rate
-  %br/
-  = f.label :default_velocity, "Default velocity"
-  = f.text_field :default_velocity
+  != render :partial => 'form', :locals => { :f => f }
+
   %br/
   %br/
   = f.submit "Create new company"

@@ -4,15 +4,15 @@
       %span.easy>="easy"
       %span.backlog Backlog
     %sup BETA
-  - if !companies.blank? && companies.count > 1
+  - if !companies.blank? && companies.count >= 1
     .divider
     .company
-      - if company.blank?
+      - if current_company.blank?
         .jump-to-company Jump to company
       - else
-        = link_to company.name, company_path(company)
+        = link_to current_company.name, company_path(current_company)
       %ul
-        - (companies - [company]).each do |comp|
+        - (companies - [current_company]).each do |comp|
           %li= link_to comp.name, company_path(comp)
 
 .account-info
@@ -22,7 +22,7 @@
     %div= link_to 'My info', edit_user_registration_path
     - if is_company_admin?
       .divider
-      %div= link_to 'Users', company_users_path(@company)
+      %div= link_to 'Users', company_users_path(current_company)
   - else
     %div= link_to 'Sign up', new_user_registration_path
     .divider

@@ -5,10 +5,10 @@ end
 Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|
   When %{I am on the home page}
     And %{I follow "Log in"}
-    And %{I press "Sign in"}
+    And %{I press "Log in"}
   Then %{I should see the alert "Invalid email or password."}
   When %{I fill in "Email" with "#{user_name}@acme.com"}
     And %{I fill in "Password" with "password"}
-    And %{I press "Sign in"}
+    And %{I press "Log in"}
   Then %{I should see the notice "Signed in successfully."}
 end

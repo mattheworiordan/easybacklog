@@ -1,14 +1,16 @@
+# Users with access to a company controller
+# Root level users managed by the Devise controllers
 class UsersController < ApplicationController
   include CompanyResource
   before_filter :check_company_admin
 
   def index
-    @users = @company.company_users
-    @invites = @company.invited_users
+    @users = current_company.company_users
+    @invites = current_company.invited_users
   end
 
   def update
-    @user = @company.company_users.find_by_user_id(params[:id])
+    @user = current_company.company_users.find_by_user_id(params[:id])
     @user.update_attributes params
     if @user.save
       render :json => @user
@@ -18,9 +20,9 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user = @company.company_users.find_by_user_id(params[:id])
+    @user = current_company.company_users.find_by_user_id(params[:id])
     @user.destroy
-    redirect_to company_users_path(@company)
+    redirect_to company_users_path(current_company)
   end
 
   def create
@@ -54,7 +56,7 @@ class UsersController < ApplicationController
     def check_company_admin
       unless is_company_admin?
         flash[:error] = 'You need admin rights to manage users for this company'
-        redirect_to company_path(@company)
+        redirect_to company_path(current_company)
       end
     end
 
@@ -63,18 +65,18 @@ class UsersController < ApplicationController
       # check if user is a member of easyBacklog already
       if !User.where('UPPER(email) = ?', email.upcase).empty?
         # don't do anything if they already have access
-        if @company.users.where('UPPER(email) = ?', email.upcase).empty?
+        if current_company.users.where('UPPER(email) = ?', email.upcase).empty?
           invited_user = User.where('UPPER(email) = ?', email.upcase).first
-          @company.company_users.create!(:user => invited_user, :admin => false)
-          UsersNotifier.access_granted(current_user, @company, invited_user).deliver
+          current_company.add_user invited_user
+          UsersNotifier.access_granted(current_user, current_company, invited_user).deliver
         end
       else # user is not a member
-        if (@company.invited_users.where('UPPER(email) = ?', email.upcase).empty?)
-          invited_user = @company.invited_users.create!(:email => email, :invitee_user_id => current_user.id)
+        if (current_company.invited_users.where('UPPER(email) = ?', email.upcase).empty?)
+          invited_user = current_company.invited_users.create!(:email => email, :invitee_user_id => current_user.id)
         else
-          invited_user = @company.invited_users.where('UPPER(email) = ?', email.upcase).first
+          invited_user = current_company.invited_users.where('UPPER(email) = ?', email.upcase).first
         end
-        UsersNotifier.invite_to_join(current_user, @company, invited_user).deliver
+        UsersNotifier.invite_to_join(current_user, current_company, invited_user).deliver
       end
     end
 end

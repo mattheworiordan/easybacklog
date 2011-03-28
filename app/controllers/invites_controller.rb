@@ -1,5 +1,5 @@
 class InvitesController < ApplicationController
-  before_filter :set_company
+  before_filter :set_current_company
 
   # show represents the action when a user has been sent an invite and is visiting to get access
   def show
@@ -26,11 +26,11 @@ class InvitesController < ApplicationController
 
   def destroy
     if is_company_admin?
-      @company.invited_users.find(params[:id]).destroy
-      redirect_to company_users_path(@company)
+      current_company.invited_users.find(params[:id]).destroy
+      redirect_to company_users_path(current_company)
     else
       flash[:error] = 'You need admin rights to manage users for this company'
-      redirect_to company_path(@company)
+      redirect_to company_path(current_company)
     end
   end
 
@@ -39,14 +39,14 @@ class InvitesController < ApplicationController
     def assign_user_access(invited_user)
       # don't add if user already has access
       unless invited_user.company.company_users.find_by_user_id(current_user.id)
-        invited_user.company.company_users.create!(:user => current_user, :admin => false)
+        invited_user.company.add_user current_user
       end
       invited_user.destroy # delete the invite as now used
     end
 
-    # set the @company variable which would normally use CompanyResource
+    # set the @current_company variable which would normally use CompanyResource
     #  but CompanyResource requires a user to be logged in whereas for invites we cannot assume this
-    def set_company
-      @company = Company.find(params[:company_id])
+    def set_current_company
+      @current_company = Company.find(params[:company_id])
     end
 end

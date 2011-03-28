@@ -1,8 +1,32 @@
 - content_for :title do
-  %h1 Sign up
+  %h1 Sign up to easyBacklog
+- content_for :head do
+  = include_javascripts :validation
+  = include_javascripts :register
 
 = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
-  != render :partial => 'form', :locals => { :f => f }
+  %p
+    Please complete all fields below to set up a new account.
 
-  %p= f.submit "Sign up"
+  #sign-up
+    - unless @company.blank?
+      %h2 Account details
+      - unless @company.errors.empty?
+        .form_errors
+          The account details were not completed correctly.  Please correct the following fields to register:
+          %ul
+            - @company.errors.full_messages.each do |error|
+              %li
+                = error
+      .data-area
+        = hidden_field_tag :show_account_setup, 'true'
+
+        = fields_for @company do |f|
+          != render :partial => '/companies/form', :locals => { :f => f }
+
+    %h2 Your details
+    .data-area.no-padding
+      != render :partial => 'form', :locals => { :f => f }
+
+    %p= f.submit "Sign up"
 = render :partial => "devise/shared/links"

@@ -1,12 +1,12 @@
 - unless resource.errors.blank?
   .form_errors
-    The form was not completed correctly.  Please correct the following fields to register:
+    Your details were not completed correctly.  Please correct the following fields to register:
     %ul
       - resource.errors.full_messages.each do |error|
         %li
           = error
 %p
-  = f.label :name
+  = f.label :name, 'Full name'
   %br/
   = f.text_field :name
 %p

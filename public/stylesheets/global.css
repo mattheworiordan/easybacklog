@@ -61,7 +61,6 @@ h1 {
 
 h2 {
   font-size: 135%;
-  margin-right: 1em;
   font-family: Sans-Serif;
   font-weight: normal;
   margin-bottom: 0.5em;
@@ -264,8 +263,45 @@ footer {
   display: inline; }
   .field_with_errors label {
     color: red; }
-  .field_with_errors input, .field_with_errors textarea {
+  .field_with_errors input, .field_with_errors textarea, .field_with_errors select {
     border: 2px solid red; }
+
+.form-hint {
+  font-style: italic;
+  color: #9A9A9A;
+  padding-left: 3px;
+  font-size: 90%; }
+
+label.spacer {
+  padding-top: 1em;
+  clear: left;
+  display: block; }
+label.error {
+  color: red;
+  padding-left: 0.5em;
+  font-size: 90%; }
+  label.error:before {
+    content: url(/images/inline-alert-icon.png);
+    width: 16px;
+    height: 16px;
+    top: 3px;
+    position: relative;
+    padding-right: 4px; }
+  label.error a {
+    color: #FF0000;
+    text-decoration: underline; }
+    label.error a:hover {
+      color: black; }
+label.correct:before {
+  content: url(/images/inline-correct-icon.png);
+  width: 16px;
+  height: 16px;
+  top: 3px;
+  position: relative;
+  padding-right: 4px; }
+
+.input-row {
+  clear: left; }
 
 .small {
   display: inline;
@@ -816,3 +852,18 @@ table.users, table.invites {
   font-family: Sans-Serif; }
   #new-user textarea#emails.empty {
     color: #666; }
+
+/* Sign up for a new account & register in same action page */
+#sign-up .data-area, #invite .data-area {
+  padding: 4px 0 20px 4px; }
+  #sign-up .data-area.no-padding, #invite .data-area.no-padding {
+    padding-bottom: 0; }
+#sign-up input[type=text], #sign-up input[type=password], #invite input[type=text], #invite input[type=password] {
+  width: 15em; }
+#sign-up input[type=text]#account_default_rate, #sign-up input[type=text]#account_default_velocity, #invite input[type=text]#account_default_rate, #invite input[type=text]#account_default_velocity {
+  width: 6em; }
+
+#invite label.error {
+  position: absolute;
+  float: left;
+  width: 15em; }

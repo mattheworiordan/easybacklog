@@ -27,7 +27,7 @@
               = check_box_tag "user-#{company_user.user.id}", 1, company_user.admin?, :title => 'Click to toggle admin rights', :class => 'admin vtip'
               = label_tag "user-#{company_user.user.id}", (company_user.admin? ? 'Yes' : 'No'), :id => "label-user-#{company_user.user.id}", :title => 'Click to toggle admin rights', :class => 'vtip'
             %td.action
-              = link_to company_user_path(@company, company_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
+              = link_to company_user_path(current_company, company_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
                 %span.ui-icon.ui-icon-trash
           - else
             %td.admin
@@ -44,8 +44,8 @@
             %td
               = invite.email
             %td.action
-              = link_to company_invite_path(@company, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
+              = link_to company_invite_path(current_company, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
                 %span.ui-icon.ui-icon-trash
 
   %br/
-  = link_to 'Add users', new_company_user_path(@company), :class => 'button'
+  = link_to 'Add users', new_company_user_path(current_company), :class => 'button'

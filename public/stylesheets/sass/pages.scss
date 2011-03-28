@@ -94,3 +94,26 @@ table.users, table.invites {
     color: #666;
   }
 }
+
+/* Sign up for a new account & register in same action page */
+#sign-up, #invite {
+  .data-area {
+    padding: 4px 0 20px 4px;
+    &.no-padding {
+      padding-bottom: 0;
+    }
+  }
+  input[type=text], input[type=password] {
+    width: 15em;
+  }
+  input[type=text]#account_default_rate, input[type=text]#account_default_velocity {
+    width: 6em;
+  }
+}
+#invite {
+  label.error {
+    position: absolute;
+    float: left;
+    width: 15em;
+  }
+}

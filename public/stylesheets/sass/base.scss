@@ -17,7 +17,6 @@ h1 {
 
 h2 {
   font-size: 135%;
-  margin-right: 1em;
   font-family: Sans-Serif;
   font-weight: normal;
   margin-bottom: 0.5em;
@@ -251,9 +250,58 @@ footer {
   label {
     color: red;
   }
-  input, textarea {
+  input, textarea, select {
     border: 2px solid red;
   }
+}
+
+.form-hint {
+  font-style: italic;
+  color: #9A9A9A;
+  padding-left: 3px;
+  font-size: 90%
+}
+
+label {
+  &.spacer {
+    padding-top: 1em;
+    clear: left;
+    display: block;
+  }
+  &.error {
+    color: red;
+    padding-left: 0.5em;
+    font-size: 90%;
+    &:before {
+      content: url(/images/inline-alert-icon.png);
+      width: 16px;
+      height: 16px;
+      top: 3px;
+      position: relative;
+      padding-right: 4px;
+    };
+    a {
+      color: #FF0000;
+      text-decoration: underline;
+      &:hover {
+        color: black;
+      }
+    }
+  }
+  &.correct {
+    &:before {
+      content: url(/images/inline-correct-icon.png);
+      width: 16px;
+      height: 16px;
+      top: 3px;
+      position: relative;
+      padding-right: 4px;
+    };
+  }
+}
+
+.input-row {
+  clear: left;
 }
 
 .small {
