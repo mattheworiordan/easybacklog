@@ -19,6 +19,21 @@ class CompaniesController < ApplicationController
     end
   end
 
+  def edit
+    @company = Company.find(params[:id])
+  end
+
+  def update
+    @company = Company.find(params[:id])
+    @company.update_attributes(params[:company])
+    if @company.save
+      flash[:notice] = "Company account for #{@company.name} updated successfully"
+      redirect_to company_path(@company)
+    else
+      render :action => 'edit'
+    end
+  end
+
   def new
     @company = Company.new
   end

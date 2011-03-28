@@ -154,11 +154,6 @@ section.content {
     &.button {
       @include button-style;
     }
-    /* back link in title area */
-    &.back {
-      float: right;
-      padding-top: 4px;
-    }
   }
   input[type=submit] {
     @include button-style;
@@ -170,6 +165,17 @@ section.title {
   margin: -12px -12px 0 -12px;
   background-color: $title-area-color;
   padding: 12px;
+  /* back link in title area */
+  a.back {
+    float: right;
+    padding-top: 4px;
+    padding-left: 0.5em;
+  }
+  div.back {
+    padding-top: 4px;
+    padding-left: 0.5em;
+    float: right;
+  }
 }
 section.main-content-pod {
   background-color: white;

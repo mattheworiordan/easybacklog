@@ -156,8 +156,7 @@ section.content {
   font-size: 110%; }
   section.content a {
     color: green;
-    text-decoration: none;
-    /* back link in title area */ }
+    text-decoration: none; }
     section.content a:hover {
       text-decoration: underline;
       color: #004d00; }
@@ -173,9 +172,6 @@ section.content {
       section.content a.button:hover {
         color: #004d00;
         border-color: #004d00; }
-    section.content a.back {
-      float: right;
-      padding-top: 4px; }
   section.content input[type=submit] {
     font-weight: normal;
     text-decoration: none;
@@ -193,7 +189,16 @@ section.content {
 section.title {
   margin: -12px -12px 0 -12px;
   background-color: #edfeed;
-  padding: 12px; }
+  padding: 12px;
+  /* back link in title area */ }
+  section.title a.back {
+    float: right;
+    padding-top: 4px;
+    padding-left: 0.5em; }
+  section.title div.back {
+    padding-top: 4px;
+    padding-left: 0.5em;
+    float: right; }
 
 section.main-content-pod {
   background-color: white;

@@ -1,7 +1,10 @@
 - title @company.name
 
 - content_for :title do
+  = link_to "Manage account", edit_company_path(current_company), :class => 'back'
   - if @companies_count > 1
+    .back
+      |
     = link_to "View other accounts", companies_path, { :class => 'back' }
   %h1
     = @company.name

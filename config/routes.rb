@@ -1,7 +1,7 @@
 Ibacklog::Application.routes.draw do
   devise_for :users
 
-  resources :companies, :only => [:index, :show, :new, :create] do
+  resources :companies, :only => [:index, :show, :new, :create, :edit, :update] do
     resources :backlogs, :only => [:show, :new, :create, :update, :destroy] do
       member do
         match 'duplicate' => 'backlogs#duplicate', :via => [:get, :post], :as => 'duplicate'
