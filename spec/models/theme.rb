@@ -54,4 +54,18 @@ describe Theme do
     theme.cost.should be_within(1).of(3243)
     theme.cost_formatted.should eql('£3,243')
   end
+
+  it 'should be able to renumber stories' do
+    theme = Factory.create(:theme)
+    story1 = Factory.create(:story, :theme => theme)
+    story2 = Factory.create(:story, :theme => theme)
+    story3 = Factory.create(:story, :theme => theme)
+    story3.move_to_top
+    # shifted story 3 to the top, so order should now be 3, 1, 2
+    theme.reload
+    theme.re_number_stories
+    story1.reload.unique_id.should eql(2)
+    story2.reload.unique_id.should eql(3)
+    story3.reload.unique_id.should eql(1)
+  end
 end

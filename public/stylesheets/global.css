@@ -221,6 +221,9 @@ section.main-content-pod {
   overflow: hidden;
   display: block; }
 
+.ui-dialog .progress-icon {
+  background: url(/images/progress_on_grey.gif); }
+
 /* footer styles */
 footer {
   padding: 0 1em 1em 1em;
@@ -659,9 +662,12 @@ ul.themes {
       float: left; }
     ul.themes li.theme div.delete-story {
       float: left; }
+    ul.themes li.theme div.re-number-stories {
+      float: left; }
     ul.themes li.theme div.color-picker-icon {
       float: left;
-      padding: 3px; }
+      padding: 3px;
+      cursor: pointer; }
       ul.themes li.theme div.color-picker-icon a {
         width: 11px;
         height: 11px;

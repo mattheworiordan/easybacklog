@@ -42,6 +42,12 @@ class ThemesController < ApplicationController
     send_json_notice 'Theme deleted', :score_statistics => @backlog.score_statistics(:force => true)
   end
 
+  def re_number_stories
+    @theme = @backlog.themes.find(params[:id])
+    @theme.re_number_stories
+    send_json_notice 'Stories re-numbered'
+  end
+
   private
     # set the @backlog instance variable from nested route
     # ensure user has access to this based on company

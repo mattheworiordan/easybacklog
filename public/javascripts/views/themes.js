@@ -119,7 +119,7 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent');
+      _.bindAll(this, 'navigateEvent', 'reNumberStories', 'reNumberStoriesAction');
     },
 
     render: function() {
@@ -135,6 +135,7 @@ App.Views.Themes = {
       });
       this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
 
+      this.$('.re-number-stories a').click(this.reNumberStories);
       return (this);
     },
 
@@ -264,6 +265,44 @@ App.Views.Themes = {
 
     updateStatistics: function() {
       this.$('.theme-stats div').html( JST['themes/stats']({ model: this.model }) )
+    },
+
+    reNumberStories: function(event) {
+      var view = this;
+      event.preventDefault();
+      $('#dialog-re-number').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST['themes/re-number-dialog']({ }));
+      $('#dialog-re-number').dialog({
+        resizable: false,
+        height:170,
+        modal: true,
+        buttons: {
+          'Re-number': function() {
+            view.reNumberStoriesAction(this);
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
+        }
+      });
+    },
+
+    reNumberStoriesAction: function(dialog) {
+      var view = this;
+      // tell the user we're deleting as it may take a second
+      $(dialog).find('>p').html('Re-numbering stories...<br />Please wait.<br /><br ><span class="progress-icon"></span>');
+      $(dialog).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Close');
+      $(dialog).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
+      view.model.ReNumberStories({
+        success: function() {
+          $(dialog).dialog("close");
+        },
+        error: function() {
+          new App.Views.Error({ message: 'Server error trying to renumber stories'});
+          $(dialog).dialog("close");
+        }
+      });
     }
   })
 };

@@ -28,7 +28,11 @@ Ibacklog::Application.routes.draw do
   get '/users/email_available' => 'devise/users#email_available'
 
   resources :backlogs, :only => [:show] do
-    resources :themes
+    resources :themes do
+      member do
+        match 're-number-stories' => 'themes#re_number_stories', :via => [:post]
+      end
+    end
   end
   resources :themes, :only => [:show] do
     resources :stories do

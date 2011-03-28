@@ -10,5 +10,25 @@ var Theme = Backbone.Model.extend({
 
   Backlog: function() {
     return this.collection.backlog;
+  },
+
+  // renumber all the stories by assigning them sequential IDs
+  ReNumberStories: function(options) {
+    var theme = this;
+    $.post(this.collection.url() + '/' + this.get('id') + '/re-number-stories').success(function(ajaxResult, status, response) {
+      theme.Stories().each(function(story) {
+        story.fetch();
+      });
+      if (_.isFunction(options.success)) {
+        // callback for success
+        options.success(theme, response);
+      }
+    }).error(function(event, response) {
+      console.log('Renumber stories failed');
+      if (_.isFunction(options.error)) {
+        // callback for error
+        options.error(theme, response);
+      }
+    });
   }
 });
