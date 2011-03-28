@@ -44,7 +44,7 @@ class Story < ActiveRecord::Base
     if score_50.blank? || score_90.blank?
       0
     else
-      (score_90 - score_50) ** 2
+      (score_90 - score_50)
     end
   end
 
