@@ -7,13 +7,14 @@ var App = {
 
 $(document).ready(function() {
   // JQuery UI confirm dialog for links with data-confirm for delete actions
-  $('a').live('confirm', function() {
+  $('a').live('confirm', function(event) {
     event.preventDefault();
-    var clicked_link = $(this);
+    event.stopPropagation();
+    var clickedLink = $(this);
     $('#dialog-confirm').remove();
     $('body').append(JST['layouts/confirm-dialog']({
-      title: (clicked_link.attr('title') ? clicked_link.attr('title') : 'Please confirm'),
-      confirmationMessage: clicked_link.data('confirm')
+      title: (clickedLink.attr('title') ? clickedLink.attr('title') : 'Please confirm'),
+      confirmationMessage: clickedLink.data('confirm')
     }));
     $('#dialog-confirm').dialog({
       resizable: false,
@@ -21,7 +22,8 @@ $(document).ready(function() {
       modal: true,
       buttons: {
         "Delete": function() {
-          clicked_link.attr('data-confirm','').click();
+          clickedLink.data('confirm','');
+          clickedLink.click();
           $(this).dialog("close");
         },
         Cancel: function() {
