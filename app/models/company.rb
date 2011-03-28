@@ -7,7 +7,7 @@ class Company < ActiveRecord::Base
 
   validates_uniqueness_of :name
   validates_presence_of :name, :default_rate, :default_velocity, :locale
-  validates_numericality_of :default_rate, :default_velocity
+  validates_numericality_of :default_rate, :default_velocity, :greater_than_or_equal_to => 0
 
   attr_accessible :name, :default_rate, :default_velocity, :locale_id
 
