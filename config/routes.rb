@@ -16,6 +16,8 @@ Ibacklog::Application.routes.draw do
       member do
         get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot', :as => 'snapshot'
         post 'snapshots/create' => 'backlogs#create_snapshot', :as => 'create_snapshot'
+        # download for backlogs
+        match 'snapshots/:snapshot_id/:file_name' => 'backlogs#show_snapshot', :via => [:get], :as => 'download_snapshot'
       end
     end
     resources :users
