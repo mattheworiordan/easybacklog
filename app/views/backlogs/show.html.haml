@@ -18,12 +18,12 @@
           %option
             Working version (current)
             %optgroup{ :label => "Snapshots..." }
-            - if @backlog.snapshot_master.blank?
-              - @backlog.snapshots.each do |snapshot|
-                %option{:value => snapshot.id}= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
-            - else
-              - @backlog.snapshot_master.snapshots.each do |snapshot|
-                %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
+              - if @backlog.snapshot_master.blank?
+                - @backlog.snapshots.each do |snapshot|
+                  %option{:value => snapshot.id}= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
+              - else
+                - @backlog.snapshot_master.snapshots.each do |snapshot|
+                  %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
     - if @backlog.snapshot_master.blank?
       .new.vtip{ :title => 'Create new snapshot' }
         %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
