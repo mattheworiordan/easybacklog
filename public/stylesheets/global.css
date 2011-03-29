@@ -485,6 +485,13 @@ section.for-backlog section.main-content-pod {
       padding: 5px;
       float: left; }
 
+/* when viewing a snapshot don't make these fields look editable */
+#backlog-data-area.not-editable h2.name:hover {
+  background: transparent; }
+#backlog-data-area.not-editable #backlog-settings .data:hover {
+  background: transparent;
+  color: inherit; }
+
 #themes-header {
   position: fixed;
   z-index: 1;
@@ -832,6 +839,11 @@ ul.themes {
               margin-left: 1.5em; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
               height: 1em; }
+
+/* when viewing a snapshot don't make these fields look editable */
+#backlog-container.not-editable ul.themes li.theme .theme-data .code .data:hover {
+  background: transparent;
+  color: inherit; }
 
 #dialog-print .progress-placeholder {
   font-weight: bold; }

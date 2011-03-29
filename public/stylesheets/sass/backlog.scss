@@ -168,6 +168,19 @@ section.for-backlog {
   }
 }
 
+/* when viewing a snapshot don't make these fields look editable */
+#backlog-data-area.not-editable {
+  h2.name:hover {
+    background:transparent;
+  }
+  #backlog-settings {
+    .data:hover {
+      background:transparent;
+      color: inherit;
+    }
+  }
+}
+
 #themes-header {
   position: fixed;
   z-index: 1;
@@ -497,6 +510,13 @@ ul.themes {
         }
       }
     }
+  }
+}
+/* when viewing a snapshot don't make these fields look editable */
+#backlog-container.not-editable ul.themes {
+  li.theme .theme-data .code .data:hover {
+    background:transparent;
+    color: inherit;
   }
 }
 

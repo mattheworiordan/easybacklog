@@ -35,6 +35,9 @@ App.Views.Backlogs = {
         } else {
           $('ul.themes li.actions a.new-theme').focus();
         }
+      } else {
+        $('#backlog-data-area').addClass('not-editable');
+        $('#backlog-container').addClass('not-editable');
       }
 
       return (this);
