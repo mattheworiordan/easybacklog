@@ -1,8 +1,8 @@
 class Company < ActiveRecord::Base
-  has_many :company_users
+  has_many :company_users, :dependent => :destroy
   has_many :users, :through => :company_users
-  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL'
-  has_many :invited_users
+  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL', :dependent => :destroy
+  has_many :invited_users, :dependent => :destroy
   belongs_to :locale
 
   validates_uniqueness_of :name

@@ -4,7 +4,7 @@ class Theme < ActiveRecord::Base
   belongs_to :backlog
   validates_presence_of :backlog
 
-  has_many :stories, :dependent => :delete_all, :order => 'position'
+  has_many :stories, :dependent => :destroy, :order => 'position'
 
   validates_uniqueness_of :name, :scope => [:backlog_id]
   validates_presence_of :name

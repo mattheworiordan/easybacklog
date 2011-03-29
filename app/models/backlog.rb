@@ -3,7 +3,7 @@ class Backlog < ActiveRecord::Base
   belongs_to :author, :class_name => 'User'
   belongs_to :last_modified_user, :class_name => 'User'
 
-  has_many :themes, :dependent => :delete_all, :order => 'position'
+  has_many :themes, :dependent => :destroy, :order => 'position'
 
   # self references for snapshots
   has_many :snapshots, :class_name => 'Backlog', :foreign_key => 'snapshot_master_id', :order => 'created_at desc'
