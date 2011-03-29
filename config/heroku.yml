@@ -2,3 +2,5 @@ apps:
   # shorthand: heroku app
   production: easybacklog
   staging: easybacklog-staging
+# only used by Matt's deploy script when building jammit MHTML assets
+app_url: http://easybacklog.com
