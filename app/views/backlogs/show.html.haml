@@ -1,10 +1,36 @@
 - title 'View backlog'
 
 #backlog-data-area
-  .back-action
+  .actions
+    = link_to "Export", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
+    .divider
+    = link_to "Print", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
+    .divider
     =link_to 'Back to dashboard', company_path(@backlog.company)
   %h2.name
     .data= @backlog.name
+  .snapshot
+    .title
+      Snapshot:
+    .selector
+      =form_tag :url => '#' do
+        %select#snapshot-selector
+          %option
+            Working version (current)
+            %optgroup{ :label => "Snapshots..." }
+            - if @backlog.snapshot_master.blank?
+              - @backlog.snapshots.each do |snapshot|
+                %option{:value => snapshot.id}= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
+            - else
+              - @backlog.snapshot_master.snapshots.each do |snapshot|
+                %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
+    - if @backlog.snapshot_master.blank?
+      .new.vtip{ :title => 'Create new snapshot' }
+        %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
+          New
+  .backlog-stats
+    %div.title Backlog total:
+    %div.output &nbsp;
   #backlog-settings
     #backlog-rate.rate
       .title Rate:
@@ -12,21 +38,20 @@
     #backlog-velocity.velocity
       .title Velocity:
       .data= @backlog.velocity
-  .backlog-stats
-    %div.title Backlog total:
-    %div.output &nbsp;
-  .actions
-    = link_to "Export", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
-    |
-    = link_to "Print", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
 
 #backlog-container
   = render :partial => 'themes_container'
 
+#loading-new-snapshot
+  %div.background.ui-widget-overlay
+  %div.loading
+    %span.progress-icon
+    %p
+      Loading...
 :javascript
   $(document).ready(function() {
     App.Collections.Backlogs = new BacklogsCollection({}, { company_id: #{@backlog.company.id} });
-    var backlog = new Backlog({ id: #{@backlog.id} });
+    var backlog = new Backlog({ id: #{@backlog.id} #{ @backlog.snapshot_master_id ? ", snapshot_master_id: #{@backlog.snapshot_master_id}" : "" } });
     App.Collections.Backlogs.add(backlog);
     backlog.fetch({
       success: function(model, response) {

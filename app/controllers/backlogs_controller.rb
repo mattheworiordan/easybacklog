@@ -1,58 +1,16 @@
 class BacklogsController < ApplicationController
   include CompanyResource
   after_filter :update_backlog_metadata, :only => [:update]
+  @@backlog_includes = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
 
   def show
-    @backlog = current_company.backlogs.find(params[:id], :include => [:themes, { :themes => { :stories => :acceptance_criteria } } ])
-    respond_to do |format|
-      format.html { render :layout => 'backlog' }
+    @backlog = current_company.backlogs.find(params[:id], :include => @@backlog_includes)
+    render_backlog_or_snapshot
+  end
 
-      # download an Excel file
-      format.xls do
-        filename = "#{@backlog.name.parameterize}.xls"
-        set_download_headers filename
-        render :layout => false
-      end
-
-      # download a PDF of the user story cards
-      format.pdf do
-        filename = "#{@backlog.name.parameterize}.pdf"
-        set_download_headers filename
-        themes = if params[:print_scope].blank?
-          # print_scope is blank therefore display all themes
-          @backlog.themes
-        else
-          # print_scope has an ID so user has selected a single theme
-          @backlog.themes.select { |t| t.id.to_s == params[:print_scope] }
-        end
-        output = StoryCardsReport.new.to_pdf(themes, params[:page_size], params[:fold_side])
-        send_data output, :filename => filename, :type => "application/pdf"
-      end
-
-      format.js do
-        backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
-        backlog_methods = [:points, :days, :cost_formatted, :rate_formatted]
-        theme_fields = [:id, :name, :code, :position]
-        story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
-        criteria_fields =  [:id, :criterion, :position]
-        render :json => @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
-          :include =>
-          { :themes =>
-            { :only => theme_fields,
-              :include =>
-              { :stories =>
-                { :only => story_fields,
-                  :methods => [:cost_formatted, :days_formatted],
-                  :include =>
-                  { :acceptance_criteria =>
-                    { :only => criteria_fields }
-                  }
-                }
-              }
-            }
-          })
-      end
-    end
+  def show_snapshot
+    @backlog = current_company.backlogs.find(params[:id]).snapshots.find(params[:snapshot_id], :include => @@backlog_includes)
+    render_backlog_or_snapshot
   end
 
   def new
@@ -71,6 +29,13 @@ class BacklogsController < ApplicationController
     else
       render :action => "new"
     end
+  end
+
+  def create_snapshot
+    @backlog = current_company.backlogs.find(params[:id])
+    name = params[:name]
+    new_snapshot = @backlog.create_snapshot(name)
+    redirect_to snapshot_company_backlog_path(@backlog.company, @backlog, new_snapshot)
   end
 
   # only supports JSON updates
@@ -127,5 +92,57 @@ class BacklogsController < ApplicationController
 
     def update_backlog_metadata
       @backlog.update_meta_data current_user
+    end
+
+    def render_backlog_or_snapshot
+      respond_to do |format|
+        format.html { render :layout => 'backlog', :action => 'show' }
+
+        # download an Excel file
+        format.xls do
+          filename = "#{@backlog.name.parameterize}.xls"
+          set_download_headers filename
+          render :layout => false, :action => 'show'
+        end
+
+        # download a PDF of the user story cards
+        format.pdf do
+          filename = "#{@backlog.name.parameterize}.pdf"
+          set_download_headers filename
+          themes = if params[:print_scope].blank?
+            # print_scope is blank therefore display all themes
+            @backlog.themes
+          else
+            # print_scope has an ID so user has selected a single theme
+            @backlog.themes.select { |t| t.id.to_s == params[:print_scope] }
+          end
+          output = StoryCardsReport.new.to_pdf(themes, params[:page_size], params[:fold_side])
+          send_data output, :filename => filename, :type => "application/pdf"
+        end
+
+        format.js do
+          backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
+          backlog_methods = [:points, :days, :cost_formatted, :rate_formatted]
+          theme_fields = [:id, :name, :code, :position]
+          story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
+          criteria_fields =  [:id, :criterion, :position]
+          render :json => @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
+            :include =>
+            { :themes =>
+              { :only => theme_fields,
+                :include =>
+                { :stories =>
+                  { :only => story_fields,
+                    :methods => [:cost_formatted, :days_formatted],
+                    :include =>
+                    { :acceptance_criteria =>
+                      { :only => criteria_fields }
+                    }
+                  }
+                }
+              }
+            })
+        end
+      end
     end
 end

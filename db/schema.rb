@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110326103320) do
+ActiveRecord::Schema.define(:version => 20110328232719) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -29,9 +29,11 @@ ActiveRecord::Schema.define(:version => 20110326103320) do
     t.datetime "updated_at"
     t.decimal  "velocity"
     t.integer  "rate"
+    t.integer  "snapshot_master_id"
   end
 
   add_index "backlogs", ["company_id"], :name => "index_backlogs_on_company_id"
+  add_index "backlogs", ["snapshot_master_id"], :name => "index_backlogs_on_snapshot_master_id"
 
   create_table "companies", :force => true do |t|
     t.string   "name"

@@ -14,7 +14,14 @@ class Story < ActiveRecord::Base
 
   attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color
 
+  before_save :check_can_modify
+
   include ScoreStatistics
+
+  def editable?
+    theme.backlog.editable?
+  end
+  include Snapshot
 
   def cost
     days * theme.backlog.rate

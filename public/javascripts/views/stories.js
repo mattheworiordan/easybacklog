@@ -23,41 +23,46 @@ App.Views.Stories = {
         view.$('ul.stories').append(storyView.render().el);
       });
 
-      if (!this.collection.theme.isNew()) { this.$('ul.stories').append(JST['stories/new']()); }
+      if (this.collection.theme.IsEditable()) {
+        if (!this.collection.theme.isNew()) { this.$('ul.stories').append(JST['stories/new']()); }
+        var orderChangedEvent = this.orderChanged;
+        var actionsElem;
+        // allow stories to be sorted using JQuery UI
+        this.$('ul.stories').sortable({
+          start: function(event, ui) {
+            // hide the new story button when dragging
+            actionsElem = view.$('ul.stories>.actions').clone();
+            view.$('ul.stories>.actions').remove();
+            view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
+            // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip won't do anything until dragging is over
+            $('#vtip').remove();
+            view.$('.move-story.vtipActive').mouseleave();
+            view.$('.move-story').removeClass('vtip');
+            // because drag does not let events propogage the color picker remains, so manually hide
+            $('.color-picker').hide();
+          },
+          stop: function(event, ui) {
+            App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
+            orderChangedEvent();
+            // show the new story button again
+            view.$('ul.stories').append(actionsElem);
+            // add the tips back in to work around jQuery UI and vTip conflict on Firefox
+            view.$('.move-story').addClass('vtip');
+          },
+          placeholder: 'target-order-highlight',
+          axis: 'y',
+          handle: '.move-story a'
+        }).find('.move-story').disableSelection();
 
-      var orderChangedEvent = this.orderChanged;
-      var actionsElem;
-      // allow stories to be sorted using JQuery UI
-      this.$('ul.stories').sortable({
-        start: function(event, ui) {
-          // hide the new story button when dragging
-          actionsElem = view.$('ul.stories>.actions').clone();
-          view.$('ul.stories>.actions').remove();
-          view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
-          // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip won't do anything until dragging is over
+        // not using standard view events as they fire too late, we need this to fire before colorPicker catches the event
+        //  so that we can hide the vtip
+        this.$('.color-picker-icon a').click(function(event) {
           $('#vtip').remove();
-          view.$('.move-story.vtipActive').mouseleave();
-          view.$('.move-story').removeClass('vtip');
-          // because drag does not let events propogage the color picker remains, so manually hide
-          $('.color-picker').hide();
-        },
-        stop: function(event, ui) {
-          App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
-          orderChangedEvent();
-          // show the new story button again
-          view.$('ul.stories').append(actionsElem);
-          // add the tips back in to work around jQuery UI and vTip conflict on Firefox
-          view.$('.move-story').addClass('vtip');
-        },
-        placeholder: 'target-order-highlight',
-        axis: 'y',
-        handle: '.move-story a'
-      }).find('.move-story').disableSelection();
-
-      this.$('.color-picker-icon a').click(function(event) {
-        $('#vtip').remove();
-        $(event.target).mouseleave();
-      });
+          $(event.target).mouseleave();
+        });
+      } else {
+        this.$('.story-actions').remove();
+      }
 
       return(this);
     },
@@ -130,32 +135,36 @@ App.Views.Stories = {
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
       this.$('.acceptance-criteria').html(view.render().el);
 
-      this.makeFieldsEditable();
-      // make all input and textarea fields respond to Tab/Enter
-      var show_view = this;
-      var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
-      _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent); });
+      if (this.model.IsEditable()) {
+        this.makeFieldsEditable();
+        // make all input and textarea fields respond to Tab/Enter
+        var show_view = this;
+        var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
+        _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent); });
 
-      this.$('.move-story a').mousedown(function(event) {
-        App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
-      }).click(function(event) {
-        event.preventDefault();
-        if (!App.Views.Stories.Index.stopMoveEvent) {
-          show_view.moveToThemeDialog();
-        }
-      });
+        this.$('.move-story a').mousedown(function(event) {
+          App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
+        }).click(function(event) {
+          event.preventDefault();
+          if (!App.Views.Stories.Index.stopMoveEvent) {
+            show_view.moveToThemeDialog();
+          }
+        });
 
-      this.$('.color-picker-icon a').simpleColorPicker({
-        onChangeColor: function(col) { show_view.changeColor(col); },
-        colorsPerLine: 4,
-        colors: ['#ffffff', '#dddddd', '#bbbbbb', '#999999',
-                 '#ff0000', '#ff9900', '#ffff00', '#00ff00',
-                 '#00ffff', '#6666ff', '#9900ff', '#ff00ff',
-                 '#f4cccc', '#d9ead3', '#cfe2f3', '#ead1dc',
-                 '#ffe599', '#b6d7a8', '#b4a7d6', '#d5a6bd',
-                 '#e06666', '#f6b26b', '#ffd966', '#93c47d']
-      });
-      if (this.model.get('color')) { this.changeColor(this.model.get('color', { silent: true })); }
+        this.$('.color-picker-icon a').simpleColorPicker({
+          onChangeColor: function(col) { show_view.changeColor(col); },
+          colorsPerLine: 4,
+          colors: ['#ffffff', '#dddddd', '#bbbbbb', '#999999',
+                   '#ff0000', '#ff9900', '#ffff00', '#00ff00',
+                   '#00ffff', '#6666ff', '#9900ff', '#ff00ff',
+                   '#f4cccc', '#d9ead3', '#cfe2f3', '#ead1dc',
+                   '#ffe599', '#b6d7a8', '#b4a7d6', '#d5a6bd',
+                   '#e06666', '#f6b26b', '#ffd966', '#93c47d']
+        });
+        if (this.model.get('color')) { this.changeColor(this.model.get('color', { silent: true })); }
+      } else {
+        // do nothing
+      }
       return (this);
     },
 

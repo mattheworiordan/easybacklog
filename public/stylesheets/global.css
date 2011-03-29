@@ -400,54 +400,95 @@ section.for-backlog section.main-content-pod {
   background-color: #edfeed;
   z-index: 1;
   /* position editable input as global to avoid jumping */ }
-  #backlog-data-area .back-action {
-    margin: 6px 12px 6px 6px;
-    float: right; }
+  #backlog-data-area .actions {
+    float: right;
+    overflow: hidden;
+    padding: 0.3em 17px 0.2em 0;
+    margin-top: 0.4em; }
+    #backlog-data-area .actions a {
+      display: block;
+      float: left; }
+    #backlog-data-area .actions .divider {
+      border-right: 1px solid #AADDAA;
+      height: 1em;
+      padding-left: 1em;
+      margin-right: 1em;
+      margin-top: 0em;
+      float: left; }
   #backlog-data-area input, #backlog-data-area textarea {
     position: absolute; }
   #backlog-data-area h2.name {
-    margin: 6px 0 0 10px;
+    margin: 2px 0 0 10px;
     position: relative;
     width: 20em;
-    background-color: transparent; }
+    background-color: transparent;
+    height: 1.25em; }
     #backlog-data-area h2.name > div {
       padding: 2px; }
     #backlog-data-area h2.name:hover {
       background-color: #c9fcc9; }
-  #backlog-data-area #backlog-settings {
+  #backlog-data-area .snapshot {
+    margin-top: 3px;
     float: left;
-    margin: 3px 0 0 12px; }
+    clear: left;
+    padding-left: 15px; }
+    #backlog-data-area .snapshot .title {
+      color: #999;
+      float: left; }
+    #backlog-data-area .snapshot .selector {
+      float: left;
+      margin-top: -5px; }
+      #backlog-data-area .snapshot .selector select {
+        background-color: #edfeed;
+        border: 1px solid #0aaf0a; }
+    #backlog-data-area .snapshot .new {
+      float: left;
+      width: 16px;
+      height: 16px;
+      margin-top: -3px;
+      cursor: pointer; }
+  #backlog-data-area #backlog-settings {
+    float: right;
+    margin: 0;
+    overflow: hidden;
+    padding: 3px 6px 3px 3px;
+    color: #363; }
     #backlog-data-area #backlog-settings #backlog-rate, #backlog-data-area #backlog-settings #backlog-velocity {
       float: left;
       overflow: hidden; }
     #backlog-data-area #backlog-settings #backlog-velocity {
-      padding-left: 2.5em; }
+      padding-left: 0.5em;
+      border-left: 1px solid #ADA;
+      margin-left: 0.5em; }
     #backlog-data-area #backlog-settings .title {
       float: left;
-      padding: 2px 0.25em 2px 0; }
+      padding: 2px 0.25em 2px 0;
+      color: #999; }
     #backlog-data-area #backlog-settings .data {
       float: left;
       padding: 2px; }
       #backlog-data-area #backlog-settings .data:hover {
         background-color: #c9fcc9; }
+      #backlog-data-area #backlog-settings .data:hover {
+        color: black; }
   #backlog-data-area .backlog-stats {
     background-color: #FFF;
     float: right;
-    margin: 0 12px 0 0; }
+    margin: 0 12px 0 0;
+    -moz-box-shadow: 0px 0px 4px #66cc66;
+    -webkit-box-shadow: 0px 0px 4px #66cc66;
+    box-shadow: 0px 0px 4px #66cc66; }
     #backlog-data-area .backlog-stats div.title {
       padding: 5px 0 5px 5px;
       float: left; }
     #backlog-data-area .backlog-stats div.output {
       padding: 5px;
       float: left; }
-  #backlog-data-area .actions {
-    float: right;
-    padding: 5px 15px 5px 5px; }
 
 #themes-header {
   position: fixed;
   z-index: 1;
-  top: 80px;
+  top: 76px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -727,7 +768,8 @@ ul.themes {
               padding: 2px;
               border: 1px solid #DDD; }
             ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
-              background-color: rgba(255, 255, 255, 0.6); }
+              background-color: rgba(255, 255, 255, 0.6);
+              min-height: 1.1em; }
           ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90 {
             width: 3.409%;
             /* all story elements use up % of total width as embedded in another elem */
@@ -737,7 +779,8 @@ ul.themes {
               padding: 2px;
               border: 1px solid #DDD; }
             ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
-              background-color: rgba(255, 255, 255, 0.6); }
+              background-color: rgba(255, 255, 255, 0.6);
+              min-height: 1.1em; }
           ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
             width: 5.682%;
             /* all story elements use up % of total width as embedded in another elem */
@@ -792,6 +835,36 @@ ul.themes {
 
 #dialog-print .progress-placeholder {
   font-weight: bold; }
+
+#dialog-create-snapshot div.progress-area, #dialog-create-snapshot div.progress-area.field_with_errors {
+  margin-left: 23px;
+  display: block; }
+#dialog-create-snapshot input[type=text] {
+  width: 15em; }
+
+#loading-new-snapshot {
+  display: none;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+  #loading-new-snapshot div.background {
+    z-index: 103; }
+  #loading-new-snapshot .progress-icon {
+    float: left;
+    margin-right: 0.5em; }
+  #loading-new-snapshot div.loading {
+    position: absolute;
+    background-color: white;
+    margin: 45% 0 0 45%;
+    width: 90px;
+    height: 16px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #999;
+    z-index: 105; }
 
 /* Company dashboard home */
 ul.backlog-list {

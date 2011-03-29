@@ -3,6 +3,11 @@ var Story = Backbone.Model.extend({
     return this.collection.theme;
   },
 
+  // editable if no snapshot master
+  IsEditable: function() {
+    return (this.collection.theme.IsEditable());
+  },
+
   // access to acceptance criteria child collection
   AcceptanceCriteria: function() {
     if (this._acceptance_criteria == null) {

@@ -4,4 +4,9 @@ class AcceptanceCriterion < ActiveRecord::Base
   belongs_to :story
 
   attr_accessible :criterion, :position
+
+  def editable?
+    story.theme.backlog.editable?
+  end
+  include Snapshot
 end

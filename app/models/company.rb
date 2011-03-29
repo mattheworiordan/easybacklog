@@ -1,7 +1,7 @@
 class Company < ActiveRecord::Base
   has_many :company_users
   has_many :users, :through => :company_users
-  has_many :backlogs
+  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL'
   has_many :invited_users
   belongs_to :locale
 

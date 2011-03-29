@@ -27,38 +27,42 @@ App.Views.Themes = {
 
       this.$('ul.themes').append(JST['themes/new']());
 
-      var orderChangedEvent = this.orderChanged;
-      var actionsElem;
-      var moveThemeTitle;
-      // allow themes to be sorted using JQuery UI
-      this.$('ul.themes').sortable({
-        start: function(event, ui) {
-        },
-        stop: function(event, ui) {
-          orderChangedEvent();
-        },
-        placeholder: 'target-order-highlight',
-        axis: 'y',
-        handle: '.move-theme'
-      }).find('.move-theme').disableSelection();
+      if (this.collection.backlog.IsEditable()) {
+        var orderChangedEvent = this.orderChanged;
+        var actionsElem;
+        var moveThemeTitle;
+        // allow themes to be sorted using JQuery UI
+        this.$('ul.themes').sortable({
+          start: function(event, ui) {
+          },
+          stop: function(event, ui) {
+            orderChangedEvent();
+          },
+          placeholder: 'target-order-highlight',
+          axis: 'y',
+          handle: '.move-theme'
+        }).find('.move-theme').disableSelection();
 
-      /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
-      this.$('ul.themes .actions .reorder-themes').click(function(event) {
-        if ($('ul.themes li.theme').length < 2) {
-          new App.Views.Warning({ message: 'You need more than one theme to reorder'});
-        } else {
-          parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
-            parentView.$('.move-theme').css('display', 'block');
-            parentView.$('.stop-ordering').css('display', 'block');
-          });
-        }
-      });
-      /* ordering has finished as user clicked on stop ordering link */
-      this.$('>.stop-ordering').click(function(event) {
-        parentView.$('.move-theme').css('display', 'none');
-        parentView.$('.stop-ordering').css('display', 'none');
-        parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideDown(250);
-      })
+        /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
+        this.$('ul.themes .actions .reorder-themes').click(function(event) {
+          if ($('ul.themes li.theme').length < 2) {
+            new App.Views.Warning({ message: 'You need more than one theme to reorder'});
+          } else {
+            parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
+              parentView.$('.move-theme').css('display', 'block');
+              parentView.$('.stop-ordering').css('display', 'block');
+            });
+          }
+        });
+        /* ordering has finished as user clicked on stop ordering link */
+        this.$('>.stop-ordering').click(function(event) {
+          parentView.$('.move-theme').css('display', 'none');
+          parentView.$('.stop-ordering').css('display', 'none');
+          parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideDown(250);
+        })
+      } else {
+        this.$('ul.themes>li.actions').remove();
+      }
       return(this);
     },
 
@@ -114,12 +118,13 @@ App.Views.Themes = {
     deleteDialogTemplate: 'themes/delete-dialog',
 
     events: {
-      "click .delete-theme>a": "remove"
+      "click .delete-theme>a": 'remove',
+      "click .re-number-stories a": 'reNumberStories'
     },
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent', 'reNumberStories', 'reNumberStoriesAction');
+      _.bindAll(this, 'navigateEvent', 'reNumberStoriesAction');
     },
 
     render: function() {
@@ -127,15 +132,21 @@ App.Views.Themes = {
       var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
       this.$('>.stories').prepend(view.render().el);
 
-      this.makeFieldsEditable();
       this.updateStatistics();
-      var self = this;
-      _.each(['.name', '.code'], function(elem) {
-        self.$('.theme-data ' + elem + '>.data, .theme-data ' + elem + '>.data input').live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
-      });
-      this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
 
-      this.$('.re-number-stories a').click(this.reNumberStories);
+      if (this.model.IsEditable()) {
+        this.makeFieldsEditable();
+
+        var self = this;
+        _.each(['.name', '.code'], function(elem) {
+          self.$('.theme-data ' + elem + '>.data, .theme-data ' + elem + '>.data input').live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+        });
+        this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
+      } else {
+        this.$('ul.stories>li.actions').remove();
+        this.$('.re-number-stories a').remove();
+        this.$('.delete-theme>a').remove();
+      }
       return (this);
     },
 
@@ -291,7 +302,7 @@ App.Views.Themes = {
     reNumberStoriesAction: function(dialog) {
       var view = this;
       // tell the user we're deleting as it may take a second
-      $(dialog).find('>p').html('Re-numbering stories...<br />Please wait.<br /><br ><span class="progress-icon"></span>');
+      $(dialog).find('>p').html('Re-numbering stories...<br />Please wait.<br /><br /><span class="progress-icon"></span>');
       $(dialog).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Close');
       $(dialog).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
       view.model.ReNumberStories({

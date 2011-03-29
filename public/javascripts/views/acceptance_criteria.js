@@ -22,21 +22,23 @@ App.Views.AcceptanceCriteria = {
         parentView.$('ul').append(view.render().el);
       })
 
-      this.$('ul').append(JST['acceptance_criteria/new']());
+      if (this.collection.story.IsEditable()) {
+        this.$('ul').append(JST['acceptance_criteria/new']());
+        var orderChangedEvent = this.orderChanged;
+        this.$('ul.acceptance-criteria').sortable({
+          start: function(event, ui) {
+            // ensure all editable fields lose focus and revert to normal divs whilst dragging
+            parentView.$('textarea, input').blur();
+          },
+          stop: function(event, ui) {
+            orderChangedEvent();
+          },
+          placeholder: 'target-order-highlight',
+          axis: 'y',
+          handle: '.index'
+        }).find('.index').disableSelection();
+      }
 
-      var orderChangedEvent = this.orderChanged;
-      this.$('ul.acceptance-criteria').sortable({
-        start: function(event, ui) {
-          // ensure all editable fields lose focus and revert to normal divs whilst dragging
-          parentView.$('textarea, input').blur();
-        },
-        stop: function(event, ui) {
-          orderChangedEvent();
-        },
-        placeholder: 'target-order-highlight',
-        axis: 'y',
-        handle: '.index'
-      }).find('.index').disableSelection();
       this.displayOrderIndexes();
       return(this);
     },
@@ -100,8 +102,10 @@ App.Views.AcceptanceCriteria = {
     render: function() {
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
 
-      this.makeFieldsEditable();
-      this.$('.data, .data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      if (this.model.IsEditable()) {
+        this.makeFieldsEditable();
+        this.$('.data, .data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      }
       return (this);
     },
 

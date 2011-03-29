@@ -17,6 +17,11 @@ class Theme < ActiveRecord::Base
 
   include ScoreStatistics
 
+  def editable?
+    backlog.editable?
+  end
+  include Snapshot
+
   def points
     total_score_diff = stories.inject(0) { |val, story| val + story.score_diff ** 2 }
     total_lowest_score = stories.inject(0) { |val, story| val + story.lowest_score }

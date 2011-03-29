@@ -13,6 +13,10 @@ Ibacklog::Application.routes.draw do
       collection do
         get 'name_available' => 'backlogs#name_available'
       end
+      member do
+        get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot', :as => 'snapshot'
+        post 'snapshots/create' => 'backlogs#create_snapshot', :as => 'create_snapshot'
+      end
     end
     resources :users
     resources :invites, :only => [:destroy] do

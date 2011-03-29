@@ -12,6 +12,11 @@ var Theme = Backbone.Model.extend({
     return this.collection.backlog;
   },
 
+  // editable if no snapshot master
+  IsEditable: function() {
+    return (this.collection.backlog.IsEditable());
+  },
+
   // renumber all the stories by assigning them sequential IDs
   ReNumberStories: function(options) {
     var theme = this;

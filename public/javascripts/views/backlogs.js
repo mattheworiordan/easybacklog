@@ -6,7 +6,7 @@ App.Views.Backlogs = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent','print');
+      _.bindAll(this, 'navigateEvent','print','newSnapshot','jumpToSnapshot');
     },
 
     render: function() {
@@ -15,18 +15,26 @@ App.Views.Backlogs = {
 
       var show_view = this;
 
-      this.makeFieldsEditable();
       this.updateStatistics();
-      $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
 
       // print link should show a dialog first
-      $('#backlog-data-area .actions #print').live('click', this.print);
+      $('#backlog-data-area .actions #print').click(this.print);
 
-      var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
-      if (firstEditableElem.length) {
-        firstEditableElem.click();
-      } else {
-        $('ul.themes li.actions a.new-theme').focus();
+      // new snapshot link should show the new snapshot dialog
+      $('#backlog-data-area #new-snapshot').click(this.newSnapshot);
+      $('#backlog-data-area select#snapshot-selector').change(this.jumpToSnapshot);
+
+      if (this.model.IsEditable()) {
+        this.makeFieldsEditable();
+
+        $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+
+        var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
+        if (firstEditableElem.length) {
+          firstEditableElem.click();
+        } else {
+          $('ul.themes li.actions a.new-theme').focus();
+        }
       }
 
       return (this);
@@ -36,7 +44,7 @@ App.Views.Backlogs = {
       var show_view = this;
       var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); };
       var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: -20 });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: -20, style: 'margin-top: -3px' });
       // for rate we need to drop the locale formatted rate and use rate as a numeric
       var previousRateFormatted, previousRate;
       var beforeRateChangeFunc = function(value, settings) { previousRateFormatted = value; previousRate = show_view.model.get('rate'); return show_view.beforeChange(previousRate, settings, this); }
@@ -134,6 +142,63 @@ App.Views.Backlogs = {
           }
         }
       });
+    },
+
+    newSnapshot: function(event) {
+      var view = this;
+      var newSnapshotLink = $(event.target);
+      event.preventDefault();
+      $('#dialog-create-snapshot').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST['backlogs/create-snapshot-dialog']({ backlog: this.model }));
+      $('#dialog-create-snapshot').dialog({
+        resizable: false,
+        height:210,
+        width: 350,
+        modal: true,
+        buttons: {
+          'Create Snapshot': function() {
+            // create snapshot on server by posting a request
+            var name = $(this).find('input[type=text]').val();
+            if ($.trim(name) == '') {
+              $(this).find('div.progress-area label').text('You must name your snapshot to continue.');
+              $(this).find('div.progress-area').addClass('field_with_errors').find('input[type=text]').focus();
+            } else {
+              // post a hidden form to set up a new snapshot
+              var href = newSnapshotLink.attr('href'),
+                csrf_token = $('meta[name=csrf-token]').attr('content'),
+                csrf_param = $('meta[name=csrf-param]').attr('content'),
+                form = $('<form method="post" action="' + href + '"></form>');
+              fields = '<input name="' + csrf_param + '" value="' + csrf_token + '" type="hidden" />';
+              fields += '<input name="name" value="' + htmlEncode(name) + '" type="hidden" />';
+              form.hide().append(fields).appendTo('body');
+              form.submit();
+
+              // update the dialog to say we're updating and then close after a short period
+              $(this).find('div.progress-area').html('Please wait, we\'re creating your snapshot...<br /><br /><span class="progress-icon"></span>');
+              $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
+              $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
+              var dialog = this;
+              _.delay(function() { $(dialog).dialog("close"); }, 2000);
+            }
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
+        }
+      });
+    },
+
+    jumpToSnapshot: function(event) {
+      event.preventDefault();
+      var val = $(event.target).val();
+      var baseUrl = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/\d+/i)[0];
+      if (val.match(/^\d+$/)) {
+        // user has selected a backlog
+        baseUrl += '/snapshots/' + val;
+      }
+      $('#loading-new-snapshot').show();
+      document.location.pathname = baseUrl;
     }
   })
 };

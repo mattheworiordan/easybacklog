@@ -5,11 +5,17 @@ class Backlog < ActiveRecord::Base
 
   has_many :themes, :dependent => :delete_all, :order => 'position'
 
+  # self references for snapshots
+  has_many :snapshots, :class_name => 'Backlog', :foreign_key => 'snapshot_master_id', :order => 'created_at desc'
+  belongs_to :snapshot_master, :class_name => 'Backlog'
+
   validates_uniqueness_of :name, :scope => [:company_id], :message => 'has already been taken for another backlog'
   validates_presence_of :name, :rate, :velocity
   validates_numericality_of :rate, :velocity
 
   attr_accessible :company, :name, :rate, :velocity
+
+  before_save :check_can_modify
 
   include ScoreStatistics
 
@@ -52,9 +58,39 @@ class Backlog < ActiveRecord::Base
     end
   end
 
+  # snapshot is a non-editable copy of a backlog in time
+  def create_snapshot(snapshot_name)
+    new_backlog = company.backlogs.new(self.attributes.merge({ :name => snapshot_name, :created_at => Time.now, :updated_at => Time.now }))
+    # these 2 attributes are protected
+    new_backlog.author = self.author
+    new_backlog.last_modified_user = self.last_modified_user
+    new_backlog.save!
+
+    # copy the children
+    self.copy_children_to_backlog new_backlog
+
+    # now lock the record and assign the snapshot master to self
+    new_backlog.snapshot_master = self
+    new_backlog.save!
+
+    new_backlog
+  end
+
+  # editable if this not a snapshot i.e. a snapshot master exists
+  def editable?
+    self.snapshot_master.blank?
+  end
+
   def update_meta_data(user)
     self.updated_at = Time.now
     self.last_modified_user = user
     self.save!
   end
+
+  private
+    # only allow save on working copy i.e. not snapshot
+    #  but do allow editing if snapshot_master has changed as we need to allow this to be set
+    def check_can_modify
+      self.snapshot_master_id_changed? || self.snapshot_master.blank?
+    end
 end

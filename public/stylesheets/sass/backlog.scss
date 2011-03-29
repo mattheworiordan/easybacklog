@@ -65,48 +65,98 @@ section.for-backlog {
   width: 100%;
   background-color: $title-area-color;
   z-index: 1;
-  .back-action {
-    margin: 6px 12px 6px 6px;
+  .actions {
     float: right;
+    overflow: hidden;
+    padding: 0.3em $standard-header-padding-height*2+5px 0.2em 0;
+    margin-top: 0.4em;
+    a {
+      display: block;
+      float: left;
+    }
+    .divider {
+      border-right: 1px solid #AADDAA;
+      height: 1em;
+      padding-left: 1em;
+      margin-right: 1em;
+      margin-top: 0em;
+      float: left;
+    }
   }
   /* position editable input as global to avoid jumping */
   input, textarea {
     position: absolute;
   }
   h2.name {
-    margin: 6px 0 0 10px;
+    margin: 2px 0 0 10px;
     position: relative;
     width: 20em;
     background-color: transparent;
+    height: 1.25em;
     >div {
       padding: 2px;
     }
     @include editable-field;
   }
-  #backlog-settings {
+  .snapshot {
+    margin-top: 3px;
     float: left;
-    margin: 3px 0 0 12px;
+    clear: left;
+    padding-left: $standard-header-padding-height*2 + 3px;
+    .title {
+      color: #999;
+      float: left;
+    }
+    .selector {
+      float: left;
+      margin-top: -5px;
+      select {
+        background-color: $title-area-color;
+        border: 1px solid darken($title-area-color, 60%);
+      }
+    }
+    .new {
+      float: left;
+      width: 16px;
+      height: 16px;
+      margin-top: -3px;
+      cursor: pointer;
+    }
+  }
+  #backlog-settings {
+    float: right;
+    margin: 0;
+    overflow: hidden;
+    padding: 3px 6px 3px 3px;
+    color: #363;
     #backlog-rate, #backlog-velocity {
       float: left;
       overflow: hidden;
     }
     #backlog-velocity {
-      padding-left: 2.5em;
+      padding-left: 0.5em;
+      border-left: 1px solid #ADA;
+      margin-left: 0.5em;
     }
     .title {
       float: left;
       padding: 2px 0.25em 2px 0;
+      color: #999;
     }
     .data {
       float: left;
       padding: 2px;
       @include editable-field;
+      &:hover {
+        color: black;
+      };
     }
   }
   .backlog-stats {
     background-color: #FFF;
     float: right;
-    margin: 0 12px 0 0;
+    margin: 0 $standard-header-padding-height*2 0 0;
+    @include drop-shadow(0px, 4px, #6C6);
     div.title {
       padding: 5px 0 5px 5px;
       float: left;
@@ -116,16 +166,12 @@ section.for-backlog {
       float: left;
     }
   }
-  .actions {
-    float: right;
-    padding: 5px 15px 5px 5px;
-  }
 }
 
 #themes-header {
   position: fixed;
   z-index: 1;
-  top: 80px;
+  top: 76px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -381,8 +427,20 @@ ul.themes {
             }
             &>div.data { background-color: rgba(255,255,255,0.6); }
           }
-          &>.user-story, &>.acceptance-criteria, &>.comments { @include table-col(22%); &>div { background-color: rgba(255,255,255,0.6); } }
-          &>.score-50, &>.score-90 { @include table-col(3%); &>div { background-color: rgba(255,255,255,0.6); } }
+          &>.user-story, &>.acceptance-criteria, &>.comments {
+            @include table-col(22%);
+            &>div {
+              background-color: rgba(255,255,255,0.6);
+              min-height: 1.1em;
+            }
+          }
+          &>.score-50, &>.score-90 {
+            @include table-col(3%);
+            &>div {
+              background-color: rgba(255,255,255,0.6);
+              min-height: 1.1em;
+            }
+          }
           &>.cost-formatted { @include table-col(5%); text-align: right; &>div { border: none; padding: 3px; } }
           &>.days-formatted {
             &>div {
@@ -445,5 +503,43 @@ ul.themes {
 #dialog-print {
   .progress-placeholder {
     font-weight: bold;
+  }
+}
+
+#dialog-create-snapshot {
+  div.progress-area, div.progress-area.field_with_errors {
+    margin-left: 23px;
+    display: block;
+  }
+  input[type=text] {
+    width: 15em;
+  }
+}
+
+#loading-new-snapshot {
+  display: none;
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  div.background {
+    z-index: 103;
+  }
+  .progress-icon {
+    float: left;
+    margin-right: 0.5em;
+  }
+  div.loading {
+    position: absolute;
+    background-color: white;
+    margin: 45% 0 0 45%;
+    width: 90px;
+    height: 16px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #999;
+    z-index: 105;
   }
 }
