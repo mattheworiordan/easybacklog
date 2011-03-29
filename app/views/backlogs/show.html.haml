@@ -13,7 +13,10 @@
     .divider
     =link_to 'Back to dashboard', company_path(@backlog.company)
   %h2.name
-    .data= @backlog.name
+    - if @backlog.snapshot_master.blank?
+      .data= @backlog.name
+    - else
+      .data= @backlog.snapshot_master.name
   .snapshot
     .title
       Snapshot:
