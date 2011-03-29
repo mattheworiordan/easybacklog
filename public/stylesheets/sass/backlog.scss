@@ -275,7 +275,10 @@ ul.themes {
       font-size: 90%;
       border-width: 1px;
       &.new-acceptance-criterion {
-        padding: 0 10px 0 10px;
+        border-color: #AAA;
+        background-color: #DDD;
+        padding: 0 0px 0 1px;
+        margin: 3px -3px 0 0;
       }
     }
   }

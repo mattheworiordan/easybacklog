@@ -632,7 +632,10 @@ ul.themes {
         color: #004d00;
         border-color: #004d00; }
       ul.themes li.actions a.new-acceptance-criterion {
-        padding: 0 10px 0 10px; }
+        border-color: #AAA;
+        background-color: #DDD;
+        padding: 0 0px 0 1px;
+        margin: 3px -3px 0 0; }
   ul.themes li.target-order-highlight {
     background-color: #FFC;
     margin: 0;
