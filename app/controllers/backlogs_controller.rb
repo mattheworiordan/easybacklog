@@ -1,15 +1,15 @@
 class BacklogsController < ApplicationController
   include CompanyResource
   after_filter :update_backlog_metadata, :only => [:update]
-  @@backlog_includes = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
+  BACKLOG_INCLUDES = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
 
   def show
-    @backlog = current_company.backlogs.find(params[:id], :include => @@backlog_includes)
+    @backlog = current_company.backlogs.find(params[:id], :include => BACKLOG_INCLUDES)
     render_backlog_or_snapshot
   end
 
   def show_snapshot
-    @backlog = current_company.backlogs.find(params[:id]).snapshots.find(params[:snapshot_id], :include => @@backlog_includes)
+    @backlog = current_company.backlogs.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
     render_backlog_or_snapshot
   end
 
@@ -81,15 +81,6 @@ class BacklogsController < ApplicationController
   end
 
   private
-    def set_download_headers(filename)
-      headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
-      if request.env['HTTP_USER_AGENT'] =~ /msie/i
-        headers['Pragma'] = 'public'
-        headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
-        headers['Expires'] = "0"
-      end
-    end
-
     def update_backlog_metadata
       @backlog.update_meta_data current_user
     end
