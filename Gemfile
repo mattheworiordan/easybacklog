@@ -42,6 +42,7 @@ end
 group :development do
   gem 'ruby-debug19', :require => 'ruby-debug'
   # multiple environments for Heroku
+  gem 'taps', '>=0.3.20'
   gem 'heroku'
   gem 'heroku_san'
   gem 'ruby_parser' # for Devise generators
