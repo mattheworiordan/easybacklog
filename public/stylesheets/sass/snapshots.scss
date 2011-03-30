@@ -1,0 +1,100 @@
+@import 'reset';
+@import 'mixins_and_constants';
+@import 'base';
+
+/* this style sheet contains all styles not necessary for Excel to import i.e. styling only for browser view */
+#compare-snapshots {
+  padding: 0.5em;
+  table {
+    background-color: white;
+    width: 100%;
+    border-collapse:collapse;
+    @include drop-shadow(0px, 4px, #666);
+    border: none;
+    a {
+      text-decoration: none;
+      color: #CCC;
+      &:hover {
+        color: white;
+        text-decoration: underline
+      };
+    }
+    h3 {
+      font-size: 125%;
+      margin: 2px 0 2px 0;
+    }
+    tr.header, tr.title {
+      border: none;
+      td {
+        border: none;
+        &.logo-space {
+          text-align: left;
+          color: #FFF
+        }
+        &.actions {
+          text-align: right;
+          color: #CCC;
+          a#help {
+            position: relative;
+            #help-rollover {
+              cursor: default;
+              display: none;
+              position: absolute;
+              background-color: black;
+              width: 10em;
+              padding: 1em;
+              margin-left: -9em;
+              text-align: left;
+              div.key {
+                padding: 3px;
+                overflow: hidden;
+                span {
+                  color: black;
+                  display: block;
+                  float: left;
+                  width: 12px;
+                  height: 12px;
+                  background-color: white;
+                  border: 1px solid #CCC;
+                  margin-right: 0.5em;
+                  &.deleted { background-color: #FFAAAA; };
+                  &.new { background-color: #AAFFAA; };
+                  &.changed { background-color: #FFBC4F; };
+                }
+              }
+            }
+            &:hover {
+              text-decoration: none;
+              #help-rollover {
+                display: block;
+              }
+            }
+          }
+        }
+        .divider {
+          color: #444;
+        }
+      }
+    }
+    tr.title td {
+      padding: 3px;
+    }
+    td {
+      padding: 2px;
+      border: 1px solid #DDD;
+      &:first-child {
+        border-left: none;
+      }
+      &:last-child {
+        border-right: none;
+      }
+      &.criteria>div {
+        margin-bottom: 2px;
+      }
+    }
+    th {
+      padding: 2px;
+      border: 1px solid #AAA;
+    }
+  }
+}

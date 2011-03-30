@@ -24,9 +24,15 @@ javascripts:
     - public/javascripts/sections/new_backlog.js
   validation:
     - public/javascripts/vendor/conditional/jquery.validate.js
+  snapshots:
+    - public/javascripts/sections/snapshots.js
 stylesheets:
   common:
     - public/stylesheets/global.css
     - public/stylesheets/ui-lightness/jquery-ui-1.8.9.custom.css
   ie_compatibility:
     - public/stylesheets/ie_compatibility.css
+  snapshots:
+    - public/stylesheets/snapshots.css
+  snapshots_print:
+    - public/stylesheets/snapshots_print.css

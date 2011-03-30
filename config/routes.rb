@@ -8,22 +8,25 @@ Ibacklog::Application.routes.draw do
       end
       member do
         # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls or .pdf so that IE uses a helpful filename
-        match ':file_name' => 'backlogs#show', :via => [:get], :as => 'download'
+        get ':file_name' => 'backlogs#show', :as => 'download'
       end
       collection do
         get 'name_available' => 'backlogs#name_available'
+      end
+      collection do
+        get 'compare/:base/:target' => 'snapshots#compare_snapshots', :as => 'compare_snapshots'
       end
       member do
         get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot', :as => 'snapshot'
         post 'snapshots/create' => 'backlogs#create_snapshot', :as => 'create_snapshot'
         # download for backlogs
-        match 'snapshots/:snapshot_id/:file_name' => 'backlogs#show_snapshot', :via => [:get], :as => 'download_snapshot'
+        get 'snapshots/:snapshot_id/:file_name' => 'backlogs#show_snapshot', :as => 'download_snapshot'
       end
     end
     resources :users
     resources :invites, :only => [:destroy] do
       member do
-        match ':security_code' => 'invites#show', :via => :get, :as => 'show'
+        get ':security_code' => 'invites#show', :as => 'show'
       end
     end
     collection do

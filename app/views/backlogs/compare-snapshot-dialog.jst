@@ -1,0 +1,28 @@
+<div id="dialog-compare-snapshot" title="Compare snapshots">
+  <form>
+    <p>
+      <span class="ui-icon ui-icon-transferthick-e-w" style="float:left; margin:0 7px 30px 0;" />
+      Please choose which snapshots you wish to compare, and a new window will be opened showing you the comparison.
+    </p>
+    <div class="error-message"></div>
+    <div class="elements">
+      <p>
+        <label for="base-snapshot">Which snapshot is your base (often the older version)?</label>
+      </p>
+      <p>
+        <select id="base-snapshot">
+          <%= snapshot_options %>
+        </select>
+      </p>
+      <br />
+      <p>
+        <label for="target-snapshot">Which snapshot are you comparing against (often the newer version)?</label>
+      </p>
+      <p>
+        <select id="target-snapshot">
+          <%= snapshot_options %>
+        </select>
+      </p>
+    </div>
+  </form>
+</div>

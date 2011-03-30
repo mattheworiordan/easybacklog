@@ -115,7 +115,7 @@ section.for-backlog {
         border: 1px solid darken($title-area-color, 60%);
       }
     }
-    .new {
+    .new, .compare {
       float: left;
       width: 16px;
       height: 16px;
@@ -564,5 +564,19 @@ ul.themes {
     background-color: white;
     border: 1px solid #999;
     z-index: 105;
+  }
+}
+
+#dialog-compare-snapshot {
+  div.elements, div.error-message {
+    margin-left: 23px;
+    display: block;
+  }
+  div.error-message {
+    color: red;
+  }
+  .error-alert {
+    float: left;
+    margin-right: 10px
   }
 }

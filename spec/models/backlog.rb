@@ -103,4 +103,129 @@ describe Backlog do
     @old_snapshot.snapshot_master.should eql(@backlog)
     @newer_snapshot.snapshot_master.should eql(@backlog)
   end
+
+  it 'should provide a compare_with method returning a comparison object' do
+    # create a simple base which has two stories, two themes, and two acceptance criterion on the first story
+    @base = Factory.create(:acceptance_criterion).story.theme.backlog
+    @base.themes[0].stories[0].update_attributes :score_50 => 1, :score_90 => 21
+
+    empty_backlog = Factory.create(:backlog)
+    # compare with an empty backlog as target (newer)
+    comparison = @base.compare_with(empty_backlog)
+    comparison.themes.first.should be_deleted
+    comparison.themes.first.stories.first.should be_deleted
+    comparison.themes.first.stories.first.acceptance_criteria.first.should be_deleted
+
+    # compare with an empty backlog as base (older)
+    comparison = empty_backlog.compare_with(@base)
+    comparison.themes.first.should be_new
+    comparison.themes.first.stories.first.should be_new
+    comparison.themes.first.stories.first.acceptance_criteria.first.should be_new
+
+    # add two additional criterion to the base, one story and one theme to index 0 of theme, story and backlog
+    Factory.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
+    Factory.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
+    Factory.create(:story, :theme => @base.themes.first)
+    Factory.create(:theme, :backlog => @base)
+
+    # base is typically the older version
+    # target is typically the newer version so we can see the changes
+    @target = Factory.create(:backlog)
+    @base.copy_children_to_backlog(@target)
+
+    # we now have two identical objects, check they are identical before we embark on a complete test suite
+    comparison = @base.compare_with(@target)
+    comparison.should be_identical
+    comparison.themes.count.should eql(2) # 1 by default plus additional one added
+    comparison.themes.first.should be_identical
+    comparison.themes.first.stories.count.should eql(2) # 1 by default plus additional one
+    comparison.themes.first.stories.first.should be_identical
+    comparison.themes.first.stories.first.acceptance_criteria.count.should eql(3) # 1 by default plus additional one
+    comparison.themes.first.stories.first.acceptance_criteria.first.should be_identical
+
+    # backlog changes
+    @target.update_attributes :rate => @target.rate + 100, :velocity => @target.velocity - 0.1
+    @target.reload
+    comparison = @base.compare_with(@target)
+    comparison.should have_rate_changed
+    comparison.should have_rate_increased
+    comparison.should have_velocity_changed
+    comparison.should have_velocity_decreased
+    comparison.themes[0].should have_days_changed
+    comparison.themes[0].should have_days_increased # velocity has decreased so days should have gone up
+    comparison.themes[0].should have_cost_changed
+    comparison.themes[0].should have_cost_increased # rate has increase so cost should have gone up
+    # reset so that other comparisons aren't effected
+    @target.update_attributes :rate => @target.rate - 100, :velocity => @target.velocity + 0.1
+    @target.reload
+
+    # now make some changes to the object
+    # theme changes
+    base_theme_name = @base.themes[0].name
+    @target.themes[1].destroy # remove the second theme in target
+    Factory.create(:theme, :backlog => @target) # create a new theme in target
+    @target.themes[0].update_attributes :name => 'Changed the name' # change theme 0
+    @target.reload
+    # check theme changes
+    comparison = @base.compare_with(@target)
+    comparison.themes.count.should eql(3)
+    comparison.themes[1].should be_deleted
+    comparison.themes[0].target.name.should eql('Changed the name')
+    comparison.themes[0].base.name.should eql(base_theme_name)
+    comparison.themes[0].should_not be_identical
+    comparison.themes[0].should have_changed
+    comparison.themes[0].should have_name_changed
+    comparison.themes[0].should_not be_identical
+    comparison.themes[2].should be_new
+
+    # story changes
+    story_3 = Factory.create(:story, :theme => @target.themes[0]) # create a new story in target
+    story_4 = Factory.create(:story, :theme => @target.themes[0]) # create a new story in target
+    story_5 = Factory.create(:story, :theme => @target.themes[0]) # create a new story in target
+    story_4.move_to_bottom # this should be listed as the last story in target collection
+    @target.themes[0].stories[1].destroy # remove the second existing story in target, now index 1 will be the new item from above
+    @target.themes[0].stories[0].as_a = 'Changed the as_a field' # change the as_a field in 2nd story of 1st theme
+    @target.themes[0].stories[0].comments = 'Changed the as_a field' # change the as_a field in 2nd story of 1st theme
+    @target.themes[0].stories[0].score_50 = 5 # increase the score 50 value
+    @target.themes[0].stories[0].score_90 = 13 # reduce the score 50 value
+    @target.themes[0].stories[0].save!
+    @target.themes[0].stories[1].move_to_top # move to top, but order should be ignored as we order in line with base
+    @target.reload
+    # check story changes
+    comparison = @base.compare_with(@target)
+    theme = comparison.themes[0] # all changes are in theme 0 so lets focus on that
+    @target.themes[0].stories(true).count.should eql(4) # 2 original - 1 removed + 3 new ones
+    theme.stories.count.should eql(5) # 2 original stories + 1 removed + 3 new ones in comparator
+    theme.stories[0].should_not be_identical
+    theme.stories[0].should have_as_a_changed
+    theme.stories[0].should_not have_i_want_to_changed
+    theme.stories[0].should_not have_so_i_can_changed
+    theme.stories[0].should have_score_50_changed
+    theme.stories[0].should have_score_50_increased
+    theme.stories[0].should have_score_90_changed
+    theme.stories[0].should have_score_90_decreased
+    theme.stories[0].should have_comments_changed
+    theme.stories[1].should be_deleted
+    theme.stories[2].target.should eql(story_3) # check that order has been respected in new items
+    theme.stories[3].should be_new
+    theme.stories[4].target.should eql(story_4) # check that order has been respected in new items
+
+    # acceptance criterion changes
+    criterion_bottom = Factory.create(:acceptance_criterion, :story => @target.themes[0].stories[0], :criterion => 'Changed this criterion') # create a new criterion in target
+    criterion_top = Factory.create(:acceptance_criterion, :story => @target.themes[0].stories[0], :criterion => 'Changed this criterion')
+    criterion_top.move_to_top # criterion matched on content, so ordering should be ignored
+    @target.themes[0].stories[0].acceptance_criteria[1].destroy # remove the second criterion in target
+    @target.reload
+    # check criterion changes
+    comparison = @base.compare_with(@target)
+    criteria = comparison.themes[0].stories[0].acceptance_criteria # all changes are in theme 0, story 0 so lets focus on that
+    criteria.count.should eql(5) # 3 initials, just destroyed one which is now blank plus added two
+    criteria[0].should be_identical # first items are identical as text matches
+    criteria[0].should_not have_criterion_changed
+    criteria[1].should be_identical # even those index 1 was destroyed above, index 2 has the same text so should effectively take it's place
+    criteria[2].should be_deleted # index 2 now has no more matches on criterion with the same default text
+    criteria[3].should be_new
+    criteria[3].target.should eql(criterion_top) # there are 2 new criterion, index 3 & 4, but criterion_new was moved to the top
+    criteria[4].target.should eql(criterion_bottom) # there are 2 new criterion, index 3 & 4, criterion should be at the bottom as criterion_new has moved up
+  end
 end

@@ -1,0 +1,23 @@
+<td class="logo-space" colspan="<%=columns%>">
+  <a href="/" target="_blank" class="main-title">
+    <span class="easy">easy</span><span class="backlog">Backlog</span>
+  </a>
+  <span class="divider">|</span>
+  <b>Comparing Snapshots</b>
+<td class="actions" colspan="<%=columns%>">
+  <a href="#help" id="help">Help?
+    <div id="help-rollover">
+      <div class="key"><span class="deleted"></span> Deleted from left</div>
+      <div class="key"><span class="new"></span> Added to right</div>
+      <div class="key"><span class="changed"></span> Value changed</div>
+      <div class="key"><span class="changed">▽</span> Value decreased</div>
+      <div class="key"><span class="changed">△</span> Value increased</div>
+    </div>
+  </a>
+  <span class="divider">|</span>
+  <a href="<%= document.location.href %>.xls">Export</a>
+  <span class="divider">|</span>
+  <a href="#print" id="print">Print</a>
+  <span class="divider">|</span>
+  <a href="#close-window" id="close-window">Close</a>
+</td>

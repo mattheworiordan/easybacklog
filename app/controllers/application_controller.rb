@@ -50,4 +50,13 @@ class ApplicationController < ActionController::Base
     def log_last_page_viewed
       session[:last_url] = request.path
     end
+
+    def set_download_headers(filename)
+      headers["Content-Disposition"] = "attachment; filename=\"#{filename}\""
+      if request.env['HTTP_USER_AGENT'] =~ /msie/i
+        headers['Pragma'] = 'public'
+        headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
+        headers['Expires'] = "0"
+      end
+    end
 end

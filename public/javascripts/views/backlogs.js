@@ -6,7 +6,7 @@ App.Views.Backlogs = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent','print','newSnapshot','jumpToSnapshot');
+      _.bindAll(this, 'navigateEvent','print','newSnapshot','jumpToSnapshot','compareSnapshot');
     },
 
     render: function() {
@@ -22,6 +22,7 @@ App.Views.Backlogs = {
 
       // new snapshot link should show the new snapshot dialog
       $('#backlog-data-area #new-snapshot').click(this.newSnapshot);
+      $('#backlog-data-area #compare-snapshot').click(this.compareSnapshot);
       $('#backlog-data-area select#snapshot-selector').change(this.jumpToSnapshot);
 
       if (this.model.IsEditable()) {
@@ -202,6 +203,39 @@ App.Views.Backlogs = {
       }
       $('#loading-new-snapshot').show();
       document.location.pathname = baseUrl;
-    }
+    },
+
+    compareSnapshot: function(event) {
+      var view = this;
+      var newSnapshotLink = $(event.target);
+      event.preventDefault();
+      $('#dialog-compare-snapshot').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST['backlogs/compare-snapshot-dialog']({ snapshot_options: $('#backlog-data-area select#snapshot-selector').html() }));
+      $('#dialog-compare-snapshot').dialog({
+        resizable: false,
+        height:320,
+        width: 400,
+        modal: true,
+        buttons: {
+          'Compare': function() {
+            // create snapshot on server by posting a request
+            var base = $(this).find('select#base-snapshot').val();
+            var target = $(this).find('select#target-snapshot').val();
+            if (base == target) {
+              $(this).find('div.error-message').html('<p><span class="error-alert ui-icon ui-icon-alert"></span>You cannot compare the same snapshots.  Please make another selection.</p>');
+            } else {
+              var baseUrl = document.location.pathname.match(/^\/companies\/\d+\/backlogs/i)[0];
+              var backlogId = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/(\d+)/i)[1];
+              window.open(baseUrl + '/compare/' + (base.match(/^\d+$/) ? base : backlogId) + '/' + (target.match(/^\d+$/) ? target : backlogId), '_newtab' + Math.floor(Math.random()*10000));
+              $(this).dialog("close");
+            }
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
+        }
+      });
+    },
   })
 };

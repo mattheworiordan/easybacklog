@@ -441,7 +441,7 @@ section.for-backlog section.main-content-pod {
       #backlog-data-area .snapshot .selector select {
         background-color: #edfeed;
         border: 1px solid #0aaf0a; }
-    #backlog-data-area .snapshot .new {
+    #backlog-data-area .snapshot .new, #backlog-data-area .snapshot .compare {
       float: left;
       width: 16px;
       height: 16px;
@@ -880,6 +880,15 @@ ul.themes {
     background-color: white;
     border: 1px solid #999;
     z-index: 105; }
+
+#dialog-compare-snapshot div.elements, #dialog-compare-snapshot div.error-message {
+  margin-left: 23px;
+  display: block; }
+#dialog-compare-snapshot div.error-message {
+  color: red; }
+#dialog-compare-snapshot .error-alert {
+  float: left;
+  margin-right: 10px; }
 
 /* Company dashboard home */
 ul.backlog-list {

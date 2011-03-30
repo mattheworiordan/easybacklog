@@ -1,0 +1,37 @@
+%tr{ :bgcolor => color_row(story) }
+  - if story.base.blank?
+    %td{ :colspan => columns, :style => 'border-right: 1px solid #AAA' } &nbsp;
+  - else
+    %td= color_text(story, :unique_id, "#{story.base.theme.code}#{story.base.unique_id}")
+    %td
+      = color_text(story, :as_a, "As #{story.base.as_a}")
+      %br/
+      = color_text(story, :i_want_to, "I want to #{story.base.i_want_to}")
+      %br/
+      = color_text(story, :so_i_can, "So I can #{story.base.so_i_can}")
+    %td.criteria
+      - story.acceptance_criteria.each_with_index do |criterion, index|
+        != render :partial => 'acceptance_criterion', :locals => { :index => index, :criterion => criterion, :criterion_obj => criterion.base }
+    %td= color_text(story, :comments, story.base.comments)
+    %td= color_number(story, :score_50, :base, story.base.score_50)
+    %td= color_number(story, :score_90, :base, story.base.score_90)
+    %td= color_number(story, :cost_formatted, :base, story.base.cost_formatted)
+    %td{ :style => 'border-right: 1px solid #AAA' }= color_number(story, :days_formatted, :base, story.base.days_formatted)
+  - if story.target.blank?
+    %td{ :colspan => columns} &nbsp;
+  - else
+    %td= color_text(story, :unique_id, "#{story.target.theme.code}#{story.target.unique_id}")
+    %td
+      = color_text(story, :as_a, "As #{story.target.as_a}")
+      %br/
+      = color_text(story, :i_want_to, "I want to #{story.target.i_want_to}")
+      %br/
+      = color_text(story, :so_i_can, "So I can #{story.target.so_i_can}")
+    %td.criteria
+      - story.acceptance_criteria.each_with_index do |criterion, index|
+        != render :partial => 'acceptance_criterion', :locals => { :index => index, :criterion => criterion, :criterion_obj => criterion.target }
+    %td= color_text(story, :comments, story.target.comments)
+    %td= color_number(story, :score_50, :target, story.target.score_50)
+    %td= color_number(story, :score_90, :target, story.target.score_90)
+    %td= color_number(story, :cost_formatted, :target, story.target.cost_formatted)
+    %td= color_number(story, :days_formatted, :target, story.target.days_formatted)

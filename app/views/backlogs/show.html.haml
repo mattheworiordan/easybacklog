@@ -28,14 +28,17 @@
             %optgroup{ :label => "Snapshots..." }
               - if @backlog.snapshot_master.blank?
                 - @backlog.snapshots.each do |snapshot|
-                  %option{:value => snapshot.id}= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
+                  %option{:value => snapshot.id}= "#{snapshot.name}, #{backlog_date snapshot}"
               - else
                 - @backlog.snapshot_master.snapshots.each do |snapshot|
-                  %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{l snapshot.created_at, :format => :long, :locale => snapshot.company.locale.code.to_sym}"
+                  %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{backlog_date snapshot}"
     - if @backlog.snapshot_master.blank?
       .new.vtip{ :title => 'Create new snapshot' }
         %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
           New
+    .compare.vtip{ :title => 'Compare snapshots' }
+      %a#compare-snapshot.ui-icon.ui-icon-transferthick-e-w{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
+        New
   .backlog-stats
     %div.title Backlog total:
     %div.output &nbsp;

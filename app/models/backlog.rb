@@ -87,6 +87,10 @@ class Backlog < ActiveRecord::Base
     self.save!
   end
 
+  def compare_with(target)
+    BacklogComparator.new(self, target)
+  end
+
   private
     # only allow save on working copy i.e. not snapshot
     #  but do allow editing if snapshot_master has changed as we need to allow this to be set
