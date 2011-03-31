@@ -22,13 +22,15 @@ class ThemeComparator
       target_stories = @target.blank? ? [] : @target.stories.map(&:unique_id)
       # iterate through base stories and add equivalent target stories if they exist
       base_stories.each do |unique_id|
-        matching_target = @target.blank? ? [] : @target.stories.where(:unique_id => unique_id)
-        @stories << StoryComparator.new(@base.stories.find_by_unique_id(unique_id), (matching_target.empty? ? nil : matching_target.first) )
+        matching_target = @target.blank? ? [] : @target.stories.select { |story| story.unique_id == unique_id }
+        base_story = @base.stories.select { |story| story.unique_id == unique_id }
+        @stories << StoryComparator.new(base_story.first, (matching_target.empty? ? nil : matching_target.first) )
         target_stories.delete(matching_target.first.unique_id) unless matching_target.empty?
       end
       # target has some unmatched stories, lets add these
       target_stories.each do |unique_id|
-        @stories << StoryComparator.new(nil, @target.stories.find_by_unique_id(unique_id))
+        target_story = @target.stories.select { |story| story.unique_id == unique_id }
+        @stories << StoryComparator.new(nil, target_story.first)
       end
     end
     @stories

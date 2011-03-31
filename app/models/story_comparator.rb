@@ -29,7 +29,8 @@ class StoryComparator
       base_criteria.each do |criterion|
         matching_target_index = target_criteria.index(criterion)
         matching_target = matching_target_index.blank? ? nil : target_criteria_objects[matching_target_index]
-        @criteria << AcceptanceCriterionComparator.new(@base.acceptance_criteria.find_by_criterion(criterion), matching_target)
+        base_criterion = @base.acceptance_criteria.select { |crit_object| crit_object.criterion == criterion }
+        @criteria << AcceptanceCriterionComparator.new(base_criterion.first, matching_target)
         unless matching_target_index.blank?
           # delete the key :criterion and the object criterion from the arrays so they can't be assocated to base again
           target_criteria.delete_at(matching_target_index)

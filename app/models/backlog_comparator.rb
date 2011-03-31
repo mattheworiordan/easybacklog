@@ -22,13 +22,15 @@ class BacklogComparator
       target_themes = @target.themes.map(&:code)
       # iterate through base themes and add equivalent target themes if they exist
       base_themes.each do |code|
-        matching_target = @target.themes.where(:code => code)
-        @themes << ThemeComparator.new(@base.themes.find_by_code(code), (matching_target.empty? ? nil : matching_target.first) )
+        matching_target = @target.themes.select { |theme| theme.code == code }
+        base_theme = @base.themes.select { |theme| theme.code == code }
+        @themes << ThemeComparator.new(base_theme.first, (matching_target.empty? ? nil : matching_target.first) )
         target_themes.delete(matching_target.first.code) unless matching_target.empty?
       end
       # target has some unmatched themes, lets add these
       target_themes.each do |code|
-        @themes << ThemeComparator.new(nil, @target.themes.find_by_code(code))
+        target_theme = @target.themes.select { |theme| theme.code == code }
+        @themes << ThemeComparator.new(nil, target_theme.first)
       end
     end
     @themes
