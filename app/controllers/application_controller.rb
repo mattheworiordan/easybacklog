@@ -29,7 +29,12 @@ class ApplicationController < ActionController::Base
 
   # if instance variable for company is set then return it
   def current_company
-    @current_company
+    if @current_company.blank? && (companies.count == 1)
+      # if user only has access to one account then treat user as logged in with that account
+      companies.first
+    else
+      @current_company
+    end
   end
   helper_method :current_company
 
