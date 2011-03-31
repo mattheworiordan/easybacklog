@@ -20,13 +20,17 @@
     - else
       = "#{theme.base.name} totals: "
       = color_number(theme, :points, :base, "#{format('%0.1f', theme.base.points)} points")
-      = color_number(theme, :cost_formatted, :base, "/ #{theme.base.cost_formatted}")
-      = color_number(theme, :days_formatted, :base, "/ #{theme.base.days_formatted} days")
+      /
+      = color_number(theme, :cost_formatted, :base, "#{theme.base.cost_formatted}")
+      /
+      = color_number(theme, :days_formatted, :base, "#{theme.base.days_formatted} days")
   %td{ :colspan => columns, :align => 'right' }
     - if theme.target.blank?
       &nbsp;
     - else
       = "#{theme.target.name} totals: "
       = color_number(theme, :points, :target, "#{format('%0.1f', theme.target.points)} points")
-      = color_number(theme, :cost_formatted, :target, "/ #{theme.target.cost_formatted}")
-      = color_number(theme, :days_formatted, :target, "/ #{theme.target.days_formatted} days")
+      /
+      = color_number(theme, :cost_formatted, :target, "#{theme.target.cost_formatted}")
+      /
+      = color_number(theme, :days_formatted, :target, "#{theme.target.days_formatted} days")
