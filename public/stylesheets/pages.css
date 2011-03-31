@@ -1,23 +1,23 @@
 /*
 Syntax error: Undefined mixin 'grey-button-override-style'.
-        on line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss, in `grey-button-override-style'
-        from line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss
+        on line 82 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss, in `grey-button-override-style'
+        from line 82 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss
 
-75:     padding: 10px;
-76:     background-color: #D6D6D6;
-77:     -moz-border-radius: 10px;
-78:     border-radius: 10px;
-79:     input[type=submit] {
-80:       @include grey-button-override-style;
-81:     }
-82:     h2 {
-83:       background-color: transparent;
-84:     }
-85:   }
+77:     padding: 10px;
+78:     background-color: #D6D6D6;
+79:     -moz-border-radius: 10px;
+80:     border-radius: 10px;
+81:     input[type=submit] {
+82:       @include grey-button-override-style;
+83:     }
+84:     h2 {
+85:       background-color: transparent;
+86:     }
+87:   }
 
 Backtrace:
-/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss:80:in `grey-button-override-style'
-/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss:80
+/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss:82:in `grey-button-override-style'
+/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss:82
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/mixin_node.rb:62:in `perform!'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
@@ -100,4 +100,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined mixin 'grey-button-override-style'.\A         on line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss, in `grey-button-override-style'\A         from line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss\A \A 75:     padding: 10px;\A 76:     background-color: #D6D6D6;\A 77:     -moz-border-radius: 10px;\A 78:     border-radius: 10px;\A 79:     input[type=submit] {\A 80:       @include grey-button-override-style;\A 81:     }\A 82:     h2 {\A 83:       background-color: transparent;\A 84:     }\A 85:   }"; }
+  content: "Syntax error: Undefined mixin 'grey-button-override-style'.\A         on line 82 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss, in `grey-button-override-style'\A         from line 82 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss\A \A 77:     padding: 10px;\A 78:     background-color: #D6D6D6;\A 79:     -moz-border-radius: 10px;\A 80:     border-radius: 10px;\A 81:     input[type=submit] {\A 82:       @include grey-button-override-style;\A 83:     }\A 84:     h2 {\A 85:       background-color: transparent;\A 86:     }\A 87:   }"; }

@@ -22,7 +22,8 @@
       %ul.backlog-list
         - @recent_backlogs.each do |backlog|
           %li
-            = link_to backlog.name, company_backlog_path(backlog.company, backlog)
+            .name
+              = link_to backlog.name, company_backlog_path(backlog.company, backlog)
             .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
     = link_to "View my dashboard", companies_path, { :class => 'button' }
   - else

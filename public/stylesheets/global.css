@@ -949,6 +949,8 @@ ul.your-backlog-list {
 #home, #invite {
   overflow: hidden;
   padding-bottom: 0.5em;
+  margin: 12px -12px 12px -12px;
+  padding: 12px;
   /* 3 panels on the home page */ }
   #home .sign-up, #invite .sign-up {
     width: 400px;
