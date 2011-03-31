@@ -121,7 +121,8 @@ App.Views.Stories = {
     deleteDialogTemplate: 'stories/delete-dialog',
 
     events: {
-      "click .delete-story>a": "remove"
+      "click .delete-story>a": "remove",
+      "click .duplicate-story>a": "duplicate"
     },
 
     initialize: function() {
@@ -377,6 +378,39 @@ App.Views.Stories = {
         this.model.set({ color: colorWithoutHex });
         this.model.save();
       }
+    },
+
+    // duplicate story event fired
+    duplicate: function(event) {
+      var model = new Story();
+      var attributes = _.clone(this.model.attributes);
+      delete attributes['id'];
+      delete attributes['unique_id'];
+      // get the criteria and add to the new model
+      this.model.AcceptanceCriteria().each(function(criterion) {
+        var crit = new AcceptanceCriterion();
+        crit.set({ criterion: criterion.get('criterion') });
+        model.AcceptanceCriteria().add(crit);
+      });
+      model.set(attributes);
+      this.model.collection.add(model);
+      var storyView = new App.Views.Stories.Show({ model: model, id: 0 }); // set id 0 as will change when model is saved
+      var newStoryDomElem = $(storyView.render().el);
+      newStoryDomElem.insertBefore($(this.el).parents('ul.stories').find('>li.actions'));
+      model.save(false, {
+        success: function(model, response) {
+          model.AcceptanceCriteria().each(function(criterion) {
+            criterion.save(); // we need to save the models as they were added when story had no ID and were thus never saved
+          });
+        },
+        error: function(model, error) {
+          console.log(JSON.stringify(error));
+          new App.Views.Error({ message: 'The story could not be copied.  Please refresh your browser.'});
+        }
+      });
+      _.delay(function() {
+        newStoryDomElem.find('.user-story .as-a>.data').click(); // focus on as_a after enough time for DOM to update
+      }, 400);
     }
   })
 };

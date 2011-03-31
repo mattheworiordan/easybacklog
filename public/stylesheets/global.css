@@ -742,11 +742,7 @@ ul.themes {
       float: left; }
       ul.themes li.theme div.move-story a {
         cursor: move; }
-    ul.themes li.theme div.delete-theme {
-      float: left; }
-    ul.themes li.theme div.delete-story {
-      float: left; }
-    ul.themes li.theme div.re-number-stories {
+    ul.themes li.theme div.delete-theme, ul.themes li.theme div.delete-story, ul.themes li.theme div.duplicate-story, ul.themes li.theme div.re-number-stories {
       float: left; }
     ul.themes li.theme div.color-picker-icon {
       float: left;

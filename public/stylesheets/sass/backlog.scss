@@ -382,15 +382,7 @@ ul.themes {
     }
 
     /* generic style for deleting link */
-    div.delete-theme {
-      float: left;
-    }
-
-    div.delete-story {
-      float: left;
-    }
-
-    div.re-number-stories {
+    div.delete-theme, div.delete-story, div.duplicate-story, div.re-number-stories {
       float: left;
     }
 
