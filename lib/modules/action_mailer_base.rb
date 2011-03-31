@@ -1,3 +1,3 @@
 class ActionMailerBase < ActionMailer::Base
-  default :from => "no-reply@easybacklog.com"
+  default :from => "easyBacklog <no-reply@easybacklog.com>"
 end
