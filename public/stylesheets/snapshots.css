@@ -234,6 +234,10 @@ section.side-panel {
     border-bottom: 1px solid #bdd3fb;
     padding: 6px;
     margin: 1em 0 1em 0; }
+  section.side-panel .archive-link {
+    clear: left;
+    padding: 1em 6px 6px 6px;
+    border-top: 1px solid #999; }
 
 .progress-icon {
   background: url(/images/progress.gif);

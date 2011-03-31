@@ -234,6 +234,10 @@ section.side-panel {
     border-bottom: 1px solid #bdd3fb;
     padding: 6px;
     margin: 1em 0 1em 0; }
+  section.side-panel .archive-link {
+    clear: left;
+    padding: 1em 6px 6px 6px;
+    border-top: 1px solid #999; }
 
 .progress-icon {
   background: url(/images/progress.gif);
@@ -914,34 +918,30 @@ ul.themes {
   margin-right: 10px; }
 
 /* Company dashboard home */
-ul.backlog-list {
+ul.backlog-list, ul.your-backlog-list {
   list-style: none;
   overflow: hidden;
   padding-bottom: 1em; }
-  ul.backlog-list li {
+  ul.backlog-list li, ul.your-backlog-list li {
     margin: 0 0 0.5em 0;
     float: left;
     clear: left;
     overflow: hidden; }
-    ul.backlog-list li .name {
+    ul.backlog-list li .name, ul.your-backlog-list li .name {
+      padding-bottom: 0.25em;
       float: left; }
-    ul.backlog-list li .last-update {
-      padding: 0 0.25em 0 0.25em;
+    ul.backlog-list li .action, ul.your-backlog-list li .action {
+      float: left;
+      overflow: hidden; }
+    ul.backlog-list li .last-update, ul.your-backlog-list li .last-update {
+      padding: 0 0.25em 0.25em 0.25em;
       color: #999;
       float: left; }
 
 ul.your-backlog-list {
-  list-style: none; }
+  margin-bottom: 0.5em; }
   ul.your-backlog-list li {
-    float: left;
-    overflow: hidden;
-    margin-left: 6px;
-    clear: left; }
-    ul.your-backlog-list li .name {
-      float: left; }
-    ul.your-backlog-list li .action {
-      float: left;
-      overflow: hidden; }
+    margin: 0 0 0.25em 6px; }
     ul.your-backlog-list li a {
       color: #333; }
       ul.your-backlog-list li a:hover {

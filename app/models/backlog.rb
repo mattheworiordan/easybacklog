@@ -6,7 +6,7 @@ class Backlog < ActiveRecord::Base
   has_many :themes, :dependent => :destroy, :order => 'position'
 
   # self references for snapshots
-  has_many :snapshots, :class_name => 'Backlog', :foreign_key => 'snapshot_master_id', :order => 'created_at desc'
+  has_many :snapshots, :class_name => 'Backlog', :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
   validates_uniqueness_of :name, :scope => [:company_id], :message => 'has already been taken for another backlog'
@@ -16,6 +16,10 @@ class Backlog < ActiveRecord::Base
   attr_accessible :company, :name, :rate, :velocity
 
   before_save :check_can_modify
+
+  scope :active, where(:archived => false).where(:deleted => false)
+  scope :deleted, where(:deleted => true)
+  scope :archived, where(:archived => true).where(:deleted => false)
 
   include ScoreStatistics
 
@@ -89,6 +93,30 @@ class Backlog < ActiveRecord::Base
 
   def compare_with(target)
     BacklogComparator.new(self, target)
+  end
+
+  # override delete and mark record as deleted
+  def mark_deleted(deleted = true)
+    Backlog.record_timestamps = false
+    self.deleted = deleted
+    save!
+    Backlog.record_timestamps = true
+  end
+
+  def recover_deleted
+    mark_deleted(false)
+  end
+
+  # mark record as archived
+  def mark_archived(archived = true)
+    Backlog.record_timestamps = false
+    self.archived = archived
+    save!
+    Backlog.record_timestamps = true
+  end
+
+  def recover_from_archive
+    mark_archived(false)
   end
 
   private

@@ -58,6 +58,48 @@ describe Backlog do
     end
   end
 
+  it 'should allow backlogs to be marked as deleted or archived' do
+    backlog = Factory.create(:backlog, :name => 'Active 1')
+    active2 = Factory.create(:backlog, :name => 'Active 2', :company => backlog.company)
+    Factory.create(:backlog, :name => 'Archived', :company => backlog.company).mark_archived
+    Factory.create(:backlog, :name => 'Deleted', :company => backlog.company).mark_deleted
+
+    Backlog.archived(true).should include(Backlog.find_by_name('Archived'))
+    Backlog.archived.first.should be_archived
+    Backlog.deleted(true).should include(Backlog.find_by_name('Deleted'))
+    Backlog.deleted.first.should be_deleted
+    Backlog.active(true).count.should eql(2)
+    Backlog.all.count.should eql(4)
+    backlog.company.backlogs.active.count.should eql(2)
+    backlog.company.backlogs.deleted.first.should eql(Backlog.find_by_name('Deleted'))
+    backlog.company.backlogs.archived.first.should eql(Backlog.find_by_name('Archived'))
+
+    # now mark active 2 as archived and deleted and make sure it does not appear in the archived list
+    active2.mark_deleted
+    active2.mark_archived
+    Backlog.archived.should_not include(active2)
+    Backlog.deleted.should include(active2)
+
+    # check recover deleted
+    active2.recover_deleted
+    Backlog.archived(true).should include(active2)
+    Backlog.deleted(true).should_not include(active2)
+
+    # check recover archived
+    active2.recover_from_archive
+    Backlog.archived(true).should_not include(active2)
+  end
+
+  it 'should ensure when a backlog is destroyed all related snapshots are deleted' do
+    parent = Factory.create(:backlog, :name => 'Parent')
+    snapshot1 = Factory.create(:backlog, :snapshot_master_id => parent.id, :company => parent.company)
+    snapshot2 = Factory.create(:backlog, :snapshot_master_id => parent.id, :company => parent.company)
+    parent.destroy
+
+    # check that snapshots have been deleted in the proces
+    Backlog.where("id in (#{snapshot1.id},#{snapshot2.id})").count.should eql(0)
+  end
+
   it 'should allow a backlog snapshot to be created' do
     acceptance_criterion = Factory.create(:acceptance_criterion)
     @backlog = acceptance_criterion.story.theme.backlog

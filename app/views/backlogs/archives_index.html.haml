@@ -1,0 +1,22 @@
+- title @company.name
+
+!= render :partial => '/companies/generic_company_info'
+
+%h2
+  = "Your archived backlogs"
+
+- if @archives.empty?
+  %p
+    There are no archives in this account.
+- else
+  %ul.backlog-list
+    - @archives.each do |backlog|
+      %li
+        .name
+          = link_to backlog.name, company_backlog_path(@company, backlog)
+        .action
+          = link_to "Recover from archive", recover_from_archive_company_backlog_path(@company, backlog), :method => 'put', :title => 'Recover from archive backlog', :class => 'ui-icon ui-icon-extlink vtip'
+        .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
+%br/
+
+= link_to "Back to Dashboard", company_path(@company), { :class => 'button' }

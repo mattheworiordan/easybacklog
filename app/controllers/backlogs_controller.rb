@@ -31,6 +31,37 @@ class BacklogsController < ApplicationController
     end
   end
 
+  # put action to archive a backlog
+  def archive
+    @backlog = current_company.backlogs.find(params[:id])
+    @backlog.mark_archived
+    flash[:notice] = "#{@backlog.name} archived"
+    redirect_to company_path(current_company)
+  end
+
+  # put action to archive a backlog
+  def archive
+    @backlog = current_company.backlogs.find(params[:id])
+    @backlog.mark_archived
+    flash[:notice] = "#{@backlog.name} archived"
+    redirect_to company_path(current_company)
+  end
+
+  # put action to recover from archive
+  def recover_from_archive
+    @backlog = current_company.backlogs.find(params[:id])
+    @backlog.recover_from_archive
+    flash[:notice] = "#{@backlog.name} recovered from archive"
+    redirect_to company_path(current_company)
+  end
+
+  def archives_index
+    @company = current_company
+    @archives = current_company.backlogs.archived.order('LOWER(name)')
+    @your_backlogs = @company.backlogs.active.order('LOWER(name)')
+    @archive_exists = !@company.backlogs.archived.empty?
+  end
+
   def create_snapshot
     @backlog = current_company.backlogs.find(params[:id])
     name = params[:name]
@@ -51,7 +82,7 @@ class BacklogsController < ApplicationController
 
   def destroy
     @backlog = current_company.backlogs.find(params[:id])
-    @backlog.destroy
+    @backlog.mark_deleted
     flash[:notice] = 'Backlog was successfully deleted.'
     redirect_to company_path(current_company)
   end

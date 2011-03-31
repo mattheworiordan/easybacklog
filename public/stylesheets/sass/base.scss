@@ -200,13 +200,17 @@ section.side-panel {
   a.button {
     @include grey-button-override-style;
   }
-
   h2 {
     clear: left;
     background-color: #EDF3FE;
     border-bottom: 1px solid darken(#EDF3FE, 10%);
     padding: 6px;
     margin: 1em 0 1em 0;
+  }
+  .archive-link {
+    clear: left;
+    padding: 1em 6px 6px 6px;
+    border-top: 1px solid #999;
   }
 }
 

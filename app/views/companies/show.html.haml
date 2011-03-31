@@ -1,26 +1,7 @@
 - title @company.name
 
-- content_for :title do
-  = link_to "Manage account", edit_company_path(current_company), :class => 'back'
-  - if @companies_count > 1
-    .back
-      |
-    = link_to "View other accounts", companies_path, { :class => 'back' }
-  %h1
-    = @company.name
+!= render :partial => 'generic_company_info'
 
-- content_for :side_panel do
-  = link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }
-  %h2 Your backlogs
-  %ul.your-backlog-list
-    - @your_backlogs.each do |backlog|
-      %li
-        .name
-          = link_to backlog.name, company_backlog_path(@company, backlog)
-        .action
-          = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :title => 'Delete backlog', :confirm => 'This backlog will be permanently deleted and cannot be recovered. Are you sure?', :class => 'ui-icon ui-icon-trash vtip'
-        .action
-          = link_to "Duplicate", duplicate_company_backlog_path(@company, backlog), :class => 'ui-icon ui-icon-copy vtip', :title => 'Duplicate backlog'
 %h2
   = "Latest activity across your backlogs"
 - if @backlogs.empty?

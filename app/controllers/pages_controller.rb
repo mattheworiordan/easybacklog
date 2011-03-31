@@ -5,7 +5,7 @@ class PagesController < ApplicationController
       redirect_to companies_path
     end
     if user_signed_in?
-      @recent_backlogs = current_user.companies.map { |company| company.backlogs }.flatten.sort_by(&:updated_at).reverse[0..10]
+      @recent_backlogs = current_user.companies.map { |company| company.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..10]
     end
   end
 end

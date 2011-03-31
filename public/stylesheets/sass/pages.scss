@@ -1,5 +1,5 @@
 /* Company dashboard home */
-ul.backlog-list {
+ul.backlog-list, ul.your-backlog-list {
   list-style: none;
   overflow: hidden;
   li {
@@ -8,10 +8,15 @@ ul.backlog-list {
     clear: left;
     overflow: hidden;
     .name {
+      padding-bottom: 0.25em;
       float: left;
     }
+    .action {
+      float: left;
+      overflow: hidden;
+    }
     .last-update {
-      padding: 0 0.25em 0 0.25em;
+      padding: 0 0.25em 0.25em 0.25em;
       color: #999;
       float: left;
     }
@@ -19,19 +24,9 @@ ul.backlog-list {
   padding-bottom: 1em;
 }
 ul.your-backlog-list {
-  list-style: none;
+  margin-bottom: 0.5em;
   li {
-    float: left;
-    overflow: hidden;
-    margin-left: 6px;
-    clear: left;
-    .name {
-      float: left;
-    }
-    .action {
-      float: left;
-      overflow: hidden;
-    }
+    margin: 0 0 0.25em 6px;
     a {
       color: #333;
       &:hover {

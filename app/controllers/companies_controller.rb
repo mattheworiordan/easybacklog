@@ -7,16 +7,16 @@ class CompaniesController < ApplicationController
   end
 
   def show
-    @company = Company.find(params[:id])
+    @company = Company.where(:id => params[:id]).first
     @current_company = @company # used for current_company method of Application controller
 
     if @company.users.find(current_user.id).blank?
       flash[:error] = 'You do not have permission to view this company'
       redirect_to companies_path
     else
-      @companies_count = current_user.companies.count
-      @backlogs = @company.backlogs.order('updated_at desc')
-      @your_backlogs = @company.backlogs.order('LOWER(name)')
+      @backlogs = @company.backlogs.active.order('updated_at desc').limit(10)
+      @your_backlogs = @company.backlogs.active.order('LOWER(name)')
+      @archive_exists = !@company.backlogs.archived.empty?
     end
   end
 
