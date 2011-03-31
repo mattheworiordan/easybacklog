@@ -9,7 +9,7 @@ var Backlog = Backbone.Model.extend({
 
   // editable if no snapshot master
   IsEditable: function() {
-    return (this.get('snapshot_master_id') ? false : true);
+    return (this.get('is_editable') ? true : false);
   },
 
   // access to stories child collection

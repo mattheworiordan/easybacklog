@@ -81,9 +81,11 @@ class Backlog < ActiveRecord::Base
   end
 
   # editable if this not a snapshot i.e. a snapshot master exists
+  #  or if deleted or archived
   def editable?
-    self.snapshot_master.blank?
+    self.snapshot_master.blank? && !self.archived? && !self.deleted?
   end
+  alias_method :is_editable, :editable?
 
   def update_meta_data(user)
     self.updated_at = Time.now
@@ -121,8 +123,9 @@ class Backlog < ActiveRecord::Base
 
   private
     # only allow save on working copy i.e. not snapshot
-    #  but do allow editing if snapshot_master has changed as we need to allow this to be set
+    #  but do allow editing if snapshot_master, archived or deleted has changed
+    #  snapshot_master is needed so that the snapshot can be created without an error blocking editing being thrown
     def check_can_modify
-      self.snapshot_master_id_changed? || self.snapshot_master.blank?
+      editable? || self.snapshot_master_id_changed? || self.archived_changed? || self.deleted_changed?
     end
 end

@@ -459,6 +459,12 @@ section.for-backlog section.main-content-pod {
     float: left;
     clear: left;
     padding-left: 15px; }
+    #backlog-data-area .snapshot .locked {
+      float: left;
+      overflow: hidden;
+      position: relative;
+      top: -2px;
+      left: -5px; }
     #backlog-data-area .snapshot .title {
       color: #999;
       float: left; }

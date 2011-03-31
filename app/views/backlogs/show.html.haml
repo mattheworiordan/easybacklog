@@ -18,6 +18,8 @@
     - else
       .data= @backlog.snapshot_master.name
   .snapshot
+    - unless @backlog.editable?
+      .locked{ :class => 'ui-icon ui-icon-locked' }
     .title
       Snapshot:
     .selector
@@ -32,7 +34,7 @@
               - else
                 - @backlog.snapshot_master.snapshots.each do |snapshot|
                   %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{backlog_date snapshot}"
-    - if @backlog.snapshot_master.blank?
+    - if @backlog.editable?
       .new.vtip{ :title => 'Create new snapshot' }
         %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
           New

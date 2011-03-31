@@ -105,6 +105,13 @@ section.for-backlog {
     float: left;
     clear: left;
     padding-left: $standard-header-padding-height*2 + 3px;
+    .locked {
+      float: left;
+      overflow: hidden;
+      position: relative;
+      top: -2px;
+      left: -5px;
+    }
     .title {
       color: #999;
       float: left;
