@@ -162,7 +162,7 @@ App.Views.Stories = {
                    '#e06666', '#f6b26b', '#ffd966', '#93c47d']
         });
       }
-      if (this.model.get('color')) { this.changeColor(this.model.get('color', { silent: true })); }
+      if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
 
       return (this);
     },
