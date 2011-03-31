@@ -443,7 +443,9 @@ section.for-backlog section.main-content-pod {
     position: relative;
     width: 20em;
     background-color: transparent;
-    height: 1.25em; }
+    height: 1.25em;
+    padding: 0;
+    height: 28px; }
     #backlog-data-area h2.name > div {
       padding: 2px; }
     #backlog-data-area h2.name:hover {
