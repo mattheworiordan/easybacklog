@@ -48,7 +48,7 @@ App.Views.Themes = {
           if ($('ul.themes li.theme').length < 2) {
             new App.Views.Warning({ message: 'You need more than one theme to reorder'});
           } else {
-            parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
+            parentView.$('ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
               parentView.$('.move-theme').css('display', 'block');
               parentView.$('.stop-ordering').css('display', 'block');
             });
