@@ -55,6 +55,8 @@ Ibacklog::Application.routes.draw do
     resources :acceptance_criteria
   end
 
-  match '/contact' => 'pages#contact', :as => 'contact'
+  get '/contact' => 'pages#contact', :as => 'contact'
+  get '/raise-error' => 'pages#raise_error'
+
   root :to => "pages#home"
 end

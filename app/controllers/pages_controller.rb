@@ -8,4 +8,9 @@ class PagesController < ApplicationController
       @recent_backlogs = current_user.companies.map { |company| company.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..10]
     end
   end
+
+  # /raise-error for testing error capture
+  def raise_error
+    raise "Intentional error thrown"
+  end
 end
