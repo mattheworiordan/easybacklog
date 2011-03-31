@@ -75,3 +75,22 @@
           %th Days
         - @comparison.themes.each do |theme|
           = render :partial => 'theme', :locals => { :columns => columns, :theme => theme }
+        %tr{:style => 'border-top: 1px solid #333; border-bottom: 1px solid #333' }
+          %td{:colspan => columns, :style => 'border-right: 1px solid #AAA;', :align => 'right' }
+            %font{:size => 3}
+              %b
+                Totals:
+                = color_number(@comparison, :points, :base, "#{format('%0.1f', @base.points)} points")
+                /
+                = color_number(@comparison, :cost_formatted, :base, "#{@base.cost_formatted}")
+                /
+                = color_number(@comparison, :days_formatted, :base, "#{@base.days_formatted} days")
+          %td{:colspan => columns, :align => 'right' }
+            %font{:size => 3}
+              %b
+                Totals:
+                = color_number(@comparison, :points, :target, "#{format('%0.1f', @target.points)} points")
+                /
+                = color_number(@comparison, :cost_formatted, :target, "#{@target.cost_formatted}")
+                /
+                = color_number(@comparison, :days_formatted, :target, "#{@target.days_formatted} days")
