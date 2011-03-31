@@ -1,0 +1,1 @@
+$(document).ready(function(a){$(".changed").css("color","black");$("tr.header").html(JST["snapshots/snapshot-header"]({columns:$("tr.header td:first-child").attr("colspan")}));$("a#close-window").click(function(b){b.preventDefault();window.close()});$("a#print").click(function(b){b.preventDefault();window.print()});$("a#help").click(function(b){b.preventDefault()})});
