@@ -1,89 +1,103 @@
-/* Company dashboard home */
-ul.backlog-list {
-  list-style: none;
-  padding-bottom: 1em; }
-  ul.backlog-list li {
-    margin: 0 0 0.5em 0; }
-    ul.backlog-list li .last-update {
-      color: #999;
-      display: inline; }
-    ul.backlog-list li .action {
-      display: inline;
-      font-size: 85%; }
+/*
+Syntax error: Undefined mixin 'grey-button-override-style'.
+        on line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss, in `grey-button-override-style'
+        from line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss
 
-/* Home and invite landing page */
-#home, #invite {
-  overflow: hidden;
-  padding-bottom: 0.5em;
-  /* 3 panels on the home page */ }
-  #home .sign-up, #invite .sign-up {
-    width: 400px;
-    float: left;
-    padding: 10px 10px 15px 10px;
-    background-color: #CFC;
-    -moz-border-radius: 10px;
-    border-radius: 10px; }
-    #home .sign-up .button, #invite .sign-up .button {
-      background-color: white; }
-    #home .sign-up h2, #invite .sign-up h2 {
-      background-color: transparent; }
-  #home .or, #invite .or {
-    width: 40px;
-    float: left;
-    font-weight: bold;
-    font-size: 130%;
-    padding: 90px 0 0 10px;
-    text-align: center; }
-  #home .login, #invite .login {
-    width: 280px;
-    margin-left: 480px;
-    padding: 10px;
-    background-color: #D6D6D6;
-    -moz-border-radius: 10px;
-    border-radius: 10px; }
-    #home .login input[type=submit], #invite .login input[type=submit] {
-      background-color: #FFF;
-      border-color: #666;
-      color: #333; }
-    #home .login h2, #invite .login h2 {
-      background-color: transparent; }
-  #home ul, #invite ul {
-    padding-bottom: 1em; }
+75:     padding: 10px;
+76:     background-color: #D6D6D6;
+77:     -moz-border-radius: 10px;
+78:     border-radius: 10px;
+79:     input[type=submit] {
+80:       @include grey-button-override-style;
+81:     }
+82:     h2 {
+83:       background-color: transparent;
+84:     }
+85:   }
 
-/* Company users management */
-table.users, table.invites {
-  border-collapse: collapse; }
-  table.users th, table.invites th {
-    border: 1px solid white;
-    background-color: #CCC;
-    padding: 4px;
-    font-weight: bold; }
-  table.users td, table.invites td {
-    border: 1px solid white;
-    background-color: #EEE;
-    padding: 4px;
-    height: 1.2em; }
-    table.users td.action, table.invites td.action {
-      background-color: white; }
-    table.users td.admin, table.invites td.admin {
-      padding-left: 2em; }
-
-#new-user textarea {
-  font-family: Sans-Serif; }
-  #new-user textarea#emails.empty {
-    color: #666; }
-
-/* Sign up for a new account & register in same action page */
-#sign-up .data-area, #invite .data-area {
-  padding: 4px 0 20px 4px; }
-  #sign-up .data-area.no-padding, #invite .data-area.no-padding {
-    padding-bottom: 0; }
-#sign-up input[type=text], #sign-up input[type=password], #invite input[type=text], #invite input[type=password] {
-  width: 15em; }
-#sign-up input[type=text]#account_default_rate, #sign-up input[type=text]#account_default_velocity, #invite input[type=text]#account_default_rate, #invite input[type=text]#account_default_velocity {
-  width: 6em; }
-
-#invite label.error {
-  position: absolute;
-  float: left;
-  width: 15em; }
+Backtrace:
+/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss:80:in `grey-button-override-style'
+/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss:80
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/mixin_node.rb:62:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:59:in `perform!'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:37:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/tree/root_node.rb:29:in `render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:223:in `update_stylesheet'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:88:in `block (2 levels) in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `block in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin.rb:50:in `check_for_updates'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/haml-3.0.25/lib/sass/plugin/rack.rb:40:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:35:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:34:in `catch'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/warden-1.0.3/lib/warden/manager.rb:34:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/best_standards_support.rb:17:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/head.rb:14:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/methodoverride.rb:24:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/params_parser.rb:21:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/flash.rb:182:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/session/abstract_store.rb:149:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/cookies.rb:295:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:32:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/connection_adapters/abstract/query_cache.rb:28:in `cache'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:12:in `cache'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/query_cache.rb:31:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activerecord-3.0.3/lib/active_record/connection_adapters/abstract/connection_pool.rb:353:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/callbacks.rb:46:in `block in call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activesupport-3.0.3/lib/active_support/callbacks.rb:415:in `_run_call_callbacks'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/callbacks.rb:44:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/sendfile.rb:107:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/remote_ip.rb:48:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/show_exceptions.rb:46:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/rack/logger.rb:13:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/runtime.rb:17:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/activesupport-3.0.3/lib/active_support/cache/strategy/local_cache.rb:72:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/lock.rb:11:in `block in call'
+<internal:prelude>:10:in `synchronize'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/lock.rb:11:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/actionpack-3.0.3/lib/action_dispatch/middleware/static.rb:30:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/hoptoad_notifier-2.4.8/lib/hoptoad_notifier/user_informer.rb:12:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/application.rb:168:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/application.rb:77:in `method_missing'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/railties-3.0.3/lib/rails/rack/log_tailer.rb:14:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/content_length.rb:13:in `call'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p0/gems/rack-1.2.1/lib/rack/handler/webrick.rb:52:in `service'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/httpserver.rb:111:in `service'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/httpserver.rb:70:in `run'
+/Users/matthew/.rvm/rubies/ruby-1.9.2-p0/lib/ruby/1.9.1/webrick/server.rb:183:in `block in start_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: Undefined mixin 'grey-button-override-style'.\A         on line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss, in `grey-button-override-style'\A         from line 80 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/pages.scss\A \A 75:     padding: 10px;\A 76:     background-color: #D6D6D6;\A 77:     -moz-border-radius: 10px;\A 78:     border-radius: 10px;\A 79:     input[type=submit] {\A 80:       @include grey-button-override-style;\A 81:     }\A 82:     h2 {\A 83:       background-color: transparent;\A 84:     }\A 85:   }"; }

@@ -15,7 +15,8 @@ class CompaniesController < ApplicationController
       redirect_to companies_path
     else
       @companies_count = current_user.companies.count
-      @backlogs = @company.backlogs.order('LOWER(name)')
+      @backlogs = @company.backlogs.order('updated_at desc')
+      @your_backlogs = @company.backlogs.order('LOWER(name)')
     end
   end
 

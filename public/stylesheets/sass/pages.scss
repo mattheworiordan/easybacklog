@@ -1,18 +1,44 @@
 /* Company dashboard home */
 ul.backlog-list {
   list-style: none;
+  overflow: hidden;
   li {
     margin: 0 0 0.5em 0;
-    .last-update {
-      color: #999;
-      display: inline;
+    float: left;
+    clear: left;
+    overflow: hidden;
+    .name {
+      float: left;
     }
-    .action {
-      display: inline;
-      font-size: 85%;
+    .last-update {
+      padding: 0 0.25em 0 0.25em;
+      color: #999;
+      float: left;
     }
   }
   padding-bottom: 1em;
+}
+ul.your-backlog-list {
+  list-style: none;
+  li {
+    float: left;
+    overflow: hidden;
+    margin-left: 6px;
+    clear: left;
+    .name {
+      float: left;
+    }
+    .action {
+      float: left;
+      overflow: hidden;
+    }
+    a {
+      color: #333;
+      &:hover {
+        color: #000;
+      };
+    }
+  }
 }
 
 /* Home and invite landing page */
@@ -42,7 +68,7 @@ ul.backlog-list {
     font-size: 130%;
     padding: 90px 0 0 10px;
     text-align:center;
-  } 
+  }
   .login {
     width: 280px;
     margin-left: 480px;
@@ -51,9 +77,7 @@ ul.backlog-list {
     -moz-border-radius: 10px;
     border-radius: 10px;
     input[type=submit] {
-      background-color: #FFF;
-      border-color: #666;
-      color: #333;
+      @include grey-button-override-style;
     }
     h2 {
       background-color: transparent;

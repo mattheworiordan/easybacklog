@@ -9,6 +9,9 @@
 %section.content
   %section.title
     = yield(:title)
+  - if content_for?(:side_panel)
+    %section.side-panel
+      = yield(:side_panel)
   %section.main-content-pod
     = yield
 

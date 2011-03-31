@@ -24,3 +24,13 @@ $standard-header-padding: $standard-header-padding-height $standard-header-paddi
     border-color: darken($link-button-color, 10%);
   };
 }
+
+@mixin grey-button-override-style {
+  background-color: #FFF;
+  border-color: #666;
+  color: #333;
+  &:hover {
+    color: #000;
+    border-color: #333;
+  };
+}

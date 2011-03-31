@@ -9,8 +9,20 @@
   %h1
     = @company.name
 
+- content_for :side_panel do
+  = link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }
+  %h2 Your backlogs
+  %ul.your-backlog-list
+    - @your_backlogs.each do |backlog|
+      %li
+        .name
+          = link_to backlog.name, company_backlog_path(@company, backlog)
+        .action
+          = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :title => 'Delete backlog', :confirm => 'This backlog will be permanently deleted and cannot be recovered. Are you sure?', :class => 'ui-icon ui-icon-trash vtip'
+        .action
+          = link_to "Duplicate", duplicate_company_backlog_path(@company, backlog), :class => 'ui-icon ui-icon-copy vtip', :title => 'Duplicate backlog'
 %h2
-  Backlog Dashboard
+  = "Latest activity across your backlogs"
 - if @backlogs.empty?
   %p
     There are no backlogs yet in this account.
@@ -18,14 +30,9 @@
   %ul.backlog-list
     - @backlogs.each do |backlog|
       %li
-        = link_to backlog.name, company_backlog_path(@company, backlog)
+        .name
+          = link_to backlog.name, company_backlog_path(@company, backlog)
         .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
-        .action
-          (
-          = link_to "Delete", company_backlog_path(@company, backlog), :method => 'delete', :title => 'Delete backlog?', :confirm => 'This backlog will be permanently deleted and cannot be recovered. Are you sure?'
-          |
-          = link_to "Duplicate", duplicate_company_backlog_path(@company, backlog)
-          )
 %br/
 
 = link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }

@@ -53,6 +53,7 @@ body {
   background-color: #DDD; }
 
 h1 {
+  font-family: "Lucida Grande",sans-serif;
   font-size: 160%; }
   h1 .description {
     display: inline;
@@ -60,8 +61,8 @@ h1 {
     color: #666; }
 
 h2 {
+  font-family: "Lucida Grande",sans-serif;
   font-size: 135%;
-  font-family: Sans-Serif;
   font-weight: normal;
   margin-bottom: 0.5em;
   /* style for editable title on backlog page */ }
@@ -207,12 +208,32 @@ section.main-content-pod {
   padding: 12px 12px 18px 12px;
   clear: left;
   margin-top: 12px;
+  overflow: hidden;
   -moz-box-shadow: 5px 5px 5px #888888;
   -webkit-box-shadow: 5px 5px 5px #888888;
   box-shadow: 5px 5px 5px #888888; }
   section.main-content-pod h2 {
-    background-color: #E9E9E9;
-    padding: 3px; }
+    background-color: #EDF3FE;
+    padding: 12px;
+    margin: -12px -12px 12px -12px; }
+
+section.side-panel {
+  float: right;
+  padding: 24px 12px 18px 18px;
+  width: 250px; }
+  section.side-panel a.button {
+    background-color: #FFF;
+    border-color: #666;
+    color: #333; }
+    section.side-panel a.button:hover {
+      color: #000;
+      border-color: #333; }
+  section.side-panel h2 {
+    clear: left;
+    background-color: #EDF3FE;
+    border-bottom: 1px solid #bdd3fb;
+    padding: 6px;
+    margin: 1em 0 1em 0; }
 
 .progress-icon {
   background: url(/images/progress.gif);
@@ -893,15 +914,36 @@ ul.themes {
 /* Company dashboard home */
 ul.backlog-list {
   list-style: none;
+  overflow: hidden;
   padding-bottom: 1em; }
   ul.backlog-list li {
-    margin: 0 0 0.5em 0; }
+    margin: 0 0 0.5em 0;
+    float: left;
+    clear: left;
+    overflow: hidden; }
+    ul.backlog-list li .name {
+      float: left; }
     ul.backlog-list li .last-update {
+      padding: 0 0.25em 0 0.25em;
       color: #999;
-      display: inline; }
-    ul.backlog-list li .action {
-      display: inline;
-      font-size: 85%; }
+      float: left; }
+
+ul.your-backlog-list {
+  list-style: none; }
+  ul.your-backlog-list li {
+    float: left;
+    overflow: hidden;
+    margin-left: 6px;
+    clear: left; }
+    ul.your-backlog-list li .name {
+      float: left; }
+    ul.your-backlog-list li .action {
+      float: left;
+      overflow: hidden; }
+    ul.your-backlog-list li a {
+      color: #333; }
+      ul.your-backlog-list li a:hover {
+        color: #000; }
 
 /* Home and invite landing page */
 #home, #invite {
@@ -937,6 +979,9 @@ ul.backlog-list {
       background-color: #FFF;
       border-color: #666;
       color: #333; }
+      #home .login input[type=submit]:hover, #invite .login input[type=submit]:hover {
+        color: #000;
+        border-color: #333; }
     #home .login h2, #invite .login h2 {
       background-color: transparent; }
   #home ul, #invite ul {
