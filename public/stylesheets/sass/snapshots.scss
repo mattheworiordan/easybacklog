@@ -78,6 +78,13 @@
     }
     tr.title td {
       padding: 3px;
+      span.rate {
+        display: block;
+        margin-bottom: 5px;
+      }
+      br.rate {
+        display: none;
+      }
     }
     td {
       padding: 2px;

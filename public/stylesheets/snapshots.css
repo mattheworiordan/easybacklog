@@ -393,6 +393,11 @@ label.correct:before {
           color: #444; }
     #compare-snapshots table tr.title td {
       padding: 3px; }
+      #compare-snapshots table tr.title td span.rate {
+        display: block;
+        margin-bottom: 5px; }
+      #compare-snapshots table tr.title td br.rate {
+        display: none; }
     #compare-snapshots table td {
       padding: 2px;
       border: 1px solid #DDD; }

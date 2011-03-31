@@ -5,13 +5,16 @@
     %td= color_text(story, :unique_id, "#{story.base.theme.code}#{story.base.unique_id}")
     %td
       = color_text(story, :as_a, "As #{story.base.as_a}")
-      %br/
+      %br{ :style => 'mso-data-placement:same-cell;' }
       = color_text(story, :i_want_to, "I want to #{story.base.i_want_to}")
-      %br/
+      %br{ :style => 'mso-data-placement:same-cell;' }
       = color_text(story, :so_i_can, "So I can #{story.base.so_i_can}")
     %td.criteria
       - story.acceptance_criteria.each_with_index do |criterion, index|
-        != render :partial => 'acceptance_criterion', :locals => { :index => index, :criterion => criterion, :criterion_obj => criterion.base }
+        - if !criterion.base.blank?
+          = color_criterion(criterion, :criterion, "#{index}. #{criterion.base.criterion}")
+          - if index < story.acceptance_criteria.count-1
+            %br{ :style => 'mso-data-placement:same-cell;' }
     %td= color_text(story, :comments, story.base.comments)
     %td= color_number(story, :score_50, :base, story.base.score_50)
     %td= color_number(story, :score_90, :base, story.base.score_90)
@@ -23,13 +26,16 @@
     %td= color_text(story, :unique_id, "#{story.target.theme.code}#{story.target.unique_id}")
     %td
       = color_text(story, :as_a, "As #{story.target.as_a}")
-      %br/
+      %br{ :style => 'mso-data-placement:same-cell;' }
       = color_text(story, :i_want_to, "I want to #{story.target.i_want_to}")
-      %br/
+      %br{ :style => 'mso-data-placement:same-cell;' }
       = color_text(story, :so_i_can, "So I can #{story.target.so_i_can}")
     %td.criteria
       - story.acceptance_criteria.each_with_index do |criterion, index|
-        != render :partial => 'acceptance_criterion', :locals => { :index => index, :criterion => criterion, :criterion_obj => criterion.target }
+        - if !criterion.target.blank?
+          = color_criterion(criterion, :criterion, "#{index}. #{criterion.target.criterion}")
+          - if index < story.acceptance_criteria.count-1
+            %br{ :style => 'mso-data-placement:same-cell;' }
     %td= color_text(story, :comments, story.target.comments)
     %td= color_number(story, :score_50, :target, story.target.score_50)
     %td= color_number(story, :score_90, :target, story.target.score_90)
