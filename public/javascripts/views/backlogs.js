@@ -211,6 +211,11 @@ App.Views.Backlogs = {
       event.preventDefault();
       $('#dialog-compare-snapshot').remove(); // ensure old dialog HTML is not still in the DOM
       $('body').append(JST['backlogs/compare-snapshot-dialog']({ snapshot_options: $('#backlog-data-area select#snapshot-selector').html() }));
+      var currentSnapshot = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/\d+\/snapshots\/(\d+)/i);
+      if (currentSnapshot) {
+        // viewing a snapshot now, so set the compare against as the working version
+        $('#dialog-compare-snapshot select#target-snapshot').val($('#dialog-compare-snapshot select#target-snapshot option:first-child').val());
+      }
       $('#dialog-compare-snapshot').dialog({
         resizable: false,
         height:320,
