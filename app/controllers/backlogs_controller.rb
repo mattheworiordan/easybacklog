@@ -111,6 +111,31 @@ class BacklogsController < ApplicationController
     end
   end
 
+  def backlog_json(backlog)
+    backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
+    backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_editable]
+    theme_fields = [:id, :name, :code, :position]
+    story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
+    criteria_fields =  [:id, :criterion, :position]
+    backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
+      :include =>
+      { :themes =>
+        { :only => theme_fields,
+          :include =>
+          { :stories =>
+            { :only => story_fields,
+              :methods => [:cost_formatted, :days_formatted],
+              :include =>
+              { :acceptance_criteria =>
+                { :only => criteria_fields }
+              }
+            }
+          }
+        }
+      })
+  end
+  helper_method :backlog_json
+
   private
     def update_backlog_metadata
       @backlog.update_meta_data current_user
@@ -143,27 +168,7 @@ class BacklogsController < ApplicationController
         end
 
         format.js do
-          backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
-          backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_editable]
-          theme_fields = [:id, :name, :code, :position]
-          story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
-          criteria_fields =  [:id, :criterion, :position]
-          render :json => @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
-            :include =>
-            { :themes =>
-              { :only => theme_fields,
-                :include =>
-                { :stories =>
-                  { :only => story_fields,
-                    :methods => [:cost_formatted, :days_formatted],
-                    :include =>
-                    { :acceptance_criteria =>
-                      { :only => criteria_fields }
-                    }
-                  }
-                }
-              }
-            })
+          render :json => backlog_json(@backlog)
         end
       end
     end

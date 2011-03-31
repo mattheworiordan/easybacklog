@@ -64,16 +64,8 @@
 :javascript
   $(document).ready(function() {
     App.Collections.Backlogs = new BacklogsCollection({}, { company_id: #{@backlog.company.id} });
-    var backlog = new Backlog({ id: #{@backlog.id} #{ @backlog.snapshot_master_id ? ", snapshot_master_id: #{@backlog.snapshot_master_id}" : "" } });
+    var backlog = new Backlog(#{backlog_json(@backlog)});
     App.Collections.Backlogs.add(backlog);
-    backlog.fetch({
-      success: function(model, response) {
-        var view = new App.Views.Backlogs.Show({ model: model, el: $('#backlog-container') });
-        view.render();
-      },
-      error: function(model, error) {
-        console.log(JSON.stringify(error));
-        new App.Views.Error({ message: 'The data could not be loaded from the server'});
-      }
-    });
+    var view = new App.Views.Backlogs.Show({ model: backlog, el: $('#backlog-container') });
+    view.render();
   });
