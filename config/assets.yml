@@ -1,5 +1,9 @@
 embed_assets: on
 template_function: _.template
+compressor_options:
+  line_break: 0
+  optimize: false
+  munge: false
 
 javascripts:
   workspace:
