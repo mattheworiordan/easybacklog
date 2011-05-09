@@ -165,8 +165,8 @@ App.Views.Themes = {
       var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
-      this.$('.theme-data .name div.data').editable(contentUpdatedFunc, defaultOptions);
-      this.$('.theme-data .code div.data').editable(contentUpdatedFunc, _.extend(defaultOptions, { lesswidth: -10 }));
+      this.$('.theme-data .name div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 100 }) );
+      this.$('.theme-data .code div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { lesswidth: -10, maxLength: 3 }) );
     },
 
     // Tab or Enter key pressed so let's move on

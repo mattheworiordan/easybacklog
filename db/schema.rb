@@ -10,11 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110331104615) do
+ActiveRecord::Schema.define(:version => 20110509123040) do
 
   create_table "acceptance_criteria", :force => true do |t|
-    t.integer "story_id",  :null => false
-    t.string  "criterion", :null => false
+    t.integer "story_id",                 :null => false
+    t.text    "criterion", :limit => 255, :null => false
     t.integer "position"
   end
 
@@ -40,56 +40,48 @@ ActiveRecord::Schema.define(:version => 20110331104615) do
   add_index "backlogs", ["snapshot_master_id"], :name => "index_backlogs_on_snapshot_master_id"
 
   create_table "companies", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.decimal  "default_velocity"
-    t.integer  "default_rate"
-    t.integer  "locale_id"
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.decimal   "default_velocity"
+    t.integer   "default_rate"
+    t.integer   "locale_id"
   end
 
   create_table "company_users", :force => true do |t|
-    t.integer  "company_id", :null => false
-    t.integer  "user_id",    :null => false
-    t.boolean  "admin",      :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "company_id", :null => false
+    t.integer   "user_id",    :null => false
+    t.boolean   "admin",      :null => false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "company_users", ["company_id", "user_id"], :name => "index_company_users_on_company_id_and_user_id", :unique => true
 
   create_table "invited_users", :force => true do |t|
-    t.string   "email",           :null => false
-    t.integer  "company_id",      :null => false
-    t.integer  "invitee_user_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "security_code",   :null => false
-  end
-
-  create_table "invites", :force => true do |t|
-    t.string   "email"
-    t.integer  "company_id"
-    t.integer  "invitee_user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "email",           :null => false
+    t.integer   "company_id",      :null => false
+    t.integer   "invitee_user_id", :null => false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "security_code",   :null => false
   end
 
   create_table "locales", :force => true do |t|
-    t.string   "name"
-    t.string   "code"
-    t.integer  "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.string    "code"
+    t.integer   "position"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "stories", :force => true do |t|
-    t.integer  "theme_id",   :null => false
-    t.integer  "unique_id",  :null => false
+    t.integer  "theme_id",                  :null => false
+    t.integer  "unique_id",                 :null => false
     t.string   "as_a"
     t.string   "i_want_to"
     t.string   "so_i_can"
-    t.string   "comments"
+    t.text     "comments",   :limit => 255
     t.integer  "score_50"
     t.integer  "score_90"
     t.integer  "position"
@@ -103,34 +95,34 @@ ActiveRecord::Schema.define(:version => 20110331104615) do
   add_index "stories", ["theme_id"], :name => "index_stories_on_theme_id"
 
   create_table "themes", :force => true do |t|
-    t.integer  "backlog_id"
-    t.string   "name"
-    t.string   "code"
-    t.integer  "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "backlog_id"
+    t.string    "name"
+    t.string    "code"
+    t.integer   "position"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "themes", ["backlog_id"], :name => "index_themes_on_backlog_id"
 
   create_table "users", :force => true do |t|
-    t.string   "name",                                                :null => false
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "reset_password_token"
-    t.string   "remember_token"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                       :default => 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name",                                                :null => false
+    t.string    "email",                               :default => "", :null => false
+    t.string    "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string    "password_salt",                       :default => "", :null => false
+    t.string    "confirmation_token"
+    t.timestamp "confirmed_at"
+    t.timestamp "confirmation_sent_at"
+    t.string    "reset_password_token"
+    t.string    "remember_token"
+    t.timestamp "remember_created_at"
+    t.integer   "sign_in_count",                       :default => 0
+    t.timestamp "current_sign_in_at"
+    t.timestamp "last_sign_in_at"
+    t.string    "current_sign_in_ip"
+    t.string    "last_sign_in_ip"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
 end

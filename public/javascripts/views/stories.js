@@ -177,11 +177,11 @@ App.Views.Stories = {
       // for unique ID, we need to remove the code before editing and insert back in after editing
       var uniqueIdContentUpdatedFunc = function(value, settings) { return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value, settings)); }
       var uniqueIdBeforeChangeFunc = function(value, settings) { return beforeChangeFunc.call(this, value.substring(3), settings); }
-      var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc });
+      var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
-      this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, defaultOptions);
-      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, autoResize: true } ));
+      this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 2 }) );
+      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, autoResize: true } ) );
 
       // callback to get a list of all as_a values for autocomplete
       var autoCompleteData = function() {
@@ -195,7 +195,7 @@ App.Views.Stories = {
       _.each(['as-a','i-want-to','so-i-can'], function(elem) {
         _.defer(function() { // wait until elements have rendered
           var width = show_view.$('>div.user-story .' + elem + ' .heading').outerWidth() + 10;
-          var options = _.extend(_.clone(defaultOptions), { type: (elem == 'as-a' ? 'text' : 'textarea'), saveonenterkeypress: true, lesswidth: width, autoResize: true, autoComplete: autoCompleteData });
+          var options = _.extend(_.clone(defaultOptions), { type: (elem == 'as-a' ? 'text' : 'textarea'), maxLength: (elem == 'as-a' ? 100 : 2040), saveonenterkeypress: true, lesswidth: width, autoResize: true, autoComplete: autoCompleteData });
           show_view.$('>div.user-story .' + elem + ' .data').editable(contentUpdatedFunc, options);
         });
       });

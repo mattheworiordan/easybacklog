@@ -48,7 +48,7 @@ App.Views.Backlogs = {
       var show_view = this;
       var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); };
       var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: -20, style: 'margin-top: -3px' });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: -20, maxLength: 100, style: 'margin-top: -3px' });
       // for rate we need to drop the locale formatted rate and use rate as a numeric
       var previousRateFormatted, previousRate;
       var beforeRateChangeFunc = function(value, settings) { previousRateFormatted = value; previousRate = show_view.model.get('rate'); return show_view.beforeChange(previousRate, settings, this); }
