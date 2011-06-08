@@ -12,8 +12,10 @@ App.Controllers.Statistics = {
       backlog.trigger('statisticsUpdated');
       _.each(stats.themes, function(themeData) {
         var theme = backlog.Themes().get(themeData.theme_id);
-        theme.set(themeData); // update stats in theme model
-        theme.trigger('statisticsUpdated');
+        if (theme) {
+          theme.set(themeData); // update stats in theme model
+          theme.trigger('statisticsUpdated');
+        }
       });
 
     }
