@@ -29,7 +29,7 @@ var Theme = Backbone.Model.extend({
         options.success(theme, response);
       }
     }).error(function(event, response) {
-      console.log('Renumber stories failed');
+      window.console && console.log('Renumber stories failed');
       if (_.isFunction(options.error)) {
         // callback for error
         options.error(theme, response);

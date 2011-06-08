@@ -4,7 +4,7 @@ App.Controllers.Statistics = {
   // Fire the trigger event on the model to update the stats in the view
   updateStatistics: function(stats) {
     if (!_.isEmpty(stats)) {
-      console.log('Updating stats for themes ' + _.map(stats.themes, function(theme) { return theme.theme_id; }).join(','));
+      window.console && console.log('Updating stats for themes ' + _.map(stats.themes, function(theme) { return theme.theme_id; }).join(','));
       var backlog = App.Collections.Backlogs.last();
       var statsWithoutThemes = _.clone(stats);
       delete statsWithoutThemes['themes'];
@@ -15,7 +15,7 @@ App.Controllers.Statistics = {
         theme.set(themeData); // update stats in theme model
         theme.trigger('statisticsUpdated');
       });
-      
+
     }
   }
 }

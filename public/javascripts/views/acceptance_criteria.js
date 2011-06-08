@@ -74,7 +74,7 @@ App.Views.AcceptanceCriteria = {
         var elemId = _.last($(elem).attr('id').split('-'));
         orderIndexesWithIds[elemId] = index + 1;
       });
-      console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      window.console && console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
       this.collection.saveOrder(orderIndexesWithIds);
       this.displayOrderIndexes();
     },
@@ -133,7 +133,7 @@ App.Views.AcceptanceCriteria = {
                   var errorMessage = 'Unable to delete story...  Please refresh.'
                   try {
                     errorMessage = eval('responseText = ' + response.responseText).message;
-                  } catch (e) { console.log(e); }
+                  } catch (e) { window.console && console.log(e); }
                   new App.Views.Error({ message: errorMessage});
                 }
               });

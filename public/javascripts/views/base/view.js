@@ -43,7 +43,7 @@ App.Views.BaseView = Backbone.View.extend({
     var view = this;
 
     if (value != beforeChangeValue) {
-      console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value);
+      window.console && console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value);
       var attributes = {};
       attributes[fieldId] = value;
       this.model.set(attributes);
@@ -57,7 +57,7 @@ App.Views.BaseView = Backbone.View.extend({
             var errorMessage = 'Unable to save changes...'
             try {
               errorMessage = eval('responseText = ' + response.responseText).message;
-            } catch (e) { console.log(e); }
+            } catch (e) { window.console && console.log(e); }
             new App.Views.Error({ message: errorMessage});
             // exception to deal with unique-id showing code from parent model in value
             fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
@@ -66,7 +66,6 @@ App.Views.BaseView = Backbone.View.extend({
             this_model.set(valBack); // reset model value back as well
             if (fieldId == 'code') { // Theme: code has reverted so update code to old code in all children stories
               view.model.Stories().each(function(story, index) {
-                console.log(story);
                 story.trigger('change:unique_id'); // trigger unique ID change so field is updated
               })
             }

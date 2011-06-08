@@ -30,7 +30,7 @@ var Story = Backbone.Model.extend({
         options.success(story, response);
       }
     }).error(function(event, response) {
-      console.log('Move to theme failed');
+      window.console && console.log('Move to theme failed');
       if (_.isFunction(options.error)) {
         // callback for error
         options.error(story, response);

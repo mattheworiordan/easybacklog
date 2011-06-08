@@ -110,7 +110,7 @@ App.Views.Stories = {
           orderIndexesWithIds[elemId] = index + 1;
         }
       });
-      console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      window.console && console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
       this.collection.saveOrder(orderIndexesWithIds);
     }
   }),
@@ -314,7 +314,7 @@ App.Views.Stories = {
           var errorMessage = 'Unable to delete story...'
           try {
             errorMessage = eval('responseText = ' + response.responseText).message;
-          } catch (e) { console.log(e); }
+          } catch (e) { window.console && console.log(e); }
           new App.Views.Error({ message: errorMessage});
           $(dialog_obj).dialog("close"); // hide the dialog
         },
@@ -329,7 +329,7 @@ App.Views.Stories = {
 
     // user has clicked move so ask them where we are moving to
     moveToThemeDialog: function() {
-      console.log('Requested to move');
+      window.console && console.log('Requested to move');
       var view = this;
       $('#dialog-move-story').remove(); // ensure old dialog HTML is not still in the DOM
       $('body').append(JST['stories/move-dialog']({ story: this.model, themes: this.model.Theme().Backlog().Themes() }));
@@ -353,7 +353,7 @@ App.Views.Stories = {
     moveToTheme: function(dialog) {
       var themeId = $(dialog).find('select#theme-target option:selected').attr('id');
       if (themeId != this.model.Theme().get('id')) {
-        console.log('Moving to theme-' + themeId);
+        window.console && console.log('Moving to theme-' + themeId);
         $(this.el).insertBefore($('li.theme#theme-' + themeId + ' ul.stories>li:last'));
         this.model.MoveToTheme(themeId, {
           success: function(model, response) {
@@ -404,7 +404,7 @@ App.Views.Stories = {
           });
         },
         error: function(model, error) {
-          console.log(JSON.stringify(error));
+          window.console && console.log(JSON.stringify(error));
           new App.Views.Error({ message: 'The story could not be copied.  Please refresh your browser.'});
         }
       });

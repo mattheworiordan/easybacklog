@@ -19,11 +19,11 @@ $(document).ready(function() {
       data:         JSON.stringify(payLoad),
       dataType:     'json',
       processData:  false,
-      success:      function(data) { console.log ('Updated user successfully'); },
-      error:        function(jqXHR, textStatus, errorThrown) { 
-        console.log(textStatus); 
-        console.log(errorThrown); 
-        new App.Views.Error({ message: 'The user could not be updated, please refresh your browser'}); 
+      success:      function(data) { window.console && console.log ('Updated user successfully'); },
+      error:        function(jqXHR, textStatus, errorThrown) {
+        window.console && console.log(textStatus);
+        window.console && console.log(errorThrown);
+        new App.Views.Error({ message: 'The user could not be updated, please refresh your browser'});
       }
     };
 
