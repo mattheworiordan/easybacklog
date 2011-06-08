@@ -4313,6 +4313,7 @@ return false
 }}},text:{element:function(settings,original){var input=$("<input />");
 if(settings.width!="none"){input.width(settings.width)
 }if(settings.height!="none"){input.height(settings.height)
+}if(settings.maxLength){input.attr("maxlength",settings.maxLength)
 }input.attr("autocomplete","off");
 if(settings.autoComplete){input.autocomplete({source:($.isArray(settings.autoComplete)?settings.autoComplete:settings.autoComplete()),minLength:0,delay:0})
 }$(this).append(input);
@@ -4326,6 +4327,9 @@ if(settings.rows){textarea.attr("rows",settings.rows)
 }})
 }if(settings.autoResize){textarea.css("dispay","block");
 textarea.autoResize({limit:150,extraSpace:10,origHeight:20})
+}if(settings.maxLength){$.each(["keyup","paste","blue"],function(i,eventName){textarea.bind("keyup",function(){$(this).val($(this).val().slice(0,settings.maxLength))
+})
+})
 }$(this).append(textarea);
 return(textarea)
 }},select:{element:function(settings,original){var select=$("<select />");
@@ -4525,10 +4529,10 @@ alertNotice.css("display","none").slideDown(function(){_.delay(function(){alertN
 });
 var AcceptanceCriterion=Backbone.Model.extend({Story:function(){return this.collection.story
 },IsEditable:function(){return(this.collection.story.IsEditable())
-},beforeSave:function(callback){if(this.collection.story.isNew()){console.log("Saving parent Story first");
+},beforeSave:function(callback){if(this.collection.story.isNew()){window.console&&console.log("Saving parent Story first");
 this.collection.story.save({},{error:function(model,response){var errorMessage="Unable to save changes...  Please refresh.";
 try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){console.log(e)
+}catch(e){window.console&&console.log(e)
 }new App.Views.Error({message:errorMessage})
 },success:function(){callback()
 }})
@@ -4553,7 +4557,7 @@ themeCollection.get(Number(newThemeId)).Stories().add(story);
 story.set(ajaxResult);
 story.trigger("change:unique_id");
 if(_.isFunction(options.success)){options.success(story,response)
-}}).error(function(event,response){console.log("Move to theme failed");
+}}).error(function(event,response){window.console&&console.log("Move to theme failed");
 if(_.isFunction(options.error)){options.error(story,response)
 }})
 }});
@@ -4566,7 +4570,7 @@ this.unset("stories")
 $.post(this.collection.url()+"/"+this.get("id")+"/re-number-stories").success(function(ajaxResult,status,response){theme.Stories().each(function(story){story.fetch()
 });
 if(_.isFunction(options.success)){options.success(theme,response)
-}}).error(function(event,response){console.log("Renumber stories failed");
+}}).error(function(event,response){window.console&&console.log("Renumber stories failed");
 if(_.isFunction(options.error)){options.error(theme,response)
 }})
 }});
@@ -4602,7 +4606,7 @@ if(theme){theme.set({"position":idOrderCollection[key]});
 theme.save()
 }})
 }});
-App.Controllers.Statistics={updateStatistics:function(stats){if(!_.isEmpty(stats)){console.log("Updating stats for themes "+_.map(stats.themes,function(theme){return theme.theme_id
+App.Controllers.Statistics={updateStatistics:function(stats){if(!_.isEmpty(stats)){window.console&&console.log("Updating stats for themes "+_.map(stats.themes,function(theme){return theme.theme_id
 }).join(","));
 var backlog=App.Collections.Backlogs.last();
 var statsWithoutThemes=_.clone(stats);
@@ -4631,21 +4635,20 @@ return(value)
 var fieldWithValue=$(target);
 var beforeChangeValue=this.beforeChangeValue[fieldId];
 var view=this;
-if(value!=beforeChangeValue){console.log("value for "+fieldId+" has changed from "+this.beforeChangeValue[fieldId]+" to "+value);
+if(value!=beforeChangeValue){window.console&&console.log("value for "+fieldId+" has changed from "+this.beforeChangeValue[fieldId]+" to "+value);
 var attributes={};
 attributes[fieldId]=value;
 this.model.set(attributes);
 var this_model=this.model;
 var saveModelFunc=function(){this_model.save({},{error:function(model,response){var errorMessage="Unable to save changes...";
 try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){console.log(e)
+}catch(e){window.console&&console.log(e)
 }new App.Views.Error({message:errorMessage});
 fieldWithValue.text(_.isEmpty(beforeChangeValue)?"[edit]":beforeChangeValue);
 var valBack={};
 valBack[fieldId]=_.isEmpty(beforeChangeValue)?null:beforeChangeValue;
 this_model.set(valBack);
-if(fieldId=="code"){view.model.Stories().each(function(story,index){console.log(story);
-story.trigger("change:unique_id")
+if(fieldId=="code"){view.model.Stories().each(function(story,index){story.trigger("change:unique_id")
 })
 }}})
 };
@@ -4697,7 +4700,7 @@ this.$("ul li.criterion:last").css("display","none").slideDown(100,function(){$(
 this.$("li.criterion").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
 orderIndexesWithIds[elemId]=index+1
 });
-console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
+window.console&&console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
 this.collection.saveOrder(orderIndexesWithIds);
 this.displayOrderIndexes()
 },displayOrderIndexes:function(){this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html((index+1)+".")
@@ -4716,7 +4719,7 @@ if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){$(ac_view.el).remo
 if(ac_view.model.isNew()){model_collection.remove(ac_view.model)
 }else{ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...  Please refresh.";
 try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){console.log(e)
+}catch(e){window.console&&console.log(e)
 }new App.Views.Error({message:errorMessage})
 }})
 }ac_view.parentView.displayOrderIndexes()
@@ -4759,7 +4762,7 @@ var contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(
 };
 var beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
 };
-var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,lesswidth:-20,style:"margin-top: -3px"});
+var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,lesswidth:-20,maxLength:100,style:"margin-top: -3px"});
 var previousRateFormatted,previousRate;
 var beforeRateChangeFunc=function(value,settings){previousRateFormatted=value;
 previousRate=show_view.model.get("rate");
@@ -4908,7 +4911,7 @@ if(nextTheme.length){nextTheme.find(".theme-data .name .data").click()
 this.$("li.story").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
 if(!isNaN(parseInt(elemId))){orderIndexesWithIds[elemId]=index+1
 }});
-console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
+window.console&&console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
 this.collection.saveOrder(orderIndexesWithIds)
 }}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor")
@@ -4938,9 +4941,9 @@ var uniqueIdContentUpdatedFunc=function(value,settings){return(show_view.model.T
 };
 var uniqueIdBeforeChangeFunc=function(value,settings){return beforeChangeFunc.call(this,value.substring(3),settings)
 };
-var uniqueIdOptions=_.extend(_.clone(defaultOptions),{data:uniqueIdBeforeChangeFunc});
+var uniqueIdOptions=_.extend(_.clone(defaultOptions),{data:uniqueIdBeforeChangeFunc,maxLength:4});
 this.$(">div.unique-id .data").editable(uniqueIdContentUpdatedFunc,uniqueIdOptions);
-this.$(">div.score-50 .data, >div.score-90 .data").editable(contentUpdatedFunc,defaultOptions);
+this.$(">div.score-50 .data, >div.score-90 .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:2}));
 this.$(">div.comments .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{type:"textarea",saveonenterkeypress:true,autoResize:true}));
 var autoCompleteData=function(){var asAValues=[];
 show_view.model.Theme().collection.each(function(theme){asAValues=asAValues.concat(theme.Stories().pluck("as_a"))
@@ -4948,7 +4951,7 @@ show_view.model.Theme().collection.each(function(theme){asAValues=asAValues.conc
 return _.uniq(_.compact(asAValues)).sort()
 };
 _.each(["as-a","i-want-to","so-i-can"],function(elem){_.defer(function(){var width=show_view.$(">div.user-story ."+elem+" .heading").outerWidth()+10;
-var options=_.extend(_.clone(defaultOptions),{type:(elem=="as-a"?"text":"textarea"),saveonenterkeypress:true,lesswidth:width,autoResize:true,autoComplete:autoCompleteData});
+var options=_.extend(_.clone(defaultOptions),{type:(elem=="as-a"?"text":"textarea"),maxLength:(elem=="as-a"?100:2040),saveonenterkeypress:true,lesswidth:width,autoResize:true,autoComplete:autoCompleteData});
 show_view.$(">div.user-story ."+elem+" .data").editable(contentUpdatedFunc,options)
 })
 })
@@ -4988,7 +4991,7 @@ $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(2) span").tex
 $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...";
 try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){console.log(e)
+}catch(e){window.console&&console.log(e)
 }new App.Views.Error({message:errorMessage});
 $(dialog_obj).dialog("close")
 },success:function(model,response){model_collection.remove(view.model);
@@ -4996,7 +4999,7 @@ $(view.el).remove();
 $(dialog_obj).dialog("close");
 App.Controllers.Statistics.updateStatistics(response.score_statistics)
 }})
-},moveToThemeDialog:function(){console.log("Requested to move");
+},moveToThemeDialog:function(){window.console&&console.log("Requested to move");
 var view=this;
 $("#dialog-move-story").remove();
 $("body").append(JST["stories/move-dialog"]({story:this.model,themes:this.model.Theme().Backlog().Themes()}));
@@ -5004,7 +5007,7 @@ $("#dialog-move-story").dialog({resizable:false,height:170,modal:true,buttons:{M
 },Cancel:function(){$(this).dialog("close")
 }}})
 },moveToTheme:function(dialog){var themeId=$(dialog).find("select#theme-target option:selected").attr("id");
-if(themeId!=this.model.Theme().get("id")){console.log("Moving to theme-"+themeId);
+if(themeId!=this.model.Theme().get("id")){window.console&&console.log("Moving to theme-"+themeId);
 $(this.el).insertBefore($("li.theme#theme-"+themeId+" ul.stories>li:last"));
 this.model.MoveToTheme(themeId,{success:function(model,response){new App.Views.Notice({message:"The story was moved successfully."})
 },error:function(){new App.Views.Error({message:"The story move failed.  Please refresh your browser."})
@@ -5031,7 +5034,7 @@ var newStoryDomElem=$(storyView.render().el);
 newStoryDomElem.insertBefore($(this.el).parents("ul.stories").find(">li.actions"));
 model.save(false,{success:function(model,response){model.AcceptanceCriteria().each(function(criterion){criterion.save()
 })
-},error:function(model,error){console.log(JSON.stringify(error));
+},error:function(model,error){window.console&&console.log(JSON.stringify(error));
 new App.Views.Error({message:"The story could not be copied.  Please refresh your browser."})
 }});
 _.delay(function(){newStoryDomElem.find(".user-story .as-a>.data").click()
@@ -5079,7 +5082,7 @@ if(lastTheme.has("li.actions a.new-story").length){lastTheme.find("li.actions a.
 this.$("li.theme").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
 if(!isNaN(parseInt(elemId))){orderIndexesWithIds[elemId]=index+1
 }});
-console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
+window.console&&console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
 this.collection.saveOrder(orderIndexesWithIds)
 }}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","reNumberStoriesAction")
@@ -5106,8 +5109,8 @@ if(fieldId=="code"){show_view.model.Stories().each(function(story,index){story.t
 var beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
 };
 var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
-this.$(".theme-data .name div.data").editable(contentUpdatedFunc,defaultOptions);
-this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(defaultOptions,{lesswidth:-10}))
+this.$(".theme-data .name div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:100}));
+this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{lesswidth:-10,maxLength:3}))
 },navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){$(event.target).blur();
 try{event.preventDefault()
 }catch(e){}if(!$(event.target).hasClass("new-story")){if(!event.shiftKey){var storyElem=$(this.el).find("li.story:first-child");
@@ -5138,7 +5141,7 @@ $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(2) span").tex
 $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...";
 try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){console.log(e)
+}catch(e){window.console&&console.log(e)
 }new App.Views.Error({message:errorMessage});
 $(dialog_obj).dialog("close")
 },success:function(model,response){model_collection.remove(view.model);
