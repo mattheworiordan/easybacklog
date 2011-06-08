@@ -4614,9 +4614,9 @@ delete statsWithoutThemes["themes"];
 backlog.set(statsWithoutThemes);
 backlog.trigger("statisticsUpdated");
 _.each(stats.themes,function(themeData){var theme=backlog.Themes().get(themeData.theme_id);
-theme.set(themeData);
+if(theme){theme.set(themeData);
 theme.trigger("statisticsUpdated")
-})
+}})
 }}};
 App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{onblur:"submit",tooltip:"Click to edit",placeholder:'<span class="editable-blank">[edit]</span>',lesswidth:5,type:"text"},initialize:function(){this.model=this.options.model;
 this.parentView=this.options.parentView;
