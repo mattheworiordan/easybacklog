@@ -5,6 +5,41 @@ var App = {
     Controllers: {}
 };
 
+// Patch for Backbone to ensure save is completed before more requests are sent to the server
+// http://stackoverflow.com/questions/5886748/backbone-js-problem-when-saving-a-model-before-previous-save-issues-postcreate
+(function() {
+  function proxyAjaxEvent(event, options, dit) {
+    var eventCallback = options[event];
+    options[event] = function() {
+      // check if callback for event exists and if so pass on request
+      if (eventCallback) { eventCallback(arguments) }
+      dit.processQueue(); // move onto next save request in the queue
+    }
+  }
+  Backbone.Model.prototype._save = Backbone.Model.prototype.save;
+  Backbone.Model.prototype.save = function( attrs, options ) {
+    if (this.saving) {
+      this.saveQueue = this.saveQueue || new Array();
+      this.saveQueue.push({ attrs: _.extend({}, this.attributes, attrs), options: options });
+    } else {
+      this.saving = true;
+      proxyAjaxEvent('success', options, this);
+      proxyAjaxEvent('error', options, this);
+      Backbone.Model.prototype._save.call( this, attrs, options );
+    }
+  }
+  Backbone.Model.prototype.processQueue = function() {
+    if (this.saveQueue.length) {
+      var saveArgs = this.saveQueue.shift();
+      proxyAjaxEvent('success', saveArgs.options, this);
+      proxyAjaxEvent('error', saveArgs.options, this);
+      Backbone.Model.prototype._save.call( this, saveArgs.attrs, saveArgs.options );
+    } else {
+      this.saving = false;
+    }
+  }
+})();
+
 $(document).ready(function() {
   // JQuery UI confirm dialog for links with data-confirm for delete actions
   $('a').live('confirm', function(event) {
