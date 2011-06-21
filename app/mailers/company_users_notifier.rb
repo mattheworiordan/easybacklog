@@ -1,4 +1,4 @@
-class UsersNotifier < ActionMailerBase
+class CompanyUsersNotifier < ActionMailerBase
   # send an invite to someone who is not registered to join
   def invite_to_join(invitee_user, company, invited_user)
     @invited_user = invited_user

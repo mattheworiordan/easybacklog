@@ -1,6 +1,6 @@
 # Users with access to a company controller
 # Root level users managed by the Devise controllers
-class UsersController < ApplicationController
+class CompanyUsersController < ApplicationController
   include CompanyResource
   before_filter :check_company_admin
 
@@ -70,7 +70,7 @@ class UsersController < ApplicationController
         if current_company.users.where('UPPER(email) = ?', email.upcase).empty?
           invited_user = User.where('UPPER(email) = ?', email.upcase).first
           current_company.add_user invited_user
-          UsersNotifier.access_granted(current_user, current_company, invited_user).deliver
+          CompanyUsersNotifier.access_granted(current_user, current_company, invited_user).deliver
         end
       else # user is not a member
         if (current_company.invited_users.where('UPPER(email) = ?', email.upcase).empty?)
@@ -78,7 +78,7 @@ class UsersController < ApplicationController
         else
           invited_user = current_company.invited_users.where('UPPER(email) = ?', email.upcase).first
         end
-        UsersNotifier.invite_to_join(current_user, current_company, invited_user).deliver
+        CompanyUsersNotifier.invite_to_join(current_user, current_company, invited_user).deliver
       end
     end
 end

@@ -21,7 +21,7 @@ Ibacklog::Application.routes.draw do
         get 'snapshots/:snapshot_id/:file_name' => 'backlogs#show_snapshot', :as => 'download_snapshot'
       end
     end
-    resources :users
+    resources :users, :controller => 'company_users'
     resources :invites, :only => [:destroy] do
       member do
         get ':security_code' => 'invites#show', :as => 'show'
