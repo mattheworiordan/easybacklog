@@ -29,7 +29,7 @@ var App = {
     }
   }
   Backbone.Model.prototype.processQueue = function() {
-    if (this.saveQueue.length) {
+    if (this.saveQueue && this.saveQueue.length) {
       var saveArgs = this.saveQueue.shift();
       proxyAjaxEvent('success', saveArgs.options, this);
       proxyAjaxEvent('error', saveArgs.options, this);
