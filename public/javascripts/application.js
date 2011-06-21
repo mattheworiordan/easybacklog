@@ -12,7 +12,7 @@ var App = {
     var eventCallback = options[event];
     options[event] = function() {
       // check if callback for event exists and if so pass on request
-      if (eventCallback) { eventCallback(arguments) }
+      if (eventCallback) { eventCallback.apply(options, arguments); }
       dit.processQueue(); // move onto next save request in the queue
     }
   }
@@ -25,7 +25,7 @@ var App = {
       this.saving = true;
       proxyAjaxEvent('success', options, this);
       proxyAjaxEvent('error', options, this);
-      Backbone.Model.prototype._save.call( this, attrs, options );
+      Backbone.Model.prototype._save.call(this, attrs, options);
     }
   }
   Backbone.Model.prototype.processQueue = function() {
@@ -33,7 +33,7 @@ var App = {
       var saveArgs = this.saveQueue.shift();
       proxyAjaxEvent('success', saveArgs.options, this);
       proxyAjaxEvent('error', saveArgs.options, this);
-      Backbone.Model.prototype._save.call( this, saveArgs.attrs, saveArgs.options );
+      Backbone.Model.prototype._save.call(this, saveArgs.attrs, saveArgs.options);
     } else {
       this.saving = false;
     }
