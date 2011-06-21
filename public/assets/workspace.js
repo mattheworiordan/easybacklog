@@ -4701,7 +4701,7 @@ i++){lines[i]=htmlEncode(lines[i])
 }else{return""
 }}var App={Views:{},Collections:{},Controllers:{}};
 (function(){function proxyAjaxEvent(event,options,dit){var eventCallback=options[event];
-options[event]=function(){if(eventCallback){eventCallback(arguments)
+options[event]=function(){if(eventCallback){eventCallback.apply(options,arguments)
 }dit.processQueue()
 }
 }Backbone.Model.prototype._save=Backbone.Model.prototype.save;
