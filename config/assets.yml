@@ -8,7 +8,7 @@ compressor_options:
 javascripts:
   workspace:
     - public/javascripts/vendor/underscore.js
-    - public/javascripts/vendor/jquery-1.5.js
+    - public/javascripts/vendor/jquery-1.6.js
     - public/javascripts/vendor/*.js
     - public/javascripts/utilities.js
     - public/javascripts/application.js
