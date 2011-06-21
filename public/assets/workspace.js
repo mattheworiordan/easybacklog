@@ -4712,7 +4712,7 @@ proxyAjaxEvent("success",options,this);
 proxyAjaxEvent("error",options,this);
 Backbone.Model.prototype._save.call(this,attrs,options)
 }};
-Backbone.Model.prototype.processQueue=function(){if(this.saveQueue.length){var saveArgs=this.saveQueue.shift();
+Backbone.Model.prototype.processQueue=function(){if(this.saveQueue&&this.saveQueue.length){var saveArgs=this.saveQueue.shift();
 proxyAjaxEvent("success",saveArgs.options,this);
 proxyAjaxEvent("error",saveArgs.options,this);
 Backbone.Model.prototype._save.call(this,saveArgs.attrs,saveArgs.options)
