@@ -44,11 +44,12 @@ App.Views.Themes = {
         }).find('.move-theme').disableSelection();
 
         /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
+        var reorderSlideUpElements = 'ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions';
         this.$('ul.themes .actions .reorder-themes').click(function(event) {
           if ($('ul.themes li.theme').length < 2) {
             new App.Views.Warning({ message: 'You need more than one theme to reorder'});
           } else {
-            parentView.$('ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions').slideUp(250, function() {
+            parentView.$(reorderSlideUpElements).slideUp(250, function() {
               parentView.$('.move-theme').css('display', 'block');
               parentView.$('.stop-ordering').css('display', 'block');
             });
@@ -58,7 +59,7 @@ App.Views.Themes = {
         this.$('>.stop-ordering').click(function(event) {
           parentView.$('.move-theme').css('display', 'none');
           parentView.$('.stop-ordering').css('display', 'none');
-          parentView.$('ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions').slideDown(250);
+          parentView.$(reorderSlideUpElements).slideDown(250);
         })
       } else {
         this.$('ul.themes>li.actions').remove();
