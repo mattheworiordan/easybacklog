@@ -23,6 +23,7 @@ var App = {
       this.saveQueue.push({ attrs: _.extend({}, this.attributes, attrs), options: options });
     } else {
       this.saving = true;
+      if (!options) { options = {}; }
       proxyAjaxEvent('success', options, this);
       proxyAjaxEvent('error', options, this);
       Backbone.Model.prototype._save.call(this, attrs, options);
