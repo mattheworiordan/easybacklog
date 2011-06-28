@@ -43,6 +43,6 @@ module SnapshotsHelper
     else
       number_string
     end
-    color_text(comparator, field, text)
+    color_text(comparator, field, text.to_s)
   end
 end
