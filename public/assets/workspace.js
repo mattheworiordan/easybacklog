@@ -4708,7 +4708,8 @@ options[event]=function(){if(eventCallback){eventCallback.apply(options,argument
 Backbone.Model.prototype.save=function(attrs,options){if(this.saving){this.saveQueue=this.saveQueue||new Array();
 this.saveQueue.push({attrs:_.extend({},this.attributes,attrs),options:options})
 }else{this.saving=true;
-proxyAjaxEvent("success",options,this);
+if(!options){options={}
+}proxyAjaxEvent("success",options,this);
 proxyAjaxEvent("error",options,this);
 Backbone.Model.prototype._save.call(this,attrs,options)
 }};
@@ -5268,14 +5269,15 @@ var actionsElem;
 var moveThemeTitle;
 this.$("ul.themes").sortable({start:function(event,ui){},stop:function(event,ui){orderChangedEvent()
 },placeholder:"target-order-highlight",axis:"y",handle:".move-theme"}).find(".move-theme").disableSelection();
+var reorderSlideUpElements="ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions";
 this.$("ul.themes .actions .reorder-themes").click(function(event){if($("ul.themes li.theme").length<2){new App.Views.Warning({message:"You need more than one theme to reorder"})
-}else{parentView.$("ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions").slideUp(250,function(){parentView.$(".move-theme").css("display","block");
+}else{parentView.$(reorderSlideUpElements).slideUp(250,function(){parentView.$(".move-theme").css("display","block");
 parentView.$(".stop-ordering").css("display","block")
 })
 }});
 this.$(">.stop-ordering").click(function(event){parentView.$(".move-theme").css("display","none");
 parentView.$(".stop-ordering").css("display","none");
-parentView.$("ul.stories,.theme-stats,ul.themes .delete-theme,ul.themes .theme-data .code,ul.themes>li.actions").slideDown(250)
+parentView.$(reorderSlideUpElements).slideDown(250)
 })
 }else{this.$("ul.themes>li.actions").remove()
 }return(this)
@@ -5389,7 +5391,7 @@ window.JST["backlogs/create-snapshot-dialog"]=_.template('<div id="dialog-create
 window.JST["backlogs/print-dialog"]=_.template('<div id="dialog-print" title="Print story cards">  <form>    <p>      <span class="ui-icon ui-icon-print" style="float:left; margin:0 7px 30px 0;" />      Printing story cards requires the use of a printer that is capable of duplexing (double-sided printing).  Alternatively, and less favourably, you can glue each page pair together.    </p>    <p>      What would you like to print?    </p>    <p>      <select id="print-scope">        <option id="">All themes</option>        <optgroup label="Only the following theme">        <% backlog.Themes().each(function(theme) { %>          <option id="<%= theme.get(\'id\') %>"><%= htmlEncode(theme.get(\'name\')) %></option>        <% }); %>        </optgroup>      </select>      <br />    </p>    <p>      Please select your paper size    </p>    <p>      <select id="page-size">        <option id="A4"<%= ($.cookie("page-size-default") == \'A4\') ? \' selected\' : \'\' %>>A4</option>        <option id="LETTER"<%= ($.cookie("page-size-default") == \'LETTER\') ? \' selected\' : \'\' %>>Letter</option>      </select>      <br />    </p>    <p>      Which printer setting do you use for double-sided printing?    </p>    <p>      <select id="fold-side">        <option id="long"<%= ($.cookie("fold-side-default") == \'long\') ? \' selected\' : \'\' %>>Long side binding</option>        <option id="short"<%= ($.cookie("fold-side-default") == \'short\') ? \' selected\' : \'\' %>>Short side binding</option>      </select>      <br />    </p>    <p class="progress-placeholder">    </p>  </form></div>');
 window.JST["backlogs/stats"]=_.template("<%= addCommas((model.get('points') || 0).toFixed(1)) %> points / <%= model.get('cost_formatted')%> / <strong><%= addCommas((model.get('days') || 0).toFixed(1)) %> days</strong>");
 window.JST["layouts/confirm-dialog"]=_.template('<div id="dialog-confirm" class="dialog" title="<%= title %>"}  <p>    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>    <%= confirmationMessage %>  </p></div>');
-window.JST["snapshots/snapshot-header"]=_.template('<td class="logo-space" colspan="<%=columns%>">  <a href="/" target="_blank" class="main-title">    <span class="easy">easy</span><span class="backlog">Backlog</span>  </a>  <span class="divider">|</span>  <b>Comparing Snapshots</b><td class="actions" colspan="<%=columns%>">  <a href="#help" id="help">Help?    <div id="help-rollover">      <div class="key"><span class="deleted"></span> Deleted from left</div>      <div class="key"><span class="new"></span> Added to right</div>      <div class="key"><span class="changed"></span> Value changed</div>      <div class="key"><span class="changed">▽</span> Value decreased</div>      <div class="key"><span class="changed">△</span> Value increased</div>    </div>  </a>  <span class="divider">|</span>  <a href="<%= document.location.href %>.xls">Export</a>  <span class="divider">|</span>  <a href="#print" id="print">Print</a>  <span class="divider">|</span>  <a href="#close-window" id="close-window">Close</a></td>');
+window.JST["snapshots/snapshot-header"]=_.template('<td class="logo-space" colspan="<%=columns%>">  <a href="/" target="_blank" class="main-title">    <span class="easy">easy</span><span class="backlog">Backlog</span>  </a>  <span class="divider">|</span>  <b>Comparing Snapshots</b></td><td class="actions" colspan="<%=columns%>">  <a href="#help" id="help">Help?    <div id="help-rollover">      <div class="key"><span class="deleted"></span> Deleted from left</div>      <div class="key"><span class="new"></span> Added to right</div>      <div class="key"><span class="changed"></span> Value changed</div>      <div class="key"><span class="changed">▽</span> Value decreased</div>      <div class="key"><span class="changed">△</span> Value increased</div>    </div>  </a>  <span class="divider">|</span>  <a href="<%= document.location.href %>.xls">Export</a>  <span class="divider">|</span>  <a href="#print" id="print">Print</a>  <span class="divider">|</span>  <a href="#close-window" id="close-window">Close</a></td>');
 window.JST["stories/delete-dialog"]=_.template('<div id="dialog-delete" title="Delete story?">  <p>    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;" />    This story will be permanently deleted and cannot be recovered. Are you sure?  </p></div>');
 window.JST["stories/index"]=_.template('<ul class="stories"></ul>');
 window.JST["stories/move-dialog"]=_.template("<div id=\"dialog-move-story\" title=\"Move story\">  <p>    <span class=\"ui-icon ui-icon-arrow-4\" style=\"float:left; margin:0 7px 20px 0;\" />    Move story '<%=story.Theme().get('code') + story.get('unique_id')%>' to which theme?  </p>  <p>    <form>    <select id=\"theme-target\">      <% themes.each(function(theme) { %>        <option id=\"<%=theme.get('id')%>\"<%=(theme == story.Theme() ? ' selected=\"\"' : '') %>><%=theme.get('name')%></option>      <% }); %>    </select>    </form>  </p></div>");
