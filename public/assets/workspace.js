@@ -4684,7 +4684,8 @@ $("p#vtip").css("top",this.top+"px").css("left",this.left+"px")
 };
 jQuery(document).ready(function($){vtip()
 });
-function addCommas(nStr){nStr+="";
+function addCommas(nStr){var x,x1,x2;
+nStr+="";
 x=nStr.split(".");
 x1=x[0];
 x2=x.length>1?"."+x[1]:"";
@@ -4705,7 +4706,7 @@ options[event]=function(){if(eventCallback){eventCallback.apply(options,argument
 }dit.processQueue()
 }
 }Backbone.Model.prototype._save=Backbone.Model.prototype.save;
-Backbone.Model.prototype.save=function(attrs,options){if(this.saving){this.saveQueue=this.saveQueue||new Array();
+Backbone.Model.prototype.save=function(attrs,options){if(this.saving){this.saveQueue=this.saveQueue||[];
 this.saveQueue.push({attrs:_.extend({},this.attributes,attrs),options:options})
 }else{this.saving=true;
 if(!options){options={}
@@ -4732,7 +4733,7 @@ buttons[actionButton]=function(){clickedLink.data("confirm","");
 clickedLink.click();
 $(this).dialog("close")
 };
-buttons["Cancel"]=function(){$(this).dialog("close")
+buttons.Cancel=function(){$(this).dialog("close")
 };
 $("#dialog-confirm").dialog({resizable:false,height:140,modal:true,buttons:buttons});
 return(false)
@@ -4744,25 +4745,25 @@ alertNotice.css("display","none").slideDown(function(){_.delay(function(){alertN
 });
 var AcceptanceCriterion=Backbone.Model.extend({Story:function(){return this.collection.story
 },IsEditable:function(){return(this.collection.story.IsEditable())
-},beforeSave:function(callback){if(this.collection.story.isNew()){window.console&&console.log("Saving parent Story first");
-this.collection.story.save({},{error:function(model,response){var errorMessage="Unable to save changes...  Please refresh.";
-try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){window.console&&console.log(e)
-}new App.Views.Error({message:errorMessage})
+},beforeSave:function(callback){if(this.collection.story.isNew()){if(window.console){console.log("Saving parent Story first")
+}this.collection.story.save({},{error:function(model,response){var errorMessage="Unable to save changes...  Please refresh.";
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:errorMessage})
 },success:function(){callback()
 }})
 }else{callback()
 }}});
 var Backlog=Backbone.Model.extend({url:function(){return(this.collection.url()+(this.isNew()?"":"/"+(this.get("snapshot_master_id")?this.get("snapshot_master_id")+"/snapshots/":"")+this.id)+"?cache-buster"+Math.floor(Math.random()*1000000))
 },IsEditable:function(){return(this.get("is_editable")?true:false)
-},Themes:function(){if(this._themes==null){this._themes=new ThemesCollection(this.get("themes"),{backlog:this});
+},Themes:function(){if(!this._themes){this._themes=new ThemesCollection(this.get("themes"),{backlog:this});
 this.unset("themes")
 }return(this._themes)
 },Company_ID:function(){return this.collection.company_id
 }});
 var Story=Backbone.Model.extend({Theme:function(){return this.collection.theme
 },IsEditable:function(){return(this.collection.theme.IsEditable())
-},AcceptanceCriteria:function(){if(this._acceptance_criteria==null){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
+},AcceptanceCriteria:function(){if(!this._acceptance_criteria){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
 this.unset("acceptance_criteria")
 }return(this._acceptance_criteria)
 },MoveToTheme:function(newThemeId,options){var story=this;
@@ -4772,11 +4773,11 @@ themeCollection.get(Number(newThemeId)).Stories().add(story);
 story.set(ajaxResult);
 story.trigger("change:unique_id");
 if(_.isFunction(options.success)){options.success(story,response)
-}}).error(function(event,response){window.console&&console.log("Move to theme failed");
-if(_.isFunction(options.error)){options.error(story,response)
+}}).error(function(event,response){if(window.console){console.log("Move to theme failed")
+}if(_.isFunction(options.error)){options.error(story,response)
 }})
 }});
-var Theme=Backbone.Model.extend({Stories:function(){if(this._stories==null){this._stories=new StoriesCollection(this.get("stories"),{theme:this});
+var Theme=Backbone.Model.extend({Stories:function(){if(!this._stories){this._stories=new StoriesCollection(this.get("stories"),{theme:this});
 this.unset("stories")
 }return(this._stories)
 },Backlog:function(){return this.collection.backlog
@@ -4785,11 +4786,11 @@ this.unset("stories")
 $.post(this.collection.url()+"/"+this.get("id")+"/re-number-stories").success(function(ajaxResult,status,response){theme.Stories().each(function(story){story.fetch()
 });
 if(_.isFunction(options.success)){options.success(theme,response)
-}}).error(function(event,response){window.console&&console.log("Renumber stories failed");
-if(_.isFunction(options.error)){options.error(theme,response)
+}}).error(function(event,response){if(window.console){console.log("Renumber stories failed")
+}if(_.isFunction(options.error)){options.error(theme,response)
 }})
 }});
-var AcceptanceCriteriaCollection=Backbone.Collection.extend({model:AcceptanceCriterion,story:null,url:function(){if(!this.story||!this.story.get("id")){new App.Views.Error("Error, missing necessary data ID to display Acceptance Criteria")
+var AcceptanceCriteriaCollection=Backbone.Collection.extend({model:AcceptanceCriterion,story:null,url:function(){if(!this.story||!this.story.get("id")){var errorView=new App.Views.Error("Error, missing necessary data ID to display Acceptance Criteria")
 }else{return"/stories/"+this.story.get("id")+"/acceptance_criteria"
 }},initialize:function(models,options){this.story=options?options.story:null;
 _.bindAll(this,"saveOrder")
@@ -4799,11 +4800,11 @@ if(criterion){criterion.set({"position":idOrderCollection[key]});
 criterion.save()
 }})
 }});
-var BacklogsCollection=Backbone.Collection.extend({model:Backlog,company_id:null,url:function(){if(!this.company_id){new App.Views.Error("Error, missing necesary ID to display Backlog")
+var BacklogsCollection=Backbone.Collection.extend({model:Backlog,company_id:null,url:function(){if(!this.company_id){var errorView=new App.Views.Error("Error, missing necesary ID to display Backlog")
 }else{return"/companies/"+this.company_id+"/backlogs"
 }},initialize:function(models,options){this.company_id=options?options.company_id:null
 }});
-var StoriesCollection=Backbone.Collection.extend({model:Story,theme:null,url:function(){if(!this.theme||!this.theme.get("id")){new App.Views.Error("Error, missing necessary data ID to display Story")
+var StoriesCollection=Backbone.Collection.extend({model:Story,theme:null,url:function(){if(!this.theme||!this.theme.get("id")){var errorView=new App.Views.Error("Error, missing necessary data ID to display Story")
 }else{return"/themes/"+this.theme.get("id")+"/stories"
 }},initialize:function(models,options){this.theme=options?options.theme:null
 },saveOrder:function(idOrderCollection){var thisCollection=this;
@@ -4812,7 +4813,7 @@ if(story){story.set({"position":idOrderCollection[key]});
 story.save()
 }})
 }});
-var ThemesCollection=Backbone.Collection.extend({model:Theme,backlog:null,url:function(){if(!this.backlog){new App.Views.Error("Error, cannot find Backlog and thus cannot load Theme")
+var ThemesCollection=Backbone.Collection.extend({model:Theme,backlog:null,url:function(){if(!this.backlog){var errorView=new App.Views.Error("Error, cannot find Backlog and thus cannot load Theme")
 }else{return"/backlogs/"+this.backlog.get("id")+"/themes"
 }},initialize:function(models,options){this.backlog=options?options.backlog:null
 },saveOrder:function(idOrderCollection){var thisCollection=this;
@@ -4821,11 +4822,11 @@ if(theme){theme.set({"position":idOrderCollection[key]});
 theme.save()
 }})
 }});
-App.Controllers.Statistics={updateStatistics:function(stats){if(!_.isEmpty(stats)){window.console&&console.log("Updating stats for themes "+_.map(stats.themes,function(theme){return theme.theme_id
-}).join(","));
-var backlog=App.Collections.Backlogs.last();
+App.Controllers.Statistics={updateStatistics:function(stats){if(!_.isEmpty(stats)){if(window.console){console.log("Updating stats for themes "+_.map(stats.themes,function(theme){return theme.theme_id
+}).join(","))
+}var backlog=App.Collections.Backlogs.last();
 var statsWithoutThemes=_.clone(stats);
-delete statsWithoutThemes["themes"];
+delete statsWithoutThemes.themes;
 backlog.set(statsWithoutThemes);
 backlog.trigger("statisticsUpdated");
 _.each(stats.themes,function(themeData){var theme=backlog.Themes().get(themeData.theme_id);
@@ -4850,15 +4851,15 @@ return(value)
 var fieldWithValue=$(target);
 var beforeChangeValue=this.beforeChangeValue[fieldId];
 var view=this;
-if(value!=beforeChangeValue){window.console&&console.log("value for "+fieldId+" has changed from "+this.beforeChangeValue[fieldId]+" to "+value);
-var attributes={};
+if(value!=beforeChangeValue){if(window.console){console.log("value for "+fieldId+" has changed from "+this.beforeChangeValue[fieldId]+" to "+value)
+}var attributes={};
 attributes[fieldId]=value;
 this.model.set(attributes);
 var this_model=this.model;
 var saveModelFunc=function(){this_model.save({},{error:function(model,response){var errorMessage="Unable to save changes...";
-try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){window.console&&console.log(e)
-}new App.Views.Error({message:errorMessage});
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:errorMessage});
 fieldWithValue.text(_.isEmpty(beforeChangeValue)?"[edit]":beforeChangeValue);
 var valBack={};
 valBack[fieldId]=_.isEmpty(beforeChangeValue)?null:beforeChangeValue;
@@ -4883,7 +4884,7 @@ $("#dialog-delete").dialog({resizable:false,height:170,modal:true,buttons:{Delet
 }return(false)
 }});
 App.Views.AcceptanceCriteria={Index:Backbone.View.extend({tagName:"div",className:"acceptance-criteria",childId:function(model){return"acceptance-criteria-"+model.get("id")
-},events:{"click .actions a.new-acceptance-criterion":"createNew",},initialize:function(){this.collection=this.options.collection;
+},events:{"click .actions a.new-acceptance-criterion":"createNew"},initialize:function(){this.collection=this.options.collection;
 _.bindAll(this,"orderChanged","displayOrderIndexes")
 },render:function(){var parentView=this;
 $(this.el).html(JST["acceptance_criteria/index"]({collection:this.collection.models}));
@@ -4903,7 +4904,7 @@ var model=new AcceptanceCriterion();
 var this_view=this;
 this.collection.add(model);
 var newElem=new App.Views.AcceptanceCriteria.Show({model:model,parentView:this}).render().el;
-if((lastCriterion.find(".data textarea").length)&&(lastCriterion.find(".data textarea").val()=="")){_.delay(function(){this_view.$("ul li:last").before(newElem);
+if((lastCriterion.find(".data textarea").length)&&(lastCriterion.find(".data textarea").val()==="")){_.delay(function(){this_view.$("ul li:last").before(newElem);
 this_view.displayOrderIndexes();
 $(newElem).find(".data").click()
 },250)
@@ -4915,8 +4916,8 @@ this.$("ul li.criterion:last").css("display","none").slideDown(100,function(){$(
 this.$("li.criterion").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
 orderIndexesWithIds[elemId]=index+1
 });
-window.console&&console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
-this.collection.saveOrder(orderIndexesWithIds);
+if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
+}this.collection.saveOrder(orderIndexesWithIds);
 this.displayOrderIndexes()
 },displayOrderIndexes:function(){this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html((index+1)+".")
 })
@@ -4933,9 +4934,9 @@ var model_collection=ac_view.model.collection;
 if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){$(ac_view.el).remove();
 if(ac_view.model.isNew()){model_collection.remove(ac_view.model)
 }else{ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...  Please refresh.";
-try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){window.console&&console.log(e)
-}new App.Views.Error({message:errorMessage})
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:errorMessage})
 }})
 }ac_view.parentView.displayOrderIndexes()
 })
@@ -4949,7 +4950,7 @@ $(this.el).find(">div.data").editable(contentUpdatedFunc,defaultOptions)
 try{event.preventDefault()
 }catch(e){}var liElem=$(event.target).parents(".data").parent();
 if(!event.shiftKey){if(_.first(liElem)!=_.last(liElem.parent("ul").find("li.criterion"))){liElem.next().find(".data").click()
-}else{if($.trim(this.$("textarea").val())==""){$(this.el).parents("li.story").find("div.comments .data").click()
+}else{if($.trim(this.$("textarea").val())===""){$(this.el).parents("li.story").find("div.comments .data").click()
 }else{this.parentView.createNew(event)
 }}}else{if(_.first(liElem)==_.first(liElem.parent("ul").find("li.criterion"))){$(this.el).parents("li.story").find("div.so-i-can .data").click()
 }else{liElem.prev().find(".data").click()
@@ -5026,14 +5027,13 @@ event.preventDefault();
 $("#dialog-create-snapshot").remove();
 $("body").append(JST["backlogs/create-snapshot-dialog"]({backlog:this.model}));
 $("#dialog-create-snapshot").dialog({resizable:false,height:210,width:350,modal:true,buttons:{"Create Snapshot":function(){var name=$(this).find("input[type=text]").val();
-if($.trim(name)==""){$(this).find("div.progress-area label").text("You must name your snapshot to continue.");
+if($.trim(name)===""){$(this).find("div.progress-area label").text("You must name your snapshot to continue.");
 $(this).find("div.progress-area").addClass("field_with_errors").find("input[type=text]").focus()
 }else{var href=newSnapshotLink.attr("href"),csrf_token=$("meta[name=csrf-token]").attr("content"),csrf_param=$("meta[name=csrf-param]").attr("content"),form=$('<form method="post" action="'+href+'"></form>');
-fields='<input name="'+csrf_param+'" value="'+csrf_token+'" type="hidden" />';
-fields+='<input name="name" value="'+htmlEncode(name)+'" type="hidden" />';
+var fields='<input name="'+csrf_param+'" value="'+csrf_token+'" type="hidden" />'+'<input name="name" value="'+htmlEncode(name)+'" type="hidden" />';
 form.hide().append(fields).appendTo("body");
 form.submit();
-$(this).find("div.progress-area").html('Please wait, we\'re creating your snapshot...<br /><br /><span class="progress-icon"></span>');
+$(this).find("div.progress-area").html("Please wait, we're creating your snapshot...<br /><br />"+'<span class="progress-icon"></span>');
 $(this).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Preparing...");
 $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 var dialog=this;
@@ -5056,14 +5056,14 @@ var currentSnapshot=document.location.pathname.match(/^\/companies\/\d+\/backlog
 if(currentSnapshot){$("#dialog-compare-snapshot select#target-snapshot").val($("#dialog-compare-snapshot select#target-snapshot option:first-child").val())
 }$("#dialog-compare-snapshot").dialog({resizable:false,height:320,width:400,modal:true,buttons:{"Compare":function(){var base=$(this).find("select#base-snapshot").val();
 var target=$(this).find("select#target-snapshot").val();
-if(base==target){$(this).find("div.error-message").html('<p><span class="error-alert ui-icon ui-icon-alert"></span>You cannot compare the same snapshots.  Please make another selection.</p>')
+if(base==target){$(this).find("div.error-message").html('<p><span class="error-alert ui-icon ui-icon-alert"></span>'+"You cannot compare the same snapshots.  Please make another selection.</p>")
 }else{var baseUrl=document.location.pathname.match(/^\/companies\/\d+\/backlogs/i)[0];
 var backlogId=document.location.pathname.match(/^\/companies\/\d+\/backlogs\/(\d+)/i)[1];
 window.open(baseUrl+"/compare/"+(base.match(/^\d+$/)?base:backlogId)+"/"+(target.match(/^\d+$/)?target:backlogId),"_newtab"+Math.floor(Math.random()*10000));
 $(this).dialog("close")
 }},Cancel:function(){$(this).dialog("close")
 }}})
-},})};
+}})};
 App.Views.Notice=Backbone.View.extend({className:"notice",displayLength:5000,defaultMessage:"",initialize:function(){_.bindAll(this,"render");
 this.message=this.options.message||this.defaultMessage;
 this.render()
@@ -5124,10 +5124,10 @@ if(nextTheme.length){nextTheme.find(".theme-data .name .data").click()
 }}}else{if(13==event.keyCode){this.createNew(event)
 }}},orderChanged:function(){var orderIndexesWithIds={};
 this.$("li.story").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
-if(!isNaN(parseInt(elemId))){orderIndexesWithIds[elemId]=index+1
+if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
-window.console&&console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
-this.collection.saveOrder(orderIndexesWithIds)
+if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
+}this.collection.saveOrder(orderIndexesWithIds)
 }}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor")
 },render:function(){$(this.el).html(JST["stories/show"]({model:this.model}));
@@ -5145,7 +5145,7 @@ if(!App.Views.Stories.Index.stopMoveEvent){show_view.moveToThemeDialog()
 this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){show_view.changeColor(col)
 },colorsPerLine:4,colors:["#ffffff","#dddddd","#bbbbbb","#999999","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#6666ff","#9900ff","#ff00ff","#f4cccc","#d9ead3","#cfe2f3","#ead1dc","#ffe599","#b6d7a8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d"]})
 }if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
-}return(this)
+}return this
 },makeFieldsEditable:function(){var show_view=this;
 var contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(value,settings,this)
 };
@@ -5184,19 +5184,20 @@ if(dataElem){if(!event.shiftKey){if(dataElem!=_.last(viewElements)){this.$("."+v
 if(sibling.find("a.new-story").length){sibling.find("a.new-story").focus()
 }else{sibling.find("."+_.first(viewElements)).click()
 }}}else{if(dataElem!=_.first(viewElements)){var previousSelector=viewElements[_.indexOf(viewElements,dataElem)-1];
-if(previousSelector.indexOf("acceptance-criteria")==0){var lastCriterion=this.$(".acceptance-criteria ul.acceptance-criteria li.criterion:last>*");
+if(previousSelector.indexOf("acceptance-criteria")===0){var lastCriterion=this.$(".acceptance-criteria ul.acceptance-criteria li.criterion:last>*");
 if(lastCriterion.length){lastCriterion.click()
 }else{this.$(".acceptance-criteria ul.acceptance-criteria li:last a").click()
 }}else{this.$("."+previousSelector).click()
 }}else{if($(this.el).prev().length){$(this.el).prev().find(".score-90 .data").click()
 }else{$(this.el).parents("li.theme").find(".theme-data >.name .data").click()
-}}}}}},changeEvent:function(eventName,model){if((eventName.substring(0,7)=="change:")&&(eventName!="change:acceptance_criteria")){var fieldChanged=eventName.substring(7);
-var newValue=this.model.get(fieldChanged);
-if(fieldChanged=="unique_id"){if(this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data input").length==0){newValue=this.model.Theme().get("code")+newValue;
+}}}}}},changeEvent:function(eventName,model){var newValue;
+if((eventName.substring(0,7)==="change:")&&(eventName!=="change:acceptance_criteria")){var fieldChanged=eventName.substring(7);
+newValue=this.model.get(fieldChanged);
+if(fieldChanged==="unique_id"){if(this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data input").length===0){newValue=this.model.Theme().get("code")+newValue;
 this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data").text(newValue)
 }else{this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data input").val(newValue)
-}}else{if(_.isString(newValue)){var newValue=multiLineHtmlEncode(newValue);
-if(newValue==""){newValue=this.defaultEditableOptions.placeholder
+}}else{if(_.isString(newValue)){newValue=multiLineHtmlEncode(newValue);
+if(newValue===""){newValue=this.defaultEditableOptions.placeholder
 }this.$("div."+fieldChanged.replace(/_/gi,"-")+">div.data").html(newValue)
 }}if(eventName=="change:id"){$(this.el).attr("id","story-"+model.get("id"))
 }App.Controllers.Statistics.updateStatistics(this.model.get("score_statistics"))
@@ -5205,39 +5206,39 @@ $(dialog_obj).find(">p").html("Deleting story...<br /><br />Please wait.");
 $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Close");
 $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...";
-try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){window.console&&console.log(e)
-}new App.Views.Error({message:errorMessage});
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:errorMessage});
 $(dialog_obj).dialog("close")
 },success:function(model,response){model_collection.remove(view.model);
 $(view.el).remove();
 $(dialog_obj).dialog("close");
 App.Controllers.Statistics.updateStatistics(response.score_statistics)
 }})
-},moveToThemeDialog:function(){window.console&&console.log("Requested to move");
-var view=this;
+},moveToThemeDialog:function(){if(window.console){console.log("Requested to move")
+}var view=this;
 $("#dialog-move-story").remove();
 $("body").append(JST["stories/move-dialog"]({story:this.model,themes:this.model.Theme().Backlog().Themes()}));
 $("#dialog-move-story").dialog({resizable:false,height:170,modal:true,buttons:{Move:function(){view.moveToTheme(this)
 },Cancel:function(){$(this).dialog("close")
 }}})
 },moveToTheme:function(dialog){var themeId=$(dialog).find("select#theme-target option:selected").attr("id");
-if(themeId!=this.model.Theme().get("id")){window.console&&console.log("Moving to theme-"+themeId);
-$(this.el).insertBefore($("li.theme#theme-"+themeId+" ul.stories>li:last"));
-this.model.MoveToTheme(themeId,{success:function(model,response){new App.Views.Notice({message:"The story was moved successfully."})
-},error:function(){new App.Views.Error({message:"The story move failed.  Please refresh your browser."})
+if(themeId!=this.model.Theme().get("id")){if(window.console){console.log("Moving to theme-"+themeId)
+}$(this.el).insertBefore($("li.theme#theme-"+themeId+" ul.stories>li:last"));
+this.model.MoveToTheme(themeId,{success:function(model,response){var errorView=new App.Views.Notice({message:"The story was moved successfully."})
+},error:function(){var errorView=new App.Views.Error({message:"The story move failed.  Please refresh your browser."})
 }})
 }$(dialog).dialog("close")
 },changeColor:function(color,options){var colorWithoutHex=(color.match(/^#/)?color.substring(1):color);
 var colorWithHex="#"+colorWithoutHex;
-if(colorWithoutHex.toLowerCase()=="ffffff"){colorWithoutHex=colorWithHex=""
+if(colorWithoutHex.toLowerCase()==="ffffff"){colorWithoutHex=colorWithHex=""
 }$(this.el).css("background-color",colorWithHex);
 if(!options||!options.silent){this.model.set({color:colorWithoutHex});
 this.model.save()
 }},duplicate:function(event){var model=new Story();
 var attributes=_.clone(this.model.attributes);
-delete attributes["id"];
-delete attributes["unique_id"];
+delete attributes.id;
+delete attributes.unique_id;
 this.model.AcceptanceCriteria().each(function(criterion){var crit=new AcceptanceCriterion();
 crit.set({criterion:criterion.get("criterion")});
 model.AcceptanceCriteria().add(crit)
@@ -5249,8 +5250,8 @@ var newStoryDomElem=$(storyView.render().el);
 newStoryDomElem.insertBefore($(this.el).parents("ul.stories").find(">li.actions"));
 model.save(false,{success:function(model,response){model.AcceptanceCriteria().each(function(criterion){criterion.save()
 })
-},error:function(model,error){window.console&&console.log(JSON.stringify(error));
-new App.Views.Error({message:"The story could not be copied.  Please refresh your browser."})
+},error:function(model,error){if(window.console){console.log(JSON.stringify(error))
+}var errorView=new App.Views.Error({message:"The story could not be copied.  Please refresh your browser."})
 }});
 _.delay(function(){newStoryDomElem.find(".user-story .as-a>.data").click()
 },400)
@@ -5270,7 +5271,7 @@ var moveThemeTitle;
 this.$("ul.themes").sortable({start:function(event,ui){},stop:function(event,ui){orderChangedEvent()
 },placeholder:"target-order-highlight",axis:"y",handle:".move-theme"}).find(".move-theme").disableSelection();
 var reorderSlideUpElements="ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions";
-this.$("ul.themes .actions .reorder-themes").click(function(event){if($("ul.themes li.theme").length<2){new App.Views.Warning({message:"You need more than one theme to reorder"})
+this.$("ul.themes .actions .reorder-themes").click(function(event){if($("ul.themes li.theme").length<2){var errorView=new App.Views.Warning({message:"You need more than one theme to reorder"})
 }else{parentView.$(reorderSlideUpElements).slideUp(250,function(){parentView.$(".move-theme").css("display","block");
 parentView.$(".stop-ordering").css("display","block")
 })
@@ -5296,10 +5297,10 @@ if(lastTheme.has("li.actions a.new-story").length){lastTheme.find("li.actions a.
 }}}else{if(13==event.keyCode){this.createNew(event)
 }}},orderChanged:function(){var orderIndexesWithIds={};
 this.$("li.theme").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
-if(!isNaN(parseInt(elemId))){orderIndexesWithIds[elemId]=index+1
+if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
-window.console&&console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds));
-this.collection.saveOrder(orderIndexesWithIds)
+if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
+}this.collection.saveOrder(orderIndexesWithIds)
 }}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","reNumberStoriesAction")
 },render:function(){$(this.el).html(JST["themes/show"]({model:this.model}));
@@ -5356,9 +5357,9 @@ $(dialog_obj).find(">p").html("Deleting theme...<br /><br />Please wait.");
 $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Close");
 $(dialog_obj).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...";
-try{errorMessage=eval("responseText = "+response.responseText).message
-}catch(e){window.console&&console.log(e)
-}new App.Views.Error({message:errorMessage});
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:errorMessage});
 $(dialog_obj).dialog("close")
 },success:function(model,response){model_collection.remove(view.model);
 $(view.el).remove();
@@ -5378,7 +5379,7 @@ $(dialog).find(">p").html('Re-numbering stories...<br />Please wait.<br /><br />
 $(dialog).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Close");
 $(dialog).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 view.model.ReNumberStories({success:function(){$(dialog).dialog("close")
-},error:function(){new App.Views.Error({message:"Server error trying to renumber stories"});
+},error:function(){var errorView=new App.Views.Error({message:"Server error trying to renumber stories"});
 $(dialog).dialog("close")
 }})
 }})};
