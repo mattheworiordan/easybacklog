@@ -1,4 +1,5 @@
-/*global $, _, App, event, JST, Backbone, Story */ // for jslint.com
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, Theme:false, multiLineHtmlEncode:false */
+
 
 App.Views.Themes = {
   Index: Backbone.View.extend({
@@ -47,7 +48,7 @@ App.Views.Themes = {
         var reorderSlideUpElements = 'ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions';
         this.$('ul.themes .actions .reorder-themes').click(function(event) {
           if ($('ul.themes li.theme').length < 2) {
-            new App.Views.Warning({ message: 'You need more than one theme to reorder'});
+            var errorView = new App.Views.Warning({ message: 'You need more than one theme to reorder'});
           } else {
             parentView.$(reorderSlideUpElements).slideUp(250, function() {
               parentView.$('.move-theme').css('display', 'block');
@@ -60,7 +61,7 @@ App.Views.Themes = {
           parentView.$('.move-theme').css('display', 'none');
           parentView.$('.stop-ordering').css('display', 'none');
           parentView.$(reorderSlideUpElements).slideDown(250);
-        })
+        });
       } else {
         this.$('ul.themes>li.actions').remove();
       }
@@ -104,11 +105,11 @@ App.Views.Themes = {
       var orderIndexesWithIds = {};
       this.$('li.theme').each(function(index, elem) {
         var elemId = _.last($(elem).attr('id').split('-'));
-        if (!isNaN(parseInt(elemId))) { // unless story is new and not saved yet
+        if (!isNaN(parseInt(elemId, 10))) { // unless story is new and not saved yet
           orderIndexesWithIds[elemId] = index + 1;
         }
       });
-      window.console && console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      if (window.console) { console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds)); }
       this.collection.saveOrder(orderIndexesWithIds);
     }
   }),
@@ -140,7 +141,8 @@ App.Views.Themes = {
 
         var self = this;
         _.each(['.name', '.code'], function(elem) {
-          self.$('.theme-data ' + elem + '>.data, .theme-data ' + elem + '>.data input').live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+          self.$('.theme-data ' + elem + '>.data, .theme-data ' + elem + '>.data input')
+            .live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
         });
         this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
       } else {
@@ -159,7 +161,7 @@ App.Views.Themes = {
         if (fieldId == 'code') { // code needs updating of story views
           show_view.model.Stories().each(function(story, index) {
             story.trigger('change:unique_id'); // trigger unique ID change so field is updated
-          })
+          });
         }
         return (newVal);
       };
@@ -182,7 +184,7 @@ App.Views.Themes = {
           // Behaviour for Theme view
           if (!event.shiftKey) { // going -->
             // currently on theme name field
-            var storyElem = $(this.el).find('li.story:first-child')
+            var storyElem = $(this.el).find('li.story:first-child');
             if (storyElem.length) {
               // move to story item
               storyElem.find('.unique-id .data').click();
@@ -223,7 +225,7 @@ App.Views.Themes = {
           } else { // going <--
             var previous_story = $(this.el).find('ul.stories li.story:last .score-90 .data'); // JQuery bug, :last-child did not work
             if (previous_story.length) {
-              previous_story.click()
+              previous_story.click();
             } else {
               $(this.el).find('>.name .data').click();
             }
@@ -259,11 +261,11 @@ App.Views.Themes = {
       $(dialog_obj).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
       view.model.destroy({
         error: function(model, response) {
-          var errorMessage = 'Unable to delete story...'
+          var errorMessage = 'Unable to delete story...';
           try {
-            errorMessage = eval('responseText = ' + response.responseText).message;
-          } catch (e) { window.console && console.log(e); }
-          new App.Views.Error({ message: errorMessage});
+            errorMessage = $.parseJSON(response.responseText).message;
+          } catch (e) { if (window.console) { console.log(e); } }
+          var errorView = new App.Views.Error({ message: errorMessage});
           $(dialog_obj).dialog("close"); // hide the dialog
         },
         success: function(model, response) {
@@ -276,7 +278,7 @@ App.Views.Themes = {
     },
 
     updateStatistics: function() {
-      this.$('.theme-stats div').html( JST['themes/stats']({ model: this.model }) )
+      this.$('.theme-stats div').html( JST['themes/stats']({ model: this.model }) );
     },
 
     reNumberStories: function(event) {
@@ -311,7 +313,7 @@ App.Views.Themes = {
           $(dialog).dialog("close");
         },
         error: function() {
-          new App.Views.Error({ message: 'Server error trying to renumber stories'});
+          var errorView = new App.Views.Error({ message: 'Server error trying to renumber stories'});
           $(dialog).dialog("close");
         }
       });

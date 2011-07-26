@@ -1,11 +1,13 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, AcceptanceCriterion:false */
+
 App.Views.AcceptanceCriteria = {
   Index: Backbone.View.extend({
     tagName: 'div',
     className: 'acceptance-criteria',
-    childId: function(model) { return 'acceptance-criteria-' + model.get('id') },
+    childId: function(model) { return 'acceptance-criteria-' + model.get('id'); },
 
     events: {
-      "click .actions a.new-acceptance-criterion": "createNew",
+      "click .actions a.new-acceptance-criterion": "createNew"
     },
 
     initialize: function() {
@@ -20,7 +22,7 @@ App.Views.AcceptanceCriteria = {
       this.collection.each(function(model) {
         var view = new App.Views.AcceptanceCriteria.Show({ model: model, id: parentView.childId(model), parentView: parentView });
         parentView.$('ul').append(view.render().el);
-      })
+      });
 
       if (this.collection.story.IsEditable()) {
         this.$('ul').append(JST['acceptance_criteria/new']());
@@ -51,7 +53,7 @@ App.Views.AcceptanceCriteria = {
       this.collection.add(model);
       var newElem = new App.Views.AcceptanceCriteria.Show({ model: model, parentView: this }).render().el;
 
-      if ( (lastCriterion.find('.data textarea').length) && (lastCriterion.find('.data textarea').val() == '') ) {
+      if ( (lastCriterion.find('.data textarea').length) && (lastCriterion.find('.data textarea').val() === '') ) {
         // we have to delay this because we have to wait for the empty item which has lost focus to dissapear
         _.delay(function() {
           this_view.$('ul li:last').before(newElem);
@@ -74,7 +76,7 @@ App.Views.AcceptanceCriteria = {
         var elemId = _.last($(elem).attr('id').split('-'));
         orderIndexesWithIds[elemId] = index + 1;
       });
-      window.console && console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      if (window.console) { console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds)); }
       this.collection.saveOrder(orderIndexesWithIds);
       this.displayOrderIndexes();
     },
@@ -130,16 +132,16 @@ App.Views.AcceptanceCriteria = {
             } else {
               ac_view.model.destroy({
                 error: function(model, response) {
-                  var errorMessage = 'Unable to delete story...  Please refresh.'
+                  var errorMessage = 'Unable to delete story...  Please refresh.';
                   try {
-                    errorMessage = eval('responseText = ' + response.responseText).message;
-                  } catch (e) { window.console && console.log(e); }
-                  new App.Views.Error({ message: errorMessage});
+                    errorMessage = $.parseJSON(response.responseText).message;
+                  } catch (e) { if (window.console) { console.log(e); } }
+                  var errorView = new App.Views.Error({ message: errorMessage});
                 }
               });
-            };
+            }
             ac_view.parentView.displayOrderIndexes();
-          })
+          });
         } else {
           return ac_view.contentUpdated(newVal, arguments[1], this);
         }
@@ -165,7 +167,7 @@ App.Views.AcceptanceCriteria = {
             // move to next item
             liElem.next().find('.data').click();
           } else {
-            if ($.trim(this.$('textarea').val()) == '') // current last criterion is empty
+            if ($.trim(this.$('textarea').val()) === '') // current last criterion is empty
             {
               // move back to comments field
               $(this.el).parents('li.story').find('div.comments .data').click();

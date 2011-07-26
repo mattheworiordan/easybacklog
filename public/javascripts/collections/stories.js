@@ -1,10 +1,12 @@
+/*global Backbone:false, $:false, _:false, JST:false, Story:false, App:false */
+
 var StoriesCollection = Backbone.Collection.extend({
   model: Story,
   theme: null,
 
   url: function() {
     if ( !this.theme || !this.theme.get('id') ) {
-      new App.Views.Error('Error, missing necessary data ID to display Story');
+      var errorView = new App.Views.Error('Error, missing necessary data ID to display Story');
     } else {
       return '/themes/' + this.theme.get('id') + '/stories';
     }

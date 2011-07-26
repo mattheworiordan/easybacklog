@@ -1,4 +1,4 @@
-/*global $, _, App, event, JST, Backbone, Story */ // for jslint.com
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, htmlEncode:false */
 
 App.Views.Backlogs = {
   Show: App.Views.BaseView.extend({
@@ -28,7 +28,8 @@ App.Views.Backlogs = {
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
 
-        $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+        // make all input and textarea fields respond to Tab/Enter
+        $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent);
 
         var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
         if (firstEditableElem.length) {
@@ -48,19 +49,27 @@ App.Views.Backlogs = {
       var show_view = this;
       var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); };
       var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, lesswidth: -20, maxLength: 100, style: 'margin-top: -3px' });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
+        data: beforeChangeFunc, lesswidth: -20, maxLength: 100, style: 'margin-top: -3px'
+      });
       // for rate we need to drop the locale formatted rate and use rate as a numeric
       var previousRateFormatted, previousRate;
-      var beforeRateChangeFunc = function(value, settings) { previousRateFormatted = value; previousRate = show_view.model.get('rate'); return show_view.beforeChange(previousRate, settings, this); }
+      var beforeRateChangeFunc = function(value, settings) {
+        previousRateFormatted = value;
+        previousRate = show_view.model.get('rate');
+        return show_view.beforeChange(previousRate, settings, this);
+      };
       var rateUpdatedFunc = function(value, settings) {
         if (previousRate == value) { // no change to rate, so revert back to formatted rate
-          _.delay(function() { show_view.changeEvent('change:rate_formatted') }, 100);
+          _.delay(function() { show_view.changeEvent('change:rate_formatted'); }, 100);
         }
         return show_view.contentUpdated(value, settings, this);
       };
 
       $('#backlog-data-area h2.name .data, #backlog-data-area #backlog-velocity .data').editable(contentUpdatedFunc, defaultOptions);
-      $('#backlog-data-area #backlog-rate .data').editable(rateUpdatedFunc, _.extend(_.clone(defaultOptions), { data: beforeRateChangeFunc }));
+      $('#backlog-data-area #backlog-rate .data').editable(rateUpdatedFunc, _.extend(_.clone(defaultOptions), {
+        data: beforeRateChangeFunc
+      }));
     },
 
     changeEvent: function(eventName, model) {
@@ -76,7 +85,7 @@ App.Views.Backlogs = {
     },
 
     updateStatistics: function() {
-      $('#backlog-data-area .backlog-stats div.output').html( JST['backlogs/stats']({ model: this.model }) )
+      $('#backlog-data-area .backlog-stats div.output').html( JST['backlogs/stats']({ model: this.model }) );
     },
 
     // Tab or Enter key pressed so let's move on
@@ -97,7 +106,7 @@ App.Views.Backlogs = {
         } else {
           // there are no further items so focus on title if not on title
           if (!$(event.target).parents('h2.name').is('h2')) {
-            $('#backlog-data-area h2.name>div.data').click()
+            $('#backlog-data-area h2.name>div.data').click();
           } else {
             // nothing higher, focus on last button
             $('li:last a:last').focus();
@@ -128,9 +137,8 @@ App.Views.Backlogs = {
 
             // download the PDF in the background
             var printUrl = $(event.target).attr('href');
-            printUrl += '?print_scope=' + $(this).find('#print-scope option:selected').attr('id')
-              + '&page_size=' + page_size
-              + '&fold_side=' + fold_side;
+            printUrl += '?print_scope=' + $(this).find('#print-scope option:selected').attr('id') +
+              '&page_size=' + page_size + '&fold_side=' + fold_side;
             document.location.href = printUrl;
 
             // update the dialog to say we're updating and then close after a short period
@@ -163,7 +171,7 @@ App.Views.Backlogs = {
           'Create Snapshot': function() {
             // create snapshot on server by posting a request
             var name = $(this).find('input[type=text]').val();
-            if ($.trim(name) == '') {
+            if ($.trim(name) === '') {
               $(this).find('div.progress-area label').text('You must name your snapshot to continue.');
               $(this).find('div.progress-area').addClass('field_with_errors').find('input[type=text]').focus();
             } else {
@@ -172,13 +180,14 @@ App.Views.Backlogs = {
                 csrf_token = $('meta[name=csrf-token]').attr('content'),
                 csrf_param = $('meta[name=csrf-param]').attr('content'),
                 form = $('<form method="post" action="' + href + '"></form>');
-              fields = '<input name="' + csrf_param + '" value="' + csrf_token + '" type="hidden" />';
-              fields += '<input name="name" value="' + htmlEncode(name) + '" type="hidden" />';
+              var fields = '<input name="' + csrf_param + '" value="' + csrf_token + '" type="hidden" />' +
+                '<input name="name" value="' + htmlEncode(name) + '" type="hidden" />';
               form.hide().append(fields).appendTo('body');
               form.submit();
 
               // update the dialog to say we're updating and then close after a short period
-              $(this).find('div.progress-area').html('Please wait, we\'re creating your snapshot...<br /><br /><span class="progress-icon"></span>');
+              $(this).find('div.progress-area').html('Please wait, we\'re creating your snapshot...<br /><br />' +
+                '<span class="progress-icon"></span>');
               $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
               $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
               var dialog = this;
@@ -227,11 +236,13 @@ App.Views.Backlogs = {
             var base = $(this).find('select#base-snapshot').val();
             var target = $(this).find('select#target-snapshot').val();
             if (base == target) {
-              $(this).find('div.error-message').html('<p><span class="error-alert ui-icon ui-icon-alert"></span>You cannot compare the same snapshots.  Please make another selection.</p>');
+              $(this).find('div.error-message').html('<p><span class="error-alert ui-icon ui-icon-alert"></span>' +
+                'You cannot compare the same snapshots.  Please make another selection.</p>');
             } else {
               var baseUrl = document.location.pathname.match(/^\/companies\/\d+\/backlogs/i)[0];
               var backlogId = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/(\d+)/i)[1];
-              window.open(baseUrl + '/compare/' + (base.match(/^\d+$/) ? base : backlogId) + '/' + (target.match(/^\d+$/) ? target : backlogId), '_newtab' + Math.floor(Math.random()*10000));
+              window.open(baseUrl + '/compare/' + (base.match(/^\d+$/) ? base : backlogId) + '/' + (target.match(/^\d+$/) ? target : backlogId),
+                '_newtab' + Math.floor(Math.random()*10000));
               $(this).dialog("close");
             }
           },
@@ -241,6 +252,6 @@ App.Views.Backlogs = {
           }
         }
       });
-    },
+    }
   })
 };

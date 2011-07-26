@@ -1,3 +1,5 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
+
 $(document).ready(function(event) {
   // Excel doesn't recognise background colors so we set foreground & background to orange
   // and reinstate foreground with JavaScript
@@ -20,4 +22,4 @@ $(document).ready(function(event) {
   $('a#help').click(function(event) {
     event.preventDefault();
   });
-})
+});

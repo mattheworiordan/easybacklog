@@ -1,3 +1,5 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
+
 App.Views.BaseView = Backbone.View.extend({
   defaultEditableOptions: {
     onblur: 'submit',
@@ -43,7 +45,7 @@ App.Views.BaseView = Backbone.View.extend({
     var view = this;
 
     if (value != beforeChangeValue) {
-      window.console && console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value);
+      if (window.console) { console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value); }
       var attributes = {};
       attributes[fieldId] = value;
       this.model.set(attributes);
@@ -54,11 +56,11 @@ App.Views.BaseView = Backbone.View.extend({
       var saveModelFunc = function() {
         this_model.save({}, {
           error: function(model, response) {
-            var errorMessage = 'Unable to save changes...'
+            var errorMessage = 'Unable to save changes...';
             try {
-              errorMessage = eval('responseText = ' + response.responseText).message;
-            } catch (e) { window.console && console.log(e); }
-            new App.Views.Error({ message: errorMessage});
+              errorMessage = $.parseJSON(response.responseText).message;
+            } catch (e) { if(window.console) { console.log(e); } }
+            var errorView = new App.Views.Error({ message: errorMessage});
             // exception to deal with unique-id showing code from parent model in value
             fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
             var valBack = {};
@@ -67,11 +69,11 @@ App.Views.BaseView = Backbone.View.extend({
             if (fieldId == 'code') { // Theme: code has reverted so update code to old code in all children stories
               view.model.Stories().each(function(story, index) {
                 story.trigger('change:unique_id'); // trigger unique ID change so field is updated
-              })
+              });
             }
           }
         });
-      }
+      };
       // allow an event to be fired before saving the model to allow for any last minute changes
       if (this.model.beforeSave) {
         this.model.beforeSave(saveModelFunc);
@@ -89,7 +91,8 @@ App.Views.BaseView = Backbone.View.extend({
 
     if (view.model.isNew()) { // not saved to server yet
       view.model.collection.remove(view.model);
-      $(view.el).slideUp('fast', function() { $(view.el).remove() }); // remove HTML for story, had to animate & delay, some strange issue where page was reloading
+      // remove HTML for story, had to animate & delay, some strange issue where page was reloading
+      $(view.el).slideUp('fast', function() { $(view.el).remove(); });
     } else {
       $('#dialog-delete').remove(); // ensure old dialog HTML is not still in the DOM
       $('body').append(JST[this.deleteDialogTemplate]({ model: this.model }));

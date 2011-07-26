@@ -1,3 +1,5 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
+
 $(document).ready(function() {
   // standard user rules
   var rules = {

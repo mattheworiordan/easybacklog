@@ -1,7 +1,9 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, StoriesCollection:false */
+
 var Theme = Backbone.Model.extend({
   // access to stories child collection
   Stories: function() {
-    if (this._stories == null) {
+    if (!this._stories) {
       this._stories = new StoriesCollection(this.get('stories'), { theme: this });
       this.unset('stories'); // clear from object as it will be sent back to the server adding to the payload
     }
@@ -29,7 +31,7 @@ var Theme = Backbone.Model.extend({
         options.success(theme, response);
       }
     }).error(function(event, response) {
-      window.console && console.log('Renumber stories failed');
+      if (window.console) { console.log('Renumber stories failed'); }
       if (_.isFunction(options.error)) {
         // callback for error
         options.error(theme, response);

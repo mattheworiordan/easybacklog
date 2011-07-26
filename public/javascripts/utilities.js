@@ -1,6 +1,9 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
+
 // Credit to http://www.mredkj.com/javascript/numberFormat.html
 function addCommas(nStr)
 {
+  var x, x1, x2;
   nStr += '';
   x = nStr.split('.');
   x1 = x[0];

@@ -1,8 +1,11 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, Story:false, multiLineHtmlEncode:false,
+  AcceptanceCriterion:false */
+
 App.Views.Stories = {
   Index: Backbone.View.extend({
     tagName: 'div',
     className: 'stories',
-    childId: function(model) { return 'story-' + model.get('id') },
+    childId: function(model) { return 'story-' + model.get('id'); },
 
     events: {
       "click ul.stories .actions a.new-story": "createNew",
@@ -34,7 +37,8 @@ App.Views.Stories = {
             actionsElem = view.$('ul.stories>.actions').clone();
             view.$('ul.stories>.actions').remove();
             view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
-            // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip won't do anything until dragging is over
+            // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip
+            //  won't do anything until dragging is over
             $('#vtip').remove();
             view.$('.move-story.vtipActive').mouseleave();
             view.$('.move-story').removeClass('vtip');
@@ -106,11 +110,11 @@ App.Views.Stories = {
       var orderIndexesWithIds = {};
       this.$('li.story').each(function(index, elem) {
         var elemId = _.last($(elem).attr('id').split('-'));
-        if (!isNaN(parseInt(elemId))) { // unless story is new and not saved yet
+        if (!isNaN(parseInt(elemId, 10))) { // unless story is new and not saved yet
           orderIndexesWithIds[elemId] = index + 1;
         }
       });
-      window.console && console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds));
+      if (window.console) { console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds)); }
       this.collection.saveOrder(orderIndexesWithIds);
     }
   }),
@@ -141,7 +145,8 @@ App.Views.Stories = {
         // make all input and textarea fields respond to Tab/Enter
         var show_view = this;
         var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
-        _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent); });
+        _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input')
+          .live('keydown', show_view.navigateEvent); });
 
         this.$('.move-story a').mousedown(function(event) {
           App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
@@ -165,23 +170,29 @@ App.Views.Stories = {
       }
       if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
 
-      return (this);
+      return this;
     },
 
     makeFieldsEditable: function() {
       var show_view = this;
-      var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); }
-      var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); }
+      var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); };
+      var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
       // for unique ID, we need to remove the code before editing and insert back in after editing
-      var uniqueIdContentUpdatedFunc = function(value, settings) { return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value, settings)); }
-      var uniqueIdBeforeChangeFunc = function(value, settings) { return beforeChangeFunc.call(this, value.substring(3), settings); }
+      var uniqueIdContentUpdatedFunc = function(value, settings) {
+        return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value, settings));
+      };
+      var uniqueIdBeforeChangeFunc = function(value, settings) {
+        return beforeChangeFunc.call(this, value.substring(3), settings);
+      };
       var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
       this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 2 }) );
-      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { type: 'textarea', saveonenterkeypress: true, autoResize: true } ) );
+      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), {
+        type: 'textarea', saveonenterkeypress: true, autoResize: true
+      } ) );
 
       // callback to get a list of all as_a values for autocomplete
       var autoCompleteData = function() {
@@ -190,12 +201,20 @@ App.Views.Stories = {
           asAValues = asAValues.concat(theme.Stories().pluck('as_a'));
         });
         return _.uniq(_.compact(asAValues)).sort();
-      }
+      };
+
       // make the user story fields less wide so they fit with the heading
       _.each(['as-a','i-want-to','so-i-can'], function(elem) {
         _.defer(function() { // wait until elements have rendered
           var width = show_view.$('>div.user-story .' + elem + ' .heading').outerWidth() + 10;
-          var options = _.extend(_.clone(defaultOptions), { type: (elem == 'as-a' ? 'text' : 'textarea'), maxLength: (elem == 'as-a' ? 100 : 2040), saveonenterkeypress: true, lesswidth: width, autoResize: true, autoComplete: autoCompleteData });
+          var options = _.extend(_.clone(defaultOptions), {
+            type: (elem == 'as-a' ? 'text' : 'textarea'),
+            maxLength: (elem == 'as-a' ? 100 : 2040),
+            saveonenterkeypress: true,
+            lesswidth: width,
+            autoResize: true,
+            autoComplete: autoCompleteData
+          });
           show_view.$('>div.user-story .' + elem + ' .data').editable(contentUpdatedFunc, options);
         });
       });
@@ -203,7 +222,8 @@ App.Views.Stories = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      var isInput = $(event.target).is('input'); // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
+      // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
+      var isInput = $(event.target).is('input');
       if (_.include([9,13,27], event.keyCode) && (!event.ctrlKey || isInput) ) { // tab, enter, esc
         $(event.target).blur();
         try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
@@ -246,7 +266,7 @@ App.Views.Stories = {
             if (dataElem != _.first(viewElements)) {
               // move to previous element
               var previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
-              if (previousSelector.indexOf('acceptance-criteria') == 0) {
+              if (previousSelector.indexOf('acceptance-criteria') === 0) {
                 // exception, we need to move to acceptance criteria
                 var lastCriterion = this.$('.acceptance-criteria ul.acceptance-criteria li.criterion:last>*');
                 if (lastCriterion.length) {
@@ -275,13 +295,15 @@ App.Views.Stories = {
     },
 
     changeEvent: function(eventName, model) {
+      var newValue;
+
       // only update specific field changes and ignore acceptance criteria as changes are made in that view and model
-      if ( (eventName.substring(0,7) == 'change:') && (eventName != 'change:acceptance_criteria') ) {
+      if ( (eventName.substring(0,7) === 'change:') && (eventName !== 'change:acceptance_criteria') ) {
         var fieldChanged = eventName.substring(7);
-        var newValue = this.model.get(fieldChanged);
-        if (fieldChanged == 'unique_id') {
+        newValue = this.model.get(fieldChanged);
+        if (fieldChanged === 'unique_id') {
           // check if field is being edited as we tab straight from code to unique_id
-          if (this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').length == 0)
+          if (this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').length === 0)
           {
             // unique_id is not being edited so updated with new value
             newValue = this.model.Theme().get('code') + newValue;
@@ -291,8 +313,8 @@ App.Views.Stories = {
             this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').val(newValue);
           }
         } else if (_.isString(newValue)){
-          var newValue = multiLineHtmlEncode(newValue);
-          if (newValue == '') { newValue = this.defaultEditableOptions.placeholder; } // if empty, put editable placeholder back in field
+          newValue = multiLineHtmlEncode(newValue);
+          if (newValue === '') { newValue = this.defaultEditableOptions.placeholder; } // if empty, put editable placeholder back in field
           this.$('div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(newValue);
         }
         if (eventName == 'change:id') {
@@ -311,11 +333,11 @@ App.Views.Stories = {
       $(dialog_obj).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
       view.model.destroy({
         error: function(model, response) {
-          var errorMessage = 'Unable to delete story...'
+          var errorMessage = 'Unable to delete story...';
           try {
-            errorMessage = eval('responseText = ' + response.responseText).message;
-          } catch (e) { window.console && console.log(e); }
-          new App.Views.Error({ message: errorMessage});
+            errorMessage = $.parseJSON(response.responseText).message;
+          } catch (e) { if (window.console) { console.log(e); } }
+          var errorView = new App.Views.Error({ message: errorMessage});
           $(dialog_obj).dialog("close"); // hide the dialog
         },
         success: function(model, response) {
@@ -329,7 +351,7 @@ App.Views.Stories = {
 
     // user has clicked move so ask them where we are moving to
     moveToThemeDialog: function() {
-      window.console && console.log('Requested to move');
+      if (window.console) { console.log('Requested to move'); }
       var view = this;
       $('#dialog-move-story').remove(); // ensure old dialog HTML is not still in the DOM
       $('body').append(JST['stories/move-dialog']({ story: this.model, themes: this.model.Theme().Backlog().Themes() }));
@@ -353,14 +375,14 @@ App.Views.Stories = {
     moveToTheme: function(dialog) {
       var themeId = $(dialog).find('select#theme-target option:selected').attr('id');
       if (themeId != this.model.Theme().get('id')) {
-        window.console && console.log('Moving to theme-' + themeId);
+        if (window.console) { console.log('Moving to theme-' + themeId); }
         $(this.el).insertBefore($('li.theme#theme-' + themeId + ' ul.stories>li:last'));
         this.model.MoveToTheme(themeId, {
           success: function(model, response) {
-            new App.Views.Notice({ message: 'The story was moved successfully.'});
+            var errorView = new App.Views.Notice({ message: 'The story was moved successfully.'});
           },
           error: function() {
-            new App.Views.Error({ message: 'The story move failed.  Please refresh your browser.'});
+            var errorView = new App.Views.Error({ message: 'The story move failed.  Please refresh your browser.'});
           }
         });
       }
@@ -372,7 +394,7 @@ App.Views.Stories = {
     changeColor: function(color, options) {
       var colorWithoutHex = (color.match(/^#/) ? color.substring(1) : color);
       var colorWithHex = '#' + colorWithoutHex;
-      if (colorWithoutHex.toLowerCase() == 'ffffff') { colorWithoutHex = colorWithHex = '' };
+      if (colorWithoutHex.toLowerCase() === 'ffffff') { colorWithoutHex = colorWithHex = ''; }
       $(this.el).css('background-color',colorWithHex);
       if (!options || !options.silent) {
         this.model.set({ color: colorWithoutHex });
@@ -384,8 +406,8 @@ App.Views.Stories = {
     duplicate: function(event) {
       var model = new Story();
       var attributes = _.clone(this.model.attributes);
-      delete attributes['id'];
-      delete attributes['unique_id'];
+      delete attributes.id;
+      delete attributes.unique_id;
       // get the criteria and add to the new model
       this.model.AcceptanceCriteria().each(function(criterion) {
         var crit = new AcceptanceCriterion();
@@ -404,8 +426,8 @@ App.Views.Stories = {
           });
         },
         error: function(model, error) {
-          window.console && console.log(JSON.stringify(error));
-          new App.Views.Error({ message: 'The story could not be copied.  Please refresh your browser.'});
+          if (window.console) { console.log(JSON.stringify(error)); }
+          var errorView = new App.Views.Error({ message: 'The story could not be copied.  Please refresh your browser.'});
         }
       });
       _.delay(function() {

@@ -1,10 +1,12 @@
+/*global Backbone:false, $:false, _:false, JST:false, Backlog:false, App:false */
+
 var BacklogsCollection = Backbone.Collection.extend({
   model: Backlog,
   company_id: null,
 
   url: function() {
     if (!this.company_id) {
-      new App.Views.Error('Error, missing necesary ID to display Backlog');
+      var errorView = new App.Views.Error('Error, missing necesary ID to display Backlog');
     } else {
       return '/companies/' + this.company_id + '/backlogs';
     }

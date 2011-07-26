@@ -1,7 +1,10 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
+
 $(document).ready(function() {
+  var rules = {}; // default: don't need to validate anything as not setting up an account now
   // validation settings if company account being set up at the same time
   if ($('form#user_new input#company_name').length) {
-    var rules = {
+    rules = {
       'company[name]': {
         required: true,
         remote: '/companies/name_available'
@@ -20,8 +23,6 @@ $(document).ready(function() {
         min: 0
       }
     };
-  } else {
-    var rules = {}; // don't need to validate anything as not setting up an account now
   }
 
   // standard user rules

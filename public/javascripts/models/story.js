@@ -1,3 +1,5 @@
+/*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, AcceptanceCriteriaCollection:false */
+
 var Story = Backbone.Model.extend({
   Theme: function() {
     return this.collection.theme;
@@ -10,7 +12,7 @@ var Story = Backbone.Model.extend({
 
   // access to acceptance criteria child collection
   AcceptanceCriteria: function() {
-    if (this._acceptance_criteria == null) {
+    if (!this._acceptance_criteria) {
       this._acceptance_criteria = new AcceptanceCriteriaCollection(this.get('acceptance_criteria'), { story: this });
       this.unset('acceptance_criteria'); // clear from object as it will be sent back to the server adding to the payload
     }
@@ -30,7 +32,7 @@ var Story = Backbone.Model.extend({
         options.success(story, response);
       }
     }).error(function(event, response) {
-      window.console && console.log('Move to theme failed');
+      if (window.console) { console.log('Move to theme failed'); }
       if (_.isFunction(options.error)) {
         // callback for error
         options.error(story, response);

@@ -1,10 +1,12 @@
+/*global Backbone:false, $:false, _:false, JST:false, Theme:false, App:false */
+
 var ThemesCollection = Backbone.Collection.extend({
   model: Theme,
   backlog: null,
 
   url: function() {
     if (!this.backlog) {
-      new App.Views.Error('Error, cannot find Backlog and thus cannot load Theme');
+      var errorView = new App.Views.Error('Error, cannot find Backlog and thus cannot load Theme');
     } else {
       return '/backlogs/' + this.backlog.get('id') + '/themes';
     }

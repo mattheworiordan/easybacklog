@@ -1,3 +1,5 @@
+/*global Backbone:false, $:false, _:false, JST:false */
+
 // MVC namespace for Backbone.js
 var App = {
     Views: {},
@@ -14,12 +16,12 @@ var App = {
       // check if callback for event exists and if so pass on request
       if (eventCallback) { eventCallback.apply(options, arguments); }
       dit.processQueue(); // move onto next save request in the queue
-    }
+    };
   }
   Backbone.Model.prototype._save = Backbone.Model.prototype.save;
   Backbone.Model.prototype.save = function( attrs, options ) {
     if (this.saving) {
-      this.saveQueue = this.saveQueue || new Array();
+      this.saveQueue = this.saveQueue || [];
       this.saveQueue.push({ attrs: _.extend({}, this.attributes, attrs), options: options });
     } else {
       this.saving = true;
@@ -28,7 +30,7 @@ var App = {
       proxyAjaxEvent('error', options, this);
       Backbone.Model.prototype._save.call(this, attrs, options);
     }
-  }
+  };
   Backbone.Model.prototype.processQueue = function() {
     if (this.saveQueue && this.saveQueue.length) {
       var saveArgs = this.saveQueue.shift();
@@ -38,7 +40,7 @@ var App = {
     } else {
       this.saving = false;
     }
-  }
+  };
 })();
 
 $(document).ready(function() {
@@ -55,15 +57,15 @@ $(document).ready(function() {
       confirmationMessage: clickedLink.data('confirm')
     }));
     var actionButton = (title.toLowerCase().indexOf('archive') >= 0 ? 'Archive' : 'Delete');
-    var buttons = {}
+    var buttons = {};
     buttons[actionButton] = function() {
       clickedLink.data('confirm','');
       clickedLink.click();
       $(this).dialog("close");
-    }
-    buttons['Cancel'] = function() {
+    };
+    buttons.Cancel = function() {
       $(this).dialog("close");
-    }
+    };
     $('#dialog-confirm').dialog({
       resizable: false,
       height:140,
@@ -76,6 +78,6 @@ $(document).ready(function() {
   // hide notices & alerts after some time
   var alertNotice = $('#alert-space .notice, #alert-space .error, #alert-space .warning');
   alertNotice.css('display','none').slideDown(function() {
-    _.delay(function() { alertNotice.slideUp() }, 5000);
+    _.delay(function() { alertNotice.slideUp(); }, 5000);
   });
-})
+});
