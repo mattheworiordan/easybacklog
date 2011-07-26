@@ -47,4 +47,5 @@ group :development do
   gem 'heroku_san'
   gem 'ruby_parser' # for Devise generators
   gem 'hpricot' # for Devise generators
+  gem 'jslint_on_rails'
 end
