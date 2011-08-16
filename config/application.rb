@@ -39,6 +39,8 @@ module Ibacklog
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
 
+    config.middleware.use Rack::ForceDomain, ENV["DOMAIN"]
+
     Dir["#{Rails.root}/lib/core_extensions/*.rb"].each { |file| require file }
   end
 end

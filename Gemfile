@@ -16,6 +16,8 @@ gem 'prawn', :git => "git://github.com/sandal/prawn.git", :tag => '0.10.2', :sub
 
 gem 'hoptoad_notifier','>=2.4.8'
 
+gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
+
 group :development, :test, :cucumber do
   # gem 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
