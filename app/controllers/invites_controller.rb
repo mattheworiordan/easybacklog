@@ -1,5 +1,6 @@
 class InvitesController < ApplicationController
   before_filter :set_current_company
+  ssl_required :show, :destroy if use_ssl?
 
   # show represents the action when a user has been sent an invite and is visiting to get access
   def show

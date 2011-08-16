@@ -24,6 +24,6 @@
       .divider
       %div= link_to 'Users', company_users_path(current_company)
   - else
-    %div= link_to 'Sign up', new_user_registration_path
+    %div= link_to 'Sign up', new_user_registration_url(:protocol => link_protocol)
     .divider
-    %div= link_to 'Log in', new_user_session_path
+    %div= link_to 'Log in', new_user_session_url(:protocol => link_protocol)

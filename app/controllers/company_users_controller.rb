@@ -3,6 +3,7 @@
 class CompanyUsersController < ApplicationController
   include CompanyResource
   before_filter :check_company_admin
+  ssl_required :index, :destroy, :create, :update if use_ssl?
 
   def index
     @users = current_company.company_users

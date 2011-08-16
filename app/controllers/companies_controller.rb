@@ -1,5 +1,6 @@
 class CompaniesController < ApplicationController
   before_filter :authenticate_user!, :except => :name_available
+  ssl_required :index, :show, :edit, :new, :create, :update if use_ssl?
 
   def index
     redirect_to company_path(current_user.companies.first) if current_user.companies.length == 1

@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   after_filter :log_last_page_viewed
+  include SslRequirement
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
@@ -50,6 +51,10 @@ class ApplicationController < ActionController::Base
     @current_company && user_signed_in? && !@current_company.company_users.where(:user_id => current_user.id, :admin => true).empty?
   end
   helper_method :is_company_admin?
+
+  def self.use_ssl?
+    !%w(development test cucumber).include?(Rails.env)
+  end
 
   private
     def log_last_page_viewed

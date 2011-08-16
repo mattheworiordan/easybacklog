@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/retr0h/ssl_requirement.git
+  revision: bc96ad96407a72a60e0542cf3b0cecc6ff9e278e
+  specs:
+    ssl_requirement (0.1.0)
+
+GIT
   remote: git://github.com/sandal/prawn.git
   revision: 89ba0ebf7ac3705756330a25ab4c88e4c71e36d8
   tag: 0.10.2
@@ -251,6 +257,7 @@ DEPENDENCIES
   selenium-client
   shoulda-matchers
   sqlite3-ruby
+  ssl_requirement!
   taps (>= 0.3.20)
   timecop
   webrat

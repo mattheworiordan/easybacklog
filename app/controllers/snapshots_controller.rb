@@ -1,6 +1,7 @@
 class SnapshotsController < ApplicationController
   layout false
   before_filter :authenticate_user!
+  ssl_required :compare_snapshots if use_ssl?
 
   def compare_snapshots
     includes = [:themes, { :themes => { :stories => :acceptance_criteria } } ]

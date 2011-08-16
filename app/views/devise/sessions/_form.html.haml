@@ -1,4 +1,4 @@
-= form_for("user", :url => new_user_session_path) do |f|
+= form_for("user", :url => new_user_session_path, :protocol => link_protocol) do |f|
   %p
     = f.label :email
     %br/

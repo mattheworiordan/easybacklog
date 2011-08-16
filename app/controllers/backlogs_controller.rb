@@ -1,6 +1,8 @@
 class BacklogsController < ApplicationController
   include CompanyResource
   after_filter :update_backlog_metadata, :only => [:update]
+  ssl_required :show, :new, :create, :archive, :show_snapshot, :recover_from_archive,
+    :archives_index, :create_snapshot, :destroy, :backlog_json, :duplicate if use_ssl?
   BACKLOG_INCLUDES = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
 
   def show

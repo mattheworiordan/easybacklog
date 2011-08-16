@@ -35,8 +35,6 @@ Ibacklog::Application.routes.draw do
     end
   end
 
-  get '/users/email_available' => 'devise/users#email_available'
-
   resources :backlogs, :only => [:show] do
     resources :themes do
       member do
@@ -55,6 +53,7 @@ Ibacklog::Application.routes.draw do
     resources :acceptance_criteria
   end
 
+  get '/users/email_available' => 'devise/users#email_available'
   get '/contact' => 'pages#contact', :as => 'contact'
   get '/raise-error' => 'pages#raise_error'
 

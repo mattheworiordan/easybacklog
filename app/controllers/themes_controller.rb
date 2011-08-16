@@ -1,6 +1,7 @@
 class ThemesController < ApplicationController
   before_filter :authenticate_user!, :set_backlog_and_protect
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
+  ssl_required :index, :show, :new, :create, :update, :destroy, :re_number_stories if use_ssl?
 
   def index
     @themes = @backlog.themes.find(:all, :include => [:stories, { :stories => :acceptance_criteria } ])
