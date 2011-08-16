@@ -6,3 +6,4 @@ tmp/*
 TODO.rb
 *.log
 public/test-*.*
+*.dat
