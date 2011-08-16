@@ -41,14 +41,6 @@ class BacklogsController < ApplicationController
     redirect_to company_path(current_company)
   end
 
-  # put action to archive a backlog
-  def archive
-    @backlog = current_company.backlogs.find(params[:id])
-    @backlog.mark_archived
-    flash[:notice] = "#{@backlog.name} archived"
-    redirect_to company_path(current_company)
-  end
-
   # put action to recover from archive
   def recover_from_archive
     @backlog = current_company.backlogs.find(params[:id])
