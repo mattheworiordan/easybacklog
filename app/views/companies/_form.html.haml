@@ -1,22 +1,20 @@
-= f.label :name, "Name"
+= f.label :name, "Account Name"
 .input-row
   = f.text_field :name
-.form-hint
-  Typically this will be your company name
 
-= f.label :locale_id, "The account locality", :class => 'spacer'
+= f.label :locale_id, "What is your preferred language setting?", :class => 'spacer'
 .input-row
   = select(:company, "locale_id", [[ 'Select a locale...', nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
 .form-hint
   We use this to ensure currency amounts and formatting is accurate to your locality.
 
-= f.label :default_rate, "Default rate", :class => 'spacer'
+= f.label :default_rate, "Default day rate", :class => 'spacer'
 .input-row
   = f.text_field :default_rate
 .form-hint
   The rate per day you charge (do not use a currency symbol i.e. enter 800 for $800 per day)
 
-= f.label :default_velocity, "Default velocity", :class => 'spacer'
+= f.label :default_velocity, "Default velocity achieved per day", :class => 'spacer'
 .input-row
   = f.text_field :default_velocity
 .form-hint

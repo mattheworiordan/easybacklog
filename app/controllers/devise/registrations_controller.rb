@@ -23,8 +23,9 @@ class Devise::RegistrationsController < ApplicationController
 
     if resource.save && (@company.blank? || @company.valid?)
       @company.add_first_user resource unless @company.blank?
-      set_flash_message :notice, :signed_up
-      sign_in_and_redirect(resource_name, resource)
+      flash[:notice] = 'Your new account has been created for you'
+      sign_in(resource_name, resource)
+      redirect_to company_path(@company || resource.companies.first)
     else
       unless @company.blank?
         # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id

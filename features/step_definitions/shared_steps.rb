@@ -5,19 +5,27 @@ Then /^(?:|I )should see the page title "([^\"]*)"$/ do |title|
 end
 
 Then /^(?:|I )should (|not )see the following error messages:$/ do |negation, error_messages|
-  with_scope(".form_errors") do |content|
-    error_messages.raw.flatten.each do |error_message|
+  error_messages.raw.flatten.each do |error_message|
+    failed = false
+    passed = false
+    all(:css, ".form_errors").each do |content|
       if negation.strip == "not"
-        page.should_not have_content(error_message)
+        failed = true if content.has_content?(error_message)
       else
-        page.should have_content(error_message)
+        passed = true if content.has_content?(error_message)
       end
+    end
+    if negation.strip == "not" && failed
+      raise "Error message \"#{error_message}\" was found in error messages."
+    elsif negation.strip != "not" && !passed
+      raise "Error message \"#{error_message}\" was not found in error messages."
     end
   end
 end
 
-Then /^(?:|I )should (|not )see the (notice|alert) "([^"]+)"$/ do |negation, notice_alert, message|
-  with_scope("#alert-space .#{notice_alert}") do |content|
+Then /^(?:|I )should (|not )see the (notice|alert|error) "([^"]+)"$/ do |negation, notice_alert, message|
+  notice_alert = 'error' if notice_alert == 'alert' # errors and alerts are stored in the same .error class
+  within("#alert-space .#{notice_alert}") do |content|
     if negation.strip == "not"
       page.should_not have_content(message)
     else

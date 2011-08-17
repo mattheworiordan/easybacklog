@@ -1037,14 +1037,19 @@ table.users, table.invites {
     color: #666; }
 
 /* Sign up for a new account & register in same action page */
-#sign-up .data-area, #invite .data-area {
-  padding: 4px 0 20px 4px; }
-  #sign-up .data-area.no-padding, #invite .data-area.no-padding {
-    padding-bottom: 0; }
-#sign-up input[type=text], #sign-up input[type=password], #invite input[type=text], #invite input[type=password] {
-  width: 15em; }
-#sign-up input[type=text]#account_default_rate, #sign-up input[type=text]#account_default_velocity, #invite input[type=text]#account_default_rate, #invite input[type=text]#account_default_velocity {
-  width: 6em; }
+#sign-up, #invite {
+  padding-top: 1em; }
+  #sign-up .data-area, #invite .data-area {
+    padding: 4px 0 20px 4px; }
+    #sign-up .data-area.no-padding, #invite .data-area.no-padding {
+      padding-bottom: 0; }
+  #sign-up input[type=text], #sign-up input[type=password], #invite input[type=text], #invite input[type=password] {
+    width: 15em; }
+  #sign-up input[type=text]#account_default_rate, #sign-up input[type=text]#account_default_velocity, #invite input[type=text]#account_default_rate, #invite input[type=text]#account_default_velocity {
+    width: 6em; }
+  #sign-up #company_name, #invite #company_name {
+    font-size: 1.3em;
+    font-weight: bold; }
 
 #invite label.error {
   position: absolute;

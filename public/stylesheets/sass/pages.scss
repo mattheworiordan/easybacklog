@@ -118,6 +118,7 @@ table.users, table.invites {
 
 /* Sign up for a new account & register in same action page */
 #sign-up, #invite {
+  padding-top: 1em;
   .data-area {
     padding: 4px 0 20px 4px;
     &.no-padding {
@@ -129,6 +130,10 @@ table.users, table.invites {
   }
   input[type=text]#account_default_rate, input[type=text]#account_default_velocity {
     width: 6em;
+  }
+  #company_name {
+    font-size: 1.3em;
+    font-weight: bold;
   }
 }
 #invite {
