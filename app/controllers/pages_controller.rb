@@ -16,7 +16,7 @@ class PagesController < ApplicationController
     raise "Intentional error thrown"
   end
 
-  # override ssl_require
+  # override ssl_required
   def ssl_required?
     user_signed_in? && self.class.use_ssl?
   end
