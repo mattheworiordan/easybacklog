@@ -34,6 +34,13 @@ Then /^(?:|I )should (|not )see the (notice|alert|error) "([^"]+)"$/ do |negatio
   end
 end
 
+Then /^"([^"]*)"(?: within "([^"]*)")? should be selected for "([^"]*)"$/ do |field, selector, value|
+  with_scope(selector) do
+    field = find_field(field)
+    field.find(:xpath, ".//option[@selected = 'selected'][text() = '#{value}']").should be_present
+  end
+end
+
 # Webrat relies on the onclick attribute to "fake" HTTP request's
 # method, so it cannot cope with the new Ruby on Rails 3's style
 # which uses unobtrusive JavaScript and HTML5 data attributes.
