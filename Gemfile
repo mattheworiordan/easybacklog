@@ -1,17 +1,14 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.3'
-
 gem 'sqlite3-ruby', :require => 'sqlite3'
-
 gem 'haml'
 
 gem 'devise'
-
 gem 'acts_as_list' # orderable items
-
 gem 'jammit'
 
+# pdf generation
 gem 'prawn', :git => "git://github.com/sandal/prawn.git", :tag => '0.10.2', :submodules => true
 
 gem 'hoptoad_notifier','>=2.4.8'
@@ -36,9 +33,9 @@ group :test, :cucumber do
   gem 'autotest-rails'
   gem 'database_cleaner'
   gem 'capybara'
-  gem 'culerity'
   gem 'Selenium'
   gem 'selenium-client'
+  gem 'capybara-webkit'
   gem 'timecop'
 end
 
