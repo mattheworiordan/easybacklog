@@ -10,10 +10,14 @@
       %div Acceptance Criteria
     .comments
       %div Comments
-    .score-50
-      %div 50
-    .score-90
-      %div 90
+    - if use_50_90
+      .score-50
+        %div 50
+      .score-90
+        %div 90
+    - else
+      .score
+        %div Score
     .cost-formatted
       %div Cost
     .days-formatted

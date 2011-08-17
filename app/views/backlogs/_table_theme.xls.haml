@@ -2,22 +2,22 @@
   - if theme.stories.empty?
     %td{ :rowspan => 2, :valign => 'top' }
       = theme.name
-    %td{ :colspan => 8 }   
+    %td{ :colspan => total_columns - 1 }
       &nbsp;
   - else
     %td{ :rowspan => theme.stories.count + 1, :valign => 'top' }
       %b= theme.name
-    = render :partial => 'table_story', :locals => { :story => theme.stories.first }
+    = render :partial => 'table_story', :locals => { :story => theme.stories.first, :use_50_90 => use_50_90 }
     - theme.stories[1..-1].each do |story|
       %tr
-        = render :partial => 'table_story', :locals => { :story => story }
+        = render :partial => 'table_story', :locals => { :story => story, :use_50_90 => use_50_90 }
 %tr
-  %td{:colspan => 4, :valign => 'top', :align => 'left', :bgcolor => '#DDDDDD'}
+  %td{:colspan => 3, :valign => 'top', :align => 'left', :bgcolor => '#DDDDDD'}
     = "Total for theme '#{theme.name}'"
-  %td{:bgcolor => '#DDDDDD', :colspan => 4, :align => 'right' }
+  %td{:bgcolor => '#DDDDDD', :colspan => total_columns - 4, :align => 'right' }
     %b
       = "#{format('%0.1f', theme.points)} points"
       = "/ #{theme.cost_formatted}"
       = "/ #{theme.days_formatted} days"
 %tr
-  %td{:colspan => 8, :height => 5}
+  %td{:colspan => total_columns, :height => 5}

@@ -5,20 +5,21 @@ class StoriesController < ApplicationController
 
   def index
     @stories = @theme.stories.find(:all, :include => [:acceptance_criteria])
-    render :json => @stories.to_json(:include => [:acceptance_criteria])
+    render :json => @stories.to_json(:include => [:acceptance_criteria], :methods => [:score])
   end
 
   def show
     @story = @theme.stories.find(params[:id])
-    render :json => @story
+    render :json => @story.to_json(:methods => [:score])
   end
 
   def new
     @story = @theme.stories.new
-    render :json => @story
+    render :json => @story.to_json(:methods => [:score])
   end
 
   def create
+    config_score_params params
     @story = @theme.stories.new(params)
     if @story.save
       render :json => story_json
@@ -28,6 +29,7 @@ class StoriesController < ApplicationController
   end
 
   def update
+    config_score_params params
     @story = @theme.stories.find(params[:id])
     @story.update_attributes params
     if @story.save
@@ -72,10 +74,23 @@ class StoriesController < ApplicationController
     end
 
     def story_json()
-      @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted], :except => [:updated_at, :created_at])
+      @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted, :score], :except => [:updated_at, :created_at])
     end
 
     def update_backlog_metadata
       @theme.backlog.update_meta_data current_user
+    end
+
+    # depending on whether we are using the 50/90 rule or the straight scoring system
+    # we need to remove unnecessary params as updates can conflict i.e. updating score
+    # will in turn update the 50/90 values
+    def config_score_params(params)
+      # if we're not using the 50/90 method, ignore the 50/90 values as they are set by score
+      if params.include?(:score) && !@theme.backlog.use_50_90?
+        params.delete(:score_50)
+        params.delete(:score_90)
+      else
+        params.delete(:score)
+      end
     end
 end

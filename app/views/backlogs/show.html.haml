@@ -53,7 +53,7 @@
       .data= @backlog.velocity
 
 #backlog-container
-  = render :partial => 'themes_container'
+  = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
 
 #loading-new-snapshot
   %div.background.ui-widget-overlay

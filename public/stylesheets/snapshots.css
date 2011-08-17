@@ -337,6 +337,8 @@ label.correct:before {
 
 .input-row {
   clear: left; }
+  .input-row.for-check-box {
+    padding-top: 1em; }
 
 .small {
   display: inline;

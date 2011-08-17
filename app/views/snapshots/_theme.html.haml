@@ -12,7 +12,7 @@
       %b= color_text(theme, :name, theme.target.name)
       = color_text(theme, :code, "(Code: #{theme.target.code})")
 - theme.stories.each do |story|
-  = render :partial => 'story', :locals => { :columns => columns, :story => story, :position => 'left' }
+  = render :partial => 'story', :locals => { :columns => columns, :story => story, :position => 'left', :use_50_90 => use_50_90 }
 %tr{ :bgcolor => '#EEEEEE' }
   %td{ :colspan => columns, :align => 'right', :style => 'border-right: 1px solid #AAA;' }
     - if theme.base.blank?

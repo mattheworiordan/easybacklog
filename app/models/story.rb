@@ -12,7 +12,7 @@ class Story < ActiveRecord::Base
 
   before_save :assign_unique_id
 
-  attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color
+  attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :score, :position, :color
 
   before_save :check_can_modify
 
@@ -53,6 +53,16 @@ class Story < ActiveRecord::Base
     else
       (score_90 - score_50)
     end
+  end
+
+  # simply returns score 90 for cases when 50/90 rule is not used
+  def score
+    score_90
+  end
+
+  def score=(val)
+    self.score_90 = val
+    self.score_50 = val
   end
 
   private

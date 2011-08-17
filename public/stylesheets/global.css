@@ -337,6 +337,8 @@ label.correct:before {
 
 .input-row {
   clear: left; }
+  .input-row.for-check-box {
+    padding-top: 1em; }
 
 .small {
   display: inline;
@@ -573,6 +575,16 @@ section.for-backlog section.main-content-pod {
       #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
         padding: 3px 3px 1px 5px;
         border-right: 1px solid white; }
+    #themes-header .columns .score {
+      background-color: #DDD;
+      width: 6%;
+      float: left;
+      margin: 0; }
+      #themes-header .columns .score > div {
+        padding: 3px 3px 1px 5px;
+        border-right: 1px solid white; }
+      #themes-header .columns .score > div {
+        text-align: right; }
     #themes-header .columns .cost-formatted {
       background-color: #DDD;
       width: 5%;
@@ -809,17 +821,25 @@ ul.themes {
             ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
               background-color: rgba(255, 255, 255, 0.6);
               min-height: 1.1em; }
-          ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90 {
+          ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90, ul.themes li.theme > div.stories ul.stories li.story > .score {
             width: 3.409%;
             /* all story elements use up % of total width as embedded in another elem */
             float: left; }
-            ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
+            ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > .score > div {
               margin: 0 0 1px 1px;
               padding: 2px;
               border: 1px solid #DDD; }
-            ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div {
+            ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > .score > div {
               background-color: rgba(255, 255, 255, 0.6);
               min-height: 1.1em; }
+          ul.themes li.theme > div.stories ul.stories li.story > .score {
+            width: 6.818%;
+            /* all story elements use up % of total width as embedded in another elem */
+            float: left; }
+            ul.themes li.theme > div.stories ul.stories li.story > .score > div {
+              margin: 0 0 1px 1px;
+              padding: 2px;
+              border: 1px solid #DDD; }
           ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
             width: 5.682%;
             /* all story elements use up % of total width as embedded in another elem */

@@ -90,4 +90,17 @@ describe Story do
       }]
     })
   end
+
+  it 'should allow score to be used interchangeably with score 50/90' do
+    backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
+    theme = Factory.create(:theme, :backlog => backlog)
+    story = Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
+
+    story.score.should == 2
+
+    story.score = 3
+    story.score_50.should == 3
+    story.score_90.should == 3
+  end
+
 end

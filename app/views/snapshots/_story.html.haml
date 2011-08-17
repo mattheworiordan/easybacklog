@@ -16,8 +16,11 @@
           - if index < story.acceptance_criteria.count-1
             %br{ :style => 'mso-data-placement:same-cell;' }
     %td= color_text(story, :comments, story.base.comments)
-    %td= color_number(story, :score_50, :base, story.base.score_50)
-    %td= color_number(story, :score_90, :base, story.base.score_90)
+    - if use_50_90
+      %td= color_number(story, :score_50, :base, story.base.score_50)
+      %td= color_number(story, :score_90, :base, story.base.score_90)
+    - else
+      %td= color_number(story, :score, :base, story.base.score)
     %td= color_number(story, :cost_formatted, :base, story.base.cost_formatted)
     %td{ :style => 'border-right: 1px solid #AAA' }= color_number(story, :days_formatted, :base, story.base.days_formatted)
   - if story.target.blank?
@@ -37,7 +40,10 @@
           - if index < story.acceptance_criteria.count-1
             %br{ :style => 'mso-data-placement:same-cell;' }
     %td= color_text(story, :comments, story.target.comments)
-    %td= color_number(story, :score_50, :target, story.target.score_50)
-    %td= color_number(story, :score_90, :target, story.target.score_90)
+    - if use_50_90
+      %td= color_number(story, :score_50, :target, story.target.score_50)
+      %td= color_number(story, :score_90, :target, story.target.score_90)
+    - else
+      %td= color_number(story, :score, :target, story.target.score)
     %td= color_number(story, :cost_formatted, :target, story.target.cost_formatted)
     %td= color_number(story, :days_formatted, :target, story.target.days_formatted)

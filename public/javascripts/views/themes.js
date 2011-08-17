@@ -14,6 +14,7 @@ App.Views.Themes = {
 
     initialize: function() {
       this.collection = this.options.collection;
+      this.use5090estimates = this.options.use5090estimates;
       _.bindAll(this, 'orderChanged', 'displayOrderIndexes');
     },
 
@@ -22,7 +23,7 @@ App.Views.Themes = {
       $(this.el).html(JST['themes/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
-        var view = new App.Views.Themes.Show({ model: model, id: parentView.childId(model) });
+        var view = new App.Views.Themes.Show({ model: model, id: parentView.childId(model), use5090estimates: parentView.use5090estimates });
         parentView.$('>ul').append(view.render().el);
       });
 
@@ -125,13 +126,14 @@ App.Views.Themes = {
     },
 
     initialize: function() {
+      this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
       _.bindAll(this, 'navigateEvent', 'reNumberStoriesAction');
     },
 
     render: function() {
       $(this.el).html( JST['themes/show']({ model: this.model }) );
-      var view = new App.Views.Stories.Index({ collection: this.model.Stories() });
+      var view = new App.Views.Stories.Index({ collection: this.model.Stories(), use5090estimates: this.use5090estimates });
       this.$('>.stories').prepend(view.render().el);
 
       this.updateStatistics();
@@ -223,7 +225,8 @@ App.Views.Themes = {
               nextThemeLi.find('a.new-theme').focus();
             }
           } else { // going <--
-            var previous_story = $(this.el).find('ul.stories li.story:last .score-90 .data'); // JQuery bug, :last-child did not work
+            var previous_story_matcher = 'ul.stories li.story:last .score-90 .data, ul.stories li.story:last .score .data'
+            var previous_story = $(this.el).find(previous_story_matcher); // JQuery bug, :last-child did not work
             if (previous_story.length) {
               previous_story.click();
             } else {

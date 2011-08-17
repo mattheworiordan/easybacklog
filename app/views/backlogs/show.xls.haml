@@ -21,4 +21,4 @@
         </x:ExcelWorkbook>
         </xml>
   %body
-    = render :partial => 'table_backlog', :locals => { :backlog => @backlog }
+    = render :partial => 'table_backlog', :locals => { :backlog => @backlog, :total_columns => 9 - (@backlog.use_50_90? ? 0 : 1) }

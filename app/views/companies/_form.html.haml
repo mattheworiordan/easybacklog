@@ -21,3 +21,12 @@
   = f.text_field :default_velocity
 .form-hint
   The velocity is the average number of points you complete in a day
+
+.input-row.for-check-box
+  = f.check_box :default_use_50_90
+  = f.label :default_use_50_90, "By default, use the 50/90 estimation method"
+.form-hint
+  If you are not sure what the
+  = link_to '50% / 90% estimation method', 'http://www.calgaryapln.org/files/AgileEstimationandPlanning.pdf', :target => '_blank'
+  is, then leave this unchecked.
+

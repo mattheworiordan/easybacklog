@@ -19,6 +19,7 @@ class BacklogsController < ApplicationController
     @backlog = current_company.backlogs.new
     @backlog.rate = current_company.default_rate if @backlog.rate.blank?
     @backlog.velocity = current_company.default_velocity if @backlog.velocity.blank?
+    @backlog.use_50_90 = current_company.default_use_50_90 if @backlog.use_50_90.blank?
   end
 
   def create
@@ -118,7 +119,7 @@ class BacklogsController < ApplicationController
           :include =>
           { :stories =>
             { :only => story_fields,
-              :methods => [:cost_formatted, :days_formatted],
+              :methods => [:cost_formatted, :days_formatted, :score],
               :include =>
               { :acceptance_criteria =>
                 { :only => criteria_fields }

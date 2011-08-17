@@ -3,7 +3,7 @@
     %td{:colspan => 4}
       %font{:size => '4'}
         %b= backlog.name
-    %td{:colspan => 5, :align => 'right'}
+    %td{:colspan => total_columns - 4, :align => 'right'}
       = "Rate: #{backlog.rate_formatted}, Velocity: #{backlog.velocity}"
   %tr
     %th{:bgcolor => '#B6F2FA'} Theme
@@ -11,18 +11,21 @@
     %th{:bgcolor => '#B6F2FA'} User Story
     %th{:bgcolor => '#B6F2FA'} Acceptance Criteria
     %th{:bgcolor => '#B6F2FA'} Comments
-    %th{:bgcolor => '#B6F2FA'} 50
-    %th{:bgcolor => '#B6F2FA'} 90
+    - if backlog.use_50_90?
+      %th{:bgcolor => '#B6F2FA'} 50
+      %th{:bgcolor => '#B6F2FA'} 90
+    - else
+      %th{:bgcolor => '#B6F2FA'} Score
     %th{:bgcolor => '#B6F2FA'} Cost
     %th{:bgcolor => '#B6F2FA'} Days
-  = render :partial => 'table_theme', :collection => backlog.themes, :as => :theme
+  = render :partial => 'table_theme', :collection => backlog.themes, :as => :theme, :locals => { :use_50_90 => backlog.use_50_90?, :total_columns => total_columns }
   %tr
-    %td{:colspan => 9, :height => 5}
+    %td{:colspan => total_columns, :height => 5}
   %tr
-    %td{:colspan => 5, :valign => 'top', :align => 'left', :bgcolor => '#B6F2FA'}
+    %td{:colspan => 4, :valign => 'top', :align => 'left', :bgcolor => '#B6F2FA'}
       %font{:size => '4'}
         %b = "Total for backlog '#{backlog.name}'"
-    %td{:bgcolor => '#B6F2FA', :colspan => 4, :align => 'right'}
+    %td{:bgcolor => '#B6F2FA', :colspan => total_columns - 4, :align => 'right'}
       %font{:size => '4'}
         %b
           = "#{format('%0.1f', backlog.points)} points"

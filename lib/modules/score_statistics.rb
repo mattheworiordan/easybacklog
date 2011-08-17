@@ -1,4 +1,4 @@
-# Module outputs statistics on backlogs & themes with every request where scores have changed 
+# Module outputs statistics on backlogs & themes with every request where scores have changed
 #  and appends this output to the model with attribute statistics
 #  so that JavaScript client-side does not need to make a second request
 
@@ -38,6 +38,6 @@ module ScoreStatistics
 
   private
     def check_if_score_has_changed
-      @score_changed = ['score_90', 'score_50','rate','velocity'] & self.changes.keys unless self.changes.empty? # ignore empty before_save
+      @score_changed = ['score_90','score_50','rate','velocity'] & self.changes.keys unless self.changes.empty? # ignore empty before_save
     end
 end

@@ -10,7 +10,8 @@ App.Views.Backlogs = {
     },
 
     render: function() {
-      var view = new App.Views.Themes.Index({ collection: this.model.Themes() });
+      var use5090estimates = $('#backlog-container #themes-header .columns .score-50').length ? true : false;
+      var view = new App.Views.Themes.Index({ collection: this.model.Themes(), use5090estimates: use5090estimates });
       this.$('#themes-container').html(view.render().el);
 
       var show_view = this;

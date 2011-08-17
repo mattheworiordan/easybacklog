@@ -29,6 +29,10 @@
   .input-row
     = f.text_field :velocity
 
+  .input-row.for-check-box
+    = f.check_box :use_50_90
+    = f.label :use_50_90, "Use the 50/90 estimation method"
+
   %br/
   = f.submit "Create new backlog"
   = link_to "cancel", company_path(current_company)

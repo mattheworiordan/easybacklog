@@ -14,6 +14,7 @@ App.Views.Stories = {
 
     initialize: function() {
       this.collection = this.options.collection;
+      this.use5090estimates = this.options.use5090estimates;
       _.bindAll(this, 'orderChanged', 'displayOrderIndexes');
     },
 
@@ -22,7 +23,7 @@ App.Views.Stories = {
       $(this.el).html(JST['stories/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
-        var storyView = new App.Views.Stories.Show({ model: model, id: view.childId(model) });
+        var storyView = new App.Views.Stories.Show({ model: model, id: view.childId(model), use5090estimates: view.use5090estimates });
         view.$('ul.stories').append(storyView.render().el);
       });
 
@@ -75,7 +76,7 @@ App.Views.Stories = {
       event.preventDefault();
       var model = new Story();
       this.collection.add(model);
-      this.$('ul.stories li:last').before(new App.Views.Stories.Show({ model: model}).render().el);
+      this.$('ul.stories li:last').before(new App.Views.Stories.Show({ model: model, use5090estimates: this.use5090estimates }).render().el);
       var this_view = this;
       this.$('ul.stories li.story:last').css('display','none').slideDown('fast', function() {
         this_view.$('ul.stories li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
@@ -130,12 +131,13 @@ App.Views.Stories = {
     },
 
     initialize: function() {
+      this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
       _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme','changeColor');
     },
 
     render: function() {
-      $(this.el).html( JST['stories/show']({ model: this.model }) );
+      $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
 
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
       this.$('.acceptance-criteria').html(view.render().el);
@@ -144,7 +146,7 @@ App.Views.Stories = {
         this.makeFieldsEditable();
         // make all input and textarea fields respond to Tab/Enter
         var show_view = this;
-        var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data'];
+        var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data', '.score .data'];
         _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input')
           .live('keydown', show_view.navigateEvent); });
 
@@ -189,7 +191,7 @@ App.Views.Stories = {
       var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
-      this.$('>div.score-50 .data, >div.score-90 .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 2 }) );
+      this.$('>div.score-50 .data, >div.score-90 .data, >div.score .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 2 }) );
       this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), {
         type: 'textarea', saveonenterkeypress: true, autoResize: true
       } ) );
@@ -237,10 +239,14 @@ App.Views.Stories = {
           'i-want-to .data',
           'so-i-can .data',
           'acceptance-criteria ul.acceptance-criteria li:first-child>*',
-          'comments .data',
-          'score-50 .data',
-          'score-90 .data'
+          'comments .data'
         ];
+        if (this.use5090estimates) {
+          viewElements.push('score-50 .data');
+          viewElements.push('score-90 .data');
+        } else {
+          viewElements.push('score .data');
+        }
 
         var dataClass = $(event.target);
         if (!dataClass.hasClass('data')) { dataClass = dataClass.parents('.data'); } // if event has come from esc, we're already on .data
@@ -262,7 +268,7 @@ App.Views.Stories = {
                 sibling.find('.' + _.first(viewElements)).click();
               }
             }
-          } else { // moving --<
+          } else { // moving <--
             if (dataElem != _.first(viewElements)) {
               // move to previous element
               var previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
@@ -283,7 +289,7 @@ App.Views.Stories = {
               // move to theme field name
               if ($(this.el).prev().length) {
                 // jump to end of previous story
-                $(this.el).prev().find('.score-90 .data').click();
+                $(this.el).prev().find('.score-90 .data, .score .data').click();
               } else {
                 // no previous stories so jump to theme
                 $(this.el).parents('li.theme').find('.theme-data >.name .data').click();
@@ -416,7 +422,7 @@ App.Views.Stories = {
       });
       model.set(attributes);
       this.model.collection.add(model);
-      var storyView = new App.Views.Stories.Show({ model: model, id: 0 }); // set id 0 as will change when model is saved
+      var storyView = new App.Views.Stories.Show({ model: model, id: 0, use5090estimates: this.use5090estimates }); // set id 0 as will change when model is saved
       var newStoryDomElem = $(storyView.render().el);
       newStoryDomElem.insertBefore($(this.el).parents('ul.stories').find('>li.actions'));
       model.save(false, {

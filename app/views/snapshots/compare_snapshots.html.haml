@@ -1,4 +1,5 @@
-- columns = 8
+- use_50_90 = @base.use_50_90? || @target.use_50_90?
+- columns = 8 - (use_50_90 ? 0 : 1)
 
 %html{:xmlns => "http://www.w3.org/TR/REC-html40", "xmlns:o" => "urn:schemas-microsoft-com:office:office", "xmlns:v" => "urn:schemas-microsoft-com:vml", "xmlns:x" => "urn:schemas-microsoft-com:office:excel"}
   %head
@@ -63,20 +64,26 @@
           %th{:style => 'border-right: 1px solid #CCC'}  User Story
           %th{:style => 'border-right: 1px solid #CCC'}  Acceptance Criteria
           %th{:style => 'border-right: 1px solid #CCC'}  Comments
-          %th{:style => 'border-right: 1px solid #CCC'}  50
-          %th{:style => 'border-right: 1px solid #CCC'}  90
+          - if use_50_90
+            %th{:style => 'border-right: 1px solid #CCC'}  50
+            %th{:style => 'border-right: 1px solid #CCC'}  90
+          - else
+            %th{:style => 'border-right: 1px solid #CCC'}  Score
           %th{:style => 'border-right: 1px solid #CCC'}  Cost
           %th{:style => 'border-right: 1px solid #AAA'} Days
           %th{:style => 'border-right: 1px solid #CCC'}  ID
           %th{:style => 'border-right: 1px solid #CCC'}  User Story
           %th{:style => 'border-right: 1px solid #CCC'}  Acceptance Criteria
           %th{:style => 'border-right: 1px solid #CCC'}  Comments
-          %th{:style => 'border-right: 1px solid #CCC'}  50
-          %th{:style => 'border-right: 1px solid #CCC'}  90
+          - if use_50_90
+            %th{:style => 'border-right: 1px solid #CCC'}  50
+            %th{:style => 'border-right: 1px solid #CCC'}  90
+          - else
+            %th{:style => 'border-right: 1px solid #CCC'}  Score
           %th{:style => 'border-right: 1px solid #CCC'}  Cost
           %th Days
         - @comparison.themes.each do |theme|
-          = render :partial => 'theme', :locals => { :columns => columns, :theme => theme }
+          = render :partial => 'theme', :locals => { :columns => columns, :theme => theme, :use_50_90 => use_50_90 }
         %tr{:style => 'border-top: 1px solid #333; border-bottom: 1px solid #333' }
           %td{:colspan => columns, :style => 'border-right: 1px solid #AAA;', :align => 'right' }
             %font{:size => 3}

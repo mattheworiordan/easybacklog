@@ -13,7 +13,7 @@ class Backlog < ActiveRecord::Base
   validates_presence_of :name, :rate, :velocity
   validates_numericality_of :rate, :velocity
 
-  attr_accessible :company, :name, :rate, :velocity
+  attr_accessible :company, :name, :rate, :velocity, :use_50_90
 
   before_save :check_can_modify
 

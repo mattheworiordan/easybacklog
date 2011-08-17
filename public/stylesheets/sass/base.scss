@@ -335,6 +335,9 @@ label {
 
 .input-row {
   clear: left;
+  &.for-check-box {
+    padding-top: 1em;
+  }
 }
 
 .small {

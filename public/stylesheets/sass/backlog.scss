@@ -207,6 +207,7 @@ section.for-backlog {
     .unique-id { @include table-head(7%); }
     .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
     .score-50, .score-90 { @include table-head(3%); }
+    .score { @include table-head(6%); &>div { text-align: right; } }
     .cost-formatted { @include table-head(5%); &>div { text-align: right; } }
     .days-formatted {
       background-color: #DDD;
@@ -451,12 +452,15 @@ ul.themes {
               min-height: 1.1em;
             }
           }
-          &>.score-50, &>.score-90 {
+          &>.score-50, &>.score-90, &>.score {
             @include table-col(3%);
             &>div {
               background-color: rgba(255,255,255,0.6);
               min-height: 1.1em;
             }
+          }
+          &>.score {
+            @include table-col(6%);
           }
           &>.cost-formatted { @include table-col(5%); text-align: right; &>div { border: none; padding: 3px; } }
           &>.days-formatted {

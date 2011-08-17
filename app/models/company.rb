@@ -9,7 +9,7 @@ class Company < ActiveRecord::Base
   validates_presence_of :name, :default_rate, :default_velocity, :locale
   validates_numericality_of :default_rate, :default_velocity, :greater_than_or_equal_to => 0
 
-  attr_accessible :name, :default_rate, :default_velocity, :locale_id
+  attr_accessible :name, :default_rate, :default_velocity, :locale_id, :default_use_50_90
 
   def add_first_user(user)
     self.company_users.create!(:user => user, :admin => true)

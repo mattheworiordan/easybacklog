@@ -28,8 +28,8 @@ class Devise::RegistrationsController < ApplicationController
     else
       unless @company.blank?
         # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id
-        if (@company.errors.on(:locale))
-          @company.errors.add(:locale_id, @company.errors.on(:locale).to_s)
+        if (@company.errors[:locale].present?)
+          @company.errors.add(:locale_id, @company.errors[:locale].join(', '))
           @company.errors.delete(:locale)
         end
         @company.destroy # clean up the company as user account was not created

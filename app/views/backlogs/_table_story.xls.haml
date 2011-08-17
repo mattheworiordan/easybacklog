@@ -12,10 +12,14 @@
     %br{ :style => 'mso-data-placement:same-cell;' }
 %td{:valign => 'top'}
   = story.comments
-%td{:valign => 'top'}
-  = story.score_50
-%td{:valign => 'top'}
-  = story.score_90
+- if use_50_90
+  %td{:valign => 'top'}
+    = story.score_50
+  %td{:valign => 'top'}
+    = story.score_90
+- else
+  %td{:valign => 'top'}
+    = story.score
 %td{:valign => 'top'}
   = story.cost_formatted
 %td{:valign => 'top'}

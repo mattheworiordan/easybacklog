@@ -25,12 +25,18 @@
 <div class="comments">
   <div class="data"><%= multiLineHtmlEncode(model.get('comments')) %></div>
 </div>
+<% if (use5090estimates) { %>
 <div class="score-50">
   <div class="data"><%= htmlEncode(model.get('score_50')) %></div>
 </div>
 <div class="score-90">
   <div class="data"><%= htmlEncode(model.get('score_90')) %></div>
 </div>
+<% } else { %>
+<div class="score">
+  <div class="data"><%= htmlEncode(model.get('score')) %></div>
+</div>
+<% } %>
 <div class="cost-formatted">
   <div class="data"><%= model.get('cost_formatted') %></div>
 </div>
