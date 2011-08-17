@@ -41,16 +41,8 @@ Then /^"([^"]*)"(?: within "([^"]*)")? should be selected for "([^"]*)"$/ do |fi
   end
 end
 
-# Webrat relies on the onclick attribute to "fake" HTTP request's
-# method, so it cannot cope with the new Ruby on Rails 3's style
-# which uses unobtrusive JavaScript and HTML5 data attributes.
-
-When /^(?:|I )follow Delete$/ do
-  click_link "Delete", :method => :delete
-end
-
 When /^(?:|I )change the editable text "([^"]+)" within tag "([^"]+)" to "([^"]+)"$/ do |text, tag, new_text|
-  page.execute_script %{$('#{tag}:contains("#{text}")').click();}
+  page.execute_script %{$('#{tag}:contains("#{text}")>div').click();}
   page.execute_script %{$('form input[name=value]').attr('value','#{new_text}');}
   page.execute_script %{$('form input[name=value]').blur();}
   sleep(1)
