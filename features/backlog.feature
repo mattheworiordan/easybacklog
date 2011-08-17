@@ -16,6 +16,10 @@ Feature: Backlog
       And I press "Create new backlog"
     Then I should see the following error messages:
       | Name can't be blank             |
+      # Check that default values are being used from Company
+      And the "Use the 50/90 estimation method" checkbox should be checked
+      And the "Rate" field should contain "800"
+      And the "Velocity" field should contain "3"
     When I fill in "Backlog name" with "Project X"
       And I press "Create new backlog"
     Then I should see the notice "Backlog was successfully created."

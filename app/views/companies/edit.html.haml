@@ -1,7 +1,7 @@
-- title 'Edit company account'
+- title 'Edit account'
 
 - content_for :title do
-  %h1 Edit company account
+  %h1 Edit account
 
 = form_for(@company) do |f|
   - unless @company.errors.blank?
@@ -15,5 +15,5 @@
 
   %br/
   %br/
-  = f.submit "Update company"
+  = f.submit "Update account"
   = link_to 'cancel', company_path(@company)

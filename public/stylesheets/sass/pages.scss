@@ -132,14 +132,21 @@ table.users, table.invites {
     width: 6em;
   }
   #company_name {
-    font-size: 1.3em;
-    font-weight: bold;
+    @include large-name-field
   }
 }
+
 #invite {
   label.error {
     position: absolute;
     float: left;
     width: 15em;
+  }
+}
+
+/* New company */
+form#new_company {
+  input#company_name {
+    @include large-name-field
   }
 }

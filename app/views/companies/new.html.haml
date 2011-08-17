@@ -1,9 +1,9 @@
-- title 'Create a new company account'
+- title 'Create a new account'
 
 - content_for :title do
-  %h1 Create a new company account
+  %h1 Create a new account
 
-%p Please do not create a new company account if you believe one already exists.  You must contact us to be added to the existing company account to gain access to the backlogs within that account.
+%p.notice Do not create a new account if you believe one already exists for your organisation.  To be added to an existing account, contact the account owner who will invite you into their account.
 
 = form_for(@company) do |f|
   - unless @company.errors.blank?
@@ -17,5 +17,4 @@
 
   %br/
   %br/
-  = f.submit "Create new company"
-  
+  = f.submit "Create new account"

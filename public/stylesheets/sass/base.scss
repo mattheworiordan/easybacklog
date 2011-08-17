@@ -349,6 +349,15 @@ label {
   }
 }
 
+.notice {
+  padding: 0.5em;
+  color: #C70;
+  font-weight: bold;
+  background-color: #FFEEDD;
+  border-radius: 5px;
+  text-align: center;
+}
+
 /* feedback styling */
 #ue-feedback-tab {
   -moz-box-shadow: 0 0 5px #888;

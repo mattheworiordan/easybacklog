@@ -11,10 +11,10 @@ module NavigationHelpers
     when /the home\s?page/
       '/'
 
-    when /the companies page/
+    when /the accounts page/
       '/companies'
 
-    when /the new companies page/
+    when /the new account page/
       '/companies/new'
 
     # Add more mappings here.

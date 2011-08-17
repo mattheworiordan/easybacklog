@@ -34,3 +34,8 @@ $standard-header-padding: $standard-header-padding-height $standard-header-paddi
     border-color: #333;
   };
 }
+
+@mixin large-name-field {
+  font-size: 1.3em;
+  font-weight: bolder;
+}

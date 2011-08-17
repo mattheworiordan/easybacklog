@@ -29,7 +29,7 @@ class CompaniesController < ApplicationController
     @company = Company.find(params[:id])
     @company.update_attributes(params[:company])
     if @company.save
-      flash[:notice] = "Company account for #{@company.name} updated successfully"
+      flash[:notice] = "Account for #{@company.name} updated successfully"
       redirect_to company_path(@company)
     else
       render :action => 'edit'
@@ -44,11 +44,11 @@ class CompaniesController < ApplicationController
     @company = Company.new(params[:company])
     if @company.save
       @company.add_first_user current_user
-      flash[:notice] = 'Company was successfully created.'
+      flash[:notice] = 'Account was successfully created.'
       redirect_to(@company)
     else
-      if (@company.errors.on(:locale))
-        @company.errors.add(:locale_id, @company.errors.on(:locale).to_s)
+      if (@company.errors[:locale].present?)
+        @company.errors.add(:locale_id, @company.errors[:locale].join(', '))
         @company.errors.delete(:locale)
       end
       render :action => "new"
