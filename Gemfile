@@ -20,7 +20,7 @@ gem 'ssl_requirement', :git => 'git://github.com/retr0h/ssl_requirement.git'
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
 group :development, :test, :cucumber do
-  # gem 'ruby-debug'
+  gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
 end
 
@@ -43,7 +43,6 @@ group :test, :cucumber do
 end
 
 group :development do
-  gem 'ruby-debug19', :require => 'ruby-debug'
   # multiple environments for Heroku
   gem 'taps', '>=0.3.20'
   gem 'heroku'
