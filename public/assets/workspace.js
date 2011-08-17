@@ -4957,7 +4957,8 @@ if(!event.shiftKey){if(_.first(liElem)!=_.last(liElem.parent("ul").find("li.crit
 }}}}})};
 App.Views.Backlogs={Show:App.Views.BaseView.extend({dataArea:$("#backlog-data-area"),initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","print","newSnapshot","jumpToSnapshot","compareSnapshot")
-},render:function(){var view=new App.Views.Themes.Index({collection:this.model.Themes()});
+},render:function(){var use5090estimates=$("#backlog-container #themes-header .columns .score-50").length?true:false;
+var view=new App.Views.Themes.Index({collection:this.model.Themes(),use5090estimates:use5090estimates});
 this.$("#themes-container").html(view.render().el);
 var show_view=this;
 this.updateStatistics();
@@ -5082,10 +5083,11 @@ App.Views.Error=App.Views.Notice.extend({className:"error",defaultMessage:"Uh oh
 App.Views.Warning=App.Views.Notice.extend({className:"warning",defaultMessage:"Unfortunately we could not perform that action."});
 App.Views.Stories={Index:Backbone.View.extend({tagName:"div",className:"stories",childId:function(model){return"story-"+model.get("id")
 },events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"storyKeyPress"},initialize:function(){this.collection=this.options.collection;
+this.use5090estimates=this.options.use5090estimates;
 _.bindAll(this,"orderChanged","displayOrderIndexes")
 },render:function(){var view=this;
 $(this.el).html(JST["stories/index"]({collection:this.collection.models}));
-this.collection.each(function(model){var storyView=new App.Views.Stories.Show({model:model,id:view.childId(model)});
+this.collection.each(function(model){var storyView=new App.Views.Stories.Show({model:model,id:view.childId(model),use5090estimates:view.use5090estimates});
 view.$("ul.stories").append(storyView.render().el)
 });
 if(this.collection.theme.IsEditable()){if(!this.collection.theme.isNew()){this.$("ul.stories").append(JST["stories/new"]())
@@ -5111,7 +5113,7 @@ $(event.target).mouseleave()
 },createNew:function(event){event.preventDefault();
 var model=new Story();
 this.collection.add(model);
-this.$("ul.stories li:last").before(new App.Views.Stories.Show({model:model}).render().el);
+this.$("ul.stories li:last").before(new App.Views.Stories.Show({model:model,use5090estimates:this.use5090estimates}).render().el);
 var this_view=this;
 this.$("ul.stories li.story:last").css("display","none").slideDown("fast",function(){this_view.$("ul.stories li.story:last > .user-story > .as-a > .data").click()
 })
@@ -5128,14 +5130,15 @@ if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate"},initialize:function(){this.use5090estimates=this.options.use5090estimates;
+App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor")
-},render:function(){$(this.el).html(JST["stories/show"]({model:this.model}));
+},render:function(){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
 var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()});
 this.$(".acceptance-criteria").html(view.render().el);
 if(this.model.IsEditable()){this.makeFieldsEditable();
 var show_view=this;
-var tabElems=[".user-story .data",".unique-id .data",".comments .data",".score-50 .data",".score-90 .data"];
+var tabElems=[".user-story .data",".unique-id .data",".comments .data",".score-50 .data",".score-90 .data",".score .data"];
 _.each(tabElems,function(elem){show_view.$(elem+", "+elem+" textarea, "+elem+" input").live("keydown",show_view.navigateEvent)
 });
 this.$(".move-story a").mousedown(function(event){App.Views.Stories.Index.stopMoveEvent=false
@@ -5158,7 +5161,7 @@ var uniqueIdBeforeChangeFunc=function(value,settings){return beforeChangeFunc.ca
 };
 var uniqueIdOptions=_.extend(_.clone(defaultOptions),{data:uniqueIdBeforeChangeFunc,maxLength:4});
 this.$(">div.unique-id .data").editable(uniqueIdContentUpdatedFunc,uniqueIdOptions);
-this.$(">div.score-50 .data, >div.score-90 .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:2}));
+this.$(">div.score-50 .data, >div.score-90 .data, >div.score .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:2}));
 this.$(">div.comments .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{type:"textarea",saveonenterkeypress:true,autoResize:true}));
 var autoCompleteData=function(){var asAValues=[];
 show_view.model.Theme().collection.each(function(theme){asAValues=asAValues.concat(theme.Stories().pluck("as_a"))
@@ -5173,8 +5176,11 @@ show_view.$(">div.user-story ."+elem+" .data").editable(contentUpdatedFunc,optio
 },navigateEvent:function(event){var isInput=$(event.target).is("input");
 if(_.include([9,13,27],event.keyCode)&&(!event.ctrlKey||isInput)){$(event.target).blur();
 try{event.preventDefault()
-}catch(e){}var viewElements=["unique-id .data","as-a .data","i-want-to .data","so-i-can .data","acceptance-criteria ul.acceptance-criteria li:first-child>*","comments .data","score-50 .data","score-90 .data"];
-var dataClass=$(event.target);
+}catch(e){}var viewElements=["unique-id .data","as-a .data","i-want-to .data","so-i-can .data","acceptance-criteria ul.acceptance-criteria li:first-child>*","comments .data"];
+if(this.use5090estimates){viewElements.push("score-50 .data");
+viewElements.push("score-90 .data")
+}else{viewElements.push("score .data")
+}var dataClass=$(event.target);
 if(!dataClass.hasClass("data")){dataClass=dataClass.parents(".data")
 }dataClass=dataClass.parent().attr("class");
 var dataElem=_.detect(viewElements,function(id){return(_.first(id.split(" "))==dataClass)
@@ -5188,7 +5194,7 @@ if(previousSelector.indexOf("acceptance-criteria")===0){var lastCriterion=this.$
 if(lastCriterion.length){lastCriterion.click()
 }else{this.$(".acceptance-criteria ul.acceptance-criteria li:last a").click()
 }}else{this.$("."+previousSelector).click()
-}}else{if($(this.el).prev().length){$(this.el).prev().find(".score-90 .data").click()
+}}else{if($(this.el).prev().length){$(this.el).prev().find(".score-90 .data, .score .data").click()
 }else{$(this.el).parents("li.theme").find(".theme-data >.name .data").click()
 }}}}}},changeEvent:function(eventName,model){var newValue;
 if((eventName.substring(0,7)==="change:")&&(eventName!=="change:acceptance_criteria")){var fieldChanged=eventName.substring(7);
@@ -5245,7 +5251,7 @@ model.AcceptanceCriteria().add(crit)
 });
 model.set(attributes);
 this.model.collection.add(model);
-var storyView=new App.Views.Stories.Show({model:model,id:0});
+var storyView=new App.Views.Stories.Show({model:model,id:0,use5090estimates:this.use5090estimates});
 var newStoryDomElem=$(storyView.render().el);
 newStoryDomElem.insertBefore($(this.el).parents("ul.stories").find(">li.actions"));
 model.save(false,{success:function(model,response){model.AcceptanceCriteria().each(function(criterion){criterion.save()
@@ -5258,10 +5264,11 @@ _.delay(function(){newStoryDomElem.find(".user-story .as-a>.data").click()
 }})};
 App.Views.Themes={Index:Backbone.View.extend({tagName:"div",className:"themes",childId:function(model){return"theme-"+model.get("id")
 },events:{"click ul.themes .actions a.new-theme":"createNew","keydown ul.themes .actions a.new-theme":"themeKeyPress"},initialize:function(){this.collection=this.options.collection;
+this.use5090estimates=this.options.use5090estimates;
 _.bindAll(this,"orderChanged","displayOrderIndexes")
 },render:function(){var parentView=this;
 $(this.el).html(JST["themes/index"]({collection:this.collection.models}));
-this.collection.each(function(model){var view=new App.Views.Themes.Show({model:model,id:parentView.childId(model)});
+this.collection.each(function(model){var view=new App.Views.Themes.Show({model:model,id:parentView.childId(model),use5090estimates:parentView.use5090estimates});
 parentView.$(">ul").append(view.render().el)
 });
 this.$("ul.themes").append(JST["themes/new"]());
@@ -5301,10 +5308,11 @@ if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){this.use5090estimates=this.options.use5090estimates;
+App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","reNumberStoriesAction")
 },render:function(){$(this.el).html(JST["themes/show"]({model:this.model}));
-var view=new App.Views.Stories.Index({collection:this.model.Stories()});
+var view=new App.Views.Stories.Index({collection:this.model.Stories(),use5090estimates:this.use5090estimates});
 this.$(">.stories").prepend(view.render().el);
 this.updateStatistics();
 if(this.model.IsEditable()){this.makeFieldsEditable();
@@ -5343,7 +5351,8 @@ if(prev.length){if(prev.find("ul.stories li.actions a.new-story")){prev.find("ul
 }}}else{if(!event.shiftKey){var nextThemeLi=$(event.target).parents("li.theme").next();
 if(nextThemeLi.hasClass("theme")){nextThemeLi.find(">.name .data").click()
 }else{nextThemeLi.find("a.new-theme").focus()
-}}else{var previous_story=$(this.el).find("ul.stories li.story:last .score-90 .data");
+}}else{var previous_story_matcher="ul.stories li.story:last .score-90 .data, ul.stories li.story:last .score .data";
+var previous_story=$(this.el).find(previous_story_matcher);
 if(previous_story.length){previous_story.click()
 }else{$(this.el).find(">.name .data").click()
 }}}}},changeEvent:function(eventName,model){if(eventName.substring(0,7)=="change:"){var fieldChanged=eventName.substring(7);
@@ -5397,7 +5406,7 @@ window.JST["stories/delete-dialog"]=_.template('<div id="dialog-delete" title="D
 window.JST["stories/index"]=_.template('<ul class="stories"></ul>');
 window.JST["stories/move-dialog"]=_.template("<div id=\"dialog-move-story\" title=\"Move story\">  <p>    <span class=\"ui-icon ui-icon-arrow-4\" style=\"float:left; margin:0 7px 20px 0;\" />    Move story '<%=story.Theme().get('code') + story.get('unique_id')%>' to which theme?  </p>  <p>    <form>    <select id=\"theme-target\">      <% themes.each(function(theme) { %>        <option id=\"<%=theme.get('id')%>\"<%=(theme == story.Theme() ? ' selected=\"\"' : '') %>><%=theme.get('name')%></option>      <% }); %>    </select>    </form>  </p></div>");
 window.JST["stories/new"]=_.template('<li class="actions">  <a href="#new-story" class="new-story">Add story</a></li>');
-window.JST["stories/show"]=_.template('<div class="unique-id">  <div class="data"><%= model.Theme().get(\'code\')%><%= model.get(\'unique_id\')%></div>  <div class="story-actions">    <div class="color-picker-icon">      <a class="vtip" title="Assign a color"></a>    </div>    <div class="delete-story">      <a href="#delete-story" class="ui-icon ui-icon-trash vtip" title="Delete this story"></a>    </div>    <div class="duplicate-story">      <a href="#duplicate-story" class="ui-icon ui-icon-newwin vtip" title="Duplicate this story"></a>    </div>    <div class="move-story">      <a href="#move-story" class="vtip ui-icon ui-icon-arrow-4" title="Drag move to re-order this story, or click to move to another theme"></a>    </div>  </div></div><div class="user-story">  <div class="as-a"><div class="heading">As </div><div class="data"><%= htmlEncode(model.get(\'as_a\')) %></div></div>  <div class="i-want-to"><div class="heading">I want to </div><div class="data"><%= multiLineHtmlEncode(model.get(\'i_want_to\')) %></div></div>  <div class="so-i-can"><div class="heading">So I can </div><div class="data"><%= multiLineHtmlEncode(model.get(\'so_i_can\')) %></div></div></div><div class="acceptance-criteria"></div><div class="comments">  <div class="data"><%= multiLineHtmlEncode(model.get(\'comments\')) %></div></div><div class="score-50">  <div class="data"><%= htmlEncode(model.get(\'score_50\')) %></div></div><div class="score-90">  <div class="data"><%= htmlEncode(model.get(\'score_90\')) %></div></div><div class="cost-formatted">  <div class="data"><%= model.get(\'cost_formatted\') %></div></div><div class="days-formatted">  <div class="data"><%= model.get(\'days_formatted\') %></div></div>');
+window.JST["stories/show"]=_.template('<div class="unique-id">  <div class="data"><%= model.Theme().get(\'code\')%><%= model.get(\'unique_id\')%></div>  <div class="story-actions">    <div class="color-picker-icon">      <a class="vtip" title="Assign a color"></a>    </div>    <div class="delete-story">      <a href="#delete-story" class="ui-icon ui-icon-trash vtip" title="Delete this story"></a>    </div>    <div class="duplicate-story">      <a href="#duplicate-story" class="ui-icon ui-icon-newwin vtip" title="Duplicate this story"></a>    </div>    <div class="move-story">      <a href="#move-story" class="vtip ui-icon ui-icon-arrow-4" title="Drag move to re-order this story, or click to move to another theme"></a>    </div>  </div></div><div class="user-story">  <div class="as-a"><div class="heading">As </div><div class="data"><%= htmlEncode(model.get(\'as_a\')) %></div></div>  <div class="i-want-to"><div class="heading">I want to </div><div class="data"><%= multiLineHtmlEncode(model.get(\'i_want_to\')) %></div></div>  <div class="so-i-can"><div class="heading">So I can </div><div class="data"><%= multiLineHtmlEncode(model.get(\'so_i_can\')) %></div></div></div><div class="acceptance-criteria"></div><div class="comments">  <div class="data"><%= multiLineHtmlEncode(model.get(\'comments\')) %></div></div><% if (use5090estimates) { %><div class="score-50">  <div class="data"><%= htmlEncode(model.get(\'score_50\')) %></div></div><div class="score-90">  <div class="data"><%= htmlEncode(model.get(\'score_90\')) %></div></div><% } else { %><div class="score">  <div class="data"><%= htmlEncode(model.get(\'score\')) %></div></div><% } %><div class="cost-formatted">  <div class="data"><%= model.get(\'cost_formatted\') %></div></div><div class="days-formatted">  <div class="data"><%= model.get(\'days_formatted\') %></div></div>');
 window.JST["themes/delete-dialog"]=_.template('<div id="dialog-delete" title="Delete theme?">  <p>    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;" />    This theme and all its stories will be permanently deleted and cannot be recovered. Are you sure?  </p></div>');
 window.JST["themes/index"]=_.template('<ul class="themes"></ul><div class="stop-ordering">  <a href="#stop-ordering">Stop ordering</a></div>');
 window.JST["themes/new"]=_.template('<li class="actions">  <a href="#new-theme" class="new-theme">Add theme</a>  <a href="#reorder-themes" class="reorder-themes">Reorder themes</a></li>');
