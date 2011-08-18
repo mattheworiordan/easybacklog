@@ -106,7 +106,7 @@ App.Views.AcceptanceCriteria = {
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
-        this.$('.data, .data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+        this.$('.data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
       }
       return (this);
     },

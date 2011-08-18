@@ -147,7 +147,7 @@ App.Views.Stories = {
         // make all input and textarea fields respond to Tab/Enter
         var show_view = this;
         var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data', '.score .data'];
-        _.each(tabElems, function(elem) { show_view.$(elem + ', ' + elem + ' textarea, ' + elem + ' input')
+        _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input')
           .live('keydown', show_view.navigateEvent); });
 
         this.$('.move-story a').mousedown(function(event) {

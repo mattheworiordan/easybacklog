@@ -29,8 +29,8 @@ App.Views.Backlogs = {
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
 
-        // make all input and textarea fields respond to Tab/Enter
-        $('#backlog-data-area div.data, #backlog-data-area div.data input').live('keydown', this.navigateEvent);
+        // make all input fields respond to Tab/Enter
+        $('#backlog-data-area div.data input').live('keydown', this.navigateEvent);
 
         var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
         if (firstEditableElem.length) {

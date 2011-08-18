@@ -143,7 +143,7 @@ App.Views.Themes = {
 
         var self = this;
         _.each(['.name', '.code'], function(elem) {
-          self.$('.theme-data ' + elem + '>.data, .theme-data ' + elem + '>.data input')
+          self.$('.theme-data ' + elem + '>.data input')
             .live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
         });
         this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
