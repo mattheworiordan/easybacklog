@@ -19,6 +19,9 @@ gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.g
 group :development, :test, :cucumber do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
+  gem 'watchr'
+  gem 'growl'
+  gem 'spork', '~> 0.9.0.rc'
 end
 
 group :test, :cucumber do
@@ -32,16 +35,16 @@ group :test, :cucumber do
   gem 'autotest-growl'
   gem 'autotest-rails'
   gem 'database_cleaner'
-  gem 'capybara'
+  gem 'capybara', '~> 1.0'
   gem 'Selenium'
   gem 'selenium-client'
-  gem 'capybara-webkit'
+  gem 'capybara-webkit', :git => 'git://github.com/thoughtbot/capybara-webkit.git'
   gem 'timecop'
 end
 
 group :development do
   # multiple environments for Heroku
-  gem 'taps', '>=0.3.20'
+  gem 'taps', '>=0.3.23'
   gem 'heroku'
   gem 'heroku_san'
   gem 'ruby_parser' # for Devise generators

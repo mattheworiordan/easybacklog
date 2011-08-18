@@ -23,6 +23,3 @@ production:
 
 cucumber: &cucumber
   <<: *test
-
-culerity:
-  <<: *cucumber
