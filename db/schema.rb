@@ -10,29 +10,29 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110816220610) do
+ActiveRecord::Schema.define(:version => 20110818221844) do
 
   create_table "acceptance_criteria", :force => true do |t|
-    t.integer "story_id",                 :null => false
-    t.text    "criterion", :limit => 255, :null => false
+    t.integer "story_id",  :null => false
+    t.text    "criterion", :null => false
     t.integer "position"
   end
 
   add_index "acceptance_criteria", ["story_id"], :name => "index_acceptance_criteria_on_story_id"
 
   create_table "backlogs", :force => true do |t|
-    t.string   "name",                                     :null => false
-    t.integer  "company_id",                               :null => false
-    t.integer  "author_id",                                :null => false
-    t.integer  "last_modified_user_id",                    :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.decimal  "velocity"
-    t.integer  "rate"
-    t.integer  "snapshot_master_id"
-    t.boolean  "deleted",               :default => false, :null => false
-    t.boolean  "archived",              :default => false, :null => false
-    t.boolean  "use_50_90"
+    t.string    "name",                                     :null => false
+    t.integer   "company_id",                               :null => false
+    t.integer   "author_id",                                :null => false
+    t.integer   "last_modified_user_id",                    :null => false
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.decimal   "velocity"
+    t.integer   "rate"
+    t.integer   "snapshot_master_id"
+    t.boolean   "deleted",               :default => false, :null => false
+    t.boolean   "archived",              :default => false, :null => false
+    t.boolean   "use_50_90"
   end
 
   add_index "backlogs", ["archived"], :name => "index_backlogs_on_archived"
@@ -41,13 +41,13 @@ ActiveRecord::Schema.define(:version => 20110816220610) do
   add_index "backlogs", ["snapshot_master_id"], :name => "index_backlogs_on_snapshot_master_id"
 
   create_table "companies", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.decimal  "default_velocity"
-    t.integer  "default_rate"
-    t.integer  "locale_id"
-    t.boolean  "default_use_50_90"
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.decimal   "default_velocity"
+    t.integer   "default_rate"
+    t.integer   "locale_id"
+    t.boolean   "default_use_50_90"
   end
 
   create_table "company_users", :force => true do |t|
@@ -78,18 +78,18 @@ ActiveRecord::Schema.define(:version => 20110816220610) do
   end
 
   create_table "stories", :force => true do |t|
-    t.integer  "theme_id",                  :null => false
-    t.integer  "unique_id",                 :null => false
-    t.string   "as_a"
-    t.string   "i_want_to"
-    t.string   "so_i_can"
-    t.text     "comments",   :limit => 255
-    t.integer  "score_50"
-    t.integer  "score_90"
-    t.integer  "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "color"
+    t.integer   "theme_id",   :null => false
+    t.integer   "unique_id",  :null => false
+    t.string    "as_a"
+    t.string    "i_want_to"
+    t.string    "so_i_can"
+    t.text      "comments"
+    t.integer   "score_50"
+    t.integer   "score_90"
+    t.integer   "position"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "color"
   end
 
   add_index "stories", ["as_a"], :name => "index_stories_on_as_a"
