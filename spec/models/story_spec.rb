@@ -83,7 +83,7 @@ describe Story do
       :cost_formatted => story.cost_formatted,
       :days => story.days,
       :themes => [{
-        :theme_id => 1,
+        :theme_id => theme.id,
         :points => theme.points,
         :cost_formatted => theme.cost_formatted,
         :days => theme.days
