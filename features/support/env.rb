@@ -1,5 +1,10 @@
 require 'spork'
 
+# Stop endless errors like
+# ~/.rvm/gems/ruby-1.9.2-p0@global/gems/rack-1.2.1/lib/rack/utils.rb:16:
+# warning: regexp match /.../n against to UTF-8 string
+$VERBOSE = nil
+
 Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
   # if you change any configuration or code from libraries loaded here, you'll
