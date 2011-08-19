@@ -3,15 +3,16 @@ Feature: Backlog
   A visitor
   Should be able to set up and edit a backlog
 
-  Scenario: Create a new backlog
+  Background:
     Given the standard locales are set up
       And a user named "John" is registered
       And I am signed in as "John"
       And a company called "Acme" is set up for "John"
       And a standard backlog named "Acme Backlog" is set up for "Acme"
     When I am on the companies page
-    Then I should see the page title "Acme"
+      Then I should see the page title "Acme"
 
+  Scenario: Create a new backlog
     When I follow "Create a new backlog"
       And I press "Create new backlog"
     Then I should see the following error messages:
@@ -25,25 +26,18 @@ Feature: Backlog
     Then I should see the notice "Backlog was successfully created."
 
     When I follow "Back to dashboard"
-      And I should see "Project X"
+      And I should see "Project X" within "ul.backlog-list"
 
     When I follow "Duplicate"
       And I fill in "New backlog name" with "Project Y"
       And I press "Duplicate backlog"
     Then I should see the notice "Backlog was duplicated successfully."
     When I follow "Back to dashboard"
-    Then I should see "Project Y"
+    Then I should see "Project Y" within "ul.backlog-list"
 
   @javascript
   Scenario: Delete backlog
-    Given the standard locales are set up
-      And a user named "John" is registered
-      And I am signed in as "John"
-      And a company called "Acme" is set up for "John"
-      And a standard backlog named "Acme Backlog" is set up for "Acme"
-    When I am on the companies page
-      Then I should see the page title "Acme"
-      And I should see "Acme Backlog"
+    Then I should see "Acme Backlog"
     When I follow "Delete"
       And I press "Delete" within ".ui-dialog"
     Then I should see the notice "Backlog was successfully deleted."
@@ -51,13 +45,7 @@ Feature: Backlog
 
   @javascript
   Scenario: Edit backlog AJAX properties
-    Given the standard locales are set up
-      And a user named "John" is registered
-      And I am signed in as "John"
-      And a company called "Acme" is set up for "John"
-      And a standard backlog named "Backlog-2" is set up for "Acme"
-    When I am on the companies page
-      And I follow "Backlog-2"
-      And I change the editable text "Backlog-2" within tag "h2" to "Project Renamed"
+    When I follow "Acme Backlog"
+      And I change the editable text "Acme Backlog" within tag "h2" to "Project Renamed"
       And I follow "Back to dashboard"
-    Then I should see "Project Renamed"
+    Then I should see "Project Renamed" within "ul.backlog-list"

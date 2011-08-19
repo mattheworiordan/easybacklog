@@ -1,6 +1,6 @@
 Then /^(?:|I )should see the page title "([^\"]*)"$/ do |title|
-  with_scope("head title") do |content|
-    page.should have_content(title)
+  with_scope("head title") do
+    page.text.should match(title)
   end
 end
 
@@ -41,14 +41,24 @@ Then /^"([^"]*)"(?: within "([^"]*)")? should be selected for "([^"]*)"$/ do |fi
   end
 end
 
-When /^(?:|I )change the editable text "([^"]+)" within tag "([^"]+)" to "([^"]+)"$/ do |text, tag, new_text|
-  page.execute_script %{$('#{tag}:contains("#{text}")>div').click();}
-  page.execute_script %{$('form input[name=value]').attr('value','#{new_text}');}
-  page.execute_script %{$('form input[name=value]').blur();}
-  sleep(1)
-end
-
 Given /^the standard locales are set up$/ do
   Factory.create(:locale, :name => 'American English', :code => 'en-US', :position => 5)
   Factory.create(:locale, :name => 'British English', :code => 'en-GB', :position => 10)
+end
+
+Then /take a snapshot(| and show me the page)/ do |show_me|
+  page.driver.render Rails.root.join("tmp/capybara/#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.png")
+  Then %{show me the page} if show_me.present?
+end
+
+Then /^(?:|I )click the element "([^\"]*)"$/ do |selector|
+  page.execute_script "$('#{selector.gsub(/'/,'"')}').click()"
+end
+
+Then /^(?:|I )there should be (\d+) elements matching "([^\"]*)"$/ do |quantity, selector|
+  page.evaluate_script("$('#{selector.gsub(/'/,'"')}').length").to_i.should == quantity.to_i
+end
+
+When /(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?/ do |time|
+  sleep time.to_f
 end
