@@ -5,7 +5,7 @@
     %title
       = (yield(:page_title).length > 0 ? yield(:page_title) : 'Simple backlog management') + ' : easyBacklog'
 
-    = javascript_include_tag "test/jquery.focus" if Rails.env.test? || Rails.env.cucumber?
+    = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.cucumber?
     = include_stylesheets :common, :media => 'all'
     /[if lt IE 9]
       = include_stylesheets :ie_compatibility, :media => 'all'

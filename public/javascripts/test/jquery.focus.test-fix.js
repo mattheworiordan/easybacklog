@@ -14,7 +14,7 @@
  *
  * This file MUST be included before JQuery or Sizzle is loaded
  *
- * Refer to http://blog.mattheworiordan.com/ for more info on this issue
+ * Refer to http://blog.mattheworiordan.com/post/9308775285 for more info
  *
  **/
 
