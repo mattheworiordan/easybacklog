@@ -7,8 +7,35 @@
                  __/ |                               __/ |
                 |___/                               |___/
 
-Created by Matthew O'Riordan
-http://www.linkedin.com/in/lemon
-http://mattheworiordan.com
+
+/* TEAM */
+
+Founder, Developer and Direction
+Matthew O'Riordan, UK
+http://mattheworiordan.com & http://www.linkedin.com/in/lemon
+@mattheworiordan
+
+Product team and marketing
+John Bown, UK, http://uk.linkedin.com/in/johnbown, @johnnybown
+Guillaume Buat-Ménard, UK, http://www.linkedin.com/in/buatmenard, @theg
+
+Design and video
+Bruce Thomas, UK, http://www.linkedin.com/in/fliptopbox, https://plus.google.com/107389085530408811748
+
+
+/* SITE */
 
 Contact: support@easybacklog.com
+
+Developed with:
+ * Ruby on Rails 3
+ * JQuery, Backbone, Underscore and Modernizr
+ * Capybara, Cucumber, RSpec
+ * Compression using Jammit
+ * Hosting with the brilliant Heroku
+
+
+/* THANKS */
+
+Name: Aqueduct, http://www.aqueduct.co.uk
+For helping to thoroughly test the product in a production environment
