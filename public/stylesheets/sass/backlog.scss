@@ -295,8 +295,9 @@ ul.themes {
 
   /* re-ordering target li item */
   li.target-order-highlight {
-    background-color: #FFC;
-    margin: 0;
+    border: 1px dashed #333;
+    margin: 5px 60% 0 0;
+    background-color: #FFE;
     list-style: none;
     height: 2em;
     clear: left;
@@ -430,6 +431,10 @@ ul.themes {
           margin: 2px 0 1em 3px;
           position: absolute;
         }
+        li.target-order-highlight {
+          margin: 0 0 0 0;
+          height: 5em;
+        }
         /* story row */
         li.story {
           padding: 2px 0 5px 1px;
@@ -512,7 +517,7 @@ ul.themes {
               margin-left: 1.5em;
             }
             li.target-order-highlight {
-              height: 1em;
+              height: 1.5em;
             }
           }
         }

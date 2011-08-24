@@ -690,8 +690,9 @@ ul.themes {
         padding: 0 0px 0 1px;
         margin: 3px -3px 0 0; }
   ul.themes li.target-order-highlight {
-    background-color: #FFC;
-    margin: 0;
+    border: 1px dashed #333;
+    margin: 5px 60% 0 0;
+    background-color: #FFE;
     list-style: none;
     height: 2em;
     clear: left; }
@@ -799,6 +800,9 @@ ul.themes {
         ul.themes li.theme > div.stories ul.stories li.actions {
           margin: 2px 0 1em 3px;
           position: absolute; }
+        ul.themes li.theme > div.stories ul.stories li.target-order-highlight {
+          margin: 0 0 0 0;
+          height: 5em; }
         ul.themes li.theme > div.stories ul.stories li.story {
           padding: 2px 0 5px 1px;
           overflow: hidden;
@@ -898,7 +902,7 @@ ul.themes {
               cursor: text;
               margin-left: 1.5em; }
             ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
-              height: 1em; }
+              height: 1.5em; }
 
 /* when viewing a snapshot don't make these fields look editable */
 #backlog-container.not-editable ul.themes li.theme .theme-data .code .data:hover {
