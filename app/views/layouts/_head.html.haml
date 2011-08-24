@@ -14,6 +14,10 @@
       = include_javascripts :ie_compatibility
     = include_javascripts :workspace
     = hoptoad_javascript_notifier
+
+    = # Javascript library to simulate drag & drop re-ordering of lists
+    = javascript_include_tag "test/jquery.simulate.drag-sortable.js" if Rails.env.test? || Rails.env.cucumber?
+
     = csrf_meta_tag
     %link{ :rel=>'author', :href=>'/humans.txt' }
     :javascript
