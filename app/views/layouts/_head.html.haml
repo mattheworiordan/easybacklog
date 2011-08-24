@@ -5,7 +5,9 @@
     %title
       = (yield(:page_title).length > 0 ? yield(:page_title) : 'Simple backlog management') + ' : easyBacklog'
 
+    = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
     = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.cucumber?
+
     = include_stylesheets :common, :media => 'all'
     /[if lt IE 9]
       = include_stylesheets :ie_compatibility, :media => 'all'
