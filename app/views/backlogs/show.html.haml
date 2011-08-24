@@ -63,7 +63,7 @@
       Loading...
 :javascript
   $(document).ready(function() {
-    App.Collections.Backlogs = new BacklogsCollection({}, { company_id: #{@backlog.company.id} });
+    App.Collections.Backlogs = new BacklogsCollection(false, { company_id: #{@backlog.company.id} });
     var backlog = new Backlog(#{embedded_json_safe backlog_json(@backlog)});
     App.Collections.Backlogs.add(backlog);
     var view = new App.Views.Backlogs.Show({ model: backlog, el: $('#backlog-container') });
