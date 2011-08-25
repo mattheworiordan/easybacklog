@@ -13,8 +13,11 @@ tab_hover_color:'#FF9305',
 tab_top: '75%'
 };
 
-$(document).ready(function() {
-  var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
-  _ue.src = ('https:' == document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
-});
+// if we're testing, don't include UserEcho
+if ( !((document.location.href.match(/localhost|127.0.0.1/)) && (document.location.href.indexOf(':3000') < 0)) ) {
+  $(document).ready(function() {
+    var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
+    _ue.src = ('https:' == document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
+  });
+}

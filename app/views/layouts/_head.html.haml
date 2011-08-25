@@ -6,28 +6,29 @@
       = (yield(:page_title).length > 0 ? yield(:page_title) : 'Simple backlog management') + ' : easyBacklog'
 
     = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
-    = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.cucumber?
+    = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test?
 
     = include_stylesheets :common, :media => 'all'
     /[if lt IE 9]
       = include_stylesheets :ie_compatibility, :media => 'all'
       = include_javascripts :ie_compatibility
     = include_javascripts :workspace
-    = hoptoad_javascript_notifier
+    = hoptoad_javascript_notifier unless Rails.env.test?
 
     = # Javascript library to simulate drag & drop re-ordering of lists
-    = javascript_include_tag "test/jquery.simulate.drag-sortable.js" if Rails.env.test? || Rails.env.cucumber?
+    = javascript_include_tag "test/jquery.simulate.js", "test/jquery.simulate.drag-sortable.js" if Rails.env.test?
 
     = csrf_meta_tag
     %link{ :rel=>'author', :href=>'/humans.txt' }
-    :javascript
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-11771751-3']);
-      _gaq.push(['_trackPageview']);
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+    - unless Rails.env.test?
+      :javascript
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-11771751-3']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
     = yield(:head)
   %body
