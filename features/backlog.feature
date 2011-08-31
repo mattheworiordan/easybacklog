@@ -47,5 +47,7 @@ Feature: Backlog
   Scenario: Edit backlog AJAX properties
     When I follow "Acme Backlog"
       And I change the editable text "Acme Backlog" within tag "h2" to "Project Renamed"
+      And I tab forwards
+      And I wait for AJAX for 0.75 seconds
       And I follow "Back to dashboard"
     Then I should see "Project Renamed" within "ul.backlog-list"

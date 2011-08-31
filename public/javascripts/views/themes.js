@@ -5,11 +5,18 @@ App.Views.Themes = {
   Index: Backbone.View.extend({
     tagName: "div",
     className: "themes",
+
+    /* list of items that are hidden whilst re-ordering */
+    reorderSlideUpElements: 'ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions',
+
     childId: function(model) { return 'theme-' + model.get('id'); },
 
     events: {
-      "click ul.themes .actions a.new-theme": "createNew",
-      "keydown ul.themes .actions a.new-theme": "themeKeyPress"
+      "click ul.themes .actions a.new-theme"        : "createNew",
+      "keydown ul.themes .actions a.new-theme"      : "themeKeyPress",
+      "click ul.themes .actions a.reorder-themes"   : "startReorder",
+      "keydown ul.themes .actions a.reorder-themes" : "themeKeyPress",
+      "click .stop-ordering a"                      : "stopReorder"
     },
 
     initialize: function() {
@@ -44,29 +51,31 @@ App.Views.Themes = {
           axis: 'y',
           handle: '.move-theme'
         }).find('.move-theme').disableSelection();
-
-        /* when a user clicks start re-ordering hide all the unnecessary elements include all stories to make the row as shallow as possible */
-        var reorderSlideUpElements = 'ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions';
-        this.$('ul.themes .actions .reorder-themes').click(function(event) {
-          if ($('ul.themes li.theme').length < 2) {
-            var errorView = new App.Views.Warning({ message: 'You need more than one theme to reorder'});
-          } else {
-            parentView.$(reorderSlideUpElements).slideUp(250, function() {
-              parentView.$('.move-theme').css('display', 'block');
-              parentView.$('.stop-ordering').css('display', 'block');
-            });
-          }
-        });
-        /* ordering has finished as user clicked on stop ordering link */
-        this.$('>.stop-ordering').click(function(event) {
-          parentView.$('.move-theme').css('display', 'none');
-          parentView.$('.stop-ordering').css('display', 'none');
-          parentView.$(reorderSlideUpElements).slideDown(250);
-        });
       } else {
         this.$('ul.themes>li.actions').remove();
       }
       return(this);
+    },
+
+    /* Start re-ordering of themes, slide up all unnecessary fields */
+    startReorder: function(event) {
+      event.preventDefault();
+      if ($('ul.themes li.theme').length < 2) {
+        var errorView = new App.Views.Warning({ message: 'You need more than one theme to reorder'});
+      } else {
+        var parentView = this;
+        parentView.$(this.reorderSlideUpElements).slideUp(250, function() {
+          parentView.$('.move-theme').css('display', 'block');
+          parentView.$('.stop-ordering').css('display', 'block');
+        });
+      }
+    },
+
+    stopReorder: function(event) {
+      event.preventDefault();
+      this.$('.move-theme').css('display', 'none');
+      this.$('.stop-ordering').css('display', 'none');
+      this.$(this.reorderSlideUpElements).slideDown(250);
     },
 
     createNew: function(event) {
@@ -81,23 +90,37 @@ App.Views.Themes = {
     },
 
     themeKeyPress: function(event) {
+      var target = $(event.target);
       if (9 == event.keyCode) { // tab pressed
-        if (event.shiftKey) { // <-- moving back
-          event.preventDefault();
-          if (this.$('li.theme').length > 0) { // one or more themes exist
-            var lastTheme = $('li.theme:last');
-            if (lastTheme.has('li.actions a.new-story').length) {
-              lastTheme.find('li.actions a.new-story').focus();
+        event.preventDefault();
+        if (!event.shiftKey) { // --> moving forward
+          if (target.is('a.new-theme')) { // user on new theme button
+            this.$('a.reorder-themes').focus();
+          } else if (target.is('a.reorder-themes')) {
+            $('#backlog-data-area h2.name .data').click(); // focus on backlog name, we're at the last element
+          }
+        } else { // <-- moving back
+          if (target.is('a.new-theme')) { // user on new theme button
+            if (this.$('li.theme').length > 0) { // one or more themes exist
+              var lastTheme = $('li.theme:last');
+              if (lastTheme.has('li.actions a.new-story').length) {
+                lastTheme.find('li.actions a.new-story').focus();
+              } else {
+                lastTheme.find('.theme-data .name .data').click();
+              }
             } else {
-              lastTheme.find('.theme-data .name .data').click();
+              $('#backlog-data-area h2.name .data').click(); // focus on backlog name as no themes exist yet
             }
-          } else {
-            $('#backlog-data-area h2.name .data').click(); // focus on backlog name
+          } else if (target.is('a.reorder-themes')) {
+            this.$('a.new-theme').focus();
           }
         }
-        // do nothing as moving forwards, browser will move to re-order themes button anyway
       } else if (13 == event.keyCode) { // enter pressed
-        this.createNew(event);
+        if (target.is('a.new-theme')) {
+          this.createNew(event);
+        } else if (target.is('a.reorder-themes')) {
+          this.startReorder(event);
+        }
       }
     },
 
@@ -243,15 +266,15 @@ App.Views.Themes = {
         this.$('>.theme-data>.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
         this.updateStatistics(); // force update in case name has changed
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
-        if (!this.$('ul.stories li.actions .new-story').length) {
-          // not yet added the Add Story button as theme not created so add now
-          if (!this.model.isNew()) {
-            this.$('>.stories ul.stories').append(JST['stories/new']()).find('.actions a').focus();
-          }
-        }
       }
       if (eventName == 'change:id') {
         $(this.el).attr('id', 'theme-' + model.get('id'));
+        if (!this.$('ul.stories li.actions .new-story').length) {
+          // not yet added the Add Story button as theme not created so add now
+          if (!this.model.isNew()) {
+            this.$('.stories ul.stories').append(JST['stories/new']()).find('.actions a').focus();
+          }
+        }
       }
     },
 

@@ -1,4 +1,4 @@
-Then /^(?:|I )should see the page title "([^\"]*)"$/ do |title|
+Then /^(?:|I )should see the page title "([^\"]+)"$/ do |title|
   with_scope("head title") do
     page.text.should match(title)
   end
@@ -23,7 +23,7 @@ Then /^(?:|I )should (|not )see the following error messages:$/ do |negation, er
   end
 end
 
-Then /^(?:|I )should (|not )see the (notice|alert|error) "([^"]+)"$/ do |negation, notice_alert, message|
+Then /^(?:|I )should (|not )see the (notice|alert|error|warning) "([^"]+)"$/ do |negation, notice_alert, message|
   notice_alert = 'error' if notice_alert == 'alert' # errors and alerts are stored in the same .error class
   within("#alert-space .#{notice_alert}") do |content|
     if negation.strip == "not"
@@ -34,7 +34,7 @@ Then /^(?:|I )should (|not )see the (notice|alert|error) "([^"]+)"$/ do |negatio
   end
 end
 
-Then /^"([^"]*)"(?: within "([^"]*)")? should be selected for "([^"]*)"$/ do |field, selector, value|
+Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for "([^"]+)"$/ do |field, selector, value|
   with_scope(selector) do
     field = find_field(field)
     field.find(:xpath, ".//option[@selected = 'selected'][text() = '#{value}']").should be_present
@@ -47,18 +47,32 @@ Given /^the standard locales are set up$/ do
 end
 
 Then /take a snapshot(| and show me the page)/ do |show_me|
-  page.driver.render Rails.root.join("tmp/capybara/#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.png")
-  Then %{show me the page} if show_me.present?
+  page.driver.render Rails.root.join("tmp/capybara/#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.png") if page.driver.respond_to?(:render)
+  Then %{show me the page} if !show_me.blank?
 end
 
-Then /^(?:|I )click the element "([^\"]*)"$/ do |selector|
+When /^(?:|I )click the element "([^"]+)"$/ do |selector|
   page.execute_script "$('#{selector.gsub(/'/,'"')}').click()"
 end
 
-Then /^(?:|I )there should be (\d+) elements matching "([^\"]*)"$/ do |quantity, selector|
+Then /^(?:|I )there should be (\d+) elements matching "([^"]+)"$/ do |quantity, selector|
   page.evaluate_script("$('#{selector.gsub(/'/,'"')}').length").to_i.should == quantity.to_i
 end
 
-When /(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?/ do |time|
+When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
+end
+
+Then /^I should (|not )see the text "([^"]+)" within "([^"]+)"$/ do |negation, text, selector|
+  within(selector) do |content|
+    if negation.strip == "not"
+      page.should_not have_content(text)
+    else
+      page.should have_content(text)
+    end
+  end
+end
+
+Then /^within "([^"]*)" there should be a clickable element with the text "([^"]*)"$/ do |selector, text|
+  page.evaluate_script(%{$('#{selector}').find('input[value="#{text}"],button:contains("#{text}"),a:contains("#{text}")').length}).should > 0
 end

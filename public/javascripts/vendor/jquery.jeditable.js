@@ -289,7 +289,7 @@
                         /* prevent canceling if submit was clicked */
                         t = setTimeout(function() {
                             reset.apply(form, [settings, self]);
-                        }, 500);
+                        }, 200);
                     });
                 } else if ('submit' == settings.onblur) {
                     input.blur(function(e) {
