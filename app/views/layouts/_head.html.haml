@@ -5,6 +5,8 @@
     %title
       = (yield(:page_title).length > 0 ? yield(:page_title) : 'Simple backlog management') + ' : easyBacklog'
 
+    %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
+
     = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
     = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test?
 
