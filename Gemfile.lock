@@ -5,15 +5,6 @@ GIT
     ssl_requirement (0.1.0)
 
 GIT
-  remote: git://github.com/sandal/prawn.git
-  revision: 89ba0ebf7ac3705756330a25ab4c88e4c71e36d8
-  tag: 0.10.2
-  submodules: true
-  specs:
-    prawn (0.10.2)
-      pdf-reader (>= 0.8.1)
-
-GIT
   remote: git://github.com/thoughtbot/capybara-webkit.git
   revision: dc49e5f87587a8f735beebca26ec5800c92fb88c
   specs:
@@ -35,7 +26,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    Ascii85 (1.0.0)
+    Ascii85 (1.0.1)
     Selenium (1.1.14)
     ZenTest (4.4.2)
     abstract (1.0.0)
@@ -142,9 +133,12 @@ GEM
     mime-types (1.16)
     nokogiri (1.4.4)
     orm_adapter (0.0.5)
-    pdf-reader (0.9.1)
-      Ascii85 (>= 0.9)
+    pdf-reader (0.10.0)
+      Ascii85 (~> 1.0.0)
     polyglot (0.3.1)
+    prawn (0.12.0)
+      pdf-reader (>= 0.9.0)
+      ttfunk (~> 1.0.2)
     rack (1.2.3)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
@@ -218,6 +212,7 @@ GEM
     timecop (0.3.5)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
+    ttfunk (1.0.2)
     tzinfo (0.3.24)
     warden (1.0.5)
       rack (>= 1.0)
@@ -254,7 +249,7 @@ DEPENDENCIES
   hpricot
   jammit
   jslint_on_rails
-  prawn!
+  prawn (~> 0.12)
   rack-force_domain!
   rails (= 3.0.3)
   rspec (>= 2.0.0)

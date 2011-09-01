@@ -9,7 +9,7 @@ gem 'acts_as_list' # orderable items
 gem 'jammit'
 
 # pdf generation
-gem 'prawn', :git => "git://github.com/sandal/prawn.git", :tag => '0.10.2', :submodules => true
+gem 'prawn', '~> 0.12'
 
 gem 'hoptoad_notifier','>=2.4.8'
 
