@@ -37,7 +37,8 @@ When /^(?:|I )change the current editable text to "([^"]+)"$/ do |text|
   page.execute_script %{$('form input[name=value]:focus').attr('value','#{text}')}
 end
 
-When /^(?:|I )change the editable text "([^"]+)" within tag "([^"]+)" to "([^"]+)"$/ do |text, tag, new_text|
+When /^(?:|I )change the editable text "([^"]+)" within (?:|tag )"([^"]+)" to "([^"]+)"$/ do |text, tag, new_text|
+  tag = selector_to(tag)
   # blur any currently editable input field
   page.execute_script %{$('form input[name=value]').blur()}
   # we should be editing a field, let's double check it exists

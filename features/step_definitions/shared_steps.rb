@@ -63,13 +63,19 @@ When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
 end
 
-Then /^I should (|not )see the text "([^"]+)" within "([^"]+)"$/ do |negation, text, selector|
-  within(selector) do |content|
+Then /^I should (|not )see (?:|the text )"([^"]+)"(?:| within "([^"]+)")$/ do |negation, text, selector|
+  with_scope(selector_to(selector)) do |content|
     if negation.strip == "not"
       page.should_not have_content(text)
     else
       page.should have_content(text)
     end
+  end
+end
+
+When /^(?:|I )press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
+  with_scope(selector_to(selector)) do
+    click_button(button)
   end
 end
 
