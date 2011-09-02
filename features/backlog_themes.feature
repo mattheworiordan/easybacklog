@@ -21,32 +21,32 @@ Feature: Backlog Themes
     When I change the current editable text to "First"
       And I tab forwards and wait for AJAX to update
     # check that generated Theme code is right
-    Then I should see "FIR" within "li.theme:first-child .theme-data .code .data"
-    When I change the editable text "First" within tag ".theme-data .name" to "First modified"
+    Then I should see "FIR" within the "first theme's code"
+    When I change the editable text "First" within "theme name" to "First modified"
       And I tab forwards and wait for AJAX to update
     # check that code is not updated
-    Then I should see "FIR" within "li.theme:first-child .theme-data .code .data"
+    Then I should see "FIR" within the "first theme's code"
 
     Given I create a theme named "Second"
     # check that generated Theme code is right in 2nd theme
-    Then I should see "SEC" within "li.theme:nth-child(2) .theme-data .code .data"
+    Then I should see "SEC" within the "second theme's code"
 
     Given I create a theme named "SecondActuallyThird"
     # check that code is variation on SEC in 3rd theme
-    Then I should see "SE1" within "li.theme:nth-child(3) .theme-data .code .data"
+    Then I should see "SE1" within the "third theme's code"
 
     # we now have 3 themes
-    Then there should be 3 elements matching "li.theme"
+    Then there should be 3 "theme" elements
 
     # delete the middle theme by clicking the icon
-    When I click the element "li.theme:nth-child(2) .theme-actions .delete-theme a"
+    When I click "delete of the second theme"
       # and then the dialog
-      And I press "Delete" within ".ui-dialog"
+      And I press "Delete" within "a dialog"
       And I wait 0.50 seconds
-    Then there should be 2 elements matching "li.theme"
+    Then there should be 2 "theme" elements
 
     # modify theme SecondActuallyThird's code
-    When I change the editable text "SE1" within tag "li.theme .theme-data .code" to "ttt"
+    When I change the editable text "SE1" within "theme code" to "ttt"
       And I tab forwards and wait for AJAX to update
     # theme code should become capitalised
     Then the server should return theme JSON as follows:
@@ -63,29 +63,29 @@ Feature: Backlog Themes
     Then there should be 3 elements matching "li.theme"
 
     # check that errors are displayed, and theme name reverts
-    When I click the element "li.theme:nth-child(2) .theme-data .name .data"
+    When I click on "second theme's name"
       And I change the current editable text to "Theme 1"
       And I tab forwards and wait for AJAX to update
     Then I should see the error "Name has already been taken"
-      And I should see the text "Theme 2" within "li.theme:nth-child(2) .theme-data .name .data"
+      And I should see the text "Theme 2" within the "second theme's name"
 
-    When I click the element "li.theme:nth-child(2) .theme-data .code .data"
+    When I click on "second theme's code"
       # Theme 1's code is auto-generated to TH1 so this will conflict
       And I change the current editable text to "TH1"
       And I tab forwards and wait for AJAX to update
     Then I should see the error "Code has already been taken"
-      And I should see the text "TH2" within "li.theme:nth-child(2) .theme-data .code .data"
+      And I should see the text "TH2" within the "second theme's code"
 
   @javascript
   Scenario: Ensure the tab order works
     # new theme starts with Add theme selected
     Then the focussed element should have the text "Add theme"
-      And within "#backlog-container" there should be a clickable element with the text "Add theme"
-      And within "#backlog-container" there should be a clickable element with the text "Reorder themes"
+      And within the "backlog data area" there should be a clickable element with the text "Add theme"
+      And within the "backlog data area" there should be a clickable element with the text "Reorder themes"
     When I follow "Add theme"
       And I wait 0.25 seconds
     # after clicking new theme, focus shifts to new theme name
-    Then the focussed element should have a parent "li.theme .theme-data .name .data"
+    Then the focussed element should be a "theme name"
       And the focussed element should be an editable text field
     When I tab forwards
     Then the focussed element should have the text "Add theme"
@@ -97,7 +97,7 @@ Feature: Backlog Themes
     Then the focussed element should be an editable text field
     # tab back to the title, wait so that the old field can unblur
     When I tab backwards and wait for AJAX to update
-    Then the focussed element should have a parent "#backlog-data-area h2"
+    Then the focussed element should be a "backlog heading"
 
     # Create theme 1
     When I tab forwards and wait for AJAX to update
@@ -108,7 +108,7 @@ Feature: Backlog Themes
     # Create theme 2
     When I tab forwards
       And press enter and wait for AJAX to update
-    Then the focussed element should have a parent "li.theme .theme-data .name .data"
+    Then the focussed element should be a "theme name"
     When I change the current editable text to "Theme 2"
       And I press enter and wait for AJAX to update
     Then the focussed element should have the text "Add story"
@@ -122,7 +122,7 @@ Feature: Backlog Themes
 
     When I tab backwards 5 times
     # we should be on the first theme text area
-    Then the focussed element should have a parent "ul.themes li.theme:nth-child(1) .theme-data .name"
+    Then the focussed element should be the "name field of the first theme"
 
   @selenium
   Scenario: Reorder themes
@@ -135,10 +135,10 @@ Feature: Backlog Themes
       | Theme 3 |
       | Theme 4 |
     # drag handles are not visible unless you are re-ordering themes
-    Then the element ".theme .move-theme" should not be visible
+    Then the "move theme handle" should not be visible
     When I follow "Reorder themes"
     # drag handles are now visible
-    Then the element ".theme .move-theme" should be visible
+    Then the "move theme handle" should be visible
     When I drag theme "Theme 2" down by 2 positions
     Then take a snapshot and show me the page
     Then theme "Theme 2" should be in position 4

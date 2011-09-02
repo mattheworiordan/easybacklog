@@ -93,7 +93,8 @@ Then /^the focussed element should have the text "([^"]*)"$/ do |text|
   page.evaluate_script(%{$(':focus').is(':contains("#{text}")')}).should be_true
 end
 
-Then /^the focussed element should have a parent "([^"]*)"$/ do |selector|
+Then /^the focussed element should (?:have a parent|be a|be the) "([^"]*)"$/ do |selector|
+  selector = selector_to(selector)
   page.evaluate_script(%{ $(':focus').parents('#{selector}').length }).should > 0
 end
 
@@ -122,7 +123,8 @@ end
 ##
 # Visibility
 #
-Then /^the element "([^"]+)" should (|not )be visible$/ do |selector, negation|
+Then /^the (?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
+  selector = selector_to(selector)
   page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
 end
 

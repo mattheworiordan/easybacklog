@@ -26,14 +26,14 @@ Feature: Backlog
     Then I should see the notice "Backlog was successfully created."
 
     When I follow "Back to dashboard"
-      And I should see "Project X" within "the backlog list"
+      And I should see "Project X" within the "backlog list"
 
     When I follow "Duplicate"
       And I fill in "New backlog name" with "Project Y"
       And I press "Duplicate backlog"
     Then I should see the notice "Backlog was duplicated successfully."
     When I follow "Back to dashboard"
-    Then I should see "Project Y" within "the backlog list"
+    Then I should see "Project Y" within the "backlog list"
 
   @javascript
   Scenario: Delete backlog
@@ -50,4 +50,4 @@ Feature: Backlog
       And I tab forwards
       And I wait for AJAX for 0.75 seconds
       And I follow "Back to dashboard"
-    Then I should see "Project Renamed" within "the backlog list"
+    Then I should see "Project Renamed" within the "backlog list"
