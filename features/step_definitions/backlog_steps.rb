@@ -81,19 +81,11 @@ end
 # Focus manipulation
 #
 
-Then /^the field focussed on should be an? "([^"]+)"$/ do |selector|
-  page.evaluate_script("$(':focus').is('#{selector}')").should == true
-end
-
-Then /^the field focussed on should descend from "([^"]+)"$/ do |selector|
-  page.evaluate_script("$(':focus').parents('#{selector}').length").should > 0
-end
-
 Then /^the focussed element should have the text "([^"]*)"$/ do |text|
   page.evaluate_script(%{$(':focus').is(':contains("#{text}")')}).should be_true
 end
 
-Then /^the focussed element should (?:have a parent|be a|be the) "([^"]*)"$/ do |selector|
+Then /^the focussed element should (?:have a parent|be an?|be the) "([^"]*)"$/ do |selector|
   selector = selector_to(selector)
   page.evaluate_script(%{ $(':focus').parents('#{selector}').length }).should > 0
 end
