@@ -13,9 +13,8 @@ module SelectorHelpers
       '#backlog-data-area h2'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's (code|name)$/
-      params = section.match /(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's (code|name)/
-      position = string_quantity_to_numeric(params[1])
-      "li.theme:nth-child(#{position}) .theme-data .#{params[2]} .data"
+      position = string_quantity_to_numeric($1)
+      "li.theme:nth-child(#{position}) .theme-data .#{$2} .data"
 
     when /^theme name$/
       'li.theme .theme-data .name'
@@ -27,8 +26,7 @@ module SelectorHelpers
       'li.theme'
 
     when /^delete of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
-      params = section.match /delete of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme/
-      position = string_quantity_to_numeric(params[1])
+      position = string_quantity_to_numeric($1)
       "li.theme:nth-child(#{position}) .theme-actions .delete-theme a"
 
     when /^backlog data area$/
