@@ -140,10 +140,8 @@ Feature: Backlog Themes
     # drag handles are now visible
     Then the "move theme handle" should be visible
     When I drag theme "Theme 2" down by 2 positions
-    Then take a snapshot and show me the page
     Then theme "Theme 2" should be in position 4
     When I drag theme "Theme 3" up by 1 position
-    Then take a snapshot and show me the page
     Then theme "Theme 3" should be in position 1
     When I follow "Stop ordering"
       And I wait for AJAX for 2 seconds
