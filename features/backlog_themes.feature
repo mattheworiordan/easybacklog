@@ -151,3 +151,31 @@ Feature: Backlog Themes
       | Theme 1 | TH1   |
       | Theme 4 | TH4   |
       | Theme 2 | TH2   |
+
+  @javascript
+  Scenario: Renumber stories
+    Given the following themes are created:
+        | Theme 1 |
+      And the following stories are created in the first theme:
+        | first   |
+        | second  |
+        | third   |
+    When I change the editable text "TH11" within the "first story's unique ID" to "5"
+      And I change the editable text "TH12" within the "second story's unique ID" to "10"
+      And I change the editable text "TH13" within the "third story's unique ID" to "15"
+      And I tab forwards and wait for AJAX
+    Then the server should return story JSON as follows:
+      | as_a    | unique_id |
+      | first   | 5         |
+      | second  | 10        |
+      | third   | 15        |
+    When I click "re-number of the first theme"
+      And I press "Re-number" within "the dialog"
+      And I wait for 2 seconds
+    Then I should see "TH11" within the "first story's unique ID"
+      And the server should return story JSON as follows:
+        | as_a    | unique_id |
+        | first   | 1         |
+        | second  | 2         |
+        | third   | 3         |
+

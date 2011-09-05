@@ -23,7 +23,6 @@ Given /^a backlog named "([^\"]+)" with (\d+) themes? is set up for "([^\"]+)"$/
   end
 end
 
-
 Given /^(?:|I )create a theme named "([^"]+)"$/ do |name|
   When %{I click the element ".new-theme:contains('Add theme')"}
   # pause for new theme to be created and cursor to move into the correct place
@@ -64,14 +63,12 @@ When /^(?:|I )change the current editable text to "([^"]*)"$/ do |text|
   page.execute_script %{$('form input[name=value]:focus, form textarea[name=value]:focus').simulate('keydown')}
 end
 
-When /^(?:|I )change the editable text "([^"]+)" within (?:|tag )"([^"]+)" to "([^"]*)"$/ do |text, tag, new_text|
+When /^(?:|I )change the editable text "([^"]+)" within (?:|tag |the )"([^"]+)" to "([^"]*)"$/ do |text, tag, new_text|
   tag = selector_to(tag)
-  # blur any currently editable input field
-  page.execute_script %{$('form input[name=value], form textarea[name=value]').blur()}
   # we should be editing a field, let's double check it exists
-  page.evaluate_script(%{$('#{tag}:contains("#{text}")').length}).should > 0
+  page.evaluate_script(%{$('#{tag}:contains(#{text})').length}).should > 0
   # click on the div to bring up the input field
-  page.execute_script %{$('#{tag}:contains("#{text}")>div.data').click();}
+  When %{I click the element "#{tag}:contains(#{text})"}
   sleep 0.25
   When %{I change the current editable text to "#{new_text}"}
 end

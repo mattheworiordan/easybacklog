@@ -12,7 +12,7 @@ module SelectorHelpers
     ##
     # Backlog page
     when /^backlog heading$/
-      '#backlog-data-area h2'
+      '#backlog-data-area h2 .data'
 
     ##
     # Backlog themes
@@ -21,10 +21,10 @@ module SelectorHelpers
       "li.theme:#{position} .theme-data .#{$2} .data"
 
     when /^theme name$/
-      'li.theme .theme-data .name'
+      'li.theme .theme-data .name .data'
 
     when /^theme code$/
-      'li.theme .theme-data .code'
+      'li.theme .theme-data .code .data'
 
     when /^theme$/
       'li.theme'
@@ -33,9 +33,10 @@ module SelectorHelpers
       position = string_quantity_to_numeric($1)
       "li.theme:#{position}"
 
-    when /^delete of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
-      position = string_quantity_to_numeric($1)
-      "li.theme:#{position} .theme-actions .delete-theme a"
+    when /^(re-number|delete) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
+      selector = $1 == 're-number' ? '.re-number-stories' : '.delete-theme'
+      position = string_quantity_to_numeric($2)
+      "li.theme:#{position} .theme-actions #{selector} a"
 
     when /^backlog data area$/
       '#backlog-container'
@@ -55,7 +56,7 @@ module SelectorHelpers
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story's (.+)$/
       position = string_quantity_to_numeric($1)
       selector = case $2
-      when 'code'
+      when /code|unique id/i
         '.unique-id .data'
       when 'days'
         '.days-formatted .data'
