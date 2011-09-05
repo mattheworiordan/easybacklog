@@ -8,7 +8,7 @@
     %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
 
     = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
-    = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test?
+    = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.development?
 
     = include_stylesheets :common, :media => 'all'
     /[if lt IE 9]
@@ -18,7 +18,7 @@
     = hoptoad_javascript_notifier unless Rails.env.test?
 
     = # Javascript library to simulate drag & drop re-ordering of lists
-    = javascript_include_tag "test/jquery.simulate.js", "test/jquery.simulate.drag-sortable.js" if Rails.env.test?
+    = javascript_include_tag 'test/jquery.simulate.js', 'test/jquery.simulate.drag-sortable.js', 'test/jquery.helpers.js' if Rails.env.test? || Rails.env.development?
 
     = csrf_meta_tag
     %link{ :rel=>'author', :href=>'/humans.txt' }
