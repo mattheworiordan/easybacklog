@@ -49,7 +49,7 @@ Feature: Company
       And the "Name" field should contain "News Corporation"
       And the "Default day rate" field should contain "600"
       And the "Default velocity achieved per day" field should contain "4"
-      And "What is your preferred language setting?" should be selected for "British English"
+      And "British English" should be selected for "What is your preferred language setting?"
       And the "By default, use the 50/90 estimation method" checkbox should be checked
     When I fill in "Name" with "News Corporation2"
       And I fill in "Default day rate" with "602"
@@ -64,6 +64,6 @@ Feature: Company
       And the "Name" field should contain "News Corporation2"
       And the "Default day rate" field should contain "602"
       And the "Default velocity achieved per day" field should contain "2"
-      And "What is your preferred language setting?" should be selected for "American English"
+      And "American English" should be selected for "What is your preferred language setting?"
       And the "By default, use the 50/90 estimation method" checkbox should not be checked
 

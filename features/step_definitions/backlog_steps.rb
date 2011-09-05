@@ -8,10 +8,21 @@ Given /^a standard backlog named "([^\"]+)" is set up for "([^\"]+)"$/ do |backl
 
   backlog = Factory.create(:backlog, :company => company, :name => backlog_name)
   (1..2).each do |index|
-    theme = Factory.create(:theme, :backlog => backlog)
+    theme = Factory.create(:theme, :backlog => backlog, :name => "Theme #{index}")
     (1..3).each { |ac| Factory.create(:acceptance_criterion, :story => Factory.create(:story, :theme => theme) ) }
   end
 end
+
+Given /^a backlog named "([^\"]+)" with (\d+) themes? is set up for "([^\"]+)"$/ do |backlog_name, theme_quantity, company_name|
+  company = Company.find_by_name(company_name)
+  raise "Company #{company_name} does not exist." if company.blank?
+
+  backlog = Factory.create(:backlog, :company => company, :name => backlog_name)
+  theme_quantity.to_i.times do |index|
+    theme = Factory.create(:theme, :backlog => backlog, :name => "Theme #{index+1}")
+  end
+end
+
 
 Given /^(?:|I )create a theme named "([^"]+)"$/ do |name|
   When %{I click the element ".new-theme:contains('Add theme')"}
@@ -28,25 +39,50 @@ Given /^the following themes are created:$/ do |table|
   end
 end
 
+Given /^(?:|I )create a story with as set to "([^"]+)" in the ([\w\d]+) theme$/ do |as_value, position|
+  Given %{the focus is on the "#{position} theme's add story button"}
+  When %{I press enter and wait for AJAX}
+  And %{I change the current editable text to "#{as_value}"}
+  And %{I tab forwards and wait for AJAX}
+end
+
+Given /^the following stories are created in the ([\w\d]+) theme$/ do |position, table|
+  table.raw.each do |row|
+    as_value = row[0]
+    Given %{I create a story with as set to "#{as_value}" in the #{position} theme}
+  end
+end
+
 ##
 # Editable text
 #
 
-When /^(?:|I )change the current editable text to "([^"]+)"$/ do |text|
-  page.evaluate_script("$('form input[name=value]:focus').length").should > 0
-  page.execute_script %{$('form input[name=value]:focus').attr('value','#{text}')}
+When /^(?:|I )change the current editable text to "([^"]*)"$/ do |text|
+  page.evaluate_script("$('form input[name=value]:focus, form textarea[name=value]:focus').length").should > 0
+  page.execute_script %{$('form input[name=value]:focus, form textarea[name=value]:focus').attr('value','#{text}')}
+  # trigger key down as elements such as auto-complete need this event fired
+  page.execute_script %{$('form input[name=value]:focus, form textarea[name=value]:focus').simulate('keydown')}
 end
 
-When /^(?:|I )change the editable text "([^"]+)" within (?:|tag )"([^"]+)" to "([^"]+)"$/ do |text, tag, new_text|
+When /^(?:|I )change the editable text "([^"]+)" within (?:|tag )"([^"]+)" to "([^"]*)"$/ do |text, tag, new_text|
   tag = selector_to(tag)
   # blur any currently editable input field
-  page.execute_script %{$('form input[name=value]').blur()}
+  page.execute_script %{$('form input[name=value], form textarea[name=value]').blur()}
   # we should be editing a field, let's double check it exists
   page.evaluate_script(%{$('#{tag}:contains("#{text}")').length}).should > 0
   # click on the div to bring up the input field
   page.execute_script %{$('#{tag}:contains("#{text}")>div.data').click();}
   sleep 0.25
   When %{I change the current editable text to "#{new_text}"}
+end
+
+Then /^the editable text value should be "([^"]*)"$/ do |text|
+  page.evaluate_script(%{ $('form input[name=value]:focus, form textarea[name=value]:focus').val(); }).should == text
+end
+
+Then /^I should see the following auto\-complete options:$/ do |expected_table|
+  actual_table = table(tableish('.ui-autocomplete li.ui-menu-item', 'a'))
+  expected_table.diff!(actual_table)
 end
 
 ##
@@ -58,7 +94,7 @@ When /^(?:|I )tab (forwards|backwards)(?:| (\d+) times?)$/ do |forward_or_back, 
   quantity.to_i.times do
     shiftKey = forward_or_back == "forwards" ? 'false' : 'true'
     page.execute_script "$(':focus').simulate('keydown', { keyCode: $.simulate.VK_TAB, shiftKey: #{shiftKey} })"
-    sleep 0.1
+    sleep 0.275 # 0.25s for an editable text field to be change back after losing focus
   end
 end
 
@@ -76,12 +112,18 @@ When /^(?:|I )press enter and wait for AJAX(?:| to update)$/ do
   sleep 0.75
 end
 
+When /^(?:|I )press the (down|up|right|left) arrow$/ do |direction|
+  direction = "VK_#{direction.upcase}"
+  page.execute_script page.execute_script "$(':focus').simulate('keydown', { keyCode: $.simulate.#{direction} })"
+end
 
 ##
 # Focus manipulation
 #
 
 Then /^the focussed element should have the text "([^"]*)"$/ do |text|
+  # ensure we have not incorrectly focussed on the body meaning it will contain the text anyway
+  page.evaluate_script(%{$(':focus').is('body, header')}).should be_false
   page.evaluate_script(%{$(':focus').is(':contains("#{text}")')}).should be_true
 end
 
@@ -91,7 +133,26 @@ Then /^the focussed element should (?:have a parent|be an?|be the) "([^"]*)"$/ d
 end
 
 Then /^the focussed element should be an editable text field$/ do
-  page.evaluate_script(%{$(':focus').is('input[name=value]')}).should be_true
+  page.evaluate_script(%{$(':focus').is('input[name=value],textarea[name=value]')}).should be_true
+end
+
+Given /^the focus is on the "([^"]*)"$/ do |selector|
+  selector = selector_to(selector)
+  page.evaluate_script(%{ $('#{selector}').length }).should > 0
+  page.execute_script(%{
+    $(':focus').blur();
+    if ($('#{selector}').is('a,button,input,textarea,select')) {
+      $('#{selector}').focus();
+    } else {
+      // could be editable text so we need to click for it to get focus
+      if (!$('#{selector}').has('input[name=value], textarea[name=value]')) {
+        $('#{selector}').click();
+      } else {
+        $('#{selector}').find('input[name=value], textarea[name=value]').focus();
+      }
+    }
+  })
+  sleep 0.1 # allow for editable text to appear if appropriate
 end
 
 ##
@@ -100,24 +161,56 @@ end
 
 When /^I drag theme "([^"]+)" (down|up) by (\d+) positions?$/ do |theme_name, direction, positions|
   move_by = direction == 'up' ? -positions.to_i : positions.to_i
-  page.execute_script(%{
+  page.evaluate_script(%{ $('ul.themes li.theme:has(.theme-data .name .data:contains("#{theme_name}"))').length }).should > 0
+  page.execute_script %{
     $('ul.themes li.theme:has(.theme-data .name .data:contains("#{theme_name}"))').
       simulateDragSortable({move:#{move_by}, handle:'.move-theme', listItem:'li.theme', placeHolder:'.target-order-highlight'});
-  })
+  }
   sleep 0.1
 end
 
-Then /^theme "([^"]+)" should be in position (\d+)$/ do |theme_name, position|
+Then /^(?:|the )theme "([^"]+)" should be in position (\d+)$/ do |theme_name, position|
   page.evaluate_script(%{$('ul.themes li.theme:has(.theme-data .name .data:contains("#{theme_name}"))').attr('id') ===
     $('ul.themes li.theme:nth-child(#{position})').attr('id')}).should be_true
 end
 
+When /^I drag story with as equal to "([^"]+)" (down|up) by (\d+) positions?$/ do |story_as, direction, positions|
+  move_by = direction == 'up' ? -positions.to_i : positions.to_i
+  page.evaluate_script(%{ $('ul.stories li.story:has(".user-story .as-a .data:contains(#{story_as})")').length }).should > 0
+  page.execute_script %{
+    $('li.story:has(".user-story .as-a .data:contains(#{story_as})")').
+      simulateDragSortable({ move: #{move_by}, handle: '.move-story a', listItem: '.story', placeHolder: '.target-order-highlight' });
+  }
+  sleep 0.1
+end
+
+Then /^(?:|the )story with as equal to "([^"]+)" should be in position (\d+)$/ do |story_as, position|
+  page.evaluate_script(%{$('li.story:has(".user-story .as-a .data:contains(#{story_as})")').attr('id') ===
+    $('li.story:nth-child(#{position})').attr('id')}).should be_true
+end
+
+Then /^story with as equal to "([^"]*)" should(| not) be in theme "([^"]*)"$/ do |story_as, negation, theme_name|
+  theme_scope = "li.theme:has(.name .data:contains(#{theme_name}))"
+  story_selector = "li.story:has(.as-a .data:contains(#{story_as}))"
+  matching = page.evaluate_script("$('#{theme_scope} #{story_selector}').length")
+  if (negation == ' not')
+    matching.should == 0
+  else
+    matching.should > 0
+  end
+end
+
 ##
-# Visibility
+# Visibility & colour
 #
 Then /^the (?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
   selector = selector_to(selector)
   page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
+end
+
+Then /^the story with as equal to "([^"]*)" should be (red|green)$/ do |as_value, colour|
+  color = colour == 'red' ? 'rgb(255, 0, 0)' : 'rgb(0, 255, 0)'
+  page.evaluate_script("$('li.story::has(.user-story .as-a .data:contains(#{as_value}))').css('backgroundColor')").should == color
 end
 
 ##
@@ -140,6 +233,26 @@ Then /^the server should return theme JSON as follows:$/ do |table|
       var data = [columns];
       _(themes).each(function(theme) {
         data.push(_(columns).map(function(key) { return theme.get(key) }));
+      });
+      return data;
+    })();
+  JS
+  table.diff!(data)
+end
+
+Then /^the server should return story JSON as follows:$/ do |table|
+  Then %{reload the backlog JSON from the server}
+  columns = table.column_names.map { |d| "'#{d}'"}.join(',')
+  data = page.evaluate_script <<-JS
+    (function() {
+      var columns = [#{columns}];
+      var data = [columns];
+      var themes = App.Collections.Backlogs.at(0).Themes().sortBy(function(e) { return e.get('position') });
+      _(themes).each(function(theme) {
+        var stories = theme.Stories().sortBy(function(e) { return e.get('position') });
+        _(stories).each(function(story) {
+          data.push(_(columns).map(function(key) { return story.get(key) ? story.get(key) + '' : '' }));
+        });
       });
       return data;
     })();

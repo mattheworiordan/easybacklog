@@ -6,6 +6,7 @@ Factory.define :backlog do |a|
   a.name { Factory.next(:backlog_name) }
   a.rate 800
   a.velocity 3
+  a.use_50_90 true
   a.association :company, :factory => :company
   a.association :author, :factory => :user
   a.association :last_modified_user, :factory => :user

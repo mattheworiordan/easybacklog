@@ -17,6 +17,10 @@ module NavigationHelpers
     when /the new account page/
       '/companies/new'
 
+    when /the backlog "([^"]+)" page/
+      backlog = Backlog.find_by_name($1)
+      company_backlog_path(backlog.company, backlog)
+
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:
     #

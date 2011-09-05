@@ -39,17 +39,21 @@ Then /^(?:|I )should (|not )see the (notice|alert|error|warning) "([^"]+)"$/ do 
   end
 end
 
-Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for "([^"]+)"$/ do |field, selector, value|
+Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for "([^"]+)"$/ do |value, selector, field|
   with_scope(selector_to(selector)) do
     field = find_field(field)
-    field.find(:xpath, ".//option[@selected = 'selected'][text() = '#{value}']").should be_present
+    field.find(:xpath, ".//option[@selected][text() = '#{value}']").should be_present
   end
 end
 
 # not the same as press, as press relies on there being a button
-When /^(?:|I )click (?:|the element |on )"([^"]+)"$/ do |selector|
+When /^(?:|I )click (?:|the element |on |on the )"([^"]+)"(?: within (?:|the )"([^"]+)")?$/ do |selector, scope|
   selector = selector_to(selector)
-  page.execute_script "$('#{selector.gsub(/'/,'"')}').click()"
+  scope = scope.blank? ? '' : "#{selector_to(scope)} "
+  page.execute_script "$(':focus').blur()"
+  sleep 0.25
+  page.evaluate_script("$('#{scope}#{selector.gsub(/'/,'"')}').length").should > 0
+  page.execute_script "$('#{scope}#{selector.gsub(/'/,'"')}').mousedown().click()"
 end
 
 Then /^(?:|I )there should be (\d+) (?:|elements matching )"([^"]+)"(?:| elements)$/ do |quantity, selector|
@@ -64,4 +68,8 @@ end
 
 When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
+end
+
+Then /^start the debugger$/ do
+  debugger
 end
