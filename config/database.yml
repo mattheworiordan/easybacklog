@@ -3,6 +3,7 @@
 development:
   adapter: postgresql
   database: easybacklog_dev
+  host: localhost
   pool: 5
   timeout: 5000
 
@@ -12,6 +13,7 @@ development:
 test: &test
   adapter: postgresql
   database: easybacklog_test
+  host: localhost
   pool: 5
   timeout: 5000
   min_messages: WARNING
