@@ -46,7 +46,7 @@ Given /^(?:|I )create a story with as set to "([^"]+)" in the ([\w\d]+) theme$/ 
   And %{I tab forwards and wait for AJAX}
 end
 
-Given /^the following stories are created in the ([\w\d]+) theme$/ do |position, table|
+Given /^the following stories are created in the ([\w\d]+) theme:$/ do |position, table|
   table.raw.each do |row|
     as_value = row[0]
     Given %{I create a story with as set to "#{as_value}" in the #{position} theme}

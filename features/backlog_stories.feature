@@ -74,7 +74,7 @@ Feature: Backlog Stories
 
   @javascript
   Scenario: Delete and duplicate a story
-    Given the following stories are created in the first theme
+    Given the following stories are created in the first theme:
       | first   |
       | second  |
       | third   |
@@ -101,7 +101,7 @@ Feature: Backlog Stories
 
   @javascript
   Scenario: Ensure validations are working
-    Given the following stories are created in the first theme
+    Given the following stories are created in the first theme:
       | first   |
       | second  |
 
@@ -135,11 +135,11 @@ Feature: Backlog Stories
   @selenium
   Scenario: Re-order stories and move stories to new themes
     # to identify stories we set the "as" field and use that find stories when dragging
-    Given the following stories are created in the first theme
+    Given the following stories are created in the first theme:
       | first   |
       | second  |
       | third   |
-    And the following stories are created in the second theme
+    And the following stories are created in the second theme:
       | fourth  |
       | fifth   |
     When I drag story with as equal to "first" down by 1 position
@@ -179,8 +179,8 @@ Feature: Backlog Stories
       | first   | 00ff00  |
 
   @javascript
-  Scenario: Check that as a drop down works
-    Given the following stories are created in the first theme
+  Scenario: Check that as auto-complete drop down works
+    Given the following stories are created in the first theme:
       | first   |
       | second  |
       | third   |
@@ -196,3 +196,22 @@ Feature: Backlog Stories
     When I press the down arrow
       And I press enter
     Then I should see "third" within the "first story's as field"
+
+  @javascript
+  Scenario: Theme and story added immediately after each other
+    # there was a bug where adding a story straight after a theme would result in the scoring not working, this just checks that
+    When I follow "Add theme"
+      And I wait for 0.5 seconds
+      And I change the current editable text to "Theme 4"
+      And I tab forwards and wait for AJAX
+    Then the focussed element should have the text "Add story"
+      When I press enter and wait for AJAX
+      And I change the current editable text to "editor"
+      And I click on the "first story's 50 score"
+      And I change the current editable text to "3"
+      And I tab forwards and wait for AJAX
+      And I click on the "first story's 90 score"
+      And I change the current editable text to "5"
+      And I tab forwards and wait for AJAX
+    Then I should see "£1,177" within the "first story's cost"
+      And I should see "1.5" within the "first story's days"

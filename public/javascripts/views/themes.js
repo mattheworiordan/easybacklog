@@ -26,12 +26,12 @@ App.Views.Themes = {
     },
 
     render: function() {
-      var parentView = this;
+      var that = this;
       $(this.el).html(JST['themes/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
-        var view = new App.Views.Themes.Show({ model: model, id: parentView.childId(model), use5090estimates: parentView.use5090estimates });
-        parentView.$('>ul').append(view.render().el);
+        var view = new App.Views.Themes.Show({ model: model, id: that.childId(model), use5090estimates: that.use5090estimates });
+        that.$('>ul').append(view.render().el);
       });
 
       this.$('ul.themes').append(JST['themes/new']());
@@ -63,10 +63,10 @@ App.Views.Themes = {
       if ($('ul.themes li.theme').length < 2) {
         var errorView = new App.Views.Warning({ message: 'You need more than one theme to reorder'});
       } else {
-        var parentView = this;
-        parentView.$(this.reorderSlideUpElements).slideUp(250, function() {
-          parentView.$('.move-theme').css('display', 'block');
-          parentView.$('.stop-ordering').css('display', 'block');
+        var that = this;
+        this.$(this.reorderSlideUpElements).slideUp(250, function() {
+          that.$('.move-theme').css('display', 'block');
+          that.$('.stop-ordering').css('display', 'block');
         });
       }
     },
@@ -82,10 +82,10 @@ App.Views.Themes = {
       event.preventDefault();
       var model = new Theme();
       this.collection.add(model);
-      this.$('ul.themes li:last').before(new App.Views.Themes.Show({ model: model}).render().el);
-      var this_view = this;
-      this_view.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
-        $(this_view.el).find('ul.themes li.theme:last>.theme-data .name .data').click();
+      this.$('ul.themes li:last').before(new App.Views.Themes.Show({ model: model, use5090estimates: this.use5090estimates }).render().el);
+      var that = this;
+      this.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
+        $(that.el).find('ul.themes li.theme:last>.theme-data .name .data').click();
       });
     },
 
