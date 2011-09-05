@@ -40,4 +40,11 @@ Feature: Authentication
 
   Scenario: Login
     Given a user named "John" is registered
-      And I am signed in as "John"
+    When I am on the home page
+      And I follow "Log in"
+      And I press "Log in"
+    Then I should see the error "Invalid email or password."
+    When I fill in "Email" with "John@acme.com"
+      And I fill in "Password" with "password"
+      And I press "Log in"
+    Then I should see the notice "Signed in successfully."
