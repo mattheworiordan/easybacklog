@@ -57,3 +57,18 @@ Feature: Backlog Other Functionality
 
   @javascript
   Scenario: Check that snapshots work
+    When I click on the "add snapshot button"
+      And I fill in "Please name your snapshot:" with "Snapshot 1"
+      And I press "Create Snapshot" within "the dialog"
+      And I wait for 2 seconds
+    Then I should see the notice "New snapshot created"
+    Then "Working version (current)" should be selected for "snapshot drop down"
+    When I select "Snapshot 1" from "Snapshot:"
+      And I wait 1 second
+    Then "Snapshot 1" should be selected for "snapshot drop down"
+      And there should be 1 "snapshot icon"
+      And there should be 0 "add theme buttons"
+      And there should be 0 "add story buttons"
+      And there should be 0 "delete theme buttons"
+    When I click on the "first theme's name"
+    Then there should be 0 "editable text fields"

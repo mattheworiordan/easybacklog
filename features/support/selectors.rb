@@ -17,6 +17,15 @@ module SelectorHelpers
     when /^backlog totals$/
       '#backlog-data-area .backlog-stats .output'
 
+    when /^add snapshot button$/
+      '#backlog-data-area .snapshot .new a'
+
+    when /^snapshot icon$/
+      '#backlog-data-area .snapshot .locked'
+
+    when /^snapshot drop down$/
+      '#backlog-data-area #snapshot-selector'
+
     ##
     # Backlog themes
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's (code|name|totals)$/
@@ -32,6 +41,9 @@ module SelectorHelpers
 
     when /^theme$/
       'li.theme'
+
+    when /^add theme buttons?$/
+      'ul.themes li.actions a.new-theme'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
       position = string_quantity_to_numeric($1)
@@ -98,6 +110,12 @@ module SelectorHelpers
     when /^story$/
       'ul.stories li.story'
 
+    when /^add story buttons?$/
+      'ul.themes ul.stories li.actions a.new-story'
+
+    when /^delete theme buttons?$/
+      'ul.themes li.theme .theme-actions .delete-theme a'
+
     ##
     # Generic selectors
     when /^(a|the) dialog(?:| box)$/
@@ -109,6 +127,9 @@ module SelectorHelpers
     when /^(red|green) colou?r picker box$/
       color = ($1 == 'red' ? '#ff0000' : '#00ff00')
       ".color-picker:visible li.color-box[title=#{color}]"
+
+    when /^editable text fields?$/
+      'input[name=value],textarea[name=value]'
 
     else
       # no mapping exists, assume section is a CSS/XPath selector
