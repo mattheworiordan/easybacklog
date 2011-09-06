@@ -14,11 +14,15 @@ module SelectorHelpers
     when /^backlog heading$/
       '#backlog-data-area h2 .data'
 
+    when /^backlog totals$/
+      '#backlog-data-area .backlog-stats .output'
+
     ##
     # Backlog themes
-    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's (code|name)$/
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's (code|name|totals)$/
       position = string_quantity_to_numeric($1)
-      "li.theme:#{position} .theme-data .#{$2} .data"
+      selector = $2 == 'totals' ? '.theme-stats .metrics' : ".theme-data .#{$2} .data"
+      "li.theme:#{position} #{selector}"
 
     when /^theme name$/
       'li.theme .theme-data .name .data'
@@ -53,8 +57,9 @@ module SelectorHelpers
 
     ##
     # Backlog stories
-    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story's (.+)$/
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story's (.+?)(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
       position = string_quantity_to_numeric($1)
+      theme_scope = $3.blank? ? '' : "li.theme:#{string_quantity_to_numeric($3)} "
       selector = case $2
       when /code|unique id/i
         '.unique-id .data'
@@ -83,9 +88,9 @@ module SelectorHelpers
       when /colou?r picker/
         '.color-picker-icon a'
       else
-        raise "Invalid story field #{$2}"
+        raise "Invalid story field '#{$2}'"
       end
-      "li.story:#{position} #{selector}"
+      "#{theme_scope}li.story:#{position} #{selector}"
 
     when /^story code$/
       'li.story .unique-id'

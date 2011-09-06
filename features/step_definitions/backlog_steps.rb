@@ -13,13 +13,18 @@ Given /^a standard backlog named "([^\"]+)" is set up for "([^\"]+)"$/ do |backl
   end
 end
 
-Given /^a backlog named "([^\"]+)" with (\d+) themes? is set up for "([^\"]+)"$/ do |backlog_name, theme_quantity, company_name|
+Given /^a backlog named "([^\"]+)" with (\d+) themes? (?:and (\d+) stor(?:y|ies) in each theme )?is set up for "([^\"]+)"$/ do |backlog_name, theme_quantity, story_quantity, company_name|
   company = Company.find_by_name(company_name)
   raise "Company #{company_name} does not exist." if company.blank?
 
   backlog = Factory.create(:backlog, :company => company, :name => backlog_name)
   theme_quantity.to_i.times do |index|
     theme = Factory.create(:theme, :backlog => backlog, :name => "Theme #{index+1}")
+    unless story_quantity.blank?
+      story_quantity.to_i.times do |story_index|
+        Factory.create(:story, :theme => theme, :as_a => "Story #{story_index+1}", :score_50 => nil, :score_90 => nil)
+      end
+    end
   end
 end
 
