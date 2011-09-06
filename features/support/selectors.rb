@@ -69,7 +69,7 @@ module SelectorHelpers
 
     ##
     # Backlog stories
-    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story's (.+?)(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story(?:'s )?(.+?)?(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
       position = string_quantity_to_numeric($1)
       theme_scope = $3.blank? ? '' : "li.theme:#{string_quantity_to_numeric($3)} "
       selector = case $2
@@ -99,6 +99,9 @@ module SelectorHelpers
         '.move-story a'
       when /colou?r picker/
         '.color-picker-icon a'
+      when nil
+        # matching the entire story element
+        ''
       else
         raise "Invalid story field '#{$2}'"
       end
@@ -117,7 +120,19 @@ module SelectorHelpers
       'ul.themes li.theme .theme-actions .delete-theme a'
 
     ##
-    # Generic selectors
+    # Acceptance criteria
+    when /^add acceptance criteria button within (?:the )?(.*)$/
+      "#{selector_to($1)} ul.acceptance-criteria li.actions a.new-acceptance-criterion"
+
+    when /^acceptance criteri(?:on|a)$/
+      'ul.acceptance-criteria li.criterion .data'
+
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) acceptance criteri(?:on|a)$/
+      position = string_quantity_to_numeric($1)
+      "ul.acceptance-criteria li.criterion:#{position} .data"
+
+    ##
+    # Generic and other selectors
     when /^(a|the) dialog(?:| box)$/
       '.ui-dialog'
 

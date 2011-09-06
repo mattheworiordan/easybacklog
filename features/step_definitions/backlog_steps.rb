@@ -202,6 +202,21 @@ Then /^story with as equal to "([^"]*)" should(| not) be in theme "([^"]*)"$/ do
   end
 end
 
+When /^I drag acceptance criterion "([^"]+)" (down|up) by (\d+) positions?$/ do |criterion, direction, positions|
+  move_by = direction == 'up' ? -positions.to_i : positions.to_i
+  page.evaluate_script(" $('ul.acceptance-criteria li.criterion:has(.data:contains(#{criterion}))').length ").should > 0
+  page.execute_script %{
+    $('ul.acceptance-criteria li.criterion:has(.data:contains(#{criterion}))').
+      simulateDragSortable({ move: #{move_by}, handle: '.index', listItem: '.criterion', placeHolder: '.target-order-highlight' });
+  }
+  sleep 0.1
+end
+
+Then /^(?:|the )acceptance criterion "([^"]+)" should be in position (\d+)$/ do |criterion, position|
+  page.evaluate_script(%{$('li.criterion:has(.data:contains(#{criterion}))').attr('id') ===
+    $('li.criterion:nth-child(#{position})').attr('id')}).should be_true
+end
+
 ##
 # Visibility & colour
 #
@@ -254,6 +269,29 @@ Then /^the server should return story JSON as follows:$/ do |table|
         var stories = theme.Stories().sortBy(function(e) { return e.get('position') });
         _(stories).each(function(story) {
           data.push(_(columns).map(function(key) { return story.get(key) ? story.get(key) + '' : '' }));
+        });
+      });
+      return data;
+    })();
+  JS
+  table.diff!(data)
+end
+
+Then /^the server should return acceptance criteria JSON as follows:$/ do |table|
+  Then %{reload the backlog JSON from the server}
+  columns = table.column_names.map { |d| "'#{d}'"}.join(',')
+  data = page.evaluate_script <<-JS
+    (function() {
+      var columns = [#{columns}];
+      var data = [columns];
+      var themes = App.Collections.Backlogs.at(0).Themes().sortBy(function(e) { return e.get('position') });
+      _(themes).each(function(theme) {
+        var stories = theme.Stories().sortBy(function(e) { return e.get('position') });
+        _(stories).each(function(story) {
+          var acceptanceCriteria = story.AcceptanceCriteria().sortBy(function(e) { return e.get('position') });
+          _(acceptanceCriteria).each(function(criterion) {
+            data.push(_(columns).map(function(key) { return criterion.get(key) ? criterion.get(key) + '' : '' }));
+          });
         });
       });
       return data;
