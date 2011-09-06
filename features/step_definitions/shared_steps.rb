@@ -39,7 +39,7 @@ Then /^(?:|I )should (|not )see the (notice|alert|error|warning) "([^"]+)"$/ do 
   end
 end
 
-Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for "([^"]+)"$/ do |value, selector, field|
+Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for (?:the )?"([^"]+)"$/ do |value, selector, field|
   supports_javascript = page.evaluate_script('true') rescue false
   if (supports_javascript)
     scope = selector_to(selector)

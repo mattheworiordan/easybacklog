@@ -150,7 +150,7 @@ Feature: Backlog Stories
       And the story with as equal to "first" should be in position 3
     When I click on the "second story's drag handle" within the "second theme"
     Then I should see "Move story" within "the dialog"
-      And "Theme 2" should be selected for "theme-target"
+      And "Theme 2" should be selected for the "move story dialog theme drop down"
     When I select "Theme 1" from "theme-target"
       And I press "Move" within "the dialog"
     Then story with as equal to "fifth" should be in position 4

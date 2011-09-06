@@ -121,6 +121,9 @@ module SelectorHelpers
     when /^(a|the) dialog(?:| box)$/
       '.ui-dialog'
 
+    when /^move story dialog theme drop down$/
+      '.ui-dialog select#theme-target'
+
     when /^colou?r picker$/
       '.color-picker'
 
