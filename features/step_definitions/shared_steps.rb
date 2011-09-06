@@ -40,9 +40,18 @@ Then /^(?:|I )should (|not )see the (notice|alert|error|warning) "([^"]+)"$/ do 
 end
 
 Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for "([^"]+)"$/ do |value, selector, field|
-  with_scope(selector_to(selector)) do
-    field = find_field(field)
-    field.find(:xpath, ".//option[@selected][text() = '#{value}']").should be_present
+  supports_javascript = page.evaluate_script('true') rescue false
+  if (supports_javascript)
+    scope = selector_to(selector)
+    field = selector_to(field)
+    page.evaluate_script("$('#{scope} #{field} option:contains(#{value}):selected').length").should > 0
+  else
+    # found this method to be less reliable than JQuery :selected as unless selected is explicitly defined
+    #  for the option, this XPath returns not selected
+    with_scope(selector_to(selector)) do
+      field = find_field(selector_to(field))
+      field.find(:xpath, ".//option[@selected][text() = '#{value}']").should be_present
+    end
   end
 end
 
@@ -70,6 +79,6 @@ When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
 end
 
-Then /^start the debugger$/ do
+Then /^start (?:the debugger|debugging)$/ do
   debugger
 end

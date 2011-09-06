@@ -61,12 +61,6 @@ When /^(?:|I )fill in the following(?: within "([^"]*)")?:$/ do |selector, field
   end
 end
 
-When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
-  with_scope(selector) do
-    select(value, :from => field)
-  end
-end
-
 When /^(?:|I )check "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
   with_scope(selector) do
     check(field)
