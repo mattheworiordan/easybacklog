@@ -21,19 +21,19 @@
     - unless @backlog.editable?
       .locked{ :class => 'ui-icon ui-icon-locked' }
     .title
-      Snapshot:
+      =label_tag 'snapshot-selector', 'Snapshot:'
     .selector
       =form_tag :url => '#' do
         %select#snapshot-selector
           %option
             Working version (current)
-            %optgroup{ :label => "Snapshots..." }
-              - if @backlog.snapshot_master.blank?
-                - @backlog.snapshots.each do |snapshot|
-                  %option{:value => snapshot.id}= "#{snapshot.name}, #{backlog_date snapshot}"
-              - else
-                - @backlog.snapshot_master.snapshots.each do |snapshot|
-                  %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{backlog_date snapshot}"
+          %optgroup{ :label => "Snapshots..." }
+            - if @backlog.snapshot_master.blank?
+              - @backlog.snapshots.each do |snapshot|
+                %option{:value => snapshot.id}= "#{snapshot.name}, #{backlog_date snapshot}"
+            - else
+              - @backlog.snapshot_master.snapshots.each do |snapshot|
+                %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{backlog_date snapshot}"
     - if @backlog.editable?
       .new.vtip{ :title => 'Create new snapshot' }
         %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}

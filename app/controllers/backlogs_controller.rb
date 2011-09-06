@@ -62,7 +62,8 @@ class BacklogsController < ApplicationController
     @backlog = current_company.backlogs.find(params[:id])
     name = params[:name]
     new_snapshot = @backlog.create_snapshot(name)
-    redirect_to snapshot_company_backlog_path(@backlog.company, @backlog, new_snapshot)
+    flash[:notice] = "New snapshot created"
+    redirect_to company_backlog_path(@backlog.company, @backlog)
   end
 
   # only supports JSON updates

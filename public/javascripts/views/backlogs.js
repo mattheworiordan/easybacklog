@@ -191,8 +191,6 @@ App.Views.Backlogs = {
                 '<span class="progress-icon"></span>');
               $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
               $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').remove();
-              var dialog = this;
-              _.delay(function() { $(dialog).dialog("close"); }, 2000);
             }
           },
 
