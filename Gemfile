@@ -43,6 +43,7 @@ group :test, :cucumber do
   gem 'capybara-webkit', :git => 'git://github.com/thoughtbot/capybara-webkit.git'
   gem 'timecop'
   gem 'launchy', '>=2'
+  gem 'pdf-reader'
 end
 
 group :development do

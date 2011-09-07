@@ -311,3 +311,15 @@ Then /^(?:I |)should(not |) see "([^"]+)" within row (\d+), column (\d+) of the 
   table_selector = string_quantity_to_numeric(table_position)
   Then %{I should #{negation}see the text "#{text}" within "tr:nth-child(#{row}) td:nth-child(#{column})"}
 end
+
+##
+# PDF
+When /^I follow the PDF link "([^"]+)"$/ do |label|
+  click_link(label)
+  # code from http://upstre.am/blog/2009/02/testing-pdfs-with-cucumber-and-rails/
+  temp_pdf = Tempfile.new('pdf')
+  temp_pdf << page.source.force_encoding('UTF-8')
+  temp_pdf.close
+  pdf_text = PDF::PdfToText.new(temp_pdf.path)
+  page.driver.response.instance_variable_set('@body', pdf_text.get_text)
+end

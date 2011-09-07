@@ -12,9 +12,9 @@ class StoryCardsReport
     page_size = 'A4' unless (PAGE_SIZES.has_key?((page_size || '').to_sym))
     fold_side = 'short' unless %w(short long).include?(fold_side)
     page_dimensions = PAGE_SIZES[page_size.to_sym]
-    document_options = { 
-      :page_size => page_size, 
-      :page_layout => :landscape, 
+    document_options = {
+      :page_size => page_size,
+      :page_layout => :landscape,
       :left_margin => page_dimensions.margin_x,
       :right_margin => page_dimensions.margin_x,
       :top_margin => page_dimensions.margin_y,
@@ -49,7 +49,7 @@ class StoryCardsReport
 
       offset = box_offset(0.05, 0.95, @box_count, page_size)
       standard_box_fields(story, pdf, offset, card_width*0.9, card_height*0.9) do
-        pdf.text_box "Project: #{story.theme.backlog.name}",
+        pdf.text_box "Backlog: #{story.theme.backlog.name}",
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.93],
           :width => pdf.bounds.width * 0.65,
           :height => pdf.bounds.height * 0.1,

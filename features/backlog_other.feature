@@ -116,3 +116,11 @@ Feature: Backlog Other Functionality
     Then I should see "TH11" within row 5, column 1 of the first table
       And I should see "As Story 1" within row 5, column 2 of the first table
       And I should see "TH11" within row 5, column 9 of the first table
+
+  Scenario: Export PDF cards
+    When I follow the PDF link "Print"
+    Then I should see "TH11"
+      And I should see "AsStory 1"
+      And I should see "AsStory 2"
+      And I should see "Backlog: Backlog 1"
+      And I should see "Theme: Theme 1"

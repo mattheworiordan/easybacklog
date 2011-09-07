@@ -251,6 +251,7 @@ DEPENDENCIES
   jammit
   jslint_on_rails
   launchy (>= 2)
+  pdf-reader
   pg
   prawn (~> 0.12)
   rack-force_domain!
