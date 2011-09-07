@@ -103,3 +103,16 @@ Feature: Backlog Other Functionality
       And there should be 1 "snapshot added row"
       And there should be 5 "snapshot modified or identical rows"
 
+  Scenario: Export backlog
+    When I follow "Export"
+    Then I should see "TH11" within row 3, column 2 of the first table
+      And I should see "As Story 1" within row 3, column 3 of the first table
+      And I should see "Total for theme 'Theme 1'" within row 5, column 1 of the first table
+      And I should see "0.0 days" within row 12, column 2 of the first table
+
+  Scenario: Export snapshot
+    Given a snapshot called "Snapshot 1" exists for backlog "Backlog 1"
+    When I am on the snapshot base "Snapshot 1" and backlog "Backlog 1" Excel export page
+    Then I should see "TH11" within row 5, column 1 of the first table
+      And I should see "As Story 1" within row 5, column 2 of the first table
+      And I should see "TH11" within row 5, column 9 of the first table

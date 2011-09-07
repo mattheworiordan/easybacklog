@@ -57,6 +57,11 @@ Given /^the following stories are created in the ([\w\d]+) theme:$/ do |position
   end
 end
 
+Given /^a snapshot called "([^"]+)" exists for backlog "([^"]+)"$/ do |snapshot_name, backlog_name|
+  backlog = Backlog.find_by_name(backlog_name)
+  backlog.create_snapshot(snapshot_name)
+end
+
 ##
 # Editable text
 #
@@ -298,4 +303,11 @@ Then /^the server should return acceptance criteria JSON as follows:$/ do |table
     })();
   JS
   table.diff!(data)
+end
+
+##
+# Tables within Excel exports and Snapshots
+Then /^(?:I |)should(not |) see "([^"]+)" within row (\d+), column (\d+) of the ([\w\d]+) table$/ do |negation, text, row, column, table_position|
+  table_selector = string_quantity_to_numeric(table_position)
+  Then %{I should #{negation}see the text "#{text}" within "tr:nth-child(#{row}) td:nth-child(#{column})"}
 end
