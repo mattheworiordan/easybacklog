@@ -56,7 +56,7 @@ Feature: Backlog Other Functionality
       And I should see "£2,295" within the "backlog totals"
 
   @javascript
-  Scenario: Check that snapshots work
+  Scenario: Check that create and view snapshots works
     When I click on the "add snapshot button"
       And I fill in "Please name your snapshot:" with "Snapshot 1"
       And I press "Create Snapshot" within "the dialog"
@@ -72,3 +72,34 @@ Feature: Backlog Other Functionality
       And there should be 0 "delete theme buttons"
     When I click on the "first theme's name"
     Then there should be 0 "editable text fields"
+
+  @javascript
+  Scenario: Check that compare snapshots works
+    When I change the editable text "[edit]" within the "first story's 50 score within the first theme" to "1"
+      And I change the editable text "[edit]" within the "first story's 90 score within the first theme" to "13"
+      And I change the editable text "Find stuff" within the "first story's so I can field within the first theme" to "base value"
+      And I tab forwards and wait for AJAX
+      And I click on the "add snapshot button"
+      And I fill in "Please name your snapshot:" with "Snapshot 1"
+      And I press "Create Snapshot" within "the dialog"
+    Then I should see the notice "New snapshot created"
+    When I change the editable text "1" within the "first story's 50 score within the first theme" to "3"
+      And I change the editable text "13" within the "first story's 90 score within the first theme" to "5"
+      And I change the editable text "base value" within the "first story's so I can field within the first theme" to "new value"
+      And I click on the "second story's delete within the first theme"
+      And I press "Delete" within "the dialog"
+      And I wait for 0.5 seconds
+      And I click on the "second theme's add story button"
+      And I wait for 0.5 seconds
+      And I change the current editable text to "new story"
+      And I tab forwards and wait for AJAX
+    When I click on the "compare snapshot button"
+      And I select "Snapshot 1" from "Which snapshot is your base (typically the older version)?"
+      And I press "Compare" within "the dialog"
+      And I wait 3 seconds
+    Then I should see the text "So I can base value" within a "changed base user story value"
+      And I should see the text "So I can new value" within a "changed target user story value"
+      And there should be 1 "snapshot deleted row"
+      And there should be 1 "snapshot added row"
+      And there should be 5 "snapshot modified or identical rows"
+

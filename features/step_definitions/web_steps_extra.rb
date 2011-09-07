@@ -4,7 +4,7 @@ When /^(?:|I )press "([^"]*)"(?: within (?:|the )"([^"]*)")?$/ do |button, selec
   end
 end
 
-Then /^I should (|not )see (?:|the text )"([^"]+)"(?:| within (?:|the )"([^"]+)")$/ do |negation, text, selector|
+Then /^I should (|not )see (?:|the text )"([^"]+)"(?:| within (?:|the |a )"([^"]+)")$/ do |negation, text, selector|
   with_scope(selector_to(selector)) do |content|
     if negation.strip == "not"
       page.should_not have_content(text)

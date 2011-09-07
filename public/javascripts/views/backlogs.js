@@ -240,8 +240,12 @@ App.Views.Backlogs = {
             } else {
               var baseUrl = document.location.pathname.match(/^\/companies\/\d+\/backlogs/i)[0];
               var backlogId = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/(\d+)/i)[1];
-              window.open(baseUrl + '/compare/' + (base.match(/^\d+$/) ? base : backlogId) + '/' + (target.match(/^\d+$/) ? target : backlogId),
-                '_newtab' + Math.floor(Math.random()*10000));
+              var url = baseUrl + '/compare/' + (base.match(/^\d+$/) ? base : backlogId) + '/' + (target.match(/^\d+$/) ? target : backlogId);
+              if (App.environment === 'test') {
+                document.location.href = url;
+              } else {
+                window.open(url, '_newtab' + Math.floor(Math.random()*10000));
+              }
               $(this).dialog("close");
             }
           },

@@ -20,6 +20,9 @@ module SelectorHelpers
     when /^add snapshot button$/
       '#backlog-data-area .snapshot .new a'
 
+    when /^compare snapshot button$/
+      '#backlog-data-area .snapshot .compare a'
+
     when /^snapshot icon$/
       '#backlog-data-area .snapshot .locked'
 
@@ -130,6 +133,25 @@ module SelectorHelpers
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) acceptance criteri(?:on|a)$/
       position = string_quantity_to_numeric($1)
       "ul.acceptance-criteria li.criterion:#{position} .data"
+
+    ##
+    # Backlog snapshots
+    when /^changed base user story value$/
+      'tr[bgcolor="#FFFFFF"] td:nth-child(2) .changed'
+
+    when /^changed target user story value$/
+      'tr[bgcolor="#FFFFFF"] td:nth-child(10) .changed'
+
+
+    when /^snapshot (added|deleted|modified or identical) rows?$/
+      case $1
+      when 'added'
+        'tr[bgcolor=#AAFFAA]'
+      when 'deleted'
+        'tr[bgcolor=#FFAAAA]'
+      else
+        'tr[bgcolor=#FFFFFF]'
+      end
 
     ##
     # Generic and other selectors
