@@ -19,6 +19,7 @@
 
     = # Javascript library to simulate drag & drop re-ordering of lists
     = javascript_include_tag 'test/jquery.simulate.js', 'test/jquery.simulate.drag-sortable.js', 'test/jquery.helpers.js' if Rails.env.test? || Rails.env.development?
+    = javascript_include_tag 'test/test-env.js' if Rails.env.test?
 
     = csrf_meta_tag
     %link{ :rel=>'author', :href=>'/humans.txt' }
