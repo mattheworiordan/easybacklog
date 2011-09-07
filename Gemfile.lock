@@ -57,6 +57,7 @@ GEM
       activesupport (= 3.0.3)
     activesupport (3.0.3)
     acts_as_list (0.1.2)
+    addressable (2.2.6)
     archive-tar-minitar (0.5.2)
     arel (2.0.8)
     autotest (4.4.6)
@@ -77,7 +78,6 @@ GEM
       ffi (~> 1.0.6)
     closure-compiler (1.0.0)
     columnize (0.3.2)
-    configuration (1.2.0)
     cucumber (0.10.0)
       builder (>= 2.1.2)
       diff-lcs (~> 1.1.2)
@@ -103,12 +103,13 @@ GEM
       json (~> 1.4.6)
     growl (1.0.3)
     haml (3.0.25)
-    heroku (1.17.10)
-      json (~> 1.4.6)
-      launchy (~> 0.3.2)
-      rest-client (>= 1.4.0, < 1.7.0)
-    heroku_san (1.0.8)
-      heroku
+    heroku (2.4.2)
+      launchy (>= 0.3.2)
+      rest-client (~> 1.6.1)
+      term-ansicolor (~> 1.0.5)
+    heroku_san (1.2.2)
+      heroku (>= 2)
+      rails (>= 2)
     hoptoad_notifier (2.4.8)
       activesupport
       builder
@@ -120,9 +121,8 @@ GEM
     jslint_on_rails (1.0.6)
     json (1.4.6)
     json_pure (1.5.3)
-    launchy (0.3.7)
-      configuration (>= 0.0.5)
-      rake (>= 0.8.1)
+    launchy (2.0.5)
+      addressable (~> 2.2.6)
     linecache19 (0.5.11)
       ruby_core_source (>= 0.1.4)
     mail (2.2.15)
@@ -250,7 +250,7 @@ DEPENDENCIES
   hpricot
   jammit
   jslint_on_rails
-  launchy
+  launchy (>= 2)
   pg
   prawn (~> 0.12)
   rack-force_domain!
