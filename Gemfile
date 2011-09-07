@@ -42,6 +42,7 @@ group :test, :cucumber do
   gem 'selenium-client'
   gem 'capybara-webkit', :git => 'git://github.com/thoughtbot/capybara-webkit.git'
   gem 'timecop'
+  gem 'launchy'
 end
 
 group :development do

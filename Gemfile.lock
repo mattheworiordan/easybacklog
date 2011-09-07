@@ -250,6 +250,7 @@ DEPENDENCIES
   hpricot
   jammit
   jslint_on_rails
+  launchy
   pg
   prawn (~> 0.12)
   rack-force_domain!
