@@ -2,7 +2,7 @@
  * Learn more ~ http://960.gs/
  * *
  * Licensed under GPL and MIT. */
-/* line 9, ../../app/stylesheets/grid.scss */
+/* line 9, ../../app/stylesheets/960.grid.scss */
 .container_12 {
   margin-left: auto;
   margin-right: auto;
@@ -253,7 +253,7 @@
   left: -880px;
 }
 
-/* line 12, ../../app/stylesheets/grid.scss */
+/* line 12, ../../app/stylesheets/960.grid.scss */
 .container_16 {
   margin-left: auto;
   margin-right: auto;
@@ -584,13 +584,13 @@
   left: -900px;
 }
 
-/* line 19, ../../app/stylesheets/grid.scss */
+/* line 19, ../../app/stylesheets/960.grid.scss */
 .two-column {
   margin-left: auto;
   margin-right: auto;
   width: 960px;
 }
-/* line 21, ../../app/stylesheets/grid.scss */
+/* line 21, ../../app/stylesheets/960.grid.scss */
 .two-column #header, .two-column #footer {
   display: inline;
   float: left;
@@ -598,7 +598,7 @@
   margin-right: 10px;
   width: 940px;
 }
-/* line 23, ../../app/stylesheets/grid.scss */
+/* line 23, ../../app/stylesheets/960.grid.scss */
 .two-column #sidebar {
   display: inline;
   float: left;
@@ -606,7 +606,7 @@
   margin-right: 10px;
   width: 300px;
 }
-/* line 25, ../../app/stylesheets/grid.scss */
+/* line 25, ../../app/stylesheets/960.grid.scss */
 .two-column #main-content {
   display: inline;
   float: left;

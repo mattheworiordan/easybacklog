@@ -1,4 +1,6 @@
-@import 'reset';
+@import 'compass/reset';
+@import '960.grid';
+@import '960.text';
 @import 'mixins_and_constants';
 @import 'base';
 @import 'vtip';
