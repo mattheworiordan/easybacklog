@@ -18,6 +18,9 @@ gem 'hoptoad_notifier','>=2.4.8'
 gem 'ssl_requirement', :git => 'git://github.com/retr0h/ssl_requirement.git'
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
+gem 'compass'
+gem 'compass-960-plugin'
+
 group :development, :test, :cucumber do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'

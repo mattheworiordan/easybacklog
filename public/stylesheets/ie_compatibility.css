@@ -1,12 +1,18 @@
+/* line 10, ../../app/stylesheets/ie_compatibility.scss */
 ul.stories li.story > .unique-id > div.data {
   background: transparent;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#99FFFFFF,endColorStr=#99FFFFFF);
-  zoom: 1; }
+  zoom: 1;
+}
+/* line 12, ../../app/stylesheets/ie_compatibility.scss */
 ul.stories li.story > .user-story, ul.stories li.story > .acceptance-criteria, ul.stories li.story > .comments {
   background: transparent;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#99FFFFFF,endColorStr=#99FFFFFF);
-  zoom: 1; }
+  zoom: 1;
+}
+/* line 14, ../../app/stylesheets/ie_compatibility.scss */
 ul.stories li.story > .score-50 > div, ul.stories li.story > .score-90 > div {
   background: transparent;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#99FFFFFF,endColorStr=#99FFFFFF);
-  zoom: 1; }
+  zoom: 1;
+}

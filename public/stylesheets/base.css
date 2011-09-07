@@ -1,6 +1,6 @@
 /*
 Syntax error: Undefined variable: "$standard-header-padding".
-        on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss
+        on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss
 
 66:   padding-right: 0.1em;
 67: }
@@ -15,37 +15,47 @@ Syntax error: Undefined variable: "$standard-header-padding".
 76: 
 
 Backtrace:
-/Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss:71
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/script/variable.rb:39:in `_perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/script/node.rb:61:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/prop_node.rb:132:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/rule_node.rb:191:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `block in perform_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `map'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:327:in `perform_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:317:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/root_node.rb:59:in `perform!'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:305:in `_perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/node.rb:213:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/root_node.rb:37:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/tree/root_node.rb:29:in `render'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:223:in `update_stylesheet'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:88:in `block (2 levels) in update_stylesheets'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `each'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:81:in `block in update_stylesheets'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `each'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:79:in `update_stylesheets'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin.rb:50:in `check_for_updates'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/haml-3.0.25/lib/sass/plugin/rack.rb:40:in `call'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/bundler/gems/rack-force_domain-ff16ac9b3a52/lib/rack/force_domain.rb:29:in `call'
+/Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss:71
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/variable.rb:50:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/node.rb:40:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:215:in `visit_prop'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:235:in `visit_rule'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `map'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:47:in `visit_root'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:7:in `visit'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/root_node.rb:20:in `render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/engine.rb:293:in `_render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/engine.rb:241:in `block in render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/util.rb:297:in `silence_sass_warnings'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/engine.rb:241:in `render'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/compiler.rb:319:in `update_stylesheet'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/compiler.rb:181:in `block (2 levels) in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/compiler.rb:175:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/compiler.rb:175:in `block in update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/compiler.rb:173:in `each'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/compiler.rb:173:in `update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin.rb:81:in `update_stylesheets'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin.rb:54:in `check_for_updates'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/plugin/rack.rb:51:in `call'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/warden-1.0.5/lib/warden/manager.rb:35:in `block in call'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/warden-1.0.5/lib/warden/manager.rb:34:in `catch'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/warden-1.0.5/lib/warden/manager.rb:34:in `call'
@@ -157,4 +167,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/public/stylesheets/sass/base.scss\A \A 66:   padding-right: 0.1em;\A 67: }\A 68: \A 69: header {\A 70:   background-color: #000;\A 71:   padding: $standard-header-padding;\A 72:   color: #666;\A 73:   height: 25px;\A 74:   font-size: 12px;\A 75:   margin-bottom: -$standard-header-padding-height*2;\A 76: "; }
+  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss\A \A 66:   padding-right: 0.1em;\A 67: }\A 68: \A 69: header {\A 70:   background-color: #000;\A 71:   padding: $standard-header-padding;\A 72:   color: #666;\A 73:   height: 25px;\A 74:   font-size: 12px;\A 75:   margin-bottom: -$standard-header-padding-height*2;\A 76: "; }

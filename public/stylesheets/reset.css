@@ -1,4 +1,5 @@
 /* reset */
+/* line 14, ../../app/stylesheets/reset.scss */
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -17,27 +18,40 @@ time, mark, audio, video {
   border: 0;
   font-size: 100%;
   font: inherit;
-  vertical-align: baseline; }
+  vertical-align: baseline;
+}
 
 /* HTML5 display-role reset for older browsers */
+/* line 24, ../../app/stylesheets/reset.scss */
 article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
-  display: block; }
+  display: block;
+}
 
+/* line 27, ../../app/stylesheets/reset.scss */
 body {
-  line-height: 1; }
+  line-height: 1;
+}
 
+/* line 30, ../../app/stylesheets/reset.scss */
 ol, ul {
-  list-style: none; }
+  list-style: none;
+}
 
+/* line 33, ../../app/stylesheets/reset.scss */
 blockquote, q {
-  quotes: none; }
+  quotes: none;
+}
 
+/* line 37, ../../app/stylesheets/reset.scss */
 blockquote:before, blockquote:after,
 q:before, q:after {
   content: '';
-  content: none; }
+  content: none;
+}
 
+/* line 41, ../../app/stylesheets/reset.scss */
 table {
   border-collapse: collapse;
-  border-spacing: 0; }
+  border-spacing: 0;
+}
