@@ -1,0 +1,22 @@
+!= render :partial => 'head'
+
+%section.content-wrapper
+  %section.header
+    .logo
+      %h1 easyBacklog Heading 9 cols
+    .links
+      .container
+        = link_to 'Already invited? Login', new_session_path(User)
+  %section.content
+    = form_for @beta_signup do |f|
+      .intro
+        %p
+          Want to try easyBacklog?
+          %br
+          We'll be ready in a few weeks to open the doors to a few more early adopters.  If you'd like to get early access, then enter your details below.
+      .email
+        = f.text_field :email, :value => 'Your email address'
+      .company
+        = f.text_field :company, :value => 'Your company name'
+      .signup
+        = f.submit :value => 'Sign me up'

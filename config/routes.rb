@@ -53,9 +53,11 @@ Ibacklog::Application.routes.draw do
     resources :acceptance_criteria
   end
 
+  resources :beta_signups, :only => [:index, :create, :show]
+
   get '/users/email_available' => 'devise/users#email_available'
   get '/contact' => 'pages#contact', :as => 'contact'
   get '/raise-error' => 'pages#raise_error'
 
-  root :to => "pages#home"
+  root :to => 'beta_signups#index'
 end

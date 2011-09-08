@@ -246,10 +246,9 @@ footer {
   left: 50%;
   overflow: hidden;
   margin-left: -200px;
-  width: 450px;
+  width: 500px;
   top: 0;
   z-index: 5;
-  border: 2px solid black;
   -moz-border-radius: 9px;
   border-radius: 9px;
   .notice, .error, .warning {
@@ -260,6 +259,7 @@ footer {
     font-weight: bold;
     -moz-border-radius: 6px;
     border-radius: 6px;
+    border: 2px solid black;
   }
   .error {
     background-color: #F55656;

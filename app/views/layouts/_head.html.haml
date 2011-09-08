@@ -10,11 +10,14 @@
     = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
     = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.development?
 
-    = include_stylesheets :common, :media => 'all'
+    = include_stylesheets :common, :media => 'all' if use_base_css?
     /[if lt IE 9]
       = include_stylesheets :ie_compatibility, :media => 'all'
       = include_javascripts :ie_compatibility
     = include_javascripts :workspace
+
+    = yield(:head)
+
     = hoptoad_javascript_notifier unless Rails.env.test?
 
     = # Javascript library to simulate drag & drop re-ordering of lists
@@ -33,5 +36,4 @@
           ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
           var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
         })();
-    = yield(:head)
   %body

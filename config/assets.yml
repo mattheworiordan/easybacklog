@@ -12,6 +12,7 @@ javascripts:
     - public/javascripts/vendor/*.js
     - public/javascripts/utilities.js
     - public/javascripts/application.js
+  backlog:
     - app/views/**/*.jst
     - public/javascripts/models/**/*.js
     - public/javascripts/collections/**/*.js
@@ -30,6 +31,8 @@ javascripts:
     - public/javascripts/vendor/conditional/jquery.validate.js
   snapshots:
     - public/javascripts/sections/snapshots.js
+  beta_signup:
+    - public/javascripts/sections/beta_signup.js
 stylesheets:
   common:
     - tmp/stylesheets/global.css
@@ -40,3 +43,5 @@ stylesheets:
     - tmp/stylesheets/snapshots.css
   snapshots_print:
     - tmp/stylesheets/snapshots_print.css
+  beta_signup:
+    - tmp/stylesheets/beta_signup.css

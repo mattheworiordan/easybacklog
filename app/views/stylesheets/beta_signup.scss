@@ -1,0 +1,86 @@
+@import 'compass/reset.scss';
+@import '960.grid';
+@import '960.text';
+
+$ninesixty-columns: 12;
+$ninesixty-grid-width: 960px;
+
+$body-bg: #FFFFFF;
+
+body {
+  background-color: #E9E9E9;
+}
+
+section.content-wrapper {
+  min-width: $ninesixty-grid-width;
+  @include grid-system(12);
+}
+
+section.header {
+  background-color: $body-bg;
+  margin: 0 auto 0 auto;
+  @include grid($ninesixty-columns);
+  .logo {
+    @include grid(9);
+    @include alpha;
+    h1 {
+      padding: 0 $ninesixty-gutter-width/2 0 $ninesixty-gutter-width/2;
+    }
+  }
+  .links {
+    @include grid(3);
+    @include omega;
+    .container {
+      padding: $ninesixty-gutter-width;
+    }
+  }
+}
+
+section.content {
+  background-color: $body-bg;
+  margin: 0 auto 0 auto;
+  @include grid($ninesixty-columns);
+
+  .intro {
+    @include grid($ninesixty-columns);
+    @include alpha;
+    @include omega;
+    p {
+      padding-left: $ninesixty-gutter-width/2;
+      padding-right: $ninesixty-gutter-width/2;
+    }
+  }
+
+  input[type=text] {
+    font-size: 18px;
+    font-family: sans-serif;
+    margin: $ninesixty-gutter-width/2;
+    color: #777;
+    width: $ninesixty-grid-width / 12 * 5 - $ninesixty-gutter-width * 2;
+    &.enabled {
+      color: #000;
+    }
+  }
+
+  .faded {
+    font-size: 18px;
+    color: #DDD;
+    font-family: sans-serif;
+  }
+
+  .email {
+    @include grid(5);
+    @include alpha;
+  }
+  .company {
+    @include grid(5);
+  }
+  .signup {
+    @include grid(2);
+    @include omega;
+    input[type=submit] {
+      font-size: 18px;
+      margin: $ninesixty-gutter-width/2;
+    }
+  }
+}

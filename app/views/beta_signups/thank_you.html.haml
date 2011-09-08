@@ -1,0 +1,14 @@
+!= render :partial => 'head'
+
+%section.content-wrapper
+  %section.header
+    .logo
+      %h1 easyBacklog Heading 9 cols
+    .links
+      .container
+        = link_to 'Already invited? Login', new_session_path(User)
+  %section.content
+    .intro
+      %h2
+        Thanks, all signed up, we'll be in touch.
+

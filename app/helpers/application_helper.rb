@@ -11,4 +11,12 @@ module ApplicationHelper
       'https'
     end
   end
+
+  def dont_use_base_css
+    @dont_use_base_css = true
+  end
+
+  def use_base_css?
+    @dont_use_base_css.blank? || !@dont_use_base_css
+  end
 end
