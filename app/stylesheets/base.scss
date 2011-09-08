@@ -366,3 +366,11 @@ label {
   -webkit-box-shadow: 0 0 5px#888;
   box-shadow: 0 0 5px #888;
 }
+
+/* dialogs */
+body .ui-dialog {
+  font-size: 12px;
+  p {
+    margin-bottom: 0.5em;
+  }
+}

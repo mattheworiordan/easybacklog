@@ -664,6 +664,16 @@ label.correct:before {
   box-shadow: 0 0 5px #888;
 }
 
+/* dialogs */
+/* line 371, ../../app/stylesheets/base.scss */
+body .ui-dialog {
+  font-size: 12px;
+}
+/* line 373, ../../app/stylesheets/base.scss */
+body .ui-dialog p {
+  margin-bottom: 0.5em;
+}
+
 /* line 1, ../../app/stylesheets/vtip.scss */
 p#vtip {
   display: none;
