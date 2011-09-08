@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(:version => 20110911172614) do
 
   add_index "backlogs", ["account_id"], :name => "index_backlogs_on_account_id"
   add_index "backlogs", ["archived"], :name => "index_backlogs_on_archived"
-  add_index "backlogs", ["company_id"], :name => "index_backlogs_on_company_id"
   add_index "backlogs", ["deleted"], :name => "index_backlogs_on_deleted"
   add_index "backlogs", ["snapshot_master_id"], :name => "index_backlogs_on_snapshot_master_id"
 
@@ -73,18 +72,6 @@ ActiveRecord::Schema.define(:version => 20110911172614) do
 
   add_index "beta_signups", ["email"], :name => "index_beta_signups_on_email"
   add_index "beta_signups", ["unique_code"], :name => "index_beta_signups_on_unique_code"
-
-  create_table "companies", :force => true do |t|
-    t.integer  "account_id"
-    t.string   "name"
-    t.decimal  "default_velocity"
-    t.integer  "default_rate"
-    t.boolean  "default_use_50_90"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "companies", ["account_id"], :name => "index_companies_on_account_id"
 
   create_table "invited_users", :force => true do |t|
     t.string   "email",           :null => false
