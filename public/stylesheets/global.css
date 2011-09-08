@@ -1209,7 +1209,7 @@ ul.themes li.theme > div.theme-data > div {
 }
 /* line 347, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data > div {
-  margin-right: 2px;
+  margin-right: 0;
 }
 /* line 350, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .name > .data {

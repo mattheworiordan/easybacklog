@@ -345,7 +345,7 @@ ul.themes {
       @include table-col(12% / 100% * $table-first-col-width);
       margin: 2px 0 1px 0;
       &>div {
-        margin-right: 2px;
+        margin-right: 0;
       }
       .name>.data {
         margin: 0px;
