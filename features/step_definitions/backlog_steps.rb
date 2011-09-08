@@ -242,7 +242,7 @@ end
 # update the model data from the server in the browser
 Then /^reload the backlog JSON from the server$/ do
   page.execute_script "App.Collections.Backlogs.at(0).fetch();"
-  sleep 1
+  sleep 2.5
 end
 
 Then /^the server should return theme JSON as follows:$/ do |table|
