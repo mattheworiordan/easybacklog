@@ -231,7 +231,6 @@ describe Backlog do
     @target.themes[0].stories[0].score_50 = 5 # increase the score 50 value
     @target.themes[0].stories[0].score_90 = 13 # reduce the score 50 value
     @target.themes[0].stories[0].save!
-    @target.themes[0].stories[1].move_to_top # move to top, but order should be ignored as we order in line with base
     @target.reload
     # check story changes
     comparison = @base.compare_with(@target)
