@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.3'
+gem 'rails', '3.0.10'
 gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'pg'
 
@@ -26,7 +26,6 @@ group :development, :test, :cucumber do
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
   gem 'watchr'
   gem 'growl'
-  gem 'spork', '~> 0.9.0.rc'
 end
 
 group :test, :cucumber do
@@ -41,8 +40,6 @@ group :test, :cucumber do
   gem 'autotest-rails'
   gem 'database_cleaner'
   gem 'capybara', '~> 1.0'
-  gem 'Selenium'
-  gem 'selenium-client'
   gem 'capybara-webkit', :git => 'git://github.com/thoughtbot/capybara-webkit.git'
   gem 'timecop'
   gem 'launchy', '>=2'
