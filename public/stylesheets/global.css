@@ -716,40 +716,49 @@ div.color-picker ul li {
 }
 
 /* on the backlog page we need to move the header to a fixed position */
-/* line 34, ../../app/stylesheets/backlog.scss */
+/* line 35, ../../app/stylesheets/backlog.scss */
 header.for-backlog {
   position: fixed;
   top: 0px;
   width: 100%;
-  padding: 0;
   overflow: hidden;
   z-index: 1;
 }
 /* line 41, ../../app/stylesheets/backlog.scss */
 header.for-backlog .padded-container {
   overflow: hidden;
-  padding: 6px 20px 6px 20px;
+  margin-right: 40px;
 }
 
 /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
-/* line 48, ../../app/stylesheets/backlog.scss */
+/* line 47, ../../app/stylesheets/backlog.scss */
+section.for-backlog {
+  margin-top: 75px;
+  padding-right: 0;
+  padding-left: 0;
+}
+/* line 51, ../../app/stylesheets/backlog.scss */
 section.for-backlog section.main-content-pod {
   -moz-box-shadow: 0px 0px 0px #888888;
   -webkit-box-shadow: 0px 0px 0px #888888;
   box-shadow: 0px 0px 0px #888888;
+  padding: 12px 5px 0 5px;
+}
+/* line 55, ../../app/stylesheets/backlog.scss */
+section.for-backlog section.title {
+  display: none;
 }
 
-/* line 53, ../../app/stylesheets/backlog.scss */
+/* line 60, ../../app/stylesheets/backlog.scss */
 #backlog-container {
-  margin-top: 60px;
   clear: left;
-  font-size: 90%;
+  font-size: 11px;
 }
 
-/* line 59, ../../app/stylesheets/backlog.scss */
+/* line 65, ../../app/stylesheets/backlog.scss */
 #backlog-data-area {
   position: fixed;
-  top: 24px;
+  top: 30px;
   left: 0;
   overflow: hidden;
   height: 4.5em;
@@ -758,19 +767,19 @@ section.for-backlog section.main-content-pod {
   z-index: 1;
   /* position editable input as global to avoid jumping */
 }
-/* line 68, ../../app/stylesheets/backlog.scss */
+/* line 74, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .actions {
   float: right;
   overflow: hidden;
   padding: 0.3em 17px 0.2em 0;
   margin-top: 0.4em;
 }
-/* line 73, ../../app/stylesheets/backlog.scss */
+/* line 79, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .actions a {
   display: block;
   float: left;
 }
-/* line 77, ../../app/stylesheets/backlog.scss */
+/* line 83, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .actions .divider {
   border-right: 1px solid #AADDAA;
   height: 1em;
@@ -779,36 +788,37 @@ section.for-backlog section.main-content-pod {
   margin-top: 0em;
   float: left;
 }
-/* line 87, ../../app/stylesheets/backlog.scss */
+/* line 93, ../../app/stylesheets/backlog.scss */
 #backlog-data-area input, #backlog-data-area textarea {
   position: absolute;
 }
-/* line 90, ../../app/stylesheets/backlog.scss */
+/* line 96, ../../app/stylesheets/backlog.scss */
 #backlog-data-area h2.name {
-  margin: 2px 0 0 10px;
+  margin: 2px 0 0 18px;
   position: relative;
   width: 20em;
   background-color: transparent;
   height: 1.25em;
   padding: 0;
   height: 28px;
+  font-size: 20px;
 }
-/* line 98, ../../app/stylesheets/backlog.scss */
+/* line 105, ../../app/stylesheets/backlog.scss */
 #backlog-data-area h2.name > div {
   padding: 2px;
 }
-/* line 28, ../../app/stylesheets/backlog.scss */
+/* line 29, ../../app/stylesheets/backlog.scss */
 #backlog-data-area h2.name:hover {
   background-color: #c9fcc9;
 }
-/* line 103, ../../app/stylesheets/backlog.scss */
+/* line 110, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .snapshot {
-  margin-top: 3px;
+  margin-top: 7px;
   float: left;
   clear: left;
-  padding-left: 15px;
+  padding-left: 20px;
 }
-/* line 108, ../../app/stylesheets/backlog.scss */
+/* line 115, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .snapshot .locked {
   float: left;
   overflow: hidden;
@@ -816,22 +826,22 @@ section.for-backlog section.main-content-pod {
   top: -2px;
   left: -5px;
 }
-/* line 115, ../../app/stylesheets/backlog.scss */
+/* line 122, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .snapshot .title {
   color: #999;
   float: left;
 }
-/* line 119, ../../app/stylesheets/backlog.scss */
+/* line 126, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .snapshot .selector {
   float: left;
   margin-top: -5px;
 }
-/* line 122, ../../app/stylesheets/backlog.scss */
+/* line 129, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .snapshot .selector select {
   background-color: #edfeed;
   border: 1px solid #0aaf0a;
 }
-/* line 127, ../../app/stylesheets/backlog.scss */
+/* line 134, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .snapshot .new, #backlog-data-area .snapshot .compare {
   float: left;
   width: 16px;
@@ -839,7 +849,7 @@ section.for-backlog section.main-content-pod {
   margin-top: -3px;
   cursor: pointer;
 }
-/* line 135, ../../app/stylesheets/backlog.scss */
+/* line 142, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings {
   float: right;
   margin: 0;
@@ -847,37 +857,37 @@ section.for-backlog section.main-content-pod {
   padding: 3px 6px 3px 3px;
   color: #363;
 }
-/* line 141, ../../app/stylesheets/backlog.scss */
+/* line 148, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings #backlog-rate, #backlog-data-area #backlog-settings #backlog-velocity {
   float: left;
   overflow: hidden;
 }
-/* line 145, ../../app/stylesheets/backlog.scss */
+/* line 152, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings #backlog-velocity {
   padding-left: 0.5em;
   border-left: 1px solid #ADA;
   margin-left: 0.5em;
 }
-/* line 150, ../../app/stylesheets/backlog.scss */
+/* line 157, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings .title {
   float: left;
   padding: 2px 0.25em 2px 0;
   color: #999;
 }
-/* line 155, ../../app/stylesheets/backlog.scss */
+/* line 162, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings .data {
   float: left;
   padding: 2px;
 }
-/* line 28, ../../app/stylesheets/backlog.scss */
+/* line 29, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings .data:hover {
   background-color: #c9fcc9;
 }
-/* line 159, ../../app/stylesheets/backlog.scss */
+/* line 166, ../../app/stylesheets/backlog.scss */
 #backlog-data-area #backlog-settings .data:hover {
   color: black;
 }
-/* line 164, ../../app/stylesheets/backlog.scss */
+/* line 171, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .backlog-stats {
   background-color: #FFF;
   float: right;
@@ -886,33 +896,33 @@ section.for-backlog section.main-content-pod {
   -webkit-box-shadow: 0px 0px 4px #66cc66;
   box-shadow: 0px 0px 4px #66cc66;
 }
-/* line 169, ../../app/stylesheets/backlog.scss */
+/* line 176, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .backlog-stats div.title {
   padding: 5px 0 5px 5px;
   float: left;
 }
-/* line 173, ../../app/stylesheets/backlog.scss */
+/* line 180, ../../app/stylesheets/backlog.scss */
 #backlog-data-area .backlog-stats div.output {
   padding: 5px;
   float: left;
 }
 
 /* when viewing a snapshot don't make these fields look editable */
-/* line 182, ../../app/stylesheets/backlog.scss */
+/* line 189, ../../app/stylesheets/backlog.scss */
 #backlog-data-area.not-editable h2.name:hover {
   background: transparent;
 }
-/* line 186, ../../app/stylesheets/backlog.scss */
+/* line 193, ../../app/stylesheets/backlog.scss */
 #backlog-data-area.not-editable #backlog-settings .data:hover {
   background: transparent;
   color: inherit;
 }
 
-/* line 193, ../../app/stylesheets/backlog.scss */
+/* line 200, ../../app/stylesheets/backlog.scss */
 #themes-header {
   position: fixed;
   z-index: 1;
-  top: 76px;
+  top: 86px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -920,133 +930,134 @@ section.for-backlog section.main-content-pod {
   background-color: #DDD;
   border-bottom: 1px solid white;
   border-top: 1px solid white;
-  -moz-box-shadow: 3px 3px 3px #888888;
-  -webkit-box-shadow: 3px 3px 3px #888888;
-  box-shadow: 3px 3px 3px #888888;
+  font-size: 12px;
+  -moz-box-shadow: 2px 2px 2px #888888;
+  -webkit-box-shadow: 2px 2px 2px #888888;
+  box-shadow: 2px 2px 2px #888888;
 }
-/* line 204, ../../app/stylesheets/backlog.scss */
+/* line 212, ../../app/stylesheets/backlog.scss */
 #themes-header .columns {
-  margin: 0 24px 0 24px;
+  margin: 0 5px 0 5px;
 }
-/* line 206, ../../app/stylesheets/backlog.scss */
+/* line 214, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .theme {
   background-color: #DDD;
   width: 12%;
   float: left;
   margin: 0;
 }
-/* line 21, ../../app/stylesheets/backlog.scss */
+/* line 22, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .theme > div {
   padding: 3px 3px 1px 5px;
   border-right: 1px solid white;
 }
-/* line 207, ../../app/stylesheets/backlog.scss */
+/* line 215, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .unique-id {
   background-color: #DDD;
   width: 7%;
   float: left;
   margin: 0;
 }
-/* line 21, ../../app/stylesheets/backlog.scss */
+/* line 22, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .unique-id > div {
   padding: 3px 3px 1px 5px;
   border-right: 1px solid white;
 }
-/* line 208, ../../app/stylesheets/backlog.scss */
+/* line 216, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .user-story, #themes-header .columns .acceptance-criteria, #themes-header .columns .comments {
   background-color: #DDD;
   width: 22%;
   float: left;
   margin: 0;
 }
-/* line 21, ../../app/stylesheets/backlog.scss */
+/* line 22, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .user-story > div, #themes-header .columns .acceptance-criteria > div, #themes-header .columns .comments > div {
   padding: 3px 3px 1px 5px;
   border-right: 1px solid white;
 }
-/* line 209, ../../app/stylesheets/backlog.scss */
+/* line 217, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .score-50, #themes-header .columns .score-90 {
   background-color: #DDD;
   width: 3%;
   float: left;
   margin: 0;
 }
-/* line 21, ../../app/stylesheets/backlog.scss */
+/* line 22, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .score-50 > div, #themes-header .columns .score-90 > div {
   padding: 3px 3px 1px 5px;
   border-right: 1px solid white;
 }
-/* line 210, ../../app/stylesheets/backlog.scss */
+/* line 218, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .score {
   background-color: #DDD;
   width: 6%;
   float: left;
   margin: 0;
 }
-/* line 21, ../../app/stylesheets/backlog.scss */
+/* line 22, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .score > div {
   padding: 3px 3px 1px 5px;
   border-right: 1px solid white;
 }
-/* line 210, ../../app/stylesheets/backlog.scss */
+/* line 218, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .score > div {
   text-align: right;
 }
-/* line 211, ../../app/stylesheets/backlog.scss */
+/* line 219, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .cost-formatted {
   background-color: #DDD;
   width: 5%;
   float: left;
   margin: 0;
 }
-/* line 21, ../../app/stylesheets/backlog.scss */
+/* line 22, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .cost-formatted > div {
   padding: 3px 3px 1px 5px;
   border-right: 1px solid white;
 }
-/* line 211, ../../app/stylesheets/backlog.scss */
+/* line 219, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .cost-formatted > div {
   text-align: right;
 }
-/* line 212, ../../app/stylesheets/backlog.scss */
+/* line 220, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .days-formatted {
   background-color: #DDD;
   margin: 0;
   width: auto;
 }
-/* line 216, ../../app/stylesheets/backlog.scss */
+/* line 224, ../../app/stylesheets/backlog.scss */
 #themes-header .columns .days-formatted > div {
   text-align: right;
   padding: 3px 3px 1px 5px;
 }
 
-/* line 225, ../../app/stylesheets/backlog.scss */
+/* line 233, ../../app/stylesheets/backlog.scss */
 #themes-container {
   overflow: hidden;
 }
-/* line 226, ../../app/stylesheets/backlog.scss */
+/* line 234, ../../app/stylesheets/backlog.scss */
 #themes-container .loading {
   margin: 20px auto 10px auto;
   text-align: center;
   width: 80px;
 }
-/* line 230, ../../app/stylesheets/backlog.scss */
+/* line 238, ../../app/stylesheets/backlog.scss */
 #themes-container .loading .progress-icon {
   float: left;
 }
-/* line 233, ../../app/stylesheets/backlog.scss */
+/* line 241, ../../app/stylesheets/backlog.scss */
 #themes-container .loading p {
   padding-top: 2px;
 }
 
 /* stop ordering of themes link which is outside of the ul.themes so that drag & drop reordering does not have this item as the last item */
-/* line 240, ../../app/stylesheets/backlog.scss */
+/* line 248, ../../app/stylesheets/backlog.scss */
 .themes .stop-ordering {
   display: none;
   padding: 5px 0 5px 0;
   clear: left;
 }
-/* line 244, ../../app/stylesheets/backlog.scss */
+/* line 252, ../../app/stylesheets/backlog.scss */
 .themes .stop-ordering a {
   font-weight: normal;
   text-decoration: none;
@@ -1066,12 +1077,12 @@ section.for-backlog section.main-content-pod {
   color: #004d00;
   border-color: #004d00;
 }
-/* line 249, ../../app/stylesheets/backlog.scss */
+/* line 257, ../../app/stylesheets/backlog.scss */
 .themes .stop-ordering a:hover {
   text-decoration: none;
 }
 
-/* line 255, ../../app/stylesheets/backlog.scss */
+/* line 263, ../../app/stylesheets/backlog.scss */
 ul.themes {
   list-style: none;
   margin: 0;
@@ -1082,7 +1093,7 @@ ul.themes {
   /* re-ordering target li item */
   /* theme row */
 }
-/* line 262, ../../app/stylesheets/backlog.scss */
+/* line 270, ../../app/stylesheets/backlog.scss */
 ul.themes .data input, ul.themes .data textarea {
   position: absolute;
   margin-top: -3px;
@@ -1090,18 +1101,18 @@ ul.themes .data input, ul.themes .data textarea {
   font-size: 100%;
   z-index: 2;
 }
-/* line 272, ../../app/stylesheets/backlog.scss */
+/* line 280, ../../app/stylesheets/backlog.scss */
 ul.themes .editable-blank {
   font-size: 80%;
   color: #666;
 }
-/* line 278, ../../app/stylesheets/backlog.scss */
+/* line 286, ../../app/stylesheets/backlog.scss */
 ul.themes li.actions {
   clear: left;
   margin: 1em 0 0 0;
   padding: 3px;
 }
-/* line 282, ../../app/stylesheets/backlog.scss */
+/* line 290, ../../app/stylesheets/backlog.scss */
 ul.themes li.actions a {
   font-weight: normal;
   text-decoration: none;
@@ -1121,14 +1132,14 @@ ul.themes li.actions a:hover {
   color: #004d00;
   border-color: #004d00;
 }
-/* line 287, ../../app/stylesheets/backlog.scss */
+/* line 295, ../../app/stylesheets/backlog.scss */
 ul.themes li.actions a.new-acceptance-criterion {
   border-color: #AAA;
   background-color: #DDD;
   padding: 0 0px 0 1px;
   margin: 3px -3px 0 0;
 }
-/* line 297, ../../app/stylesheets/backlog.scss */
+/* line 305, ../../app/stylesheets/backlog.scss */
 ul.themes li.target-order-highlight {
   border: 1px dashed #333;
   margin: 5px 60% 0 0;
@@ -1137,7 +1148,7 @@ ul.themes li.target-order-highlight {
   height: 2em;
   clear: left;
 }
-/* line 307, ../../app/stylesheets/backlog.scss */
+/* line 315, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme {
   /* add padding to every theme row after the first */
   margin: 0;
@@ -1148,11 +1159,11 @@ ul.themes li.theme {
   /* generic style for moving link */
   /* generic style for deleting link */
 }
-/* line 309, ../../app/stylesheets/backlog.scss */
+/* line 317, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme:nth-child(1n+2) {
   padding: 5px 0 0 0;
 }
-/* line 317, ../../app/stylesheets/backlog.scss */
+/* line 325, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .move-theme {
   display: none;
   border: 1px solid #CCC;
@@ -1164,254 +1175,254 @@ ul.themes li.theme .move-theme {
   cursor: move;
   overflow: hidden;
 }
-/* line 327, ../../app/stylesheets/backlog.scss */
+/* line 335, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .move-theme .icon {
   float: left;
 }
-/* line 330, ../../app/stylesheets/backlog.scss */
+/* line 338, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .move-theme .instructions {
   float: left;
   padding-top: 3px;
 }
-/* line 336, ../../app/stylesheets/backlog.scss */
+/* line 344, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data {
   width: 12.0%;
   /* all story elements use up % of total width as embedded in another elem */
   float: left;
   margin: 2px 0 1px 0;
 }
-/* line 9, ../../app/stylesheets/backlog.scss */
+/* line 10, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data > div {
   margin: 0 0 1px 1px;
   padding: 2px;
   border: 1px solid #DDD;
 }
-/* line 339, ../../app/stylesheets/backlog.scss */
+/* line 347, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data > div {
   margin-right: 2px;
 }
-/* line 342, ../../app/stylesheets/backlog.scss */
+/* line 350, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .name > .data {
   margin: 0px;
 }
-/* line 346, ../../app/stylesheets/backlog.scss */
+/* line 354, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .code {
   color: #666;
   font-size: 80%;
   border: none;
   padding: 2px 0 0 0;
 }
-/* line 351, ../../app/stylesheets/backlog.scss */
+/* line 359, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .code .heading {
   float: left;
   padding: 2px 0.4em 2px 0.5em;
 }
-/* line 355, ../../app/stylesheets/backlog.scss */
+/* line 363, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .code .data {
   float: left;
   padding: 2px;
 }
-/* line 358, ../../app/stylesheets/backlog.scss */
+/* line 366, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .code .data input, ul.themes li.theme > div.theme-data .code .data textarea {
   font-size: 95%;
 }
-/* line 361, ../../app/stylesheets/backlog.scss */
+/* line 369, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data .code .data:hover {
   background-color: #CCC;
   color: black;
 }
-/* line 367, ../../app/stylesheets/backlog.scss */
+/* line 375, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.theme-data > .theme-actions {
   border: none;
   margin: 0;
   padding: 0;
   clear: left;
 }
-/* line 376, ../../app/stylesheets/backlog.scss */
+/* line 384, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme div.move-story {
   border: none;
   margin: 0;
   padding-top: 0;
   float: left;
 }
-/* line 381, ../../app/stylesheets/backlog.scss */
+/* line 389, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme div.move-story a {
   cursor: move;
 }
-/* line 387, ../../app/stylesheets/backlog.scss */
+/* line 395, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme div.delete-theme, ul.themes li.theme div.delete-story, ul.themes li.theme div.duplicate-story, ul.themes li.theme div.re-number-stories {
   float: left;
 }
-/* line 391, ../../app/stylesheets/backlog.scss */
+/* line 399, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme div.color-picker-icon {
   float: left;
   padding: 3px;
   cursor: pointer;
 }
-/* line 395, ../../app/stylesheets/backlog.scss */
+/* line 403, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme div.color-picker-icon a {
   width: 11px;
   height: 11px;
   background: url(/images/color-picker.png);
   display: block;
 }
-/* line 403, ../../app/stylesheets/backlog.scss */
+/* line 411, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .theme-stats {
   width: 100%;
   clear: left;
   overflow: hidden;
   margin: 2px 0 8px 0;
 }
-/* line 408, ../../app/stylesheets/backlog.scss */
+/* line 416, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .theme-stats .container {
   margin-left: 7.955%;
   overflow: hidden;
   background-color: #eeeeee;
 }
-/* line 412, ../../app/stylesheets/backlog.scss */
+/* line 420, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .theme-stats .container div.title {
   padding: 5px;
   float: left;
   color: #666;
 }
-/* line 417, ../../app/stylesheets/backlog.scss */
+/* line 425, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme .theme-stats .container div.metrics {
   padding: 5px;
   float: right;
 }
-/* line 424, ../../app/stylesheets/backlog.scss */
+/* line 432, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories {
   float: left;
   width: 88%;
 }
-/* line 427, ../../app/stylesheets/backlog.scss */
+/* line 435, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories {
   list-style: none;
   margin: 0;
   /* story row */
 }
-/* line 430, ../../app/stylesheets/backlog.scss */
+/* line 438, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.actions {
   margin: 2px 0 1em 3px;
   position: absolute;
 }
-/* line 434, ../../app/stylesheets/backlog.scss */
+/* line 442, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.target-order-highlight {
   margin: 0 0 0 0;
   height: 5em;
 }
-/* line 439, ../../app/stylesheets/backlog.scss */
+/* line 447, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story {
   padding: 2px 0 5px 1px;
   overflow: hidden;
   clear: left;
   margin: 0;
 }
-/* line 444, ../../app/stylesheets/backlog.scss */
+/* line 452, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .unique-id {
   width: 7.955%;
   /* all story elements use up % of total width as embedded in another elem */
   float: left;
 }
-/* line 9, ../../app/stylesheets/backlog.scss */
+/* line 10, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .unique-id > div {
   margin: 0 0 1px 1px;
   padding: 2px;
   border: 1px solid #DDD;
 }
-/* line 446, ../../app/stylesheets/backlog.scss */
+/* line 454, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .unique-id > .story-actions {
   border: none;
   margin: 0;
   padding: 0 0 0 3px;
 }
-/* line 451, ../../app/stylesheets/backlog.scss */
+/* line 459, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .unique-id > div.data {
   background-color: rgba(255, 255, 255, 0.6);
 }
-/* line 453, ../../app/stylesheets/backlog.scss */
+/* line 461, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .user-story, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria, ul.themes li.theme > div.stories ul.stories li.story > .comments {
   width: 25%;
   /* all story elements use up % of total width as embedded in another elem */
   float: left;
 }
-/* line 9, ../../app/stylesheets/backlog.scss */
+/* line 10, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
   margin: 0 0 1px 1px;
   padding: 2px;
   border: 1px solid #DDD;
 }
-/* line 455, ../../app/stylesheets/backlog.scss */
+/* line 463, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .user-story > div, ul.themes li.theme > div.stories ul.stories li.story > .acceptance-criteria > div, ul.themes li.theme > div.stories ul.stories li.story > .comments > div {
   background-color: rgba(255, 255, 255, 0.6);
   min-height: 1.1em;
 }
-/* line 460, ../../app/stylesheets/backlog.scss */
+/* line 468, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .score-50, ul.themes li.theme > div.stories ul.stories li.story > .score-90, ul.themes li.theme > div.stories ul.stories li.story > .score {
   width: 3.409%;
   /* all story elements use up % of total width as embedded in another elem */
   float: left;
 }
-/* line 9, ../../app/stylesheets/backlog.scss */
+/* line 10, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > .score > div {
-  margin: 0 0 1px 1px;
-  padding: 2px;
-  border: 1px solid #DDD;
-}
-/* line 462, ../../app/stylesheets/backlog.scss */
-ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > .score > div {
-  background-color: rgba(255, 255, 255, 0.6);
-  min-height: 1.1em;
-}
-/* line 467, ../../app/stylesheets/backlog.scss */
-ul.themes li.theme > div.stories ul.stories li.story > .score {
-  width: 6.818%;
-  /* all story elements use up % of total width as embedded in another elem */
-  float: left;
-}
-/* line 9, ../../app/stylesheets/backlog.scss */
-ul.themes li.theme > div.stories ul.stories li.story > .score > div {
   margin: 0 0 1px 1px;
   padding: 2px;
   border: 1px solid #DDD;
 }
 /* line 470, ../../app/stylesheets/backlog.scss */
+ul.themes li.theme > div.stories ul.stories li.story > .score-50 > div, ul.themes li.theme > div.stories ul.stories li.story > .score-90 > div, ul.themes li.theme > div.stories ul.stories li.story > .score > div {
+  background-color: rgba(255, 255, 255, 0.6);
+  min-height: 1.1em;
+}
+/* line 475, ../../app/stylesheets/backlog.scss */
+ul.themes li.theme > div.stories ul.stories li.story > .score {
+  width: 6.818%;
+  /* all story elements use up % of total width as embedded in another elem */
+  float: left;
+}
+/* line 10, ../../app/stylesheets/backlog.scss */
+ul.themes li.theme > div.stories ul.stories li.story > .score > div {
+  margin: 0 0 1px 1px;
+  padding: 2px;
+  border: 1px solid #DDD;
+}
+/* line 478, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted {
   width: 5.682%;
   /* all story elements use up % of total width as embedded in another elem */
   float: left;
   text-align: right;
 }
-/* line 9, ../../app/stylesheets/backlog.scss */
+/* line 10, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
   margin: 0 0 1px 1px;
   padding: 2px;
   border: 1px solid #DDD;
 }
-/* line 470, ../../app/stylesheets/backlog.scss */
+/* line 478, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .cost-formatted > div {
   border: none;
   padding: 3px;
 }
-/* line 471, ../../app/stylesheets/backlog.scss */
+/* line 479, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .days-formatted {
   text-align: right;
 }
-/* line 472, ../../app/stylesheets/backlog.scss */
+/* line 480, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > .days-formatted > div {
   margin: 1px 0 1px 1px;
   padding: 3px;
 }
-/* line 479, ../../app/stylesheets/backlog.scss */
+/* line 487, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > div.user-story {
   /* ensure div wraps the children */
   /* as a, i want to, so i can text */
 }
-/* line 481, ../../app/stylesheets/backlog.scss */
+/* line 489, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > div.user-story > div {
   overflow: hidden;
 }
-/* line 485, ../../app/stylesheets/backlog.scss */
+/* line 493, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story > div.user-story .heading {
   float: left;
   clear: left;
@@ -1419,67 +1430,67 @@ ul.themes li.theme > div.stories ul.stories li.story > div.user-story .heading {
   color: #666;
   font-style: italic;
 }
-/* line 493, ../../app/stylesheets/backlog.scss */
+/* line 501, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria {
   margin: 0;
   list-style: none;
   /* acceptance criteria row */
 }
-/* line 497, ../../app/stylesheets/backlog.scss */
+/* line 505, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.criterion {
   margin: 0;
 }
-/* line 500, ../../app/stylesheets/backlog.scss */
+/* line 508, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.actions {
   margin-bottom: 4px;
   position: relative;
 }
-/* line 504, ../../app/stylesheets/backlog.scss */
+/* line 512, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li:last-child {
   list-style: none;
   margin: 0 0 3px 0;
 }
-/* line 508, ../../app/stylesheets/backlog.scss */
+/* line 516, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .index {
   width: 1.5em;
   cursor: move;
   float: left;
   clear: left;
 }
-/* line 514, ../../app/stylesheets/backlog.scss */
+/* line 522, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria .data {
   clear: right;
   cursor: text;
   margin-left: 1.5em;
 }
-/* line 519, ../../app/stylesheets/backlog.scss */
+/* line 527, ../../app/stylesheets/backlog.scss */
 ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.target-order-highlight {
   height: 1.5em;
 }
 
 /* when viewing a snapshot don't make these fields look editable */
-/* line 530, ../../app/stylesheets/backlog.scss */
+/* line 538, ../../app/stylesheets/backlog.scss */
 #backlog-container.not-editable ul.themes li.theme .theme-data .code .data:hover {
   background: transparent;
   color: inherit;
 }
 
-/* line 537, ../../app/stylesheets/backlog.scss */
+/* line 545, ../../app/stylesheets/backlog.scss */
 #dialog-print .progress-placeholder {
   font-weight: bold;
 }
 
-/* line 543, ../../app/stylesheets/backlog.scss */
+/* line 551, ../../app/stylesheets/backlog.scss */
 #dialog-create-snapshot div.progress-area, #dialog-create-snapshot div.progress-area.field_with_errors {
   margin-left: 23px;
   display: block;
 }
-/* line 547, ../../app/stylesheets/backlog.scss */
+/* line 555, ../../app/stylesheets/backlog.scss */
 #dialog-create-snapshot input[type=text] {
   width: 15em;
 }
 
-/* line 552, ../../app/stylesheets/backlog.scss */
+/* line 560, ../../app/stylesheets/backlog.scss */
 #loading-new-snapshot {
   display: none;
   z-index: 100;
@@ -1489,16 +1500,16 @@ ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.t
   width: 100%;
   height: 100%;
 }
-/* line 560, ../../app/stylesheets/backlog.scss */
+/* line 568, ../../app/stylesheets/backlog.scss */
 #loading-new-snapshot div.background {
   z-index: 103;
 }
-/* line 563, ../../app/stylesheets/backlog.scss */
+/* line 571, ../../app/stylesheets/backlog.scss */
 #loading-new-snapshot .progress-icon {
   float: left;
   margin-right: 0.5em;
 }
-/* line 567, ../../app/stylesheets/backlog.scss */
+/* line 575, ../../app/stylesheets/backlog.scss */
 #loading-new-snapshot div.loading {
   position: absolute;
   background-color: white;
@@ -1511,16 +1522,16 @@ ul.themes li.theme > div.stories ul.stories li.story ul.acceptance-criteria li.t
   z-index: 105;
 }
 
-/* line 581, ../../app/stylesheets/backlog.scss */
+/* line 589, ../../app/stylesheets/backlog.scss */
 #dialog-compare-snapshot div.elements, #dialog-compare-snapshot div.error-message {
   margin-left: 23px;
   display: block;
 }
-/* line 585, ../../app/stylesheets/backlog.scss */
+/* line 593, ../../app/stylesheets/backlog.scss */
 #dialog-compare-snapshot div.error-message {
   color: red;
 }
-/* line 588, ../../app/stylesheets/backlog.scss */
+/* line 596, ../../app/stylesheets/backlog.scss */
 #dialog-compare-snapshot .error-alert {
   float: left;
   margin-right: 10px;

@@ -1,22 +1,24 @@
 /*
-Syntax error: Undefined variable: "$standard-header-padding".
+Syntax error: Undefined variable: "$ninesixty-gutter-width".
         on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/backlog.scss
 
-38:   padding: 0;
+38:   width: 100%;
 39:   overflow: hidden;
 40:   z-index: 1;
 41:   .padded-container {
 42:     overflow: hidden;
-43:     padding: $standard-header-padding;
+43:     margin-right: $ninesixty-gutter-width * 2;
 44:   }
 45: }
 46: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
 47: section.for-backlog {
-48:   section.main-content-pod {
+48:   margin-top: $ninesixty-vertical * 5;
 
 Backtrace:
 /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/backlog.scss:43
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/variable.rb:50:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/node.rb:40:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/operation.rb:74:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/node.rb:40:in `perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:215:in `visit_prop'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
@@ -108,4 +110,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/backlog.scss\A \A 38:   padding: 0;\A 39:   overflow: hidden;\A 40:   z-index: 1;\A 41:   .padded-container {\A 42:     overflow: hidden;\A 43:     padding: $standard-header-padding;\A 44:   }\A 45: }\A 46: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 47: section.for-backlog {\A 48:   section.main-content-pod {"; }
+  content: "Syntax error: Undefined variable: \"$ninesixty-gutter-width\".\A         on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/backlog.scss\A \A 38:   width: 100%;\A 39:   overflow: hidden;\A 40:   z-index: 1;\A 41:   .padded-container {\A 42:     overflow: hidden;\A 43:     margin-right: $ninesixty-gutter-width * 2;\A 44:   }\A 45: }\A 46: /* hide the drop shadow on main content area for backlog as we already have a drop shadow */\A 47: section.for-backlog {\A 48:   margin-top: $ninesixty-vertical * 5;"; }

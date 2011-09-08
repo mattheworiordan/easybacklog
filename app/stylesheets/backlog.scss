@@ -2,6 +2,7 @@ $add-button-color: green;
 $delete-link-color: darken(red, 20%);
 $stats-bg-color: #EEE;
 $table-first-col-width: 88%;
+$backlog-horizontal-padding: 5px;
 
 @mixin table-col($width) {
   width: $width * 100% / $table-first-col-width; /* all story elements use up % of total width as embedded in another elem */
@@ -35,30 +36,35 @@ header.for-backlog {
   position: fixed;
   top: 0px;
   width: 100%;
-  padding: 0;
   overflow: hidden;
   z-index: 1;
   .padded-container {
     overflow: hidden;
-    padding: $standard-header-padding;
+    margin-right: $ninesixty-gutter-width * 2;
   }
 }
 /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
 section.for-backlog {
+  margin-top: $ninesixty-vertical * 5;
+  padding-right: 0;
+  padding-left: 0;
   section.main-content-pod {
     @include drop-shadow(0px, 0px);
+    padding: 12px $backlog-horizontal-padding 0 $backlog-horizontal-padding;
+  }
+  section.title {
+    display: none;
   }
 }
 
 #backlog-container {
-  margin-top: 60px;
   clear: left;
-  font-size: 90%;
+  font-size: 11px;
 }
 
 #backlog-data-area {
   position: fixed;
-  top: 24px;
+  top: $ninesixty-vertical * 2;
   left: 0;
   overflow: hidden;
   height: 4.5em;
@@ -88,23 +94,24 @@ section.for-backlog {
     position: absolute;
   }
   h2.name {
-    margin: 2px 0 0 10px;
+    margin: 2px 0 0 $ninesixty-gutter-width - 2px;
     position: relative;
     width: 20em;
     background-color: transparent;
     height: 1.25em;
     padding: 0;
     height: 28px;
+    font-size: 20px;
     >div {
       padding: 2px;
     }
     @include editable-field;
   }
   .snapshot {
-    margin-top: 3px;
+    margin-top: 7px;
     float: left;
     clear: left;
-    padding-left: $standard-header-padding-height*2 + 3px;
+    padding-left: $ninesixty-gutter-width;
     .locked {
       float: left;
       overflow: hidden;
@@ -193,7 +200,7 @@ section.for-backlog {
 #themes-header {
   position: fixed;
   z-index: 1;
-  top: 76px;
+  top: 86px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -201,8 +208,9 @@ section.for-backlog {
   background-color: #DDD;
   border-bottom: 1px solid white;
   border-top: 1px solid white;
+  font-size: 12px;
   .columns {
-    margin: 0 24px 0 24px;
+    margin: 0 $backlog-horizontal-padding 0 $backlog-horizontal-padding;
     .theme { @include table-head(12%); }
     .unique-id { @include table-head(7%); }
     .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
@@ -219,7 +227,7 @@ section.for-backlog {
       }
     }
   }
-  @include drop-shadow(3px, 3px);
+  @include drop-shadow(2px, 2px);
 }
 
 #themes-container {
