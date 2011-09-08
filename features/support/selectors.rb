@@ -1,8 +1,8 @@
-module SelectorHelpers
+module HtmlSelectorHelpers
   # Maps a CSS or XPath selector to a name. Used by various steps
 
-  def selector_to(section)
-    case section
+  def selector_to(location)
+    case location
 
     ##
     # Dashboard page
@@ -172,8 +172,8 @@ module SelectorHelpers
       'input[name=value],textarea[name=value]'
 
     else
-      # no mapping exists, assume section is a CSS/XPath selector
-      section
+      # no mapping exists, assume location is a CSS/XPath selector
+      location
     end
   end
 
@@ -195,4 +195,4 @@ module SelectorHelpers
   end
 end
 
-World(SelectorHelpers)
+World(HtmlSelectorHelpers)
