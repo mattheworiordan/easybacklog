@@ -1,7 +1,14 @@
+/* 960.gs configuration */
+$ninesixty-columns: 12;
+$ninesixty-gutter-width: 20px;
+$ninesixty-vertical: 15px;
+
 $link-button-color: green; /* links and buttons that are styled */
 $title-area-color: #EDFEED; /* area beneath the black toolbar */
 $standard-header-padding-height: 6px;
-$standard-header-padding: $standard-header-padding-height $standard-header-padding-height*2 $standard-header-padding-height $standard-header-padding-height*2; /* padding for the black header area */
+$standard-header-padding: $standard-header-padding-height $ninesixty-gutter-width $standard-header-padding-height $ninesixty-gutter-width; /* padding for the black header area */
+$standard-body-margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) $ninesixty-vertical (-$ninesixty-gutter-width);
+$standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-vertical $ninesixty-gutter-width;
 
 @mixin drop-shadow($offset, $size, $color: #888) {
   -moz-box-shadow: $offset $offset $size $color;

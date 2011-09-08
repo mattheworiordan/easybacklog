@@ -2,13 +2,11 @@
 body {
   font-family: Sans-Serif;
   padding: 0em 0em 0.5em 0em;
-  font-size: 75%;
   background-color: #DDD;
 }
 
 h1 {
   font-family: "Lucida Grande",sans-serif;
-  font-size: 160%;
   .description {
     display: inline;
     font-size: 90%;
@@ -18,7 +16,6 @@ h1 {
 
 h2 {
   font-family: "Lucida Grande",sans-serif;
-  font-size: 135%;
   font-weight: normal;
   margin-bottom: 0.5em;
   /* style for editable title on backlog page */
@@ -27,10 +24,6 @@ h2 {
     font-family: Sans-Serif;
     font-weight: normal;
   }
-}
-
-p {
-  margin-bottom: 0.85em;
 }
 
 ul {
@@ -66,13 +59,14 @@ span.easy {
   padding-right: 0.1em;
 }
 
+$header-height: $ninesixty-vertical * 2;
 header {
   background-color: #000;
   padding: $standard-header-padding;
   color: #666;
-  height: 25px;
+  height: $header-height - $standard-header-padding-height*2;
   font-size: 12px;
-  margin-bottom: -$standard-header-padding-height*2;
+  overflow: hidden;
 
   a {
     color: #CCC;
@@ -88,7 +82,7 @@ header {
   }
 
   .divider {
-    height: 25px;
+    height: $header-height;
     float: left;
     border-right: 1px solid #444;
     margin: -$standard-header-padding-height 1em 0 1em;
@@ -143,8 +137,7 @@ header {
 /* main body styles */
 section.content {
   clear: both;
-  padding: 12px;
-  font-size: 110%;
+  padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-vertical $ninesixty-gutter-width;
   a {
     color: $link-button-color;
     text-decoration: none;
@@ -160,43 +153,51 @@ section.content {
     @include button-style;
     font-size: 100%;
   }
+  input[type=text], input[type=password] {
+    font-size: 15px;
+  }
 }
 
 section.title {
-  margin: -12px -12px 0 -12px;
+  margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) 0 (-$ninesixty-gutter-width);
+  height: $ninesixty-vertical * 3 - 6px;
+  padding: 3px $ninesixty-gutter-width 3px $ninesixty-gutter-width;
   background-color: $title-area-color;
-  padding: 12px;
-  /* back link in title area */
-  a.back {
-    float: right;
-    padding-top: 4px;
-    padding-left: 0.5em;
+  h1 {
+    margin-bottom: 0;
   }
-  div.back {
-    padding-top: 4px;
-    padding-left: 0.5em;
+  /* back link in title area */
+  .back {
     float: right;
+    padding-top: 10px;
+    padding-left: 0.5em;
   }
 }
 section.main-content-pod {
   background-color: white;
-  padding: 12px 12px 18px 12px;
+  padding: $standard-body-padding;
   clear: left;
-  margin-top: 12px;
+  margin-top: $ninesixty-vertical;
   overflow: hidden;
   @include drop-shadow(5px, 5px);
 
-  h2 {
+  h2.divider {
     background-color: #EDF3FE;
-    padding: 12px;
-    margin: -12px -12px 12px -12px;
+    margin: $standard-body-margin;
+    padding: 7px $ninesixty-gutter-width 0 $ninesixty-gutter-width;
+    height: $ninesixty-vertical * 3 - 7px;
   }
 }
 
 section.side-panel {
   float: right;
-  padding: 24px 12px 18px 18px;
-  width: 250px;
+  padding: $ninesixty-vertical 0 $ninesixty-vertical $ninesixty-gutter-width;
+  width: 960/12*4;
+  .button-container {
+    padding-top: $ninesixty-vertical;
+    height: $ninesixty-vertical * 2;
+    margin-bottom: $ninesixty-vertical;
+  }
   a.button {
     @include grey-button-override-style;
   }
@@ -204,8 +205,9 @@ section.side-panel {
     clear: left;
     background-color: #EDF3FE;
     border-bottom: 1px solid darken(#EDF3FE, 10%);
-    padding: 6px;
-    margin: 1em 0 1em 0;
+    padding: 7px 0 0 $ninesixty-gutter-width;
+    height: $ninesixty-vertical * 3 - 7px;
+    margin: 0 0 $ninesixty-vertical 0;
   }
   .archive-link {
     clear: left;
@@ -247,7 +249,7 @@ footer {
   width: 450px;
   top: 0;
   z-index: 5;
-  border: 3px solid black;
+  border: 2px solid black;
   -moz-border-radius: 9px;
   border-radius: 9px;
   .notice, .error, .warning {

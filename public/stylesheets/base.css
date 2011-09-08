@@ -1,34 +1,26 @@
 /*
-Syntax error: Undefined variable: "$standard-header-padding".
-        on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss
+Syntax error: Undefined variable: "$ninesixty-vertical".
+        on line 62 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss
 
-66:   padding-right: 0.1em;
-67: }
-68: 
-69: header {
-70:   background-color: #000;
-71:   padding: $standard-header-padding;
-72:   color: #666;
-73:   height: 25px;
-74:   font-size: 12px;
-75:   margin-bottom: -$standard-header-padding-height*2;
-76: 
+57: span.easy {
+58:   font-style: italic;
+59:   padding-right: 0.1em;
+60: }
+61: 
+62: $header-height: $ninesixty-vertical * 2;
+63: header {
+64:   background-color: #000;
+65:   padding: $standard-header-padding;
+66:   color: #666;
+67:   height: $header-height - $standard-header-padding-height*2;
 
 Backtrace:
-/Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss:71
+/Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss:62
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/variable.rb:50:in `_perform'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/node.rb:40:in `perform'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:215:in `visit_prop'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `map'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:235:in `visit_rule'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/operation.rb:74:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/node.rb:40:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:241:in `visit_variable'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
@@ -167,4 +159,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined variable: \"$standard-header-padding\".\A         on line 71 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss\A \A 66:   padding-right: 0.1em;\A 67: }\A 68: \A 69: header {\A 70:   background-color: #000;\A 71:   padding: $standard-header-padding;\A 72:   color: #666;\A 73:   height: 25px;\A 74:   font-size: 12px;\A 75:   margin-bottom: -$standard-header-padding-height*2;\A 76: "; }
+  content: "Syntax error: Undefined variable: \"$ninesixty-vertical\".\A         on line 62 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/base.scss\A \A 57: span.easy {\A 58:   font-style: italic;\A 59:   padding-right: 0.1em;\A 60: }\A 61: \A 62: $header-height: $ninesixty-vertical * 2;\A 63: header {\A 64:   background-color: #000;\A 65:   padding: $standard-header-padding;\A 66:   color: #666;\A 67:   height: $header-height - $standard-header-padding-height*2;"; }

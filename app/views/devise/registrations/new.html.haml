@@ -24,7 +24,7 @@
         = fields_for @account do |f|
           != render :partial => '/accounts/form', :locals => { :f => f }
 
-    %h2 Your details
+    %h2.divider Your details
     .data-area.no-padding
       != render :partial => 'form', :locals => { :f => f }
 

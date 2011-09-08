@@ -2,8 +2,9 @@
 ul.backlog-list, ul.your-backlog-list {
   list-style: none;
   overflow: hidden;
+  margin-bottom: 0;
   li {
-    margin: 0 0 0.5em 0;
+    margin: 0;
     float: left;
     clear: left;
     overflow: hidden;
@@ -21,12 +22,11 @@ ul.backlog-list, ul.your-backlog-list {
       float: left;
     }
   }
-  padding-bottom: 1em;
 }
 ul.your-backlog-list {
   margin-bottom: 0.5em;
   li {
-    margin: 0 0 0.25em 6px;
+    margin: 0 0 0 6px;
     a {
       color: #333;
       &:hover {
@@ -40,8 +40,8 @@ ul.your-backlog-list {
 #home, #invite {
   overflow: hidden;
   padding-bottom: 0.5em;
-  margin: 12px -12px 12px -12px;
-  padding: 12px;
+  margin: $standard-body-margin;
+  padding: $standard-body-padding;
 
   /* 3 panels on the home page */
   .sign-up {

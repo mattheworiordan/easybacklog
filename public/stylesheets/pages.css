@@ -1,44 +1,24 @@
 /*
-Syntax error: Undefined mixin 'grey-button-override-style'.
-        on line 77 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss, in `grey-button-override-style'
-        from line 77 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss
+Syntax error: Undefined variable: "$standard-body-margin".
+        on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss
 
-72:     padding: 10px;
-73:     background-color: #D6D6D6;
-74:     -moz-border-radius: 10px;
-75:     border-radius: 10px;
-76:     input[type=submit] {
-77:       @include grey-button-override-style;
-78:     }
-79:     h2 {
-80:       background-color: transparent;
-81:     }
-82:   }
+38: 
+39: /* Home and invite landing page */
+40: #home, #invite {
+41:   overflow: hidden;
+42:   padding-bottom: 0.5em;
+43:   margin: $standard-body-margin;
+44:   padding: $standard-body-padding;
+45: 
+46:   /* 3 panels on the home page */
+47:   .sign-up {
+48:     width: 400px;
 
 Backtrace:
-/Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss:77:in `grey-button-override-style'
-/Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss:77
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:169:in `visit_mixin'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `map'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:235:in `visit_rule'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `map'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `block in visit'
-/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:235:in `visit_rule'
+/Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss:43
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/variable.rb:50:in `_perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/script/node.rb:40:in `perform'
+/Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:215:in `visit_prop'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:37:in `visit'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/perform.rb:18:in `visit'
 /Users/matthew/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.7/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
@@ -187,4 +167,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Syntax error: Undefined mixin 'grey-button-override-style'.\A         on line 77 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss, in `grey-button-override-style'\A         from line 77 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss\A \A 72:     padding: 10px;\A 73:     background-color: #D6D6D6;\A 74:     -moz-border-radius: 10px;\A 75:     border-radius: 10px;\A 76:     input[type=submit] {\A 77:       @include grey-button-override-style;\A 78:     }\A 79:     h2 {\A 80:       background-color: transparent;\A 81:     }\A 82:   }"; }
+  content: "Syntax error: Undefined variable: \"$standard-body-margin\".\A         on line 43 of /Users/matthew/Projects/easybacklog/easybacklog/app/stylesheets/pages.scss\A \A 38: \A 39: /* Home and invite landing page */\A 40: #home, #invite {\A 41:   overflow: hidden;\A 42:   padding-bottom: 0.5em;\A 43:   margin: $standard-body-margin;\A 44:   padding: $standard-body-padding;\A 45: \A 46:   /* 3 panels on the home page */\A 47:   .sign-up {\A 48:     width: 400px;"; }
