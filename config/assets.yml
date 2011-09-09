@@ -12,8 +12,8 @@ javascripts:
     - public/javascripts/vendor/*.js
     - public/javascripts/utilities.js
     - public/javascripts/application.js
-  backlog:
     - app/views/**/*.jst
+  backlog:
     - public/javascripts/models/**/*.js
     - public/javascripts/collections/**/*.js
     - public/javascripts/controllers/**/*.js
