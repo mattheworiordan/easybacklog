@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo "--- Compiling assets ---"
+jammit -f --base-url="http://easybacklog.com/"
+
+echo "--- Committing ---"
+git add public/assets/*
+git commit -m "Jammit assets compiled and added"
