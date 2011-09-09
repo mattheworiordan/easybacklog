@@ -4,9 +4,8 @@ Feature: Authentication
   Should be able to register and login
 
   Scenario: Register
-    When I am on the home page
-      And the standard locales are set up
-      And I follow "Sign up"
+    Given the standard locales are set up
+      And I am on the sign up page
       And I press "Sign up"
     Then I should see the following error messages:
       | Email can't be blank            |
@@ -41,7 +40,7 @@ Feature: Authentication
   Scenario: Login
     Given a user named "John" is registered
     When I am on the home page
-      And I follow "Log in"
+      And I follow "Already invited? Login"
       And I press "Log in"
     Then I should see the error "Invalid email or password."
     When I fill in "Email" with "John@acme.com"

@@ -14,6 +14,9 @@ module NavigationHelpers
     when /the accounts page/
       accounts_path
 
+    when /the sign up page/
+      new_user_registration_path
+
     when /the new account page/
       new_account_path
 

@@ -4,7 +4,7 @@ end
 
 Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|
   When %{I am on the home page}
-    And %{I follow "Log in"}
+    And %{I follow "Already invited? Login"}
     And %{I fill in "Email" with "#{user_name}@acme.com"}
     And %{I fill in "Password" with "password"}
     And %{I press "Log in"}
