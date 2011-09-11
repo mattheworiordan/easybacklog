@@ -1,5 +1,5 @@
 class BacklogsController < ApplicationController
-  include CompanyResource
+  include AccountResource
   after_filter :update_backlog_metadata, :only => [:update]
   ssl_required :show, :new, :create, :archive, :show_snapshot, :recover_from_archive,
     :archives_index, :create_snapshot, :destroy, :backlog_json, :duplicate if use_ssl?
@@ -7,29 +7,29 @@ class BacklogsController < ApplicationController
   BACKLOG_INCLUDES = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
 
   def show
-    @backlog = current_company.backlogs.find(params[:id], :include => BACKLOG_INCLUDES)
+    @backlog = current_account.backlogs.find(params[:id], :include => BACKLOG_INCLUDES)
     render_backlog_or_snapshot
   end
 
   def show_snapshot
-    @backlog = current_company.backlogs.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
+    @backlog = current_account.backlogs.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
     render_backlog_or_snapshot
   end
 
   def new
-    @backlog = current_company.backlogs.new
-    @backlog.rate = current_company.default_rate if @backlog.rate.blank?
-    @backlog.velocity = current_company.default_velocity if @backlog.velocity.blank?
-    @backlog.use_50_90 = current_company.default_use_50_90 if @backlog.use_50_90.blank?
+    @backlog = current_account.backlogs.new
+    @backlog.rate = current_account.default_rate if @backlog.rate.blank?
+    @backlog.velocity = current_account.default_velocity if @backlog.velocity.blank?
+    @backlog.use_50_90 = current_account.default_use_50_90 if @backlog.use_50_90.blank?
   end
 
   def create
-    @backlog = current_company.backlogs.new(params[:backlog])
+    @backlog = current_account.backlogs.new(params[:backlog])
     @backlog.author = current_user
     @backlog.last_modified_user = current_user
     if @backlog.save
       flash[:notice] = 'Backlog was successfully created.'
-      redirect_to company_backlog_path(current_company, @backlog)
+      redirect_to account_backlog_path(current_account, @backlog)
     else
       render :action => "new"
     end
@@ -37,38 +37,38 @@ class BacklogsController < ApplicationController
 
   # put action to archive a backlog
   def archive
-    @backlog = current_company.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.find(params[:id])
     @backlog.mark_archived
     flash[:notice] = "#{@backlog.name} archived"
-    redirect_to company_path(current_company)
+    redirect_to account_path(current_account)
   end
 
   # put action to recover from archive
   def recover_from_archive
-    @backlog = current_company.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.find(params[:id])
     @backlog.recover_from_archive
     flash[:notice] = "#{@backlog.name} recovered from archive"
-    redirect_to company_path(current_company)
+    redirect_to account_path(current_account)
   end
 
   def archives_index
-    @company = current_company
-    @archives = current_company.backlogs.archived.order('LOWER(name)')
-    @your_backlogs = @company.backlogs.active.order('LOWER(name)')
-    @archive_exists = !@company.backlogs.archived.empty?
+    @account = current_account
+    @archives = current_account.backlogs.archived.order('LOWER(name)')
+    @your_backlogs = @account.backlogs.active.order('LOWER(name)')
+    @archive_exists = !@account.backlogs.archived.empty?
   end
 
   def create_snapshot
-    @backlog = current_company.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.find(params[:id])
     name = params[:name]
     new_snapshot = @backlog.create_snapshot(name)
     flash[:notice] = "New snapshot created"
-    redirect_to company_backlog_path(@backlog.company, @backlog)
+    redirect_to account_backlog_path(@backlog.account, @backlog)
   end
 
   # only supports JSON updates
   def update
-    @backlog = current_company.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.find(params[:id])
     @backlog.update_attributes params
     if @backlog.save
       render :json => @backlog.to_json(:methods => [:score_statistics, :rate_formatted])
@@ -78,22 +78,22 @@ class BacklogsController < ApplicationController
   end
 
   def destroy
-    @backlog = current_company.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.find(params[:id])
     @backlog.mark_deleted
     flash[:notice] = 'Backlog was successfully deleted.'
-    redirect_to company_path(current_company)
+    redirect_to account_path(current_account)
   end
 
   def duplicate
-    @backlog = current_company.backlogs.find(params[:id])
-    @new_backlog = current_company.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
+    @backlog = current_account.backlogs.find(params[:id])
+    @new_backlog = current_account.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
     @new_backlog.author = @backlog.author
     @new_backlog.last_modified_user = current_user
     if request.post?
       if @new_backlog.save
         @backlog.copy_children_to_backlog(@new_backlog)
         flash[:notice] = 'Backlog was duplicated successfully.'
-        redirect_to company_backlog_path(current_company, @new_backlog)
+        redirect_to account_backlog_path(current_account, @new_backlog)
       end
     end
   end
@@ -101,7 +101,7 @@ class BacklogsController < ApplicationController
   # Used by AJAX form validator
   def name_available
     name = (params[:backlog] || {})[:name] || ''
-    if current_company.backlogs.where('UPPER(name) like ?', name.upcase).empty?
+    if current_account.backlogs.where('UPPER(name) like ?', name.upcase).empty?
       render :text => 'true'
     else
       render :text => 'false'
@@ -109,7 +109,7 @@ class BacklogsController < ApplicationController
   end
 
   def backlog_json(backlog)
-    backlog_fields = [:id, :name, :company_id, :name, :rate, :velocity]
+    backlog_fields = [:id, :name, :account_id, :name, :rate, :velocity]
     backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_editable]
     theme_fields = [:id, :name, :code, :position]
     story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]

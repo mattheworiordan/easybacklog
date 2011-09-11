@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110818221844) do
+ActiveRecord::Schema.define(:version => 20110911172614) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -20,9 +20,29 @@ ActiveRecord::Schema.define(:version => 20110818221844) do
 
   add_index "acceptance_criteria", ["story_id"], :name => "index_acceptance_criteria_on_story_id"
 
+  create_table "account_users", :force => true do |t|
+    t.integer  "account_id", :null => false
+    t.integer  "user_id",    :null => false
+    t.boolean  "admin",      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "account_users", ["account_id", "user_id"], :name => "index_account_users_on_account_id_and_user_id"
+
+  create_table "accounts", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "default_velocity"
+    t.integer  "default_rate"
+    t.integer  "locale_id"
+    t.boolean  "default_use_50_90"
+  end
+
   create_table "backlogs", :force => true do |t|
     t.string   "name",                                     :null => false
-    t.integer  "company_id",                               :null => false
+    t.integer  "account_id",                               :null => false
     t.integer  "author_id",                                :null => false
     t.integer  "last_modified_user_id",                    :null => false
     t.datetime "created_at"
@@ -33,36 +53,42 @@ ActiveRecord::Schema.define(:version => 20110818221844) do
     t.boolean  "deleted",               :default => false, :null => false
     t.boolean  "archived",              :default => false, :null => false
     t.boolean  "use_50_90"
+    t.integer  "company_id"
   end
 
+  add_index "backlogs", ["account_id"], :name => "index_backlogs_on_account_id"
   add_index "backlogs", ["archived"], :name => "index_backlogs_on_archived"
   add_index "backlogs", ["company_id"], :name => "index_backlogs_on_company_id"
   add_index "backlogs", ["deleted"], :name => "index_backlogs_on_deleted"
   add_index "backlogs", ["snapshot_master_id"], :name => "index_backlogs_on_snapshot_master_id"
 
-  create_table "companies", :force => true do |t|
-    t.string   "name"
+  create_table "beta_signups", :force => true do |t|
+    t.string   "email"
+    t.string   "company"
+    t.string   "unique_code"
+    t.integer  "clicks"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  add_index "beta_signups", ["email"], :name => "index_beta_signups_on_email"
+  add_index "beta_signups", ["unique_code"], :name => "index_beta_signups_on_unique_code"
+
+  create_table "companies", :force => true do |t|
+    t.integer  "account_id"
+    t.string   "name"
     t.decimal  "default_velocity"
     t.integer  "default_rate"
-    t.integer  "locale_id"
     t.boolean  "default_use_50_90"
-  end
-
-  create_table "company_users", :force => true do |t|
-    t.integer  "company_id", :null => false
-    t.integer  "user_id",    :null => false
-    t.boolean  "admin",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "company_users", ["company_id", "user_id"], :name => "index_company_users_on_company_id_and_user_id", :unique => true
+  add_index "companies", ["account_id"], :name => "index_companies_on_account_id"
 
   create_table "invited_users", :force => true do |t|
     t.string   "email",           :null => false
-    t.integer  "company_id",      :null => false
+    t.integer  "account_id",      :null => false
     t.integer  "invitee_user_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"

@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource_or_scope)
     if resource_or_scope.is_a?(User)
       if session[:after_register_redirect_to].blank?
-        companies_path
+        accounts_path
       else
         # redirect after register/sign in path was set, used by invite process where someone registers
         #  and effectively signs in, so we need to redirect them back to the invite page
@@ -28,29 +28,29 @@ class ApplicationController < ActionController::Base
     render :json => { :status => 'notice', :message => notice_message }.merge(payload)
   end
 
-  # if instance variable for company is set then return it
-  def current_company
-    if @current_company.blank? && (companies.count == 1)
+  # if instance variable for account is set then return it
+  def current_account
+    if @current_account.blank? && (accounts.count == 1)
       # if user only has access to one account then treat user as logged in with that account
-      companies.first
+      accounts.first
     else
-      @current_company
+      @current_account
     end
   end
-  helper_method :current_company
+  helper_method :current_account
 
-  # list of all companies a user has access to
-  def companies
+  # list of all accounts a user has access to
+  def accounts
     if user_signed_in?
-      current_user.companies
+      current_user.accounts
     end
   end
-  helper_method :companies
+  helper_method :accounts
 
-  def is_company_admin?
-    @current_company && user_signed_in? && !@current_company.company_users.where(:user_id => current_user.id, :admin => true).empty?
+  def is_account_admin?
+    @current_account && user_signed_in? && !@current_account.account_users.where(:user_id => current_user.id, :admin => true).empty?
   end
-  helper_method :is_company_admin?
+  helper_method :is_account_admin?
 
   def self.use_ssl?
     !%w(development test cucumber).include?(Rails.env)

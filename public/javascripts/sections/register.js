@@ -2,22 +2,22 @@
 
 $(document).ready(function() {
   var rules = {}; // default: don't need to validate anything as not setting up an account now
-  // validation settings if company account being set up at the same time
-  if ($('form#user_new input#company_name').length) {
+  // validation settings if account being set up at the same time
+  if ($('form#user_new input#account_name').length) {
     rules = {
-      'company[name]': {
+      'account[name]': {
         required: true,
-        remote: '/companies/name_available'
+        remote: '/accounts/name_available'
       },
-      'company[locale_id]': {
+      'account[locale_id]': {
         required: true
       },
-      'company[default_rate]': {
+      'account[default_rate]': {
         required: true,
         number: true,
         min: 0
       },
-      'company[default_velocity]': {
+      'account[default_velocity]': {
         required: true,
         number: true,
         min: 0
@@ -46,7 +46,7 @@ $(document).ready(function() {
   $("form#user_new").validate({
     rules: rules,
     messages: {
-      'company[name]': {
+      'account[name]': {
         required: "You must enter an account name",
         remote: 'An account with this name is already set up.  Please enter another name.'
       },

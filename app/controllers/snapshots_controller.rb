@@ -5,12 +5,12 @@ class SnapshotsController < ApplicationController
 
   def compare_snapshots
     includes = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
-    @company = Company.find(params[:company_id])
-    @base = Backlog.includes(includes).where(:id => params[:base]).where(:company_id => @company.id).first
-    @target = Backlog.includes(includes).where(:id => params[:target]).where(:company_id => @company.id).first
-    if !@base.company.users.include?(current_user) || !@target.company.users.include?(current_user)
+    @account = Account.find(params[:account_id])
+    @base = Backlog.includes(includes).where(:id => params[:base]).where(:account_id => @account.id).first
+    @target = Backlog.includes(includes).where(:id => params[:target]).where(:account_id => @account.id).first
+    if !@base.account.users.include?(current_user) || !@target.account.users.include?(current_user)
       flash[:error] = 'You don\'t have permission to view the snapshots you were accessing'
-      redirect_to companies_path
+      redirect_to accounts_path
     end
     @comparison = @base.compare_with(@target)
 

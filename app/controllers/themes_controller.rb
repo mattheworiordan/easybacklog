@@ -51,12 +51,12 @@ class ThemesController < ApplicationController
 
   private
     # set the @backlog instance variable from nested route
-    # ensure user has access to this based on company
+    # ensure user has access to this based on account
     def set_backlog_and_protect
       @backlog = Backlog.find(params[:backlog_id])
-      if @backlog.company.users.find(current_user.id).blank?
+      if @backlog.account.users.find(current_user.id).blank?
         flash[:error] = 'You do not have permission to view this theme'
-        redirect_to companies_path
+        redirect_to accounts_path
       end
     end
 

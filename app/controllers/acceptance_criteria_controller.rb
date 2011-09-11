@@ -45,12 +45,12 @@ class AcceptanceCriteriaController < ApplicationController
 
   private
     # set the @story instance variable from nested route
-    # ensure user has access to this based on company
+    # ensure user has access to this based on account
     def set_theme_and_protect
       @story = Story.find(params[:story_id])
-      if @story.theme.backlog.company.users.find(current_user.id).blank?
+      if @story.theme.backlog.account.users.find(current_user.id).blank?
         flash[:error] = 'You do not have permission to view this acceptance criterion'
-        redirect_to companies_path
+        redirect_to accounts_path
       end
     end
 

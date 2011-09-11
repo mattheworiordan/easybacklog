@@ -1,4 +1,4 @@
-/* Company dashboard home */
+/* Account dashboard home */
 ul.backlog-list, ul.your-backlog-list {
   list-style: none;
   overflow: hidden;
@@ -86,7 +86,7 @@ ul.your-backlog-list {
   }
 }
 
-/* Company users management */
+/* Account users management */
 table.users, table.invites {
   border-collapse:collapse;
   th {
@@ -131,7 +131,7 @@ table.users, table.invites {
   input[type=text]#account_default_rate, input[type=text]#account_default_velocity {
     width: 6em;
   }
-  #company_name {
+  #account_name {
     @include large-name-field
   }
 }
@@ -144,9 +144,9 @@ table.users, table.invites {
   }
 }
 
-/* New company */
-form#new_company {
-  input#company_name {
+/* New account */
+form#new_account {
+  input#account_name {
     @include large-name-field
   }
 }

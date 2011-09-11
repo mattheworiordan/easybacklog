@@ -5,7 +5,7 @@
 
 %p Please enter a new unique name for the duplicated backlog
 
-= form_for(@new_backlog, :url => duplicate_company_backlog_path(current_company, @backlog)) do |f|
+= form_for(@new_backlog, :url => duplicate_account_backlog_path(current_account, @backlog)) do |f|
   - unless @new_backlog.errors.blank?
     .form_errors
       The form was not completed correctly.  Please correct the following fields to register:
@@ -18,4 +18,4 @@
   = "(old name: #{@backlog.name})"
   %br/
   = f.submit "Duplicate backlog"
-  = link_to "cancel", company_path(current_company)
+  = link_to "cancel", account_path(current_account)

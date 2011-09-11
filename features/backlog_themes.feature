@@ -7,8 +7,8 @@ Feature: Backlog Themes
     Given the standard locales are set up
       And a user named "John" is registered
       And I am signed in as "John"
-      And a company called "Acme" is set up for "John"
-      And I am on the companies page
+      And an account called "Acme" is set up for "John"
+      And I am on the accounts page
       And I follow "Create a new backlog"
       And I fill in "Backlog name" with "My First Backlog"
       And I press "Create new backlog"

@@ -9,20 +9,20 @@
     Please complete all fields below to set up a new account.
 
   #sign-up
-    - unless @company.blank?
+    - unless @account.blank?
       %h2 Account details
-      - unless @company.errors.empty?
+      - unless @account.errors.empty?
         .form_errors
           The account details were not completed correctly.  Please correct the following fields to register:
           %ul
-            - @company.errors.full_messages.each do |error|
+            - @account.errors.full_messages.each do |error|
               %li
                 = error
       .data-area
         = hidden_field_tag :show_account_setup, 'true'
 
-        = fields_for @company do |f|
-          != render :partial => '/companies/form', :locals => { :f => f }
+        = fields_for @account do |f|
+          != render :partial => '/accounts/form', :locals => { :f => f }
 
     %h2 Your details
     .data-area.no-padding

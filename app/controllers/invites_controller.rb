@@ -1,5 +1,5 @@
 class InvitesController < ApplicationController
-  before_filter :set_current_company
+  before_filter :set_current_account
   ssl_required :show, :destroy if use_ssl?
 
   # show represents the action when a user has been sent an invite and is visiting to get access
@@ -8,10 +8,10 @@ class InvitesController < ApplicationController
     if (invited_user.blank?)
       render :action => 'invalid_security_code'
     else
-      @invite_company = invited_user.company
+      @invite_account = invited_user.account
       # user is signed in, so just give them access
       if user_signed_in?
-        if @invite_company.users.include?(current_user) then
+        if @invite_account.users.include?(current_user) then
           render :action => 'already_have_access'
         else
           render :action => 'access_granted'
@@ -26,12 +26,12 @@ class InvitesController < ApplicationController
   end
 
   def destroy
-    if is_company_admin?
-      current_company.invited_users.find(params[:id]).destroy
-      redirect_to company_users_path(current_company)
+    if is_account_admin?
+      current_account.invited_users.find(params[:id]).destroy
+      redirect_to account_users_path(current_account)
     else
-      flash[:error] = 'You need admin rights to manage users for this company'
-      redirect_to company_path(current_company)
+      flash[:error] = 'You need admin rights to manage users for this account'
+      redirect_to account_path(current_account)
     end
   end
 
@@ -39,15 +39,15 @@ class InvitesController < ApplicationController
     # user has now registered, so let's assign them access
     def assign_user_access(invited_user)
       # don't add if user already has access
-      unless invited_user.company.company_users.find_by_user_id(current_user.id)
-        invited_user.company.add_user current_user
+      unless invited_user.account.account_users.find_by_user_id(current_user.id)
+        invited_user.account.add_user current_user
       end
       invited_user.destroy # delete the invite as now used
     end
 
-    # set the @current_company variable which would normally use CompanyResource
-    #  but CompanyResource requires a user to be logged in whereas for invites we cannot assume this
-    def set_current_company
-      @current_company = Company.find(params[:company_id])
+    # set the @current_account variable which would normally use AccountResource
+    #  but AccountResource requires a user to be logged in whereas for invites we cannot assume this
+    def set_current_account
+      @current_account = Account.find(params[:account_id])
     end
 end

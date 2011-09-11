@@ -3,15 +3,15 @@
 #backlog-data-area
   .actions
     - if @backlog.snapshot_master.blank?
-      = link_to "Export", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
+      = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
       .divider
-      = link_to "Print", download_company_backlog_path(@backlog.company, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
+      = link_to "Print", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     - else
-      = link_to "Export", download_snapshot_company_backlog_path(@backlog.company, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
+      = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
       .divider
-      = link_to "Print", download_snapshot_company_backlog_path(@backlog.company, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
+      = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     .divider
-    =link_to 'Back to dashboard', company_path(@backlog.company)
+    =link_to 'Back to dashboard', account_path(@backlog.account)
   %h2.name
     - if @backlog.snapshot_master.blank?
       .data= @backlog.name
@@ -36,10 +36,10 @@
                 %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{backlog_date snapshot}"
     - if @backlog.editable?
       .new.vtip{ :title => 'Create new snapshot' }
-        %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
+        %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
           New
     .compare.vtip{ :title => 'Compare snapshots' }
-      %a#compare-snapshot.ui-icon.ui-icon-transferthick-e-w{:href => create_snapshot_company_backlog_path(@backlog.company, @backlog)}
+      %a#compare-snapshot.ui-icon.ui-icon-transferthick-e-w{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
         New
   .backlog-stats
     %div.title Backlog total:
@@ -63,7 +63,7 @@
       Loading...
 :javascript
   $(document).ready(function() {
-    App.Collections.Backlogs = new BacklogsCollection(false, { company_id: #{@backlog.company.id} });
+    App.Collections.Backlogs = new BacklogsCollection(false, { account_id: #{@backlog.account.id} });
     var backlog = new Backlog(#{embedded_json_safe backlog_json(@backlog)});
     App.Collections.Backlogs.add(backlog);
     var view = new App.Views.Backlogs.Show({ model: backlog, el: $('#backlog-container') });

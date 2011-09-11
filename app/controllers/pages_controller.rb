@@ -2,12 +2,12 @@ class PagesController < ApplicationController
   ssl_required :home if use_ssl?
 
   def home
-    # if user is signed in but not seen a previous page, then take them to the companies page
+    # if user is signed in but not seen a previous page, then take them to the accounts page
     if user_signed_in? && session[:last_url].blank?
-      redirect_to companies_path
+      redirect_to accounts_path
     end
     if user_signed_in?
-      @recent_backlogs = current_user.companies.map { |company| company.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..10]
+      @recent_backlogs = current_user.accounts.map { |accounts| accounts.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..10]
     end
   end
 

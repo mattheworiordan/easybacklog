@@ -3,12 +3,12 @@
 - content_for :title do
   %h1 Edit account
 
-= form_for(@company) do |f|
-  - unless @company.errors.blank?
+= form_for(@account) do |f|
+  - unless @account.errors.blank?
     .form_errors
       The form was not completed correctly.  Please correct the following fields to register:
       %ul
-        - @company.errors.full_messages.each do |error|
+        - @account.errors.full_messages.each do |error|
           %li
             = error
   != render :partial => 'form', :locals => { :f => f }
@@ -16,4 +16,4 @@
   %br/
   %br/
   = f.submit "Update account"
-  = link_to 'cancel', company_path(@company)
+  = link_to 'cancel', account_path(@account)

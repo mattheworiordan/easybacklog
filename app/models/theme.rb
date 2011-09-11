@@ -37,7 +37,7 @@ class Theme < ActiveRecord::Base
   end
 
   def cost_formatted
-    (cost || 0).to_currency(:precision => 0, :locale => backlog.company.locale.code.to_s)
+    (cost || 0).to_currency(:precision => 0, :locale => backlog.account.locale.code.to_s)
   end
 
   def days_formatted

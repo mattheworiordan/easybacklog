@@ -1,6 +1,6 @@
-- title @company.name
+- title @account.name
 
-!= render :partial => 'generic_company_info'
+!= render :partial => 'generic_account_info'
 
 %h2
   = "Latest activity across your backlogs"
@@ -12,8 +12,8 @@
     - @backlogs.each do |backlog|
       %li
         .name
-          = link_to backlog.name, company_backlog_path(@company, backlog)
+          = link_to backlog.name, account_backlog_path(@account, backlog)
         .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
 %br/
 
-= link_to "Create a new backlog", new_company_backlog_path(@company), { :class => 'button' }
+= link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }

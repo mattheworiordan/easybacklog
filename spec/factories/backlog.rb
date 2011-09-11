@@ -7,8 +7,8 @@ Factory.define :backlog do |a|
   a.rate 800
   a.velocity 3
   a.use_50_90 true
-  a.association :company, :factory => :company
+  a.association :account, :factory => :account
   a.association :author, :factory => :user
   a.association :last_modified_user, :factory => :user
-  a.after_create { |backlog| backlog.company.backlogs.reload } # parent model needs refreshing as it will not know a new model has been created
+  a.after_create { |backlog| backlog.account.backlogs.reload } # parent model needs refreshing as it will not know a new model has been created
 end

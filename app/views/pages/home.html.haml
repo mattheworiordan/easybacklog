@@ -23,9 +23,9 @@
         - @recent_backlogs.each do |backlog|
           %li
             .name
-              = link_to backlog.name, company_backlog_path(backlog.company, backlog)
+              = link_to backlog.name, account_backlog_path(backlog.account, backlog)
             .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
-    = link_to "View my dashboard", companies_path, { :class => 'button' }
+    = link_to "View my dashboard", accounts_path, { :class => 'button' }
   - else
     .sign-up
       %h2 Create an account

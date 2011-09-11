@@ -1,19 +1,19 @@
-# Users with access to a company controller
+# Users with access to an Account controller
 # Root level users managed by the Devise controllers
-class CompanyUsersController < ApplicationController
-  include CompanyResource
-  before_filter :check_company_admin
+class AccountUsersController < ApplicationController
+  include AccountResource
+  before_filter :check_account_admin
   ssl_required :index, :destroy, :create, :update if use_ssl?
 
   def index
-    @users = current_company.company_users
-    @invites = current_company.invited_users
+    @users = current_account.account_users
+    @invites = current_account.invited_users
   end
 
   # Support JSON updates only
-  # Param editable is admin only as this is the only attribute on company_users
+  # Param editable is admin only as this is the only attribute on account_users
   def update
-    @user = current_company.company_users.find_by_user_id(params[:id])
+    @user = current_account.account_users.find_by_user_id(params[:id])
     @user.update_attributes(:admin => params[:admin])
     if @user.save
       render :json => @user
@@ -23,9 +23,9 @@ class CompanyUsersController < ApplicationController
   end
 
   def destroy
-    @user = current_company.company_users.find_by_user_id(params[:id])
+    @user = current_account.accoung_users.find_by_user_id(params[:id])
     @user.destroy
-    redirect_to company_users_path(current_company)
+    redirect_to account_users_path(current_account)
   end
 
   def create
@@ -56,10 +56,10 @@ class CompanyUsersController < ApplicationController
 
   private
     # before_filter to check that user has correct privilegs
-    def check_company_admin
-      unless is_company_admin?
-        flash[:error] = 'You need admin rights to manage users for this company'
-        redirect_to company_path(current_company)
+    def check_account_admin
+      unless is_account_admin?
+        flash[:error] = 'You need admin rights to manage users for this account'
+        redirect_to account_path(current_account)
       end
     end
 
@@ -68,18 +68,18 @@ class CompanyUsersController < ApplicationController
       # check if user is a member of easyBacklog already
       if !User.where('UPPER(email) = ?', email.upcase).empty?
         # don't do anything if they already have access
-        if current_company.users.where('UPPER(email) = ?', email.upcase).empty?
+        if current_account.users.where('UPPER(email) = ?', email.upcase).empty?
           invited_user = User.where('UPPER(email) = ?', email.upcase).first
-          current_company.add_user invited_user
-          CompanyUsersNotifier.access_granted(current_user, current_company, invited_user).deliver
+          current_account.add_user invited_user
+          AccountUsersNotifier.access_granted(current_user, current_account, invited_user).deliver
         end
       else # user is not a member
-        if (current_company.invited_users.where('UPPER(email) = ?', email.upcase).empty?)
-          invited_user = current_company.invited_users.create!(:email => email, :invitee_user_id => current_user.id)
+        if (current_account.invited_users.where('UPPER(email) = ?', email.upcase).empty?)
+          invited_user = current_account.invited_users.create!(:email => email, :invitee_user_id => current_user.id)
         else
-          invited_user = current_company.invited_users.where('UPPER(email) = ?', email.upcase).first
+          invited_user = current_account.invited_users.where('UPPER(email) = ?', email.upcase).first
         end
-        CompanyUsersNotifier.invite_to_join(current_user, current_company, invited_user).deliver
+        AccountUsersNotifier.invite_to_join(current_user, current_account, invited_user).deliver
       end
     end
 end

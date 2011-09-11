@@ -1,11 +1,11 @@
-- title "Access to #{@invite_company.name}"
+- title "Access to #{@invite_account.name}"
 
 - content_for :title do
-  %h1= "Access to #{@invite_company.name}"
+  %h1= "Access to #{@invite_account.name}"
 
 %p
-  = "You have just been granted access to #{@invite_company.name}."
+  = "You have just been granted access to #{@invite_account.name}."
 
 %br/
 
-= link_to "Go to #{@invite_company.name} account", company_path(@invite_company), :class => 'button'
+= link_to "Go to #{@invite_account.name} account", account_path(@invite_account), :class => 'button'

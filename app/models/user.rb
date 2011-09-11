@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
-  has_many :company_users
-  has_many :companies, :through => :company_users
+  has_many :account_users
+  has_many :accounts, :through => :account_users
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable

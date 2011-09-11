@@ -1,17 +1,17 @@
-- title 'Company'
-- if @companies.blank?
+- title 'Account'
+- if @accounts.blank?
   - content_for :title do
     %h1 No account exists
   %p
     You do not have access to an account yet.  If you would like to get access to an existing account, please contact the person who manages the account and request an invite for access.
-  %p 
-    Or alternatively you may #{link_to 'set up a new account', new_company_path} now.
+  %p
+    Or alternatively you may #{link_to 'set up a new account', new_account_path} now.
 - else
   - content_for :title do
     %h1 Please select an account
-  %p 
+  %p
     As you have access to more than one account, please select the account you wish to access.
   %ul
-    - @companies.each do |company|
+    - @accounts.each do |account|
       %li
-        = link_to company.name, company_path(company)
+        = link_to account.name, account_path(account)

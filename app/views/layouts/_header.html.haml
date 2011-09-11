@@ -4,25 +4,25 @@
       %span.easy>="easy"
       %span.backlog Backlog
     %sup BETA
-  - if !companies.blank? && companies.count >= 1
+  - if !accounts.blank? && accounts.count >= 1
     .divider
-    .company
-      - if current_company.blank?
-        .jump-to-company Jump to company
+    .account
+      - if current_account.blank?
+        .jump-to-account Jump to Account
       - else
-        = link_to current_company.name, company_path(current_company)
+        = link_to current_account.name, account_path(current_account)
       %ul
-        - (companies - [current_company]).each do |comp|
-          %li= link_to comp.name, company_path(comp)
+        - (accounts - [current_account]).each do |acct|
+          %li= link_to acct.name, account_path(acct)
 
 .account-info
   - if user_signed_in?
     %div= link_to 'Sign out', destroy_user_session_path
     .divider
     %div= link_to 'My info', edit_user_registration_path
-    - if is_company_admin?
+    - if is_account_admin?
       .divider
-      %div= link_to 'Users', company_users_path(current_company)
+      %div= link_to 'Users', account_users_path(current_account)
   - else
     %div= link_to 'Sign up', new_user_registration_url(:protocol => link_protocol)
     .divider

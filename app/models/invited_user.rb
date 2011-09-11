@@ -1,6 +1,6 @@
 class InvitedUser < ActiveRecord::Base
   belongs_to :invitee_user, :class_name => 'User'
-  belongs_to :company
+  belongs_to :account
 
   attr_accessible :email, :invitee_user_id
 

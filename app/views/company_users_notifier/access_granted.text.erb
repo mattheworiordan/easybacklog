@@ -1,7 +1,7 @@
 Hi <%= @invited_user.email%>
 
-<%= @invitee_user.name %> from <%= @company.name %> has just given you access to their account on easyBacklog.
+<%= @invitee_user.name %> from <%= @account.name %> has just given you access to their account on easyBacklog.
 
-To view the backlogs in this account now, visit <%= company_url(@company) %>
+To view the backlogs in this account now, visit <%= account_url(@account) %>
 
 <%= render :partial => 'footer' %>

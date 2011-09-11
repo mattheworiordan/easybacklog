@@ -2,17 +2,17 @@
 
 var BacklogsCollection = Backbone.Collection.extend({
   model: Backlog,
-  company_id: null,
+  account_id: null,
 
   url: function() {
-    if (!this.company_id) {
-      var errorView = new App.Views.Error('Error, missing necesary ID to display Backlog');
+    if (!this.account_id) {
+      var errorView = new App.Views.Error('Error, missing necessary Account ID to display Backlog');
     } else {
-      return '/companies/' + this.company_id + '/backlogs';
+      return '/accounts/' + this.account_id + '/backlogs';
     }
   },
 
   initialize: function(models, options) {
-    this.company_id = options ? options.company_id : null;
+    this.account_id = options ? options.account_id : null;
   }
 });

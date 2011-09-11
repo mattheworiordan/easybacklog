@@ -1,5 +1,5 @@
 class Backlog < ActiveRecord::Base
-  belongs_to :company
+  belongs_to :account
   belongs_to :author, :class_name => 'User'
   belongs_to :last_modified_user, :class_name => 'User'
 
@@ -9,11 +9,11 @@ class Backlog < ActiveRecord::Base
   has_many :snapshots, :class_name => 'Backlog', :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
-  validates_uniqueness_of :name, :scope => [:company_id], :message => 'has already been taken for another backlog'
+  validates_uniqueness_of :name, :scope => [:account_id], :message => 'has already been taken for another backlog'
   validates_presence_of :name, :rate, :velocity
   validates_numericality_of :rate, :velocity
 
-  attr_accessible :company, :name, :rate, :velocity, :use_50_90
+  attr_accessible :account, :name, :rate, :velocity, :use_50_90
 
   before_save :check_can_modify
 
@@ -36,11 +36,11 @@ class Backlog < ActiveRecord::Base
   end
 
   def cost_formatted
-    (cost || 0).to_currency(:precision => 0, :locale => company.locale.code.to_s)
+    (cost || 0).to_currency(:precision => 0, :locale => account.locale.code.to_s)
   end
 
   def rate_formatted
-    (rate || 0).to_currency(:precision => 0, :locale => company.locale.code.to_s)
+    (rate || 0).to_currency(:precision => 0, :locale => account.locale.code.to_s)
   end
 
   def days_formatted
@@ -64,7 +64,7 @@ class Backlog < ActiveRecord::Base
 
   # snapshot is a non-editable copy of a backlog in time
   def create_snapshot(snapshot_name)
-    new_backlog = company.backlogs.new(self.attributes.merge({ :name => snapshot_name, :created_at => Time.now, :updated_at => Time.now }))
+    new_backlog = account.backlogs.new(self.attributes.merge({ :name => snapshot_name, :created_at => Time.now, :updated_at => Time.now }))
     # these 2 attributes are protected
     new_backlog.author = self.author
     new_backlog.last_modified_user = self.last_modified_user

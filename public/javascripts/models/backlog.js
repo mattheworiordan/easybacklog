@@ -24,7 +24,7 @@ var Backlog = Backbone.Model.extend({
     return (this._themes);
   },
 
-  Company_ID: function() {
-    return this.collection.company_id;
+  Account_ID: function() {
+    return this.collection.account_id;
   }
 });

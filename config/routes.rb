@@ -1,7 +1,7 @@
 Ibacklog::Application.routes.draw do
   devise_for :users
 
-  resources :companies, :only => [:index, :show, :new, :create, :edit, :update] do
+  resources :accounts, :only => [:index, :show, :new, :create, :edit, :update] do
     resources :backlogs, :only => [:show, :new, :create, :update, :destroy] do
       member do
         match 'duplicate' => 'backlogs#duplicate', :via => [:get, :post], :as => 'duplicate'
@@ -21,7 +21,7 @@ Ibacklog::Application.routes.draw do
         get 'snapshots/:snapshot_id/:file_name' => 'backlogs#show_snapshot', :as => 'download_snapshot'
       end
     end
-    resources :users, :controller => 'company_users'
+    resources :users, :controller => 'account_users'
     resources :invites, :only => [:destroy] do
       member do
         get ':security_code' => 'invites#show', :as => 'show'
@@ -31,7 +31,7 @@ Ibacklog::Application.routes.draw do
       get 'archives' => 'backlogs#archives_index', :as => 'archives'
     end
     collection do
-      get 'name_available' => 'companies#name_available'
+      get 'name_available' => 'accounts#name_available'
     end
   end
 

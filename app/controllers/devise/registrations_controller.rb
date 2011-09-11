@@ -8,7 +8,7 @@ class Devise::RegistrationsController < ApplicationController
   # GET /resource/sign_up
   def new
     build_resource({})
-    @company = Company.new
+    @account = Account.new
     render_with_scope :new
   end
 
@@ -18,22 +18,22 @@ class Devise::RegistrationsController < ApplicationController
 
     # if user has visited sign_up by default they are asked to set up an account
     # if user comes from an embedded form (such as an invite), then account_setup is not shown as they are not setting up an account
-    @company = (params[:show_account_setup] == 'true' ? Company.new(params[:company]) : nil)
-    @company.save unless @company.blank?
+    @account = (params[:show_account_setup] == 'true' ? Account.new(params[:account]) : nil)
+    @account.save unless @account.blank?
 
-    if resource.save && (@company.blank? || @company.valid?)
-      @company.add_first_user resource unless @company.blank?
+    if resource.save && (@account.blank? || @account.valid?)
+      @account.add_first_user resource unless @account.blank?
       flash[:notice] = 'Your new account has been created for you'
       sign_in(resource_name, resource)
-      redirect_to company_path(@company || resource.companies.first)
+      redirect_to account_path(@account || resource.accounts.first)
     else
-      unless @company.blank?
+      unless @account.blank?
         # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id
-        if (@company.errors[:locale].present?)
-          @company.errors.add(:locale_id, @company.errors[:locale].join(', '))
-          @company.errors.delete(:locale)
+        if (@account.errors[:locale].present?)
+          @account.errors.add(:locale_id, @account.errors[:locale].join(', '))
+          @account.errors.delete(:locale)
         end
-        @company.destroy # clean up the company as user account was not created
+        @account.destroy # clean up the account as user account was not created
       end
       clean_up_passwords(resource)
       render_with_scope :new

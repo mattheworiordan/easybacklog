@@ -123,11 +123,11 @@ header {
   header .main-title-area .logo {
     float: left;
     font-size: 110%; }
-  header .main-title-area .company {
+  header .main-title-area .account {
     float: left; }
-    header .main-title-area .company .jump-to-company {
+    header .main-title-area .account .jump-to-account {
       color: #999; }
-    header .main-title-area .company ul {
+    header .main-title-area .account ul {
       position: absolute;
       display: none;
       list-style: none;
@@ -135,13 +135,13 @@ header {
       background-color: black;
       margin: 0px -24px 0 -12px;
       min-width: 200px; }
-      header .main-title-area .company ul li:first-child {
+      header .main-title-area .account ul li:first-child {
         margin-top: 7px; }
-      header .main-title-area .company ul li {
+      header .main-title-area .account ul li {
         margin: 0;
         padding: 6px 12px 6px 12px;
         border-top: 1px solid #444; }
-    header .main-title-area .company:hover ul {
+    header .main-title-area .account:hover ul {
       display: block; }
   header .account-info {
     float: right; }
@@ -951,7 +951,7 @@ ul.themes {
   float: left;
   margin-right: 10px; }
 
-/* Company dashboard home */
+/* Account dashboard home */
 ul.backlog-list, ul.your-backlog-list {
   list-style: none;
   overflow: hidden;
@@ -1025,7 +1025,7 @@ ul.your-backlog-list {
   #home ul, #invite ul {
     padding-bottom: 1em; }
 
-/* Company users management */
+/* Account users management */
 table.users, table.invites {
   border-collapse: collapse; }
   table.users th, table.invites th {
@@ -1059,7 +1059,7 @@ table.users, table.invites {
     width: 15em; }
   #sign-up input[type=text]#account_default_rate, #sign-up input[type=text]#account_default_velocity, #invite input[type=text]#account_default_rate, #invite input[type=text]#account_default_velocity {
     width: 6em; }
-  #sign-up #company_name, #invite #company_name {
+  #sign-up #account_name, #invite #account_name {
     font-size: 1.3em;
     font-weight: bolder; }
 
@@ -1068,7 +1068,7 @@ table.users, table.invites {
   float: left;
   width: 15em; }
 
-/* New company */
-form#new_company input#company_name {
+/* New account */
+form#new_account input#account_name {
   font-size: 1.3em;
   font-weight: bolder; }

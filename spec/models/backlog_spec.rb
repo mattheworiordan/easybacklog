@@ -60,9 +60,9 @@ describe Backlog do
 
   it 'should allow backlogs to be marked as deleted or archived' do
     backlog = Factory.create(:backlog, :name => 'Active 1')
-    active2 = Factory.create(:backlog, :name => 'Active 2', :company => backlog.company)
-    Factory.create(:backlog, :name => 'Archived', :company => backlog.company).mark_archived
-    Factory.create(:backlog, :name => 'Deleted', :company => backlog.company).mark_deleted
+    active2 = Factory.create(:backlog, :name => 'Active 2', :account => backlog.account)
+    Factory.create(:backlog, :name => 'Archived', :account => backlog.account).mark_archived
+    Factory.create(:backlog, :name => 'Deleted', :account => backlog.account).mark_deleted
 
     Backlog.archived(true).should include(Backlog.find_by_name('Archived'))
     Backlog.archived.first.should be_archived
@@ -70,9 +70,9 @@ describe Backlog do
     Backlog.deleted.first.should be_deleted
     Backlog.active(true).count.should eql(2)
     Backlog.all.count.should eql(4)
-    backlog.company.backlogs.active.count.should eql(2)
-    backlog.company.backlogs.deleted.first.should eql(Backlog.find_by_name('Deleted'))
-    backlog.company.backlogs.archived.first.should eql(Backlog.find_by_name('Archived'))
+    backlog.account.backlogs.active.count.should eql(2)
+    backlog.account.backlogs.deleted.first.should eql(Backlog.find_by_name('Deleted'))
+    backlog.account.backlogs.archived.first.should eql(Backlog.find_by_name('Archived'))
 
     # now mark active 2 as archived and deleted and make sure it does not appear in the archived list
     active2.mark_deleted
@@ -92,8 +92,8 @@ describe Backlog do
 
   it 'should ensure when a backlog is destroyed all related snapshots are deleted' do
     parent = Factory.create(:backlog, :name => 'Parent')
-    snapshot1 = Factory.create(:backlog, :snapshot_master_id => parent.id, :company => parent.company)
-    snapshot2 = Factory.create(:backlog, :snapshot_master_id => parent.id, :company => parent.company)
+    snapshot1 = Factory.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
+    snapshot2 = Factory.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
     parent.destroy
 
     # check that snapshots have been deleted in the proces
@@ -114,11 +114,11 @@ describe Backlog do
       confirm_duplicates @newer_snapshot, @backlog.reload
     end
 
-    # check that backlogs company scope is working
-    @backlog.company.reload
-    @backlog.company.backlogs.should_not include(@newer_snapshot)
-    @backlog.company.backlogs.should_not include(@old_snapshot)
-    @backlog.company.backlogs.should include(@backlog)
+    # check that backlogs account scope is working
+    @backlog.account.reload
+    @backlog.account.backlogs.should_not include(@newer_snapshot)
+    @backlog.account.backlogs.should_not include(@old_snapshot)
+    @backlog.account.backlogs.should include(@backlog)
 
     # check that backlog snapshots is working
     @backlog.reload

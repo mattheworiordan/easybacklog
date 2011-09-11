@@ -7,7 +7,7 @@ Feature: Backlog Stories
     Given the standard locales are set up
       And a user named "John" is registered
       And I am signed in as "John"
-      And a company called "Acme" is set up for "John"
+      And an account called "Acme" is set up for "John"
       # Backlog has rate of £800 and velocity of 3 by default
       # create three themes, Theme 1, Theme 2, Theme 3 (with codes TH1, TH2, TH3)
       And a backlog named "Backlog 1" with 3 themes is set up for "Acme"

@@ -204,7 +204,7 @@ App.Views.Backlogs = {
     jumpToSnapshot: function(event) {
       event.preventDefault();
       var val = $(event.target).val();
-      var baseUrl = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/\d+/i)[0];
+      var baseUrl = document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/\d+/i)[0];
       if (val.match(/^\d+$/)) {
         // user has selected a backlog
         baseUrl += '/snapshots/' + val;
@@ -219,7 +219,7 @@ App.Views.Backlogs = {
       event.preventDefault();
       $('#dialog-compare-snapshot').remove(); // ensure old dialog HTML is not still in the DOM
       $('body').append(JST['backlogs/compare-snapshot-dialog']({ snapshot_options: $('#backlog-data-area select#snapshot-selector').html() }));
-      var currentSnapshot = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/\d+\/snapshots\/(\d+)/i);
+      var currentSnapshot = document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/\d+\/snapshots\/(\d+)/i);
       if (currentSnapshot) {
         // viewing a snapshot now, so set the compare against as the working version
         $('#dialog-compare-snapshot select#target-snapshot').val($('#dialog-compare-snapshot select#target-snapshot option:first-child').val());
@@ -238,8 +238,8 @@ App.Views.Backlogs = {
               $(this).find('div.error-message').html('<p><span class="error-alert ui-icon ui-icon-alert"></span>' +
                 'You cannot compare the same snapshots.  Please make another selection.</p>');
             } else {
-              var baseUrl = document.location.pathname.match(/^\/companies\/\d+\/backlogs/i)[0];
-              var backlogId = document.location.pathname.match(/^\/companies\/\d+\/backlogs\/(\d+)/i)[1];
+              var baseUrl = document.location.pathname.match(/^\/accounts\/\d+\/backlogs/i)[0];
+              var backlogId = document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/(\d+)/i)[1];
               var url = baseUrl + '/compare/' + (base.match(/^\d+$/) ? base : backlogId) + '/' + (target.match(/^\d+$/) ? target : backlogId);
               if (App.environment === 'test') {
                 document.location.href = url;

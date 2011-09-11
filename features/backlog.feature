@@ -7,9 +7,9 @@ Feature: Backlog
     Given the standard locales are set up
       And a user named "John" is registered
       And I am signed in as "John"
-      And a company called "Acme" is set up for "John"
+      And an account called "Acme" is set up for "John"
       And a standard backlog named "Acme Backlog" is set up for "Acme"
-    When I am on the companies page
+    When I am on the accounts page
       Then I should see the page title "Acme"
 
   Scenario: Create a new backlog
@@ -17,7 +17,7 @@ Feature: Backlog
       And I press "Create new backlog"
     Then I should see the following error messages:
       | Name can't be blank             |
-      # Check that default values are being used from Company
+      # Check that default values are being used from Account
       And the "Use the 50/90 estimation method" checkbox should be checked
       And the "Rate" field should contain "800"
       And the "Velocity" field should contain "3"

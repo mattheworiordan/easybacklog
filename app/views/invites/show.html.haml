@@ -4,11 +4,11 @@
   = include_javascripts :register
 
 - content_for :title do
-  %h1= "Get access to the backlogs of #{@invite_company.name}"
+  %h1= "Get access to the backlogs of #{@invite_account.name}"
 
 #invite
   %p
-    = "You have been sent an invite to join the account for #{@invite_company.name} on easyBacklog."
+    = "You have been sent an invite to join the account for #{@invite_account.name} on easyBacklog."
     In order to gain access to this account you will either need to register for free now, or log in using your existing account.
   .sign-up
     %h2 Register for free

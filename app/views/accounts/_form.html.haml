@@ -4,7 +4,7 @@
 
 = f.label :locale_id, "What is your preferred language setting?", :class => 'spacer'
 .input-row
-  = select(:company, "locale_id", [[ 'Select a locale...', nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
+  = select(:account, "locale_id", [[ 'Select a locale...', nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
 .form-hint
   We use this to ensure currency amounts and formatting is accurate to your locality.
 

@@ -8,7 +8,7 @@
 - else
   - content_for :title do
     %h1 Account users
-  %p 
+  %p
     The following people have access to this account:
   %form
     %table.users
@@ -16,18 +16,18 @@
         %th Name
         %th Email address
         %th Admin Rights?
-      - @users.each do |company_user|
+      - @users.each do |account_user|
         %tr
           %td
-            = company_user.user.name
+            = account_user.user.name
           %td
-            = company_user.user.email
-          - unless company_user.user == current_user
+            = account_user.user.email
+          - unless account_user.user == current_user
             %td.admin
-              = check_box_tag "user-#{company_user.user.id}", 1, company_user.admin?, :title => 'Click to toggle admin rights', :class => 'admin vtip'
-              = label_tag "user-#{company_user.user.id}", (company_user.admin? ? 'Yes' : 'No'), :id => "label-user-#{company_user.user.id}", :title => 'Click to toggle admin rights', :class => 'vtip'
+              = check_box_tag "user-#{account_user.user.id}", 1, account_user.admin?, :title => 'Click to toggle admin rights', :class => 'admin vtip'
+              = label_tag "user-#{account_user.user.id}", (account_user.admin? ? 'Yes' : 'No'), :id => "label-user-#{account_user.user.id}", :title => 'Click to toggle admin rights', :class => 'vtip'
             %td.action
-              = link_to company_user_path(current_company, company_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
+              = link_to account_user_path(current_account, account_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
                 %span.ui-icon.ui-icon-trash
           - else
             %td.admin
@@ -44,8 +44,8 @@
             %td
               = invite.email
             %td.action
-              = link_to company_invite_path(current_company, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
+              = link_to account_invite_path(current_account, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
                 %span.ui-icon.ui-icon-trash
 
   %br/
-  = link_to 'Add users', new_company_user_path(current_company), :class => 'button'
+  = link_to 'Add users', new_account_user_path(current_account), :class => 'button'

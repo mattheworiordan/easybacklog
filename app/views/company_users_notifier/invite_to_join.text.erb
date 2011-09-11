@@ -1,7 +1,7 @@
 Hi <%= @invited_user.email%>
 
-<%= @invitee_user.name %> from <%= @company.name %> has invited you to join their account on easyBacklog.  easyBacklog is a tool that allows people to easily manage and version their agile backlogs.
+<%= @invitee_user.name %> from <%= @account.name %> has invited you to join their account on easyBacklog.  easyBacklog is a tool that allows people to easily manage and version their agile backlogs.
 
-To accept this invite and get access to <%= @company.name %>, please visit <%= show_company_invite_url(@company, @invited_user.id, @invited_user.security_code)%>
+To accept this invitation and get access to <%= @account.name %>, please visit <%= show_account_invite_url(@account, @invited_user.id, @invited_user.security_code)%>
 
 <%= render :partial => 'footer' %>

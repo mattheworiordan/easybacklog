@@ -5,7 +5,7 @@ $(document).ready(function() {
   var rules = {
     'backlog[name]': {
       required: true,
-      remote: '/companies/' + $('form#new_backlog').attr('action').match(/^\/companies\/(\d+)/i)[1] + '/backlogs/name_available'
+      remote: '/accounts/' + $('form#new_backlog').attr('action').match(/^\/accounts\/(\d+)/i)[1] + '/backlogs/name_available'
     },
     'backlog[rate]': {
       required: true,

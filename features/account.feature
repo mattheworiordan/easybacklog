@@ -1,4 +1,4 @@
-Feature: Company
+Feature: Account
   In order to group my backlogs
   A visitor
   Should be able to set up and use an account

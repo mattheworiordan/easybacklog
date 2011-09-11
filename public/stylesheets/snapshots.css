@@ -123,11 +123,11 @@ header {
   header .main-title-area .logo {
     float: left;
     font-size: 110%; }
-  header .main-title-area .company {
+  header .main-title-area .account {
     float: left; }
-    header .main-title-area .company .jump-to-company {
+    header .main-title-area .account .jump-to-account {
       color: #999; }
-    header .main-title-area .company ul {
+    header .main-title-area .account ul {
       position: absolute;
       display: none;
       list-style: none;
@@ -135,13 +135,13 @@ header {
       background-color: black;
       margin: 0px -24px 0 -12px;
       min-width: 200px; }
-      header .main-title-area .company ul li:first-child {
+      header .main-title-area .account ul li:first-child {
         margin-top: 7px; }
-      header .main-title-area .company ul li {
+      header .main-title-area .account ul li {
         margin: 0;
         padding: 6px 12px 6px 12px;
         border-top: 1px solid #444; }
-    header .main-title-area .company:hover ul {
+    header .main-title-area .account:hover ul {
       display: block; }
   header .account-info {
     float: right; }

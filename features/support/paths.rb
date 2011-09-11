@@ -9,22 +9,22 @@ module NavigationHelpers
     case page_name
 
     when /the home\s?page/
-      '/'
+      root_path
 
     when /the accounts page/
-      '/companies'
+      accounts_path
 
     when /the new account page/
-      '/companies/new'
+      new_account_path
 
     when /the backlog "([^"]+)" page/
       backlog = Backlog.find_by_name($1)
-      company_backlog_path(backlog.company, backlog)
+      account_backlog_path(backlog.account, backlog)
 
     when /the snapshot base "([^"]+)" and backlog "([^"]+)" Excel export page$/
       backlog = Backlog.find_by_name($2)
       base_snapshot = Backlog.find_by_name($1)
-      compare_snapshots_company_backlogs_path(backlog.company, base_snapshot, backlog, :format => 'xls')
+      compare_snapshots_account_backlogs_path(backlog.account, base_snapshot, backlog, :format => 'xls')
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

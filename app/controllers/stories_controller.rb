@@ -64,12 +64,12 @@ class StoriesController < ApplicationController
 
   private
     # set the @theme instance variable from nested oute
-    # ensure user has access to this based on company
+    # ensure user has access to this based on account
     def set_theme_and_protect
       @theme = Theme.find(params[:theme_id])
-      if @theme.backlog.company.users.find(current_user.id).blank?
+      if @theme.backlog.account.users.find(current_user.id).blank?
         flash[:error] = 'You do not have permission to view this story'
-        redirect_to companies_path
+        redirect_to accounts_path
       end
     end
 
