@@ -60,6 +60,9 @@ section.content {
     &.enabled {
       color: #000;
     }
+    &.invalid {
+      border: 2px solid red;
+    }
   }
 
   .faded {
@@ -68,6 +71,17 @@ section.content {
     font-family: sans-serif;
   }
 
+  .error-message {
+    @include grid(12);
+    @include alpha;
+    @include omega;
+    color: red;
+    .container {
+      margin-left: $ninesixty-gutter-width/2;
+      width: $ninesixty-grid-width / 12 * 5 - $ninesixty-gutter-width * 2 - 6;
+      padding: 3px;
+    }
+  }
   .email {
     @include grid(5);
     @include alpha;

@@ -21,6 +21,8 @@ gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.g
 gem 'compass'
 gem 'compass-960-plugin'
 
+gem 'shortly'
+
 group :development, :test, :cucumber do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'

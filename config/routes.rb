@@ -59,5 +59,7 @@ Ibacklog::Application.routes.draw do
   get '/contact' => 'pages#contact', :as => 'contact'
   get '/raise-error' => 'pages#raise_error'
 
+  get '/beta/:unique_code' => 'beta_signups#index', :constraints => { :code => /[a-z0-9]{6}/i }, :as => 'beta_signup_referral'
+
   root :to => 'beta_signups#index'
 end
