@@ -16,7 +16,7 @@ class BetaSignup < ActiveRecord::Base
 
   private
     def assign_unique_code
-      if (self.unique_code.blank? || self.class.where(:unique_code => self.unique_code).count > 0)
+      if self.unique_code.blank?
         # ensure we don't create a duplicate code
         begin
           self.unique_code = (1..6).map { |i| (rand(26) + 97).chr }.join

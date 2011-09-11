@@ -21,6 +21,10 @@ describe BetaSignup do
 
     a.unique_code.should match(/[a-z]{6}/)
     a.unique_code.should_not == b.unique_code
+
+    c = BetaSignup.find_or_create_by_email(a.email)
+    c.save!
+    c.unique_code.should == a.unique_code
   end
 
   it 'should log the number of times it has been clicked and have a default of zero' do
