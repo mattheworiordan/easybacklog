@@ -1,7 +1,9 @@
 @mixin dash-board-company {
   background-color: #EEE;
-  padding: 3px;
+  padding: 3px 8px 3px 8px;
   font-weight: bold;
+  margin-left: -5px;
+  margin-right: 5px;
 }
 
 /* Account dashboard home */
@@ -109,13 +111,17 @@ ul.your-backlog-list {
     font-size: 16px;
     margin-bottom: 2em;
     color: #333;
-    background-color: #FFDACC;
+    background-color: #CCEECC;
     -moz-border-radius: 10px;
     border-radius: 10px;
     padding: 5px;
     text-align: center;
     a {
-      color: #DD3300;
+      color: #008800;
+      text-decoration: underline;
+      &:hover {
+        color: #003300;
+      };
     }
   }
 }
