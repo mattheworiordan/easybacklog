@@ -67,7 +67,8 @@ class StoryCardsReport
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.65],
           :width => pdf.bounds.width * 0.9,
           :height => pdf.bounds.height * 0.6,
-          :size => 20
+          :size => 20,
+          :overflow => :shrink_to_fit
         pdf.stroke do
           pdf.line [0, pdf.bounds.height * 0.7], [pdf.bounds.width, pdf.bounds.height * 0.7]
         end
@@ -87,7 +88,8 @@ class StoryCardsReport
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.93],
           :width => pdf.bounds.width * 0.9,
           :height => pdf.bounds.height * 0.86,
-          :size => 12
+          :size => 15,
+          :overflow => :shrink_to_fit
       end
 
       @box_count = @box_count + 1
