@@ -28,12 +28,36 @@ Feature: Backlog
     When I follow "← Back to dashboard"
       And I should see "Project X" within the "backlog list"
 
-    When I follow "Duplicate"
-      And I fill in "New backlog name" with "Project Y"
+  @javascript
+  Scenario: Duplicate a backlog
+    When I follow "Create a new backlog"
+      And I fill in "Name the backlog" with "Project X"
+      And I press "Create new backlog"
+    Then I should see the notice "Backlog was successfully created."
+
+    When I follow "← Back to dashboard"
+      And I should see "Project X" within the "backlog list"
+
+    # now check that duplicate works, but assign a company too to ensure that copies across
+    When I follow "Project X"
+      And I follow "Backlog Settings"
+      And I choose "Yes, I would like to assign this to a client"
+      # no companies exist yet, so don't give the user an option to select a company
+    Then the focus is on the "new backlog new company field"
+    When I fill in "New company name" with "Separate company"
+      And I press "Update backlog settings"
+    And I should see "Separate company" within "backlog company"
+    When I follow "Backlog Settings"
+      And I follow "Duplicate backlog"
+      And I fill in "New backlog name" with "Project X Duplicate"
       And I press "Duplicate backlog"
     Then I should see the notice "Backlog was duplicated successfully."
     When I follow "← Back to dashboard"
-    Then I should see "Project Y" within the "backlog list"
+    Then I should see "Project X Duplicate" within the "backlog list"
+      And I should see "Project X" within the "backlog list"
+    When I follow "Project X Duplicate"
+      And I follow "Backlog Settings"
+    Then "Separate company" should be selected for the "backlog setting company drop down"
 
   @javascript
   Scenario: Create backlog with company and make sure defaults are used and update settings
@@ -121,7 +145,29 @@ Feature: Backlog
   @javascript
   Scenario: Delete backlog
     Then I should see "Acme Backlog"
-    When I follow "Delete"
+    When I follow "Acme Backlog"
+      And I follow "Backlog Settings"
+      And I follow "Yes, I understand — delete this backlog"
       And I press "Delete" within "a dialog"
     Then I should see the notice "Backlog was successfully deleted."
     And I should not see "Acme Backlog"
+
+  @javascript
+  Scenario: Archive backlogs
+    When I follow "Acme Backlog"
+      And I follow "Backlog Settings"
+      And I choose "Archived — This backlog is locked: it can be viewed but not edited"
+      And I press "Update backlog settings"
+    Then I should see the notice "Backlog is now archived"
+    # ensure it's not editable
+    When I click on the "first theme's name"
+    Then there should be 0 "editable text fields"
+    When I follow "Backlog Settings"
+    Then I should see "This backlog is archived and is not editable." within the "non editable notice"
+      And the "text input fields" should be disabled
+      And the "checkboxes" should be disabled
+    When I choose "Active — Fully functional backlog"
+      And I press "Update backlog archive status"
+    Then I should see the notice "Backlog has been restored from archive and is now active"
+    When I click on the "first theme's name"
+    Then there should be 1 "editable text fields"

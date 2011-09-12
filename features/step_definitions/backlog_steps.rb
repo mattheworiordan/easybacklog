@@ -251,6 +251,7 @@ end
 
 Then /^the server should return theme JSON as follows:$/ do |table|
   Then %{reload the backlog JSON from the server}
+  Then %{wait for 1 second}
   columns = table.column_names.map { |d| "'#{d}'"}.join(',')
   data = page.evaluate_script <<-JS
     (function() {
@@ -268,6 +269,7 @@ end
 
 Then /^the server should return story JSON as follows:$/ do |table|
   Then %{reload the backlog JSON from the server}
+  Then %{wait for 1 second}
   columns = table.column_names.map { |d| "'#{d}'"}.join(',')
   data = page.evaluate_script <<-JS
     (function() {
@@ -288,6 +290,7 @@ end
 
 Then /^the server should return acceptance criteria JSON as follows:$/ do |table|
   Then %{reload the backlog JSON from the server}
+  Then %{wait for 1 second}
   columns = table.column_names.map { |d| "'#{d}'"}.join(',')
   data = page.evaluate_script <<-JS
     (function() {
@@ -326,4 +329,17 @@ When /^I follow the PDF link "([^"]+)"$/ do |label|
   temp_pdf.close
   pdf_text = PDF::PdfToText.new(temp_pdf.path)
   page.driver.response.instance_variable_set('@body', pdf_text.get_text)
+end
+
+##
+# Backlog settings
+Then /^the "([^"]+)" should be disabled$/ do |field_selector|
+  all_disabled = page.evaluate_script <<-JS
+    (function() {
+      var allDisabled = true;
+      $('#{field_selector}').each(function(index, elem) { if (!$(elem).attr('disabled')) { allDisabled = false; } });
+      return allDisabled;
+    })();
+  JS
+  all_disabled.should == true
 end

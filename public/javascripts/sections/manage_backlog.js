@@ -43,15 +43,18 @@ $(document).ready(function() {
   storeAccountDefaults();
   // hide / show the company selection depending on state
   setCompanyVisibility();
+  // highlight the label when the check boxes are selected
   $('input#backlog_has_company_false, input#backlog_has_company_true').change(function() {
     setCompanyVisibility();
   })
+  // show new company text boxes
   $('a#add_new_company').click(function() {
     $('.existing').hide();
     $('.new').show();
     setAccountDefaults(); // use account defaults as adding a new company
     $('input#company_name').focus();
   });
+  // show drop down of existing companies
   $('a#select_an_existing_company').click(function() {
     $('input#company_name').val('');
     $('.existing').show();
@@ -59,7 +62,15 @@ $(document).ready(function() {
     getCompanyDefaults(); // get the company defaults for the selected company
     $('select#backlog_company_id').focus();
   });
+  // update company defaults when selecting a company
   $('select#backlog_company_id').change(getCompanyDefaults);
+
+  // if this page is in a non-editable state, then trim the page down and disable all input elements
+  if ($('.not-editable-notice').length) {
+    $('input[type=text],input[type=checkbox],select').attr('disabled', true);
+    $('#backlog_has_company_false, #backlog_has_company_true').attr('disabled', true);
+    $('.new-company').remove();
+  }
 });
 
 function setCompanyVisibility() {

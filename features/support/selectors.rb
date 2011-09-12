@@ -181,6 +181,14 @@ module HtmlSelectorHelpers
       end
 
     ##
+    # Backlog settings
+    when /^non editable notice$/
+      '.not-editable-notice'
+
+    when /^backlog setting company drop down$/
+      '.existing select#backlog_company_id'
+
+    ##
     # Generic and other selectors
     when /^(a|the) dialog(?:| box)$/
       '.ui-dialog'
@@ -197,6 +205,15 @@ module HtmlSelectorHelpers
 
     when /^editable text fields?$/
       'input[name=value],textarea[name=value]'
+
+    when /^text input fields$/
+      'input[type=text]'
+
+    when /^checkboxes$/
+      'input[type=checkbox]'
+
+    when /^drop down options with the text .+$/
+      "select option:contains($1)"
 
     else
       # no mapping exists, assume location is a CSS/XPath selector

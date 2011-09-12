@@ -49,12 +49,14 @@ Scenario: Drag and drop acceptance criteria
     And I tab forwards and wait for AJAX
     And I change the current editable text to "line 3"
     And I tab forwards and wait for AJAX
+  And I wait for 3 seconds
   When I drag acceptance criterion "line 1" down by 1 position
   Then acceptance criterion "line 1" should be in position 2
     And acceptance criterion "line 2" should be in position 1
   When I drag acceptance criterion "line 3" up by 2 positions
   Then acceptance criterion "line 3" should be in position 1
     And acceptance criterion "line 1" should be in position 3
+    And I wait for 10 seconds
     And the server should return acceptance criteria JSON as follows:
       | criterion |
       | line 3    |

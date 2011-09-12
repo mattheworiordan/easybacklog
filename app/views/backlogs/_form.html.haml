@@ -1,32 +1,43 @@
-= f.label :name, "Name the backlog"
+- if @backlog.archived?
+  .not-editable-notice
+    This backlog is archived and is not editable.
+    %br
+    If you would like to make changes to this backlog, change the Backlog Status to Active
+- elsif @backlog.is_snapshot?
+  .not-editable-notice.snapshot
+    Please note that you are viewing a snapshot which is not editable
+
+= f.label :name, @backlog.is_snapshot? ? 'Snapshot name' : 'Name the backlog'
 .label-hint
   ("Website build", "iPhone App", etc.)
 .input-row
   = f.text_field :name, :class => 'important'
 
-.label-spacer
+- unless @backlog.is_snapshot?
+  .label-spacer
 
-= f.label :company, "Is this backlog for a client or company other than yours (#{@backlog.account.name})?"
-.input-row
-  = f.radio_button :has_company?, false
-  = label_tag 'backlog_has_company_false', 'No, this is an internal project', :class => 'light', :id => 'has_company_false_label'
-.input-row
-  = f.radio_button :has_company?, true
-  = label_tag 'backlog_has_company_true', 'Yes, I would like to assign this to a client', :class => 'light', :id => 'has_company_true_label'
-.client-select
-  .existing
-    = label_tag 'backlog_company_id', 'Which company?'
-    .input-row
-      = select(:backlog, "company_id", @backlog.account.companies.order("name").map { |p| [ p.name, p.id ] } )
-      or
-      = link_to 'add a new company', '#', :id => 'add_new_company'
-  .new
-    = label_tag 'company_name', 'New company name'
-    .input-row
-      = text_field_tag :company_name
-      .select-existing
-        or
-        = link_to 'select an existing company', '#', :id => 'select_an_existing_company'
+  = f.label :company, "Is this backlog for a client or company other than yours (#{@backlog.account.name})?"
+  .input-row
+    = f.radio_button :has_company?, false
+    = label_tag 'backlog_has_company_false', 'No, this is an internal project', :class => 'light', :id => 'has_company_false_label'
+  .input-row
+    = f.radio_button :has_company?, true
+    = label_tag 'backlog_has_company_true', 'Yes, I would like to assign this to a client', :class => 'light', :id => 'has_company_true_label'
+  .client-select
+    .existing
+      = label_tag 'backlog_company_id', 'Which company?'
+      .input-row
+        = select(:backlog, "company_id", @backlog.account.companies.order("name").map { |p| [ p.name, p.id ] } )
+        .new-company
+          or
+          = link_to 'add a new company', '#', :id => 'add_new_company'
+    .new
+      = label_tag 'company_name', 'New company name'
+      .input-row
+        = text_field_tag :company_name
+        .select-existing
+          or
+          = link_to 'select an existing company', '#', :id => 'select_an_existing_company'
 
 
 .label-spacer

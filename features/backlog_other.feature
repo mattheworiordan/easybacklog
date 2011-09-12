@@ -56,7 +56,7 @@ Feature: Backlog Other Functionality
       And I should see "£2,295" within the "backlog totals"
 
   @javascript
-  Scenario: Check that create and view snapshots works
+  Scenario: Check that create, view and delete snapshots works
     When I click on the "add snapshot button"
       And I fill in "Please name your snapshot:" with "Snapshot 1"
       And I press "Create Snapshot" within "the dialog"
@@ -72,6 +72,15 @@ Feature: Backlog Other Functionality
       And there should be 0 "delete theme buttons"
     When I click on the "first theme's name"
     Then there should be 0 "editable text fields"
+    When I follow "Snapshot Settings"
+    Then I should see "Snapshot name" within a "label"
+      And the "text input fields" should be disabled
+      And the "checkboxes" should be disabled
+    When I follow "Yes, I understand — delete this snapshot"
+      And I press "Delete" within "a dialog"
+    Then I should see the notice "Snapshot was successfully deleted"
+      And there should be 0 "drop down options with the text Snapshot 1"
+
 
   @javascript
   Scenario: Check that compare snapshots works

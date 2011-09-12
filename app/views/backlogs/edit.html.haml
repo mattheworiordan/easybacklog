@@ -1,14 +1,44 @@
-- title 'Backlog settings'
+- page_title = @backlog.is_snapshot? ? 'Snapshot settings' : 'Backlog settings'
+- title page_title
 - content_for :head do
   = include_javascripts :validation
   = include_javascripts :manage_backlog
 
 - content_for :title do
-  %h1 Backlog settings
+  %h1= page_title
 
 - content_for :global_nav_left do
   .logo
     =link_to raw('← Back to Backlog'), account_backlog_path(@backlog.account, @backlog)
+
+- content_for :side_panel do
+  - unless @backlog.is_snapshot?
+    .backlog-tool-panel
+      %h2 Duplicate backlog
+      Create a duplicate copy of this backlog including all stories and acceptance criteria.  Sprints will not be copied however.
+      .button-container
+        = link_to 'Duplicate backlog', duplicate_account_backlog_path(@backlog.account, @backlog), :class => 'button'
+
+  - if @backlog.is_snapshot?
+    .backlog-tool-panel
+      %h2 Delete snapshot
+      Deleting a backlog immediately and
+      %b permanently deletes
+      this snapshot.
+      %b There is no Undo
+      so make sure you're absolutely sure you want to delete this snapshot?
+      .button-container
+        = link_to 'Yes, I understand — delete this snapshot', snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :method => 'delete', :title => 'Delete snapshot', :confirm => 'This snapshot will be permanently deleted and cannot be recovered. Are you sure?', :class => 'delete-backlog'
+  - else
+    .backlog-tool-panel
+      %h2 Delete backlog
+      Deleting a backlog immediately and
+      %b permanently deletes
+      all the data associated with this backlog.
+      %b There is no Undo
+      so make sure you're absolutely sure you want to delete this backlog?
+      .button-container
+        = link_to 'Yes, I understand — delete this backlog', account_backlog_path(@backlog.account, @backlog), :method => 'delete', :title => 'Delete backlog', :confirm => 'This backlog will be permanently deleted and cannot be recovered. Are you sure?', :class => 'delete-backlog'
 
 
 = form_for(@backlog, :url => account_backlog_path(current_account, @backlog)) do |f|
@@ -22,6 +52,24 @@
 
   != render :partial => 'form', :locals => { :f => f }
 
+  - unless @backlog.is_snapshot?
+    .label-spacer
+    = f.label :status, "Backlog Status: This backlog is..."
+    .form-box
+      .input-row
+        = f.radio_button :archived?, false
+        = label_tag 'backlog_archived_false', raw('Active <span class="detail">— Fully functional backlog</span>')
+      .input-row
+        = f.radio_button :archived?, true
+        = label_tag 'backlog_archived_true', raw('Archived <span class="detail">— This backlog is locked: it can be viewed but not edited</span>')
+
   %br/
-  = f.submit "Update backlog"
-  = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
+  - if @backlog.archived?
+    = f.submit "Update backlog archive status"
+    = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
+  - elsif @backlog.is_snapshot?
+    = link_to "← Back to Snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :class => 'button'
+  - else
+    = f.submit "Update backlog settings"
+    = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
+

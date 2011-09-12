@@ -7,7 +7,7 @@ class Backlog < ActiveRecord::Base
   has_many :themes, :dependent => :destroy, :order => 'position'
 
   # self references for snapshots
-  has_many :snapshots, :class_name => 'Backlog', :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
+  has_many :snapshots, :class_name => 'Backlog',:conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
   validates_uniqueness_of :name, :scope => [:account_id], :message => 'has already been taken for another backlog'
@@ -18,6 +18,7 @@ class Backlog < ActiveRecord::Base
 
   before_save :check_can_modify
 
+  scope :all, where(:deleted => false)
   scope :active, where(:archived => false).where(:deleted => false)
   scope :deleted, where(:deleted => true)
   scope :archived, where(:archived => true).where(:deleted => false)
@@ -87,6 +88,10 @@ class Backlog < ActiveRecord::Base
     self.snapshot_master.blank? && !self.archived? && !self.deleted?
   end
   alias_method :is_editable, :editable?
+
+  def is_snapshot?
+    self.snapshot_master.present?
+  end
 
   def update_meta_data(user)
     self.updated_at = Time.now

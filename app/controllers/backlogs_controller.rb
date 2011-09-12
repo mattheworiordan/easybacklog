@@ -7,13 +7,25 @@ class BacklogsController < ApplicationController
   BACKLOG_INCLUDES = [:themes, { :themes => { :stories => :acceptance_criteria } } ]
 
   def show
-    @backlog = current_account.backlogs.find(params[:id], :include => BACKLOG_INCLUDES)
-    render_backlog_or_snapshot
+    begin
+      @backlog = current_account.backlogs.all.find(params[:id], :include => BACKLOG_INCLUDES)
+    rescue ActiveRecord::RecordNotFound => exception
+      flash[:warning] = 'The backlog you were looking for does not exist'
+      redirect_to account_path(current_account)
+    else
+      render_backlog_or_snapshot
+    end
   end
 
   def show_snapshot
-    @backlog = current_account.backlogs.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
-    render_backlog_or_snapshot
+    begin
+      @backlog = current_account.backlogs.all.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
+    rescue ActiveRecord::RecordNotFound => exception
+      flash[:warning] = 'The snapshot you were looking for does not exist'
+      redirect_to account_path(current_account)
+    else
+      render_backlog_or_snapshot
+    end
   end
 
   def new
@@ -37,16 +49,17 @@ class BacklogsController < ApplicationController
   end
 
   def edit
-    @backlog = current_account.backlogs.find(params[:id])
-    unless @backlog.editable?
-      flash[:notice] = 'You cannot edit an archived backlog'
-      redirect_to account_backlog_path(@backlog.account, @backlog)
+    begin
+      @backlog = Backlog.all.where(:account_id => current_account.id).find(params[:id])
+    rescue
+      flash[:warning] = 'The backlog or snapshot does not exist'
+      redirect_to account_path(current_account)
     end
   end
 
   # put action to archive a backlog
   def archive
-    @backlog = current_account.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.all.find(params[:id])
     @backlog.mark_archived
     flash[:notice] = "#{@backlog.name} archived"
     redirect_to account_path(current_account)
@@ -54,7 +67,7 @@ class BacklogsController < ApplicationController
 
   # put action to recover from archive
   def recover_from_archive
-    @backlog = current_account.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.all.find(params[:id])
     @backlog.recover_from_archive
     flash[:notice] = "#{@backlog.name} recovered from archive"
     redirect_to account_path(current_account)
@@ -67,7 +80,7 @@ class BacklogsController < ApplicationController
   end
 
   def create_snapshot
-    @backlog = current_account.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.all.find(params[:id])
     name = params[:name]
     new_snapshot = @backlog.create_snapshot(name)
     flash[:notice] = "New snapshot created"
@@ -76,8 +89,15 @@ class BacklogsController < ApplicationController
 
   # only supports JSON updates
   def update
-    @backlog = current_account.backlogs.find(params[:id])
-    if !@backlog.editable?
+    @backlog = current_account.backlogs.all.find(params[:id])
+    if @backlog.archived? && params[:backlog][:archived] == 'false'
+      @backlog.recover_from_archive
+      flash[:notice] = 'Backlog has been restored from archive and is now active'
+      redirect_to account_backlog_path(current_account, @backlog)
+    elsif @backlog.archived? && params[:backlog][:archived] == 'true'
+      # do nothing, user updated for no reason as no change
+      redirect_to account_backlog_path(current_account, @backlog)
+    elsif !@backlog.editable?
       flash[:notice] = 'You cannot edit an archived backlog'
       redirect_to account_backlog_path(@backlog.account, @backlog)
     else
@@ -85,7 +105,13 @@ class BacklogsController < ApplicationController
       @backlog.last_modified_user = current_user
       set_or_create_company
       if @backlog.save
-        flash[:notice] = 'Backlog settings were successfully updated.'
+        if params[:backlog][:archived] == 'true'
+          update_backlog_metadata
+          @backlog.mark_archived
+          flash[:notice] = 'Backlog is now archived'
+        else
+          flash[:notice] = 'Backlog settings were successfully updated'
+        end
         redirect_to account_backlog_path(current_account, @backlog)
       else
         render :action => "edit"
@@ -94,14 +120,21 @@ class BacklogsController < ApplicationController
   end
 
   def destroy
-    @backlog = current_account.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.all.find(params[:id])
     @backlog.mark_deleted
     flash[:notice] = 'Backlog was successfully deleted.'
     redirect_to account_path(current_account)
   end
 
+  def destroy_snapshot
+    @backlog = Backlog.all.where(:account_id => current_account.id).where(:id => params[:snapshot_id]).first
+    @backlog.mark_deleted
+    flash[:notice] = 'Snapshot was successfully deleted'
+    redirect_to account_backlog_path(current_account, current_account.backlogs.find(params[:id]))
+  end
+
   def duplicate
-    @backlog = current_account.backlogs.find(params[:id])
+    @backlog = current_account.backlogs.all.find(params[:id])
     @new_backlog = current_account.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
     @new_backlog.author = @backlog.author
     @new_backlog.last_modified_user = current_user
@@ -117,7 +150,7 @@ class BacklogsController < ApplicationController
   # Used by AJAX form validator
   def name_available
     name = (params[:backlog] || {})[:name] || ''
-    backlogs = current_account.backlogs
+    backlogs = current_account.backlogs.all
     backlogs = backlogs.where('ID <> ?', params[:exclude]) if params[:exclude]
     if backlogs.where('UPPER(name) like ?', name.upcase).empty?
       render :text => 'true'
@@ -153,7 +186,7 @@ class BacklogsController < ApplicationController
 
   private
     def update_backlog_metadata
-      @backlog.update_meta_data current_user
+      @backlog.update_meta_data current_user unless @backlog.archived
     end
 
     def render_backlog_or_snapshot

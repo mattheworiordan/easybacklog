@@ -56,7 +56,7 @@ $(document).ready(function() {
       title: title,
       confirmationMessage: clickedLink.data('confirm')
     }));
-    var actionButton = (title.toLowerCase().indexOf('archive') >= 0 ? 'Archive' : 'Delete');
+    var actionButton = 'Delete';
     var buttons = {};
     buttons[actionButton] = function() {
       clickedLink.data('confirm','');

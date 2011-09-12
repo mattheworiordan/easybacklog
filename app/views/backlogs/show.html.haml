@@ -16,8 +16,10 @@
       = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
       .divider
       = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
-    - if @backlog.editable?
-      .divider
+    .divider
+    - if @backlog.is_snapshot?
+      = link_to 'Snapshot Settings', edit_account_backlog_path(@backlog.account, @backlog)
+    - else
       = link_to 'Backlog Settings', edit_account_backlog_path(@backlog.account, @backlog)
   .name-company-container
     %h2.name

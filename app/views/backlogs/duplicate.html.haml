@@ -3,8 +3,6 @@
 - content_for :title do
   %h1 Duplicate backlog #{@backlog.name}
 
-%p Please enter a new unique name for the duplicated backlog
-
 = form_for(@new_backlog, :url => duplicate_account_backlog_path(current_account, @backlog)) do |f|
   - unless @new_backlog.errors.blank?
     .form_errors
@@ -13,9 +11,13 @@
         - @new_backlog.errors.full_messages.each do |error|
           %li
             = error
-  = f.label :name, "New backlog name"
+
+  %p Please enter a new name for the duplicated backlog
+
+  = f.label :name, raw("New backlog name <span class='detail'>(Old backlog name: #{@backlog.name})</span>")
+  %br/
   = f.text_field :name
-  = "(old name: #{@backlog.name})"
+  %br/
   %br/
   = f.submit "Duplicate backlog"
   = link_to "cancel", account_path(current_account)

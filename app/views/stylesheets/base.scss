@@ -300,6 +300,17 @@ footer {
   font-size: 90%
 }
 
+.label-hint {
+  color: #666;
+  font-size: 90%;
+  display: inline;
+}
+
+.form-box {
+  background-color: #EEE;
+  padding: 6px;
+}
+
 .label-spacer {
   padding-top: 1em;
   clear: left;
@@ -349,12 +360,6 @@ label {
   &.for-check-box {
     padding-top: 1em;
   }
-}
-
-.label-hint {
-  color: #666;
-  font-size: 90%;
-  display: inline;
 }
 
 .small {
