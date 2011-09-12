@@ -8,7 +8,7 @@
 
 - content_for :global_nav_left do
   .logo
-    =link_to raw('&laquo; Back to Backlog'), account_backlog_path(@backlog.account, @backlog)
+    =link_to raw('← Back to Backlog'), account_backlog_path(@backlog.account, @backlog)
 
 
 = form_for(@backlog, :url => account_backlog_path(current_account, @backlog)) do |f|

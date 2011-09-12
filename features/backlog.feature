@@ -25,14 +25,14 @@ Feature: Backlog
       And I press "Create new backlog"
     Then I should see the notice "Backlog was successfully created."
 
-    When I follow "« Back to dashboard"
+    When I follow "← Back to dashboard"
       And I should see "Project X" within the "backlog list"
 
     When I follow "Duplicate"
       And I fill in "New backlog name" with "Project Y"
       And I press "Duplicate backlog"
     Then I should see the notice "Backlog was duplicated successfully."
-    When I follow "« Back to dashboard"
+    When I follow "← Back to dashboard"
     Then I should see "Project Y" within the "backlog list"
 
   @javascript
@@ -54,7 +54,7 @@ Feature: Backlog
       And I should see "Company cheap" within "backlog company"
 
     # now create a backlog with no company
-    When I follow "« Back to dashboard"
+    When I follow "← Back to dashboard"
       And I follow "Create a new backlog"
       And I fill in "Name the backlog" with "No company backlog"
       And I press "Create new backlog"
@@ -62,7 +62,7 @@ Feature: Backlog
       And I should see "Acme" within "backlog company"
 
     # now create a backlog with an existing company
-    When I follow "« Back to dashboard"
+    When I follow "← Back to dashboard"
       And I follow "Create a new backlog"
     Then the "No, this is an internal project" checkbox should be checked
       And the "Rate" field should contain "800"
@@ -104,8 +104,8 @@ Feature: Backlog
       And the "Use the 50/90 estimation method" checkbox should be checked
 
     # now check that companies are showing in the dashboard and backlog list
-    When I follow "« Back to Backlog"
-    When I follow "« Back to dashboard"
+    When I follow "← Back to Backlog"
+    When I follow "← Back to dashboard"
     # check that backlog dashboard page is in order of date desc, and company headings are showing
     Then I should see the text "New company" within the "first company heading in a dashboard list"
       And I should see the text "New backlog name" within the "first backlog list in a dashboard list"
