@@ -7,7 +7,11 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource_or_scope)
     if resource_or_scope.is_a?(User)
       if session[:after_register_redirect_to].blank?
-        accounts_path
+        if current_account
+          account_path current_account
+        else
+          root_path
+        end
       else
         # redirect after register/sign in path was set, used by invite process where someone registers
         #  and effectively signs in, so we need to redirect them back to the invite page
