@@ -18,4 +18,4 @@
             = link_to backlog.name, account_backlog_path(@account, backlog)
           .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
 
-= link_to "Back to Dashboard", account_path(@account), { :class => 'button' }
+= link_to '← Back to Dashboard', account_path(@account), { :class => 'button' }

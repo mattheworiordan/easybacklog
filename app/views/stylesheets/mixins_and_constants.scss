@@ -30,6 +30,12 @@ $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-v
     color: darken($link-button-color, 10%);
     border-color: darken($link-button-color, 10%);
   };
+  &:focus {
+    border-width: 2px;
+    margin-top: -1px;
+    margin-left: -1px;
+    font-weight: bold;
+  }
 }
 
 @mixin grey-button-override-style {
