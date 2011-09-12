@@ -2788,6 +2788,27 @@ return jQuery.isNaN(ret)?orig:ret
 });
 window.jQuery=window.$=jQuery
 })(window);
+(function($){$.fn.autoResize=function(options){var settings=$.extend({onResize:function(){},animate:true,animateDuration:150,animateCallback:function(){},extraSpace:20,limit:1000},options);
+this.filter("textarea").each(function(){var textarea=$(this).css({resize:"none","overflow-y":"hidden"}),origHeight=textarea.height(),clone=(function(){var props=["height","width","lineHeight","textDecoration","letterSpacing"],propOb={};
+$.each(props,function(i,prop){propOb[prop]=textarea.css(prop)
+});
+return textarea.clone().removeAttr("id").removeAttr("name").css({position:"absolute",top:0,left:-9999}).css(propOb).attr("tabIndex","-1").insertAfter("body")
+})(),lastScrollTop=null,updateSize=function(){clone.height(0).val($(this).val()).scrollTop(10000);
+var scrollTop=Math.max(clone.scrollTop(),(settings.origHeight?settings.origHeight:origHeight))+settings.extraSpace,toChange=$(this).add(clone);
+if(lastScrollTop===scrollTop){return
+}lastScrollTop=scrollTop;
+if(scrollTop>=settings.limit){$(this).css("overflow-y","");
+return
+}settings.onResize.call(this);
+settings.animate&&textarea.css("display")==="block"?toChange.stop().animate({height:scrollTop},settings.animateDuration,settings.animateCallback):toChange.height(scrollTop)
+};
+remove=function(){clone.remove()
+};
+textarea.unbind(".dynSiz").bind("keyup.dynSiz",updateSize).bind("keydown.dynSiz",updateSize).bind("change.dynSiz",updateSize).bind("blur",remove)
+});
+return this
+}
+})(jQuery);
 (function(){var Backbone;
 if(typeof exports!=="undefined"){Backbone=exports
 }else{Backbone=this.Backbone={}

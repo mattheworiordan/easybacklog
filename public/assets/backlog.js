@@ -14,7 +14,7 @@ var Backlog=Backbone.Model.extend({url:function(){return(this.collection.url()+(
 },Themes:function(){if(!this._themes){this._themes=new ThemesCollection(this.get("themes"),{backlog:this});
 this.unset("themes")
 }return(this._themes)
-},Company_ID:function(){return this.collection.company_id
+},Account_ID:function(){return this.collection.account_id
 }});
 var Story=Backbone.Model.extend({Theme:function(){return this.collection.theme
 },IsEditable:function(){return(this.collection.theme.IsEditable())
@@ -55,9 +55,9 @@ if(criterion){criterion.set({"position":idOrderCollection[key]});
 criterion.save()
 }})
 }});
-var BacklogsCollection=Backbone.Collection.extend({model:Backlog,company_id:null,url:function(){if(!this.company_id){var errorView=new App.Views.Error("Error, missing necesary ID to display Backlog")
-}else{return"/companies/"+this.company_id+"/backlogs"
-}},initialize:function(models,options){this.company_id=options?options.company_id:null
+var BacklogsCollection=Backbone.Collection.extend({model:Backlog,account_id:null,url:function(){if(!this.account_id){var errorView=new App.Views.Error("Error, missing necessary Account ID to display Backlog")
+}else{return"/accounts/"+this.account_id+"/backlogs"
+}},initialize:function(models,options){this.account_id=options?options.account_id:null
 }});
 var StoriesCollection=Backbone.Collection.extend({model:Story,theme:null,url:function(){if(!this.theme||!this.theme.get("id")){var errorView=new App.Views.Error("Error, missing necessary data ID to display Story")
 }else{return"/themes/"+this.theme.get("id")+"/stories"
@@ -221,36 +221,13 @@ $("#backlog-data-area .actions #print").click(this.print);
 $("#backlog-data-area #new-snapshot").click(this.newSnapshot);
 $("#backlog-data-area #compare-snapshot").click(this.compareSnapshot);
 $("#backlog-data-area select#snapshot-selector").change(this.jumpToSnapshot);
-if(this.model.IsEditable()){this.makeFieldsEditable();
-$("#backlog-data-area div.data input").live("keydown",this.navigateEvent);
-var firstEditableElem=$("ul.themes li.theme:first .theme-data .name .data");
+if(this.model.IsEditable()){var firstEditableElem=$("ul.themes li.theme:first .theme-data .name .data");
 if(firstEditableElem.length){firstEditableElem.click()
 }else{$("ul.themes li.actions a.new-theme").focus()
 }}else{$("#backlog-data-area").addClass("not-editable");
 $("#backlog-container").addClass("not-editable")
 }return(this)
-},makeFieldsEditable:function(){var show_view=this;
-var contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(value,settings,this)
-};
-var beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
-};
-var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,lesswidth:-20,maxLength:100,style:"margin-top: -3px"});
-var previousRateFormatted,previousRate;
-var beforeRateChangeFunc=function(value,settings){previousRateFormatted=value;
-previousRate=show_view.model.get("rate");
-return show_view.beforeChange(previousRate,settings,this)
-};
-var rateUpdatedFunc=function(value,settings){if(previousRate==value){_.delay(function(){show_view.changeEvent("change:rate_formatted")
-},100)
-}return show_view.contentUpdated(value,settings,this)
-};
-$("#backlog-data-area h2.name .data, #backlog-data-area #backlog-velocity .data").editable(contentUpdatedFunc,defaultOptions);
-$("#backlog-data-area #backlog-rate .data").editable(rateUpdatedFunc,_.extend(_.clone(defaultOptions),{data:beforeRateChangeFunc}))
-},changeEvent:function(eventName,model){if(eventName.substring(0,7)=="change:"){var fieldChanged=eventName.substring(7);
-if(fieldChanged=="rate_formatted"){$("#backlog-data-area .rate>div.data").text(this.model.get(fieldChanged))
-}else{$("#backlog-data-area ."+fieldChanged.replace(/_/gi,"-")+">div.data").text(this.model.get(fieldChanged))
-}App.Controllers.Statistics.updateStatistics(this.model.get("score_statistics"))
-}},updateStatistics:function(){$("#backlog-data-area .backlog-stats div.output").html(JST["backlogs/stats"]({model:this.model}))
+},updateStatistics:function(){$("#backlog-data-area .backlog-stats div.output").html(JST["backlogs/stats"]({model:this.model}))
 },navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){$(event.target).blur();
 try{event.preventDefault()
 }catch(e){}if(!event.shiftKey){var firstTheme=$("#themes-container ul.themes li.theme:first>.theme-data .name .data");
@@ -296,7 +273,7 @@ $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove()
 }}})
 },jumpToSnapshot:function(event){event.preventDefault();
 var val=$(event.target).val();
-var baseUrl=document.location.pathname.match(/^\/companies\/\d+\/backlogs\/\d+/i)[0];
+var baseUrl=document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/\d+/i)[0];
 if(val.match(/^\d+$/)){baseUrl+="/snapshots/"+val
 }$("#loading-new-snapshot").show();
 document.location.pathname=baseUrl
@@ -305,13 +282,13 @@ var newSnapshotLink=$(event.target);
 event.preventDefault();
 $("#dialog-compare-snapshot").remove();
 $("body").append(JST["backlogs/compare-snapshot-dialog"]({snapshot_options:$("#backlog-data-area select#snapshot-selector").html()}));
-var currentSnapshot=document.location.pathname.match(/^\/companies\/\d+\/backlogs\/\d+\/snapshots\/(\d+)/i);
+var currentSnapshot=document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/\d+\/snapshots\/(\d+)/i);
 if(currentSnapshot){$("#dialog-compare-snapshot select#target-snapshot").val($("#dialog-compare-snapshot select#target-snapshot option:first-child").val())
 }$("#dialog-compare-snapshot").dialog({resizable:false,height:320,width:400,modal:true,buttons:{"Compare":function(){var base=$(this).find("select#base-snapshot").val();
 var target=$(this).find("select#target-snapshot").val();
 if(base==target){$(this).find("div.error-message").html('<p><span class="error-alert ui-icon ui-icon-alert"></span>'+"You cannot compare the same snapshots.  Please make another selection.</p>")
-}else{var baseUrl=document.location.pathname.match(/^\/companies\/\d+\/backlogs/i)[0];
-var backlogId=document.location.pathname.match(/^\/companies\/\d+\/backlogs\/(\d+)/i)[1];
+}else{var baseUrl=document.location.pathname.match(/^\/accounts\/\d+\/backlogs/i)[0];
+var backlogId=document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/(\d+)/i)[1];
 var url=baseUrl+"/compare/"+(base.match(/^\d+$/)?base:backlogId)+"/"+(target.match(/^\d+$/)?target:backlogId);
 if(App.environment==="test"){document.location.href=url
 }else{window.open(url,"_newtab"+Math.floor(Math.random()*10000))
@@ -595,19 +572,22 @@ var beforeChangeFunc=function(value,settings){return show_view.beforeChange(valu
 var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
 this.$(".theme-data .name div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:100}));
 this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{lesswidth:-10,maxLength:3}))
-},navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){$(event.target).blur();
-try{event.preventDefault()
-}catch(e){}if(!$(event.target).hasClass("new-story")){if(!event.shiftKey){var storyElem=$(this.el).find("li.story:first-child");
+},navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){try{event.preventDefault()
+}catch(e){}if(!$(event.target).hasClass("new-story")){if(!event.shiftKey){$(event.target).blur();
+var storyElem=$(this.el).find("li.story:first-child");
 if(storyElem.length){storyElem.find(".unique-id .data").click()
 }else{$(this.el).next().find("a.new-theme").focus();
 $(this.el).find("ul.stories li a.new-story").focus()
 }}else{var dataClass=$(event.target).parents(".data").parent().attr("class");
 if(dataClass=="name"){var prev=$(this.el).prev();
-if(prev.length){if(prev.find("ul.stories li.actions a.new-story")){prev.find("ul.stories li.actions a.new-story").focus()
-}else{prev.find(".theme-data >.name .data").click()
-}}else{$("#backlog-data-area h2.name .data").click()
-}}else{this.$(".theme-data >.name .data").click()
-}}}else{if(!event.shiftKey){var nextThemeLi=$(event.target).parents("li.theme").next();
+if(prev.length){if(prev.find("ul.stories li.actions a.new-story")){$(event.target).blur();
+prev.find("ul.stories li.actions a.new-story").focus()
+}else{$(event.target).blur();
+prev.find(".theme-data >.name .data").click()
+}}else{}}else{$(event.target).blur();
+this.$(".theme-data >.name .data").click()
+}}}else{$(event.target).blur();
+if(!event.shiftKey){var nextThemeLi=$(event.target).parents("li.theme").next();
 if(nextThemeLi.hasClass("theme")){nextThemeLi.find(">.name .data").click()
 }else{nextThemeLi.find("a.new-theme").focus()
 }}else{var previous_story_matcher="ul.stories li.story:last .score-90 .data, ul.stories li.story:last .score .data";
