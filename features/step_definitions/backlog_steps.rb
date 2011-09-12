@@ -62,6 +62,15 @@ Given /^a snapshot called "([^"]+)" exists for backlog "([^"]+)"$/ do |snapshot_
   backlog.create_snapshot(snapshot_name)
 end
 
+Given /^a backlog named "([^"]*)" assigned to company "([^"]*)" for account "([^"]*)" is set up$/ do |backlog_name, company_name, account_name|
+  account = Account.find_by_name(account_name)
+  raise "Account #{account_name} does not exist." if account.blank?
+
+  company = account.create_company(company_name)
+
+  backlog = Factory.create(:backlog, :account => account, :name => backlog_name, :company => company)
+end
+
 ##
 # Editable text
 #
@@ -223,13 +232,8 @@ Then /^(?:|the )acceptance criterion "([^"]+)" should be in position (\d+)$/ do 
 end
 
 ##
-# Visibility & colour
+# Colour
 #
-Then /^the (?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
-  selector = selector_to(selector)
-  page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
-end
-
 Then /^the story with as equal to "([^"]*)" should be (red|green)$/ do |as_value, colour|
   color = colour == 'red' ? 'rgb(255, 0, 0)' : 'rgb(0, 255, 0)'
   page.evaluate_script("$('li.story::has(.user-story .as-a .data:contains(#{as_value}))').css('backgroundColor')").should == color
@@ -308,8 +312,8 @@ end
 ##
 # Tables within Excel exports and Snapshots
 Then /^(?:I |)should(not |) see "([^"]+)" within row (\d+), column (\d+) of the ([\w\d]+) table$/ do |negation, text, row, column, table_position|
-  table_selector = string_quantity_to_numeric(table_position)
-  Then %{I should #{negation}see the text "#{text}" within "tr:nth-child(#{row}) td:nth-child(#{column})"}
+  table_selector = string_quantity_to_numeric_pseudo_selector(table_position)
+  Then %{I should #{negation}see the text "#{text}" within "table:#{table_selector} tr:nth-child(#{row}) td:nth-child(#{column})"}
 end
 
 ##

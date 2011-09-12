@@ -5,6 +5,7 @@ Ibacklog::Application.routes.draw do
     resources :backlogs, :only => [:show, :new, :create, :update, :destroy] do
       member do
         match 'duplicate' => 'backlogs#duplicate', :via => [:get, :post], :as => 'duplicate'
+        get 'edit' => 'backlogs#edit', :as => 'edit'
         put 'archive' => 'backlogs#archive', :as => 'archive'
         put 'recover-from-archive' => 'backlogs#recover_from_archive', :as => 'recover_from_archive'
         # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls or .pdf so that IE uses a helpful filename
@@ -22,6 +23,7 @@ Ibacklog::Application.routes.draw do
       end
     end
     resources :users, :controller => 'account_users'
+    resources :companies, :only => [:show, :edit, :update]
     resources :invites, :only => [:destroy] do
       member do
         get ':security_code' => 'invites#show', :as => 'show'

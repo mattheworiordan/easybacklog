@@ -1,12 +1,10 @@
 - title 'Create a backlog'
 - content_for :head do
   = include_javascripts :validation
-  = include_javascripts :new_backlog
+  = include_javascripts :manage_backlog
 
 - content_for :title do
   %h1 Create a backlog
-
-%p Please note that the name for your backlog must be unique.
 
 = form_for(@backlog, :url => account_backlogs_path(current_account, @backlog)) do |f|
   - unless @backlog.errors.blank?
@@ -17,21 +15,7 @@
           %li
             = error
 
-  = f.label :name, "Backlog name"
-  .input-row
-    = f.text_field :name
-
-  = f.label :rate, "Rate", :class => 'spacer'
-  .input-row
-    = f.text_field :rate
-
-  = f.label :velocity, "Velocity", :class => 'spacer'
-  .input-row
-    = f.text_field :velocity
-
-  .input-row.for-check-box
-    = f.check_box :use_50_90
-    = f.label :use_50_90, "Use the 50/90 estimation method"
+  != render :partial => 'form', :locals => { :f => f }
 
   %br/
   = f.submit "Create new backlog"

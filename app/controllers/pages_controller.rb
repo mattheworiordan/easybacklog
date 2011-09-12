@@ -7,7 +7,7 @@ class PagesController < ApplicationController
       redirect_to accounts_path
     end
     if user_signed_in?
-      @recent_backlogs = current_user.accounts.map { |accounts| accounts.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..10]
+      @recent_backlogs = current_user.accounts.map { |accounts| accounts.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..15]
     end
   end
 

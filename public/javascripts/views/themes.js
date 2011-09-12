@@ -200,7 +200,6 @@ App.Views.Themes = {
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
       if (_.include([9,13,27], event.keyCode)) { // tab, enter, esc
-        $(event.target).blur();
         try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
           event.preventDefault();
         } catch (e) { }
@@ -208,13 +207,14 @@ App.Views.Themes = {
         if (!$(event.target).hasClass('new-story')) {
           // Behaviour for Theme view
           if (!event.shiftKey) { // going -->
+            $(event.target).blur();
             // currently on theme name field
             var storyElem = $(this.el).find('li.story:first-child');
             if (storyElem.length) {
               // move to story item
               storyElem.find('.unique-id .data').click();
             } else {
-              // focus on next theme button
+              // focus on next theme button if next theme li holds add theme & reorder theme buttons
               $(this.el).next().find('a.new-theme').focus();
               // and if a new story button exists move focus to that
               $(this.el).find('ul.stories li a.new-story').focus();
@@ -225,18 +225,22 @@ App.Views.Themes = {
               var prev = $(this.el).prev();
               if (prev.length) { // previous theme exists
                 if (prev.find('ul.stories li.actions a.new-story')) {
+                  $(event.target).blur();
                   prev.find('ul.stories li.actions a.new-story').focus();
                 } else {
+                  $(event.target).blur();
                   prev.find('.theme-data >.name .data').click();
                 }
-              } else { // no previous theme
-                $('#backlog-data-area h2.name .data').click();
+              } else {
+                // no previous theme, do nothing, leave field focussed
               }
             } else {
+              $(event.target).blur();
               this.$('.theme-data >.name .data').click();
             }
           }
         } else {
+          $(event.target).blur();
           // Behaviour for new story button
           if (!event.shiftKey) { // going -->
             var nextThemeLi = $(event.target).parents('li.theme').next();

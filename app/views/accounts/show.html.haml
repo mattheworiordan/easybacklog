@@ -8,12 +8,13 @@
   %p
     There are no backlogs yet in this account.
 - else
-  %ul.backlog-list
-    - @backlogs.each do |backlog|
-      %li
-        .name
-          = link_to backlog.name, account_backlog_path(@account, backlog)
-        .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
-%br/
+  - @backlogs.group_by { |backlog| backlog.company.present? ? backlog.company.name : backlog.account.name }.each do |company, backlogs|
+    .dash-board-company= company
+    %ul.backlog-list
+      - backlogs.each do |backlog|
+        %li
+          .name
+            = link_to backlog.name, account_backlog_path(backlog.account, backlog)
+          .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
 
 = link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }

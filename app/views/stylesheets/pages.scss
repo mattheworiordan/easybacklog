@@ -1,8 +1,14 @@
+@mixin dash-board-company {
+  background-color: #EEE;
+  padding: 3px;
+  font-weight: bold;
+}
+
 /* Account dashboard home */
 ul.backlog-list, ul.your-backlog-list {
   list-style: none;
   overflow: hidden;
-  margin-bottom: 0;
+  margin-bottom: 1em;
   li {
     margin: 0;
     float: left;
@@ -27,11 +33,26 @@ ul.your-backlog-list {
   margin-bottom: 0.5em;
   li {
     margin: 0 0 0 6px;
-    a {
+    .name a {
+      border-bottom: 1px dotted #666;
       color: #333;
       &:hover {
-        color: #000;
+        border-bottom: 1px solid black;
+        text-decoration: none;
       };
+    }
+  }
+}
+.dash-board-company {
+  @include dash-board-company;
+}
+
+.your-back-list-side-panel {
+  .company {
+    font-weight: bold;
+    color: #000;
+    a {
+      color: black;
     }
   }
 }
@@ -81,8 +102,21 @@ ul.your-backlog-list {
     }
   }
 
-  ul {
-    padding-bottom: 1em;
+  .company {
+    @include dash-board-company
+  }
+  .beta-notice {
+    font-size: 16px;
+    margin-bottom: 2em;
+    color: #333;
+    background-color: #FFDACC;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    padding: 5px;
+    text-align: center;
+    a {
+      color: #DD3300;
+    }
   }
 }
 
@@ -148,5 +182,34 @@ table.users, table.invites {
 form#new_account {
   input#account_name {
     @include large-name-field
+  }
+}
+
+form#new_backlog, form.edit_backlog, form.edit_company {
+  label {
+    font-weight: bold;
+    font-size: 110%;
+    &.light {
+      font-weight: normal;
+    }
+    &.selected {
+      background-color: #FFFFCC;
+    }
+  }
+  .client-select {
+    margin-left: 20px;
+    label {
+      font-size: 100%;
+    }
+    input {
+      font-size: 90%;
+      width: 150px;
+    }
+    .select-existing {
+      display: inline;
+    }
+    .existing, .new {
+      display: none;
+    }
   }
 }

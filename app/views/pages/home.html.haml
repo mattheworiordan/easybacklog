@@ -4,26 +4,26 @@
     %span Backlog
     .description : Simple backlog management
 
-%p
-  easyBacklog is a very simple to use backlog management tool aimed at teams and agencies who adopt agile methodologies.
-%p
-  We are currently running an open beta of easyBacklog so feel free to register an account for free.  We welcome your
-  = link_to 'suggestions and feedback.', contact_path
-
 #home
+  %p.beta-notice
+    You are currently participating in an invite only BETA of easyBacklog.  We welcome your
+    = link_to 'suggestions and feedback.', contact_path
+
   - if user_signed_in?
     %h2.divider Latest activity across all backlogs
     - if @recent_backlogs.empty?
       %p You have not created any backlogs yet so there is no recent activity.
       %br/
     - else
-      %ul.backlog-list
-        - @recent_backlogs.each do |backlog|
-          %li
-            .name
-              = link_to backlog.name, account_backlog_path(backlog.account, backlog)
-            .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
-    = link_to "View my dashboard", accounts_path, { :class => 'button' }
+      - @recent_backlogs.group_by { |backlog| backlog.company.present? ? backlog.company.name : backlog.account.name }.each do |company, backlogs|
+        .company= company
+        %ul.backlog-list
+          - backlogs.each do |backlog|
+            %li
+              .name
+                = link_to backlog.name, account_backlog_path(backlog.account, backlog)
+              .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
+    = link_to "View Account Dashboard", accounts_path, { :class => 'button' }
   - else
     .sign-up
       %h2 Create an account

@@ -2,6 +2,7 @@ class Backlog < ActiveRecord::Base
   belongs_to :account
   belongs_to :author, :class_name => 'User'
   belongs_to :last_modified_user, :class_name => 'User'
+  belongs_to :company
 
   has_many :themes, :dependent => :destroy, :order => 'position'
 
@@ -119,6 +120,10 @@ class Backlog < ActiveRecord::Base
 
   def recover_from_archive
     mark_archived(false)
+  end
+
+  def has_company?
+    !company.blank?
   end
 
   private

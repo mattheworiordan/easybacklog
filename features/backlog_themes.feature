@@ -10,7 +10,7 @@ Feature: Backlog Themes
       And an account called "Acme" is set up for "John"
       And I am on the accounts page
       And I follow "Create a new backlog"
-      And I fill in "Backlog name" with "My First Backlog"
+      And I fill in "Name the backlog" with "My First Backlog"
       And I press "Create new backlog"
     Then I should see the notice "Backlog was successfully created."
 
@@ -95,13 +95,13 @@ Feature: Backlog Themes
     When I tab backwards
       And I tab backwards
     Then the focussed element should be an editable text field
-    # tab back to the title, wait so that the old field can unblur
+    # tab back again from the top most theme field
     When I tab backwards and wait for AJAX to update
-    Then the focussed element should be a "backlog heading"
+    # can't go back any further, so should still be a theme field
+    Then the focussed element should be the "first theme's name"
 
     # Create theme 1
-    When I tab forwards and wait for AJAX to update
-      And I change the current editable text to "Theme 1"
+    When I change the current editable text to "Theme 1"
       And I tab forwards and wait for AJAX to update
     Then the focussed element should have the text "Add story"
 

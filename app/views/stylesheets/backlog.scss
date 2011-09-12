@@ -93,19 +93,30 @@ section.for-backlog {
   input, textarea {
     position: absolute;
   }
-  h2.name {
-    margin: 2px 0 0 $ninesixty-gutter-width - 2px;
-    position: relative;
-    width: 20em;
-    background-color: transparent;
-    height: 1.25em;
-    padding: 0;
-    height: 28px;
-    font-size: 20px;
-    >div {
-      padding: 2px;
+  .name-company-container {
+    height: 30px;
+    form {
+      display: inline;
     }
-    @include editable-field;
+    h2.name {
+      display: inline;
+      margin: 2px 0 0 $ninesixty-gutter-width - 2px;
+      position: relative;
+      background-color: transparent;
+      padding: 0;
+      height: 28px;
+      font-size: 20px;
+      >div {
+        padding: 2px;
+        display: inline;
+      }
+    }
+    h3.company {
+      display: inline;
+      color: #006600;
+      font-size: 16px;
+      padding-left: 0.5em;
+    }
   }
   .snapshot {
     margin-top: 7px;
@@ -162,7 +173,6 @@ section.for-backlog {
     .data {
       float: left;
       padding: 2px;
-      @include editable-field;
       &:hover {
         color: black;
       };

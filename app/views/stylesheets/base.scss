@@ -192,7 +192,7 @@ section.main-content-pod {
 section.side-panel {
   float: right;
   padding: $ninesixty-vertical 0 $ninesixty-vertical $ninesixty-gutter-width;
-  width: 960/12*4;
+  width: 960/12*3.5px;
   .button-container {
     padding-top: $ninesixty-vertical;
     height: $ninesixty-vertical * 2;
@@ -275,9 +275,12 @@ footer {
   -moz-border-radius: 10px;
   border-radius: 10px;
   background-color: #FFAAAA;
-  color: #990000;
+  color: #660000;
   padding: 1em;
   margin-bottom: 1em;
+  ul {
+    margin-bottom: 0;
+  }
 }
 
 .field_with_errors {
@@ -295,6 +298,12 @@ footer {
   color: #9A9A9A;
   padding-left: 3px;
   font-size: 90%
+}
+
+.label-spacer {
+  padding-top: 1em;
+  clear: left;
+  display: block;
 }
 
 label {
@@ -340,6 +349,12 @@ label {
   &.for-check-box {
     padding-top: 1em;
   }
+}
+
+.label-hint {
+  color: #666;
+  font-size: 90%;
+  display: inline;
 }
 
 .small {

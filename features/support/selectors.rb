@@ -9,10 +9,37 @@ module HtmlSelectorHelpers
     when /^backlog list$/
       'ul.backlog-list'
 
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) company heading in a dashboard list$/
+      position = string_quantity_to_numeric($1) * 2
+      "section.main-content-pod .dash-board-company:nth-child(#{position})"
+
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) backlog list in a dashboard list$/
+      position = string_quantity_to_numeric($1) * 2 + 1
+      "section.main-content-pod .backlog-list:nth-child(#{position})"
+
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) company heading in your backlog list$/
+      position = string_quantity_to_numeric($1) * 2 - 1
+      ".your-back-list-side-panel .company:nth-child(#{position})"
+
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) backlog list in your backlog list$/
+      position = string_quantity_to_numeric($1) * 2
+      ".your-back-list-side-panel .your-backlog-list:nth-child(#{position})"
+
+    ##
+    # New Backlog page
+    when /^new backlog company drop down$/
+      'select#backlog_company_id'
+
+    when /^new backlog new company field$/
+      'input#company_name'
+
     ##
     # Backlog page
     when /^backlog heading$/
-      '#backlog-data-area h2 .data'
+      '#backlog-data-area h2.name'
+
+    when /^backlog company$/
+      '#backlog-data-area h3.company'
 
     when /^backlog totals$/
       '#backlog-data-area .backlog-stats .output'
@@ -32,7 +59,7 @@ module HtmlSelectorHelpers
     ##
     # Backlog themes
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's (code|name|totals)$/
-      position = string_quantity_to_numeric($1)
+      position = string_quantity_to_numeric_pseudo_selector($1)
       selector = $2 == 'totals' ? '.theme-stats .metrics' : ".theme-data .#{$2} .data"
       "li.theme:#{position} #{selector}"
 
@@ -49,12 +76,12 @@ module HtmlSelectorHelpers
       'ul.themes li.actions a.new-theme'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
-      position = string_quantity_to_numeric($1)
+      position = string_quantity_to_numeric_pseudo_selector($1)
       "li.theme:#{position}"
 
     when /^(re-number|delete) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
       selector = $1 == 're-number' ? '.re-number-stories' : '.delete-theme'
-      position = string_quantity_to_numeric($2)
+      position = string_quantity_to_numeric_pseudo_selector($2)
       "li.theme:#{position} .theme-actions #{selector} a"
 
     when /^backlog data area$/
@@ -67,14 +94,14 @@ module HtmlSelectorHelpers
       '.theme .move-theme'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's add story button$/
-      position = string_quantity_to_numeric($1)
+      position = string_quantity_to_numeric_pseudo_selector($1)
       "li.theme:#{position} ul.stories li.actions a.new-story"
 
     ##
     # Backlog stories
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story(?:'s )?(.+?)?(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
-      position = string_quantity_to_numeric($1)
-      theme_scope = $3.blank? ? '' : "li.theme:#{string_quantity_to_numeric($3)} "
+      position = string_quantity_to_numeric_pseudo_selector($1)
+      theme_scope = $3.blank? ? '' : "li.theme:#{string_quantity_to_numeric_pseudo_selector($3)} "
       selector = case $2
       when /code|unique id/i
         '.unique-id .data'
@@ -131,7 +158,7 @@ module HtmlSelectorHelpers
       'ul.acceptance-criteria li.criterion .data'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) acceptance criteri(?:on|a)$/
-      position = string_quantity_to_numeric($1)
+      position = string_quantity_to_numeric_pseudo_selector($1)
       "ul.acceptance-criteria li.criterion:#{position} .data"
 
     ##
@@ -180,17 +207,27 @@ module HtmlSelectorHelpers
   def string_quantity_to_numeric(string_quantity)
     case string_quantity
       when 'first'
-        'first-child'
+        1
       when 'second'
-        'nth-child(2)'
+        2
       when 'third'
-        'nth-child(3)'
+        3
       when 'fourth'
-        'nth-child(4)'
+        4
       when 'fifth'
-        'nth-child(5)'
+        5
       else
-        "nth-child(#{position.gsub(/a-z/i,'').to_i})"
+        string_quantity.gsub(/a-z/i,'').to_i
+    end
+  end
+
+  def string_quantity_to_numeric_pseudo_selector(string_quantity)
+    string_quantity = string_quantity_to_numeric(string_quantity)
+    case string_quantity
+      when 1
+        'first-child'
+      else
+        "nth-child(#{string_quantity})"
     end
   end
 end

@@ -1,0 +1,27 @@
+- title 'Backlog settings'
+- content_for :head do
+  = include_javascripts :validation
+  = include_javascripts :manage_backlog
+
+- content_for :title do
+  %h1 Backlog settings
+
+- content_for :global_nav_left do
+  .logo
+    =link_to raw('&laquo; Back to Backlog'), account_backlog_path(@backlog.account, @backlog)
+
+
+= form_for(@backlog, :url => account_backlog_path(current_account, @backlog)) do |f|
+  - unless @backlog.errors.blank?
+    .form_errors
+      We were unable to update the backlog settings.  Please correct the following fields first:
+      %ul
+        - @backlog.errors.full_messages.each do |error|
+          %li
+            = error
+
+  != render :partial => 'form', :locals => { :f => f }
+
+  %br/
+  = f.submit "Update backlog"
+  = link_to "cancel", account_backlog_path(@backlog.account, @backlog)

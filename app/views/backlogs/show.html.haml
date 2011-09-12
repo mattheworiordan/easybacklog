@@ -1,6 +1,10 @@
 - title 'View backlog'
-= content_for :head do
+- content_for :head do
   = include_javascripts :backlog
+
+- content_for :global_nav_left do
+  .logo
+    =link_to raw('&laquo; Back to dashboard'), account_path(@backlog.account)
 
 #backlog-data-area
   .actions
@@ -12,13 +16,19 @@
       = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
       .divider
       = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
-    .divider
-    =link_to 'Back to dashboard', account_path(@backlog.account)
-  %h2.name
-    - if @backlog.snapshot_master.blank?
-      .data= @backlog.name
-    - else
-      .data= @backlog.snapshot_master.name
+    - if @backlog.editable?
+      .divider
+      = link_to 'Backlog Settings', edit_account_backlog_path(@backlog.account, @backlog)
+  .name-company-container
+    %h2.name
+      - if @backlog.snapshot_master.blank?
+        = @backlog.name
+      - else
+        = @backlog.snapshot_master.name
+    -if @backlog.company
+      %h3.company= @backlog.company.name
+    -else
+      %h3.company= @backlog.account.name
   .snapshot
     - unless @backlog.editable?
       .locked{ :class => 'ui-icon ui-icon-locked' }
@@ -46,13 +56,6 @@
   .backlog-stats
     %div.title Backlog total:
     %div.output &nbsp;
-  #backlog-settings
-    #backlog-rate.rate
-      .title Rate:
-      .data= @backlog.rate_formatted
-    #backlog-velocity.velocity
-      .title Velocity:
-      .data= @backlog.velocity
 
 #backlog-container
   = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }

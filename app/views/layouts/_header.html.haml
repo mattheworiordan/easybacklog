@@ -1,19 +1,22 @@
 .main-title-area
-  .logo
-    = link_to root_path do
-      %span.easy>="easy"
-      %span.backlog Backlog
-    %sup BETA
-  - if !accounts.blank? && accounts.count >= 1
-    .divider
-    .account
-      - if current_account.blank?
-        .jump-to-account Jump to Account
-      - else
-        = link_to current_account.name, account_path(current_account)
-      %ul
-        - (accounts - [current_account]).each do |acct|
-          %li= link_to acct.name, account_path(acct)
+  - if !content_for?(:global_nav_left)
+    .logo
+      = link_to root_path do
+        %span.easy>="easy"
+        %span.backlog Backlog
+      %sup BETA
+    - if !accounts.blank? && accounts.count >= 1
+      .divider
+      .account
+        - if current_account.blank?
+          .jump-to-account Jump to Account
+        - else
+          = link_to current_account.name, account_path(current_account)
+        %ul
+          - (accounts - [current_account]).each do |acct|
+            %li= link_to acct.name, account_path(acct)
+  - else
+    = yield :global_nav_left
 
 .account-info
   - if user_signed_in?

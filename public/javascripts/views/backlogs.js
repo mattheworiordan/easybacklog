@@ -27,11 +27,6 @@ App.Views.Backlogs = {
       $('#backlog-data-area select#snapshot-selector').change(this.jumpToSnapshot);
 
       if (this.model.IsEditable()) {
-        this.makeFieldsEditable();
-
-        // make all input fields respond to Tab/Enter
-        $('#backlog-data-area div.data input').live('keydown', this.navigateEvent);
-
         var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
         if (firstEditableElem.length) {
           firstEditableElem.click();
@@ -44,45 +39,6 @@ App.Views.Backlogs = {
       }
 
       return (this);
-    },
-
-    makeFieldsEditable: function() {
-      var show_view = this;
-      var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); };
-      var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
-        data: beforeChangeFunc, lesswidth: -20, maxLength: 100, style: 'margin-top: -3px'
-      });
-      // for rate we need to drop the locale formatted rate and use rate as a numeric
-      var previousRateFormatted, previousRate;
-      var beforeRateChangeFunc = function(value, settings) {
-        previousRateFormatted = value;
-        previousRate = show_view.model.get('rate');
-        return show_view.beforeChange(previousRate, settings, this);
-      };
-      var rateUpdatedFunc = function(value, settings) {
-        if (previousRate == value) { // no change to rate, so revert back to formatted rate
-          _.delay(function() { show_view.changeEvent('change:rate_formatted'); }, 100);
-        }
-        return show_view.contentUpdated(value, settings, this);
-      };
-
-      $('#backlog-data-area h2.name .data, #backlog-data-area #backlog-velocity .data').editable(contentUpdatedFunc, defaultOptions);
-      $('#backlog-data-area #backlog-rate .data').editable(rateUpdatedFunc, _.extend(_.clone(defaultOptions), {
-        data: beforeRateChangeFunc
-      }));
-    },
-
-    changeEvent: function(eventName, model) {
-      if (eventName.substring(0,7) == 'change:') {
-        var fieldChanged = eventName.substring(7);
-        if (fieldChanged == 'rate_formatted') {
-          $('#backlog-data-area .rate>div.data').text(this.model.get(fieldChanged));
-        } else {
-          $('#backlog-data-area .' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
-        }
-        App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
-      }
     },
 
     updateStatistics: function() {

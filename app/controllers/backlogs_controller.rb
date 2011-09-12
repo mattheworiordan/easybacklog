@@ -27,11 +27,20 @@ class BacklogsController < ApplicationController
     @backlog = current_account.backlogs.new(params[:backlog])
     @backlog.author = current_user
     @backlog.last_modified_user = current_user
+    set_or_create_company
     if @backlog.save
       flash[:notice] = 'Backlog was successfully created.'
       redirect_to account_backlog_path(current_account, @backlog)
     else
       render :action => "new"
+    end
+  end
+
+  def edit
+    @backlog = current_account.backlogs.find(params[:id])
+    unless @backlog.editable?
+      flash[:notice] = 'You cannot edit an archived backlog'
+      redirect_to account_backlog_path(@backlog.account, @backlog)
     end
   end
 
@@ -53,9 +62,8 @@ class BacklogsController < ApplicationController
 
   def archives_index
     @account = current_account
-    @archives = current_account.backlogs.archived.order('LOWER(name)')
-    @your_backlogs = @account.backlogs.active.order('LOWER(name)')
-    @archive_exists = !@account.backlogs.archived.empty?
+    @archives = current_account.archived_backlogs_grouped_by_company
+    @your_backlogs = @account.active_backlogs_grouped_by_company
   end
 
   def create_snapshot
@@ -69,11 +77,19 @@ class BacklogsController < ApplicationController
   # only supports JSON updates
   def update
     @backlog = current_account.backlogs.find(params[:id])
-    @backlog.update_attributes params
-    if @backlog.save
-      render :json => @backlog.to_json(:methods => [:score_statistics, :rate_formatted])
+    if !@backlog.editable?
+      flash[:notice] = 'You cannot edit an archived backlog'
+      redirect_to account_backlog_path(@backlog.account, @backlog)
     else
-      send_json_error @backlog.errors.full_messages.join(', ')
+      @backlog.update_attributes(params[:backlog])
+      @backlog.last_modified_user = current_user
+      set_or_create_company
+      if @backlog.save
+        flash[:notice] = 'Backlog settings were successfully updated.'
+        redirect_to account_backlog_path(current_account, @backlog)
+      else
+        render :action => "edit"
+      end
     end
   end
 
@@ -101,7 +117,9 @@ class BacklogsController < ApplicationController
   # Used by AJAX form validator
   def name_available
     name = (params[:backlog] || {})[:name] || ''
-    if current_account.backlogs.where('UPPER(name) like ?', name.upcase).empty?
+    backlogs = current_account.backlogs
+    backlogs = backlogs.where('ID <> ?', params[:exclude]) if params[:exclude]
+    if backlogs.where('UPPER(name) like ?', name.upcase).empty?
       render :text => 'true'
     else
       render :text => 'false'
@@ -167,6 +185,24 @@ class BacklogsController < ApplicationController
         format.js do
           render :json => backlog_json(@backlog)
         end
+      end
+    end
+
+    def set_or_create_company
+      if params[:backlog][:has_company] == 'true'
+        if params[:company_name].strip.length > 0
+          # we are creating a new company (unless one exists with that name)
+          @backlog.company = current_account.create_company(params[:company_name],
+            :default_use_50_90 => @backlog.use_50_90,
+            :default_velocity => @backlog.velocity,
+            :default_rate => @backlog.rate)
+        else
+          if params[:backlog][:company_id].present?
+            @backlog.company = current_account.companies.find_by_id(params[:backlog][:company_id])
+          end
+        end
+      else
+        @backlog.company = nil
       end
     end
 end

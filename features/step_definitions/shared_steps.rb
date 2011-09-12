@@ -75,6 +75,11 @@ Then /^within (?:|the )"([^"]*)" there should be a clickable element with the te
   page.evaluate_script(%{$('#{selector}').find('input[value="#{text}"],button:contains("#{text}"),a:contains("#{text}")').length}).should > 0
 end
 
+Then /^the (?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
+  selector = selector_to(selector)
+  page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
+end
+
 When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
 end

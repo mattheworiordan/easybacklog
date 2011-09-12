@@ -16,8 +16,8 @@ class AccountsController < ApplicationController
       flash[:error] = 'You do not have permission to view this account'
       redirect_to accounts_path
     else
-      @backlogs = @account.backlogs.active.order('updated_at desc').limit(10)
-      @your_backlogs = @account.backlogs.active.order('LOWER(name)')
+      @backlogs = @account.backlogs.active.order('updated_at desc').limit(15)
+      @your_backlogs = @account.active_backlogs_grouped_by_company
       @archive_exists = !@account.backlogs.archived.empty?
     end
   end
