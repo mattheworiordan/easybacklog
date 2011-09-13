@@ -164,7 +164,7 @@ section.content .not-editable-backlog-notice {
         background-color: $title-area-color;
         border: 1px solid darken($title-area-color, 60%);
         font-size: 12px;
-        font-family: "Lucida Grande",verdana,arial,helvetica,sans-serif;
+        font-family: $base-pretty-font;
       }
     }
     .new, .compare {

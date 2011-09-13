@@ -1,16 +1,18 @@
+$base-pretty-font: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+
 /* generic & fix from reset */
 body {
-  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-family: $base-pretty-font;
   padding: 0em 0em 0.5em 0em;
   background-color: #DDD;
 }
 
 select, input {
-  font-family: "Lucida Grande",arial,helvetica,sans-serif;
+  font-family: $base-pretty-font;
 }
 
 h1 {
-  font-family: "Lucida Grande",sans-serif;
+  font-family: $base-pretty-font;
   .description {
     display: inline;
     font-size: 90%;
@@ -19,15 +21,9 @@ h1 {
 }
 
 h2 {
-  font-family: "Lucida Grande",sans-serif;
+  font-family: $base-pretty-font;
   font-weight: normal;
   margin-bottom: 0.5em;
-  /* style for editable title on backlog page */
-  input {
-    font-size: 1em;
-    font-family: Sans-Serif;
-    font-weight: normal;
-  }
 }
 
 ul {
