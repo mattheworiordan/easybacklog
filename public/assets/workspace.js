@@ -5162,15 +5162,15 @@ $("form").live("ajax:beforeSend.rails",function(event){if(this==event.target){di
 $("form").live("ajax:complete.rails",function(event){if(this==event.target){enableFormElements($(this))
 }})
 })(jQuery);
-var _ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_icon_show:false,tab_corner_radius:10,tab_font_size:14,tab_image_hash:"RmVlZGJhY2s%3D",tab_alignment:"right",tab_text_color:"#000000",tab_bg_color:"#FFC31F",tab_hover_color:"#FF9305",tab_top:"75%"};
-if(!((document.location.href.match(/localhost|127.0.0.1/))&&(document.location.href.indexOf(":3000")<0))){$(document).ready(function(){var _ue=document.createElement("script");
+var _ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false,};
+(function(){var _ue=document.createElement("script");
 _ue.type="text/javascript";
 _ue.async=true;
 _ue.src=("https:"==document.location.protocol?"https://s3.amazonaws.com/":"http://")+"cdn.userecho.com/js/widget-1.4.gz.js";
 var s=document.getElementsByTagName("script")[0];
 s.parentNode.insertBefore(_ue,s)
-})
-}this.vtip=function(){this.xOffset=-10;
+})();
+this.vtip=function(){this.xOffset=-10;
 this.yOffset=10;
 $(".vtip").unbind().live("mouseenter",function(e){$(this).data("vtip-title",this.title);
 this.t=this.title;
@@ -5234,7 +5234,7 @@ var clickedLink=$(this);
 $("#dialog-confirm").remove();
 var title=(clickedLink.attr("title")?clickedLink.attr("title"):(clickedLink.data("vtip-title")?clickedLink.data("vtip-title"):"Please confirm"));
 $("body").append(JST["layouts/confirm-dialog"]({title:title,confirmationMessage:clickedLink.data("confirm")}));
-var actionButton=(title.toLowerCase().indexOf("archive")>=0?"Archive":"Delete");
+var actionButton="Delete";
 var buttons={};
 buttons[actionButton]=function(){clickedLink.data("confirm","");
 clickedLink.click();
@@ -5248,8 +5248,27 @@ return(false)
 var alertNotice=$("#alert-space .notice, #alert-space .error, #alert-space .warning");
 alertNotice.css("display","none").slideDown(function(){_.delay(function(){alertNotice.slideUp()
 },5000)
-})
 });
+var _ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false,};
+(function(){var _ue=document.createElement("script");
+_ue.type="text/javascript";
+_ue.async=true;
+_ue.src=("https:"==document.location.protocol?"https://s3.amazonaws.com/":"http://")+"cdn.userecho.com/js/widget-1.4.gz.js";
+var s=document.getElementsByTagName("script")[0];
+s.parentNode.insertBefore(_ue,s)
+})();
+setTimeout(function(){$("a.feedback-button").mouseover(function(){UE.Popin.preload()
+}).click(function(event){event.preventDefault();
+UE.Popin.show()
+}).fadeIn()
+},1500);
+var supported=(($.browser.webkit)||($.browser.mozilla&&($.browser.version>=2))||($.browser.msie&&($.browser.version>=9)));
+if(!supported){$(".unsupported_browser .hide_notice a").click(function(event){event.preventDefault();
+$.cookie("hide_unsupported_browser_notice","true",{expires:30});
+$(".unsupported_browser").slideUp()
+});
+if($.cookie("hide_unsupported_browser_notice")!=="true"){$(".unsupported_browser").show()
+}}});
 (function(){window.JST=window.JST||{};
 window.JST["acceptance_criteria/index"]=_.template('<ul class="acceptance-criteria"></ul>');
 window.JST["acceptance_criteria/new"]=_.template('<li class="actions">\n  <a href="#new-acceptance-criterion" class="new-acceptance-criterion ui-icon ui-icon-plusthick">+</a>\n</li>');

@@ -18,8 +18,11 @@ $(".new").hide();
 getCompanyDefaults();
 $("select#backlog_company_id").focus()
 });
-$("select#backlog_company_id").change(getCompanyDefaults)
-});
+$("select#backlog_company_id").change(getCompanyDefaults);
+if($(".not-editable-notice").length){$("input[type=text],input[type=checkbox],select").attr("disabled",true);
+$("#backlog_has_company_false, #backlog_has_company_true").attr("disabled",true);
+$(".new-company").remove()
+}});
 function setCompanyVisibility(){if($("input#backlog_has_company_false").is(":checked")){$(".client-select, .existing, .new").hide();
 $("#has_company_false_label").addClass("selected");
 $("#has_company_true_label").removeClass("selected");
