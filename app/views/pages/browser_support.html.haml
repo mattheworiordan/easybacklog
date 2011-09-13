@@ -1,0 +1,69 @@
+%h1 Browser support
+
+%p
+  easyBacklog requires the features of moderns browsers to provide the rapid and desktop application equivalent experience to our customers.
+  %br/
+  If you are unfortunate to be using one of the older unsupported browsers we recommend you upgrade a modern browser now.
+
+%h3 Table of supported browsers
+
+%table.supported_browsers
+  %tr
+    %th.col Browser
+    %th.col Version
+    %th Support
+  %tr
+    %td.col
+      =link_to 'Google Chrome', 'http://www.google.com/chrome/'
+    %td.col
+      All versions
+    %td.green
+      Fully supported
+  %tr
+    %td.col
+      =link_to 'Safari', 'http://www.apple.com/safari/'
+    %td.col
+      All versions
+    %td.green
+      Fully supported
+  %tr
+    %td.col{:rowspan => 2}
+      =link_to 'Firefox', 'http://www.mozilla.org/firefox/'
+    %td.col
+      4+
+    %td.green
+      Fully supported
+  %tr
+    %td.col
+      3+
+    %td.partial
+      Partially supported
+  %tr
+    %td.col{:rowspan => 4}
+      =link_to 'Internet Explorer', 'http://windows.microsoft.com/en-US/internet-explorer/products/ie/home'
+    %td.col
+      9+
+    %td.green
+      Fully supported
+  %tr
+    %td.col
+      8
+    %td.partial
+      Mostly supported
+  %tr
+    %td.col
+      7
+    %td.partial
+      Partially supported
+  %tr
+    %td.col
+      <= 6
+    %td.red
+      Not supported
+  %tr
+    %td.col
+      =link_to 'Opera', 'http://www.opera.com/'
+    %td.col
+      All versions
+    %td.partial
+      Untested

@@ -255,3 +255,33 @@ section.side-panel .backlog-tool-panel {
     }
   }
 }
+
+table.supported_browsers {
+  border-collapse: collapse;
+  th {
+    padding: 0.25em 0.5em;
+    text-align: left;
+    background-color: #EEE;
+  }
+  td {
+    padding: 0.25em 0.5em;
+  }
+  td {
+    border-bottom: 1px solid #CCC;
+  }
+  td.col {
+    border-right: 1px solid #CCC;
+  }
+  td.green {
+    font-weight: bold;
+    color: #00BB00;
+  }
+  td.partial {
+    font-weight: bold;
+    color: #FF6633;
+  }
+  td.red {
+    font-weight: bold;
+    color: #FF0000;
+  }
+}

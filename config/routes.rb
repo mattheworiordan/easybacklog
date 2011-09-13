@@ -60,6 +60,7 @@ Ibacklog::Application.routes.draw do
 
   get '/users/email_available' => 'devise/users#email_available'
   get '/contact' => 'pages#contact', :as => 'contact'
+  get '/browser-support' => 'pages#browser_support', :as => 'browser_support'
   get '/raise-error' => 'pages#raise_error'
 
   get '/beta/:unique_code' => 'beta_signups#index', :constraints => { :code => /[a-z0-9]{6}/i }, :as => 'beta_signup_referral'

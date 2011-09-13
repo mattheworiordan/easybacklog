@@ -1,0 +1,25 @@
+%noscript
+  .javascript_disabled_notification
+    .inner
+      %h1
+        You need to change a setting in your web browser !
+      %p
+        easyBacklog  requires a browser feature called
+        %b JavaScript. All modern browsers support JavaScript. You probably just need to change a setting in order to turn it on.
+      %p
+        Please see:
+        %a{ :href => 'http://www.google.com/support/bin/answer.py?answer=23852' } How to enable JavaScript in your browser
+      %p
+        If you use ad-blocking software, it may require you to allow JavaScript from easybacklog.com.
+      %p
+        Once you've enabled JavaScript you can
+        %a{ :href => '/' } try loading easyBacklog again
+      %p
+        Thank you.
+
+.unsupported_browser
+  .hide_notice
+    = link_to 'Hide this notice', '#'
+  .notice
+    You are using an unsupported or partially supported browser.
+    = link_to 'Find out more', browser_support_path

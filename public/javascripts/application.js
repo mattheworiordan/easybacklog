@@ -80,4 +80,17 @@ $(document).ready(function() {
   alertNotice.css('display','none').slideDown(function() {
     _.delay(function() { alertNotice.slideUp(); }, 5000);
   });
+
+  // check that browsers are supported
+  var supported = (($.browser.webkit) || ($.browser.mozilla && ($.browser.version >= 2)) || ($.browser.msie && ($.browser.version >= 9)));
+  if (!supported) {
+    $('.unsupported_browser .hide_notice a').click(function(event) {
+      event.preventDefault();
+      $.cookie('hide_unsupported_browser_notice', 'true', { expires: 30 });
+      $('.unsupported_browser').slideUp();
+    });
+    if ($.cookie('hide_unsupported_browser_notice') !== 'true') {
+      $('.unsupported_browser').show();
+    }
+  }
 });
