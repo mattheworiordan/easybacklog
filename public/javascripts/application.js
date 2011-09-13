@@ -82,7 +82,8 @@ $(document).ready(function() {
   });
 
   // check that browsers are supported
-  var supported = (($.browser.webkit) || ($.browser.mozilla && ($.browser.version >= 2)) || ($.browser.msie && ($.browser.version >= 9)));
+  var version = Number(String($.browser.version).match(/^\d+/)); // strip 6.0.2 down to 6 for example
+  var supported = (($.browser.webkit) || ($.browser.mozilla && (version >= 2.0)) || ($.browser.msie && (version >= 9.0)));
   if (!supported) {
     $('.unsupported_browser .hide_notice a').click(function(event) {
       event.preventDefault();
