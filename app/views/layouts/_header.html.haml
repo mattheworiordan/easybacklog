@@ -11,10 +11,10 @@
         - if current_account.blank?
           .jump-to-account Jump to Account
         - else
-          = link_to current_account.name, account_path(current_account)
+          = link_to truncate(current_account.name, :length => 35), account_path(current_account)
         %ul
           - (accounts - [current_account]).each do |acct|
-            %li= link_to acct.name, account_path(acct)
+            %li= link_to truncate(acct.name, :length => 35), account_path(acct)
   - else
     = yield :global_nav_left
 

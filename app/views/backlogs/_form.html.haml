@@ -16,7 +16,7 @@
 - unless @backlog.is_snapshot?
   .label-spacer
 
-  = f.label :company, "Is this backlog for a client or company other than yours (#{@backlog.account.name})?"
+  = f.label :company, "Is this backlog for a client or company other than yours (#{truncate(@backlog.account.name, :length => 40)})?"
   .input-row
     = f.radio_button :has_company?, false
     = label_tag 'backlog_has_company_false', 'No, this is an internal project', :class => 'light', :id => 'has_company_false_label'
@@ -27,7 +27,7 @@
     .existing
       = label_tag 'backlog_company_id', 'Which company?'
       .input-row
-        = select(:backlog, "company_id", @backlog.account.companies.order("name").map { |p| [ p.name, p.id ] } )
+        = select(:backlog, "company_id", @backlog.account.companies.order("name").map { |p| [ truncate(p.name, :length => 50), p.id ] } )
         .new-company
           or
           = link_to 'add a new company', '#', :id => 'add_new_company'

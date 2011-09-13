@@ -1,8 +1,12 @@
 /* generic & fix from reset */
 body {
-  font-family: "Lucida Grande",verdana,arial,helvetica,sans-serif;
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
   padding: 0em 0em 0.5em 0em;
   background-color: #DDD;
+}
+
+select, input {
+  font-family: "Lucida Grande",arial,helvetica,sans-serif;
 }
 
 h1 {
@@ -213,6 +217,9 @@ section.side-panel {
     clear: left;
     padding: 1em 6px 6px 6px;
     border-top: 1px solid #999;
+    a {
+      font-weight: bold;
+    }
   }
 }
 
@@ -245,7 +252,7 @@ footer {
   position: fixed;
   left: 50%;
   overflow: hidden;
-  margin-left: -200px;
+  margin-left: -250px;
   width: 500px;
   top: 0;
   z-index: 5;

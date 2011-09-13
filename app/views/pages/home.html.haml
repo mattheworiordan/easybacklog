@@ -2,11 +2,13 @@
   %h1
     %span.easy>="easy"
     %span Backlog
-    .description : Simple backlog management
+    .description : Makes agencies agile
 
 #home
   %p.beta-notice
-    You are currently participating in an invite only BETA of easyBacklog.  We welcome your
+    You are currently participating in an invite only BETA of easyBacklog.
+    %br/
+    We welcome your
     = link_to 'suggestions and feedback.', contact_path
 
   - if user_signed_in?
@@ -16,12 +18,12 @@
       %br/
     - else
       - @recent_backlogs.group_by { |backlog| backlog.company.present? ? backlog.company.name : backlog.account.name }.each do |company, backlogs|
-        .company= company
+        .company= truncate(company, :length => 60)
         %ul.backlog-list
           - backlogs.each do |backlog|
             %li
               .name
-                = link_to backlog.name, account_backlog_path(backlog.account, backlog)
+                = link_to truncate(backlog.name, :length => 60), account_backlog_path(backlog.account, backlog)
               .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
     = link_to "View Account Dashboard", accounts_path, { :class => 'button' }
   - else

@@ -61,6 +61,30 @@ section.for-backlog {
   font-size: 11px;
 }
 
+section.content .not-editable-backlog-notice {
+  position: fixed;
+  width: 500px;
+  margin-left: -250px;
+  left: 50%;
+  background-color: #BBB;
+  color: black;
+  top: 4px;
+  z-index: 3;
+  padding: 1px 10px 1px 10px;
+  text-align: center;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  .message {
+    display: inline;
+    background: url(/images/alert-small-black.png) no-repeat left center;
+    padding-left: 22px;
+  }
+  a {
+    float: right;
+    color: #000;
+  }
+}
+
 #backlog-data-area {
   position: fixed;
   top: $ninesixty-vertical * 2;
@@ -109,6 +133,10 @@ section.for-backlog {
         padding: 2px;
         display: inline;
       }
+      &.locked {
+        padding-left: 25px;
+        background: url(/images/lock.png) no-repeat left center;
+      }
     }
     h3.company {
       display: inline;
@@ -124,13 +152,6 @@ section.for-backlog {
     padding-left: $ninesixty-gutter-width;
     label {
       margin-right: 5px;
-    }
-    .locked {
-      float: left;
-      overflow: hidden;
-      position: relative;
-      top: -2px;
-      left: -5px;
     }
     .title {
       color: #999;

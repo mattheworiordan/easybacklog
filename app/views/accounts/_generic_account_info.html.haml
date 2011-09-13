@@ -5,7 +5,7 @@
       |
     = link_to "View other accounts", accounts_path, { :class => 'back' }
   %h1
-    = @account.name
+    = truncate(@account.name, :length => 50)
 
 - content_for :side_panel do
   .button-container
@@ -13,12 +13,13 @@
   %h2 Your backlogs
   .your-back-list-side-panel
     - @your_backlogs.each do |company, backlogs|
-      .company= link_to company, backlogs.first.company.present? ? edit_account_company_path(@account, backlogs.first.company) : edit_account_path(@account)
+      .company
+        = link_to truncate(company, :length => 33), backlogs.first.company.present? ? edit_account_company_path(@account, backlogs.first.company) : edit_account_path(@account)
       %ul.your-backlog-list
         - backlogs.each do |backlog|
           %li
             .name
-              = link_to backlog.name, account_backlog_path(@account, backlog)
+              = link_to truncate(backlog.name, :length => 33), account_backlog_path(@account, backlog)
     - if @archive_exists
       .archive-link
-        = link_to "View archived backlogs", archives_account_path(@account)
+        = link_to "View archived backlogs →", archives_account_path(@account)

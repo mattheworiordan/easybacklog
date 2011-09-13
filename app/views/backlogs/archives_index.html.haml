@@ -10,12 +10,12 @@
     There are no archives in this account.
 - else
   - @archives.each do |company, backlogs|
-    .dash-board-company= company
+    .dash-board-company= truncate(company, :length => 65)
     %ul.backlog-list
       - backlogs.each do |backlog|
         %li
           .name
-            = link_to backlog.name, account_backlog_path(@account, backlog)
+            = link_to truncate(backlog.name, :length => 50), account_backlog_path(@account, backlog)
           .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
 
 = link_to '← Back to Dashboard', account_path(@account), { :class => 'button' }

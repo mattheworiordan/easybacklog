@@ -6,6 +6,16 @@
   .logo
     =link_to raw('← Back to dashboard'), account_path(@backlog.account)
 
+- if @backlog.is_snapshot?
+  .not-editable-backlog-notice
+    .message
+      = "You are viewing snapshot “#{@backlog.name}”."
+      = link_to '← Back', account_backlog_path(@backlog.account, @backlog.snapshot_master)
+- elsif @backlog.archived?
+  .not-editable-backlog-notice
+    .message
+      You are viewing a non-editable archive
+
 #backlog-data-area
   .actions
     - if @backlog.snapshot_master.blank?
@@ -22,18 +32,16 @@
     - else
       = link_to 'Backlog Settings', edit_account_backlog_path(@backlog.account, @backlog)
   .name-company-container
-    %h2.name
+    %h2.name{ :class => @backlog.editable? ? '' : 'locked'}
       - if @backlog.snapshot_master.blank?
-        = @backlog.name
+        = truncate(@backlog.name, :length => 40)
       - else
-        = @backlog.snapshot_master.name
+        = truncate(@backlog.snapshot_master.name, :length => 40)
     -if @backlog.company
-      %h3.company= @backlog.company.name
+      %h3.company= truncate(@backlog.company.name, :length => 25)
     -else
-      %h3.company= @backlog.account.name
+      %h3.company= truncate(@backlog.account.name, :length => 25)
   .snapshot
-    - unless @backlog.editable?
-      .locked{ :class => 'ui-icon ui-icon-locked' }
     .title
       =label_tag 'snapshot-selector', 'Snapshot:'
     .selector
@@ -44,10 +52,10 @@
           %optgroup{ :label => "Snapshots..." }
             - if @backlog.snapshot_master.blank?
               - @backlog.snapshots.each do |snapshot|
-                %option{:value => snapshot.id}= "#{snapshot.name}, #{backlog_date snapshot}"
+                %option{:value => snapshot.id}= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
             - else
               - @backlog.snapshot_master.snapshots.each do |snapshot|
-                %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{snapshot.name}, #{backlog_date snapshot}"
+                %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
     - if @backlog.editable?
       .new.vtip{ :title => 'Create new snapshot' }
         %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
