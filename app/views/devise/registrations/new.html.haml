@@ -10,7 +10,7 @@
 
   #sign-up
     - unless @account.blank?
-      %h2 Account details
+      %h2.divider Account details
       - unless @account.errors.empty?
         .form_errors
           The account details were not completed correctly.  Please correct the following fields to register:

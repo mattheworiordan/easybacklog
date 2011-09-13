@@ -4,19 +4,22 @@
   = include_javascripts :register
 
 - content_for :title do
-  %h1= "Get access to the backlogs of #{@invite_account.name}"
+  %h1= "Get access to account “#{truncate(@invite_account.name, :length => 40)}”"
 
 #invite
   %p
-    = "You have been sent an invite to join the account for #{@invite_account.name} on easyBacklog."
-    In order to gain access to this account you will either need to register for free now, or log in using your existing account.
+    You have been invited to join easyBacklog, a simple Agile backlog management tool designed for agencies.
+  %p
+    = "In order to gain access to the “#{truncate(@invite_account.name, :length => 30)}” account you will either need to register for free now, or log in using your existing account if you have previously created one with easyBacklog."
   .sign-up
-    %h2 Register for free
+    %h2 Register a new account
     = form_for('user', :url => registration_path(@user), :html => { :id => 'user_new'} ) do |f|
       != render :partial => '/devise/registrations/form', :locals => { :f => f,  :resource => @user }
       %p= f.submit "Register"
   .or
     OR
   .login
-    %h2 Log in
+    %h2 Log in with an existing account
+    %p
+      If you have not used easyBacklog before, then you must register a new account.
     = render :partial => '/devise/sessions/form'

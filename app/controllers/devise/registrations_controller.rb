@@ -8,8 +8,13 @@ class Devise::RegistrationsController < ApplicationController
   # GET /resource/sign_up
   def new
     build_resource({})
-    @account = Account.new
-    respond_with_navigational(resource){ render_with_scope :new }
+    if params[:sign_up_code] != 'd7g3h2y'
+      flash[:warning] = 'You need a valid sign up code to register'
+      redirect_to new_session_path(resource)
+    else
+      @account = Account.new
+      respond_with_navigational(resource){ render_with_scope :new }
+    end
   end
 
   # POST /resource/sign_up
@@ -21,11 +26,12 @@ class Devise::RegistrationsController < ApplicationController
     @account = (params[:show_account_setup] == 'true' ? Account.new(params[:account]) : nil)
     @account.save unless @account.blank?
 
+    # if valid account created or if not creating an account at all (invited users)
     if resource.save && (@account.blank? || @account.valid?)
       @account.add_first_user resource unless @account.blank?
       flash[:notice] = 'Your new account has been created for you'
       sign_in(resource_name, resource)
-      redirect_to account_path(@account || resource.accounts.first)
+      respond_with resource, :location => after_update_path_for(resource)
     else
       unless @account.blank?
         # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id

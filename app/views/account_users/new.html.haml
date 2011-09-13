@@ -3,7 +3,7 @@
   = include_javascripts :users
 
 - content_for :title do
-  %h1= "Add people to the #{current_account.name} account"
+  %h1= "Add people to the #{truncate(current_account.name, :length => 40)} account"
 
 #new-user
   %p Enter the email address(s) below of the people you would like to add to your account and give access to the backlogs.  Please use a comma to separate each email address if you would like to invite more than one person.
