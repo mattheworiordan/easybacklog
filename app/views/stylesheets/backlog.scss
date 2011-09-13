@@ -219,19 +219,6 @@ section.content .not-editable-backlog-notice {
   }
 }
 
-/* when viewing a snapshot don't make these fields look editable */
-#backlog-data-area.not-editable {
-  h2.name:hover {
-    background:transparent;
-  }
-  #backlog-settings {
-    .data:hover {
-      background:transparent;
-      color: inherit;
-    }
-  }
-}
-
 #themes-header {
   position: fixed;
   z-index: 1;

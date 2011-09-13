@@ -9,7 +9,7 @@
 - if @backlog.is_snapshot?
   .not-editable-backlog-notice
     .message
-      = "You are viewing snapshot “#{@backlog.name}”."
+      = "You are viewing snapshot “#{truncate(@backlog.name, :length => 30)}”."
       = link_to '← Back', account_backlog_path(@backlog.account, @backlog.snapshot_master)
 - elsif @backlog.archived?
   .not-editable-backlog-notice

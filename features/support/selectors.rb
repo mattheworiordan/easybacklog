@@ -51,7 +51,7 @@ module HtmlSelectorHelpers
       '#backlog-data-area .snapshot .compare a'
 
     when /^snapshot icon$/
-      '#backlog-data-area .snapshot .locked'
+      'h2.locked'
 
     when /^snapshot drop down$/
       '#backlog-data-area #snapshot-selector'
