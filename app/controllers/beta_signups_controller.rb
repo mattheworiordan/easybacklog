@@ -7,7 +7,7 @@ class BetaSignupsController < ApplicationController
       render 'pages/home', :layout => 'application'
     else
       @beta_signup = BetaSignup.new
-      if (params[:unique_code])
+      unless params[:unique_code].blank?
         referral_beta_signup = BetaSignup.where(:unique_code => params[:unique_code])
         if (referral_beta_signup.count > 0)
           referral_beta_signup.first.log_click
@@ -16,14 +16,16 @@ class BetaSignupsController < ApplicationController
     end
   end
 
+  # shares same view as index, index is responsible for serving different content unless RJS involved
   def create
     @beta_signup = BetaSignup.find_or_create_by_email(params[:beta_signup][:email])
-    @beta_signup.company = params[:beta_signup][:company]
+    @beta_signup.company = params[:beta_signup][:company] unless params[:beta_signup][:company] = 'Your company name'
     if @beta_signup.save
-      render 'thank_you'
-    else
-      flash.now[:error] = 'You must enter a valid email address'
-      render 'index'
+      @show_thank_you = true
+    end
+    respond_to do |format|
+      format.html { render 'index' }
+      format.js { render :layout => false }
     end
   end
 

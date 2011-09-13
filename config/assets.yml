@@ -32,6 +32,7 @@ javascripts:
   snapshots:
     - public/javascripts/sections/snapshots.js
   beta_signup:
+    - public/javascripts/vendor/conditional/jquery.lightbox-0.5.js
     - public/javascripts/sections/beta_signup.js
 stylesheets:
   common:
@@ -44,4 +45,5 @@ stylesheets:
   snapshots_print:
     - tmp/stylesheets/snapshots_print.css
   beta_signup:
+    - public/stylesheets/jquery.lightbox-0.5.css
     - tmp/stylesheets/beta_signup.css

@@ -1,15 +1,480 @@
 @import 'compass/reset.scss';
+@import 'compass/utilities/general/clearfix';
+@import 'compass/css3/text-shadow';
+@import 'compass/css3/box-shadow';
+@import 'compass/css3/border-radius';
 @import '960.grid';
 @import '960.text';
 @import 'browser_support';
 
-$ninesixty-columns: 12;
+$ninesixty-columns: 24;
 $ninesixty-grid-width: 960px;
+$ninesixty-gutter-width: 10px;
 
-$body-bg: #FFFFFF;
+@mixin wrapper960 {
+  width: $ninesixty-grid-width;
+  margin: 0 auto 0 auto;
+}
+
+$body-bg: #5584D4;
+$clarendon-font: 'ClarendonRoman', "Lucida Grande", Arial, Helvetica, sans-serif;
+$handwritten-font: 'DakotaRegular', Arial, Helvetica, sans-serif;
+
+/* fonts generated from http://www.fontsquirrel.com/ */
+@font-face {
+    font-family: 'ClarendonRoman';
+    src: url('/fonts/clarendon-bt-webfont.eot');
+    src: url('/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/clarendon-bt-webfont.woff') format('woff'),
+         url('/fonts/clarendon-bt-webfont.ttf') format('truetype'),
+         url('/fonts/clarendon-bt-webfont.svg#ClarendonRoman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DakotaRegular';
+    src: url('/fonts/dakota-regular-webfont.eot');
+    src: url('/fonts/dakota-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/fonts/dakota-regular-webfont.woff') format('woff'),
+         url('/fonts/dakota-regular-webfont.ttf') format('truetype'),
+         url('/fonts/dakota-regular-webfont.svg#DakotaRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 
 body {
   background-color: #E9E9E9;
+  font-family: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+}
+
+b {
+  font-weight: bold;
+}
+
+header {
+  background: #000 url(/images/header_bg.png) repeat-x;
+  height: 33px;
+  .wrapper {
+    @include wrapper960;
+    nav {
+      margin: 0 auto 0 auto;
+      padding-top: 4px;
+      color: white;
+      font-size: 14px;
+      font-family: $clarendon-font;
+      @include grid($ninesixty-columns);
+      a {
+        color: #FFF;
+        text-decoration: none;
+        &:hover {
+          color: #649EFF;
+        }
+      }
+      .brand {
+        font-size: 16px;
+        @include grid(8);
+        @include alpha;
+        .logo {
+          background: url(/images/eb_logo_icon.png) no-repeat;
+          width: 30px;
+          height: 18px;
+          float: left;
+          margin: 3px 10px 0 0;
+          &:hover {
+            background-position: 0px -18px;
+          }
+        }
+      }
+      .quick-links {
+        padding-top: 1px;
+        @include grid(16);
+        @include omega;
+        text-align: right;
+        a {
+          margin-left: 20px;
+        }
+      }
+    } /* /nav */
+    .notes {
+      font-family: $handwritten-font;
+      line-height: 1em;
+      font-size: 18px;
+      color: #FFF;
+      text-align: center;
+      top: 30px;
+      height: 150px;
+      margin-bottom: -150px;
+      .strap-line {
+        position: relative;
+        left: -40px;
+        top: 40px;
+        width: 150px;
+        .arrow {
+          position: absolute;
+          left: 105px;
+          top: -5px;
+          height: 25px;
+          width: 24px;
+          background: url(/images/beta_signup/sprites.png) no-repeat -10px -310px;
+        }
+      }
+      .login-note {
+        position: relative;
+        left: 820px;
+        top: -25px;
+        width: 100px;
+        .arrow {
+          position: absolute;
+          left: 100px;
+          top: -15px;
+          height: 36px;
+          width: 23px;
+          background: url(/images/beta_signup/sprites.png) no-repeat -44px -304px;
+        }
+      }
+    }
+  }
+}
+
+section.features {
+  background: #4070B8 url(/images/beta_signup/blue_grid_bg.jpg) repeat-x center center;
+  height: 652px;
+  .wrapper {
+    @include wrapper960;
+
+    .branding {
+      height: 145px;
+      @include grid-prefix(5);
+      @include grid(15);
+      padding-top: 15px;
+      h1.logo {
+        float: left;
+        font-family: $clarendon-font;
+        font-size: 70px;
+        color: #FFF;
+      }
+      .beta {
+        float: left;
+        background: url(/images/beta_signup/sprites.png) no-repeat -10px -5px;
+        width: 85px;
+        height: 30px;
+        margin: 40px 0 0 10px;
+      }
+      h2.strap-line {
+        clear: left;
+        position: relative;
+        font-family: $handwritten-font;
+        font-size: 20px;
+        color: #6E9DDB;
+        top: -45px;
+        left: 140px;
+      }
+    }
+
+    $title-color: #152A2A;
+
+    .feature-nav {
+      @include grid(5);
+      margin-top: 60px;
+      ul {
+        list-style-type: none;
+        li {
+          cursor: pointer;
+          font-family: "Verdana", sans-serif;
+          color: white;
+          font-size: 13px;
+          margin: 0 0 15px 0;
+          padding: 4px 45px 4px 10px;
+          text-align: right;
+          -moz-border-radius: 20px;
+          border-radius: 20px;
+          font-weight: bold;
+          .text {
+            display: inline;
+            @include single-text-shadow(#003, 1px, 1px, 0)
+          }
+          &.selected {
+            background-color: #365791;
+            @include single-box-shadow(#000033, 2px, 2px, 6px, false, false)
+          }
+        }
+      }
+    }
+
+    .dual-cards-container {
+      @include grid(16);
+      margin-left: -($ninesixty-grid-width / $ninesixty-columns);
+      z-index: 2;
+      .dual-cards {
+        z-index: 3;
+        background: url(/images/beta_signup/card-sprites.png) no-repeat;
+        width: 677px;
+        height: 451px;
+        .card {
+          position: absolute;
+          display: none;
+          cursor: pointer;
+          &.visible {
+            display: block;
+          }
+        }
+        .story-card {
+          position: absolute;
+          background: url(/images/beta_signup/card-sprites.png) no-repeat -684px 0px;
+          width: 235px;
+          height: 340px;
+          margin: 32px 0 0 11px;
+          padding: 20px 30px 20px 30px;
+          .title {
+            font-family: $clarendon-font;
+            font-size: 25px;
+            border-bottom: 2px solid $title-color;
+            color: $title-color;
+          }
+          .value {
+            font-family: $handwritten-font;
+            font-size: 23px;
+            color: #003366;
+            line-height: 1.2em;
+            margin-bottom: 10px;
+          }
+        }
+        .criteria-card {
+          position: absolute;
+          background: url(/images/beta_signup/card-sprites.png) no-repeat -684px 0px;
+          width: 235px;
+          height: 340px;
+          margin: 32px 0 0 350px;
+          padding: 20px 30px 20px 30px;
+          .title {
+            font-family: $clarendon-font;
+            font-size: 20px;
+            border-bottom: 2px solid $title-color;
+            color: $title-color;
+          }
+          ol {
+            margin-top: 5px;
+            li {
+              margin: 0;
+              padding: 8px 0 8px 0;
+              list-style: none;
+              font-family: $handwritten-font;
+              font-size: 16px;
+              line-height: 1em;
+              color: #003366;
+              border-bottom: 2px solid #DDEEEE;
+              &:last-child {
+                border-bottom: none;
+              }
+            }
+          }
+        }
+        .front-label, .back-label {
+          position: relative;
+          font-family: $handwritten-font;
+          color: #6B8CB8;
+          font-size: 18px;
+          top: 425px;
+        }
+        .front-label {
+          clear: left;
+          float: left;
+          left: 30px;
+        }
+        .back-label {
+          float: left;
+          left: 520px;
+        }
+      }
+    }
+    /* /.dual-cards-container */
+
+    .demos {
+      @include grid-prefix(1);
+      @include grid(3);
+      margin-top: 30px;
+      font-family: $handwritten-font;
+      color: #FFF;
+      font-size: 18px;
+      a.video-demo {
+        background: url(/images/beta_signup/sprites.png) no-repeat 0px -195px;
+        width: 126px;
+        height: 110px;
+        display: block;
+        margin: 0 0 50px -2px;
+      }
+      a.screenshot-demo {
+        background: url(/images/beta_signup/sprites.png) no-repeat 0px -50px;
+        width: 126px;
+        height: 150px;
+        display: block;
+        margin: 5px 0 0 -2px;
+      }
+      .screen-shots {
+        display: none;
+      }
+    }
+
+  }
+}
+
+section.content-mix {
+  background: #F3F3F3 url(/images/beta_signup/white_grain.png) repeat;
+  .divider-top {
+    background: url(/images/beta_signup/zig_zag.png) repeat-x;
+    height: 8px;
+    position: relative;
+    top: -8px;
+  }
+  .star-burst {
+    background: url(/images/beta_signup/sprites.png) no-repeat 0px -350px;
+    width: 150px;
+    height: 152px;
+    font-family: $handwritten-font;
+    color: #264C4C;
+    vertical-align: middle;
+    padding: 20px;
+    font-size: 23px;
+    line-height: 1em;
+    text-align: center;
+    &.medium-text {
+      padding-top: 20px + 30px;
+      height: 152px - 30px;
+    }
+    &.less-text {
+      padding-top: 20px + 45px;
+      height: 152px - 45px;
+      padding-left: 30px;
+      padding-right: 30px;
+      width: 130px;
+    }
+  }
+  section.content {
+    @include wrapper960;
+    @include clearfix;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    h2 {
+      color: #335284;
+      font-size: 28px;
+      font-family: $clarendon-font;
+    }
+
+    a {
+      color: #0000DD;
+      text-decoration: underline;
+      &:hover {
+        color: #000;
+      }
+    }
+
+    .testimonial {
+      @include grid-prefix(2);
+      @include grid(5);
+      .quote {
+        font-size: 13px;
+        color: #333;
+        .quote-mark {
+          color: #335284;
+          font-size: 60px;
+          font-family: $clarendon-font;
+          margin-top: -15px;
+          margin-bottom: -35px;
+          &.closed {
+            text-align: right;
+          }
+        }
+      }
+      .credit {
+        color: #335284;
+        font-family: $handwritten-font;
+        font-size: 23px;
+      }
+      .job-title {
+        color: #666;
+        font-size: 13px;
+        @include single-text-shadow(#FFF, 1px, 1px, 0)
+      }
+    }
+
+    .about {
+      @include grid-prefix(1);
+      @include grid(9);
+      color: #333;
+      font-size: 13px;
+    }
+
+    .request-access {
+      @include grid-prefix(1);
+      @include grid(6);
+      color: #333;
+      font-size: 13px;
+      .intro {
+        margin: 20px 0 10px 0;
+      }
+      input[type=text] {
+        font-size: 16px;
+        font-family: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+        color: #777;
+        width: $ninesixty-grid-width / 24 * 6 - $ninesixty-gutter-width * 2 - 10;
+        margin-bottom: 10px;
+        border: 1px solid #333;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        padding: 5px;
+        &.enabled {
+          color: #000;
+        }
+        &.invalid {
+          border: 2px solid #DD0000;
+        }
+        @include single-box-shadow(#666, 0, 0, 4px, false, false);
+      }
+      input[type=submit] {
+        background: transparent url('/images/beta_signup/sprites.png') no-repeat 0px -545px;
+        width: 145px;
+        height: 55px;
+        font-size: 14px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+      }
+
+      .error-message {
+        color: #DD0000;
+        .container {
+          text-align: center;
+          font-weight: bold;
+          padding: 3px;
+          font-family: $handwritten-font;
+          font-size: 18px;
+          margin-bottom: 5px;
+        }
+      }
+
+      p.offer {
+        border: 2px solid #FFF;
+        padding: 10px;
+        font-weight: bold;
+        @include border-radius(10px, 10px);
+        @include single-box-shadow(#000000, 0, 0, 5px, false, false);
+      }
+    }
+  }
+  .divider-bottom {
+    background: url(/images/beta_signup/zig_zag.png) repeat-x 0px -19px;
+    height: 8px;
+    position: relative;
+    top: 8px;
+  }
+}
+
+/* text to display when user clicks on text boxes */
+.faded-request-access {
+  font-size: 16px;
+  color: #DDD;
   font-family: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
 }
 
@@ -38,65 +503,73 @@ section.header {
   }
 }
 
-section.content {
-  background-color: $body-bg;
-  margin: 0 auto 0 auto;
-  @include grid($ninesixty-columns);
-
-  .intro {
-    @include grid($ninesixty-columns);
-    @include alpha;
-    @include omega;
-    p {
-      padding-left: $ninesixty-gutter-width/2;
-      padding-right: $ninesixty-gutter-width/2;
+.footer {
+  background: $body-bg url(/images/beta_signup/footer_bg.png) repeat-x top;
+  padding-top: 60px;
+  .wrapper {
+    @include wrapper960;
+    @include clearfix;
+    .twitter {
+      a {
+        text-decoration: none;
+        .logo {
+          @include grid(2);
+          display: block;
+          background: url(/images/beta_signup/sprites.png) no-repeat -139px -206px;
+          width: 50px;
+          height: 34px;
+        }
+        .copy {
+          @include grid(6);
+          font-family: $handwritten-font;
+          font-size: 16px;
+          margin-top: 10px;
+          display: block;
+          color: white;
+        }
+        &:hover {
+          .logo {
+            background-position: -139px -240px;
+          }
+          .copy {
+            color: black;
+          }
+        }
+      }
+    }
+    .links {
+      @include grid(24);
+      margin-top: 5px;
+      color: #152134;
+      padding-bottom: 20px;
+      .copyright-notice {
+        margin-right: 30px;
+        display: inline;
+      }
+      a {
+        font-size: 12px;
+        margin-right: 15px;
+        color: white;
+        text-decoration: none;
+        &:hover {
+          color: black;
+        }
+      }
     }
   }
 
-  input[type=text] {
-    font-size: 18px;
-    font-family: sans-serif;
-    margin: $ninesixty-gutter-width/2;
-    color: #777;
-    width: $ninesixty-grid-width / 12 * 5 - $ninesixty-gutter-width * 2;
-    &.enabled {
-      color: #000;
-    }
-    &.invalid {
-      border: 2px solid red;
-    }
-  }
-
-  .faded {
-    font-size: 18px;
-    color: #DDD;
-    font-family: sans-serif;
-  }
-
-  .error-message {
-    @include grid(12);
-    @include alpha;
-    @include omega;
-    color: red;
-    .container {
-      margin-left: $ninesixty-gutter-width/2;
-      width: $ninesixty-grid-width / 12 * 5 - $ninesixty-gutter-width * 2 - 6;
-      padding: 3px;
-    }
-  }
-  .email {
-    @include grid(5);
-    @include alpha;
-  }
-  .company {
-    @include grid(5);
-  }
-  .signup {
-    @include grid(2);
-    @include omega;
-    input[type=submit] {
-      font-size: 18px;
-      margin: $ninesixty-gutter-width/2;
+  /* fixed position */
+  a.feedback-button {
+    /* only show when DOM is ready */
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: url(/images/feedback.png) no-repeat;
+    &:hover {
+      background-position: 0px -100px;
     }
   }
 }

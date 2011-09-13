@@ -1,24 +1,207 @@
 != render :partial => 'head'
 
-%section.content-wrapper
-  %section.header
-    .logo
-      %h1 easyBacklog Heading 9 cols
-    .links
-      .container
-        = link_to 'Already invited? Login', new_session_path(User)
+%header
+  .wrapper
+    %nav
+      .brand
+        =link_to raw('<div class="logo"></div>'), root_path
+        =link_to 'easyBacklog', root_path
+      .quick-links
+        =link_to 'Our Blog', 'http://blog.easybacklog.com/'
+        =link_to 'Support', contact_path
+        =link_to 'Log In', new_session_path(User)
+      .notes
+        .strap-line
+          .arrow
+          Turns the marathon into a sprint
+        .login-note
+          .arrow
+          Already invited?
+
+%section.features
+  .wrapper
+    .branding
+      %h1.logo
+        easyBacklog
+      .beta
+      %h2.strap-line
+        Makes Agencies Agile.
+
+    .feature-nav
+      %ul
+        %li.selected
+          .text Manage backlog and sprints
+        %li
+          .text Faster than Excel
+        %li
+          .text Revision control
+        %li
+          .text Print and export
+        %li
+          .text Rapid quotations
+        %li
+          .text Scalable and secure
+
+    .dual-cards-container
+      .dual-cards
+        .front-label front
+        .back-label back
+        .card.visible
+          .story-card
+            .title As a:
+            .value scrum master
+            .title I want to:
+            .value manage backlogs and sprints
+            .title So I can:
+            .value implement Agile effectively
+          .criteria-card
+            .title Acceptance criteria:
+            %ol
+              %li Stories are grouped into themes
+              %li Drag and drop prioritisation
+              %li Automatic theme and backlog totals
+              %li Burn up and burn down charts
+              %li Sensible defaults and constraints
+              %li Color coding categorisation
+        .card
+          .story-card
+            .title As a:
+            .value user
+            .title I want to:
+            .value work rapidly in the backlog
+            .title So I can:
+            .value be efficient
+          .criteria-card
+            .title Acceptance criteria:
+            %ol
+              %li Must match or exceed the speed of a desktop application
+              %li Quicker and easier than Excel
+              %li Complete keyboard control
+              %li Changes update in realtime and save automatically
+        .card
+          .story-card
+            .title As a:
+            .value project manager
+            .title I want to:
+            .value version the backlog frequently
+            .title So I can:
+            .value manage change and costs
+          .criteria-card
+            .title Acceptance criteria:
+            %ol
+              %li Can create snapshots (versions) at any point in time
+              %li Can compare versions and highlight changes
+              %li Can view, export and print snapshots
+        .card
+          .story-card
+            .title As a:
+            .value scrum master
+            .title I want to:
+            .value print story cards
+            .title So I can:
+            .value attach them to my scrum board
+          .criteria-card
+            .title Acceptance criteria:
+            %ol
+              %li Card to be very legible
+              %li Double sided with criteria on the back
+              %li Wide range of printer support
+              %li Unique story code visible
+              %li Export all stories to Excel
+        .card
+          .story-card
+            .title As a:
+            .value project manager
+            .title I want to:
+            .value create quotations rapidly
+            .title So I can:
+            .value quickly estimate costs for a project
+          .criteria-card
+            .title Acceptance criteria:
+            %ol
+              %li Add themes and stories quickly
+              %li Create high level estimate
+              %li Costs calculated based on day rate, expected velocity and complexity
+              %li Print and Export to Excel
+              %li Can add detail later when necessary
+        .card
+          .story-card
+            .title As a:
+            .value user
+            .title I want to:
+            .value work with a scalable and secure product
+            .title So I can:
+            .value reliably use easyBacklog
+          .criteria-card
+            .title Acceptance criteria:
+            %ol
+              %li All access must be secured via SSL
+              %li Data storage must be redundant and secure
+              %li Cloud servers to meet demand
+              %li Quick to load and use
+    .demos
+      .title video demo
+      %a.light-box.video-demo{ :href => '#video', :id => 'video-demo' }
+      .title screenshots
+      %a.light-box-group.screenshot-demo{ :href => '/images/beta_signup/screen_shots/image1.jpg', :title => "Screen Shot 1", :id => 'screenshot-demo' }
+      .screen-shots
+        =link_to 'Image 2', '/images/beta_signup/screen_shots/image2.jpg', :title => 'Screen shot 2'
+        =link_to 'Image 3', '/images/beta_signup/screen_shots/image3.jpg', :title => 'Screen shot 3'
+        =link_to 'Image 4', '/images/beta_signup/screen_shots/image4.jpg', :title => 'Screen shot 4'
+        =link_to 'Image 5', '/images/beta_signup/screen_shots/image5.jpg', :title => 'Screen shot 5'
+
+
+%section.content-mix
+  .divider-top
   %section.content
-    = form_for @beta_signup do |f|
-      .intro
-        %p
-          Want to try easyBacklog?
-          %br
-          We'll be ready in a few weeks to open the doors to a few more early adopters.  If you'd like to get early access, then enter your details below.
-      .error-message
-        .container
-      .email
-        = f.text_field :email, :value => 'Your email address'
-      .company
-        = f.text_field :company, :value => 'Your company name'
-      .signup
-        = f.submit :value => 'Sign me up'
+    .testimonial
+      .star-burst.medium-text
+        Feedback from our BETA testers
+      .quote
+        .quote-mark “
+        It takes a third of the time it used to take to create, edit and refine a product backlog.
+        Gone are the days of wasting time on structure, formulas or writing up story cards.
+        I can't imagine a project without easyBacklog now.
+        .quote-mark.closed ”
+      .credit Will Talbot
+      .job-title Project Manager, Aqueduct
+
+    .about
+      %h2 easyBacklog IS:
+      %p An intuitive time saving backlog management tool for Agile practitioners working in or with agencies.
+      %h2 easyBacklog is NOT:
+      %p Yet another all purpose project management, Agile or collaboration tool for teams.
+      %h2 What is “Agile”
+      %p
+        It’s a set of guidelines that helps you deliver useful, valuable increments of software to customers at the end of each sprint (like two weeks).  It is done by constantly re-prioritizing the backlog of requirements and reviewing incremental progress with the product owner.
+        %br/
+        =link_to 'Read the Agile manifesto →', 'http://agilemanifesto.org/'
+      =link_to '/images/beta_signup/screen_shots/agile_process.png', :class => 'light-box', :title => 'Agile Process Diagram' do
+        =image_tag '/images/beta_signup/agile-diagram.png', :alt => 'Agile diagram', :width => 330, :height => 189
+
+    .request-access
+      %a{:name => 'apply'}
+      .ajax-target
+        - if @show_thank_you == true
+          = render 'thank_you'
+        - else
+          = render 'apply'
+
+  .divider-bottom
+
+.footer
+  .wrapper
+    .twitter
+      %a{:href => 'http://www.twitter.com/easybacklog' }
+        .logo
+        .copy{:href => 'http://www.twitter.com/easybacklog' } Follow us on twitter
+    .links
+      .copyright-notice
+        © easyBacklog
+        = Time.now.strftime('%Y')
+      = link_to 'Our Blog', 'http://blog.easybacklog.com/'
+      = link_to 'Support', contact_path
+      = link_to 'Contact Us', contact_path
+      = link_to 'Request Invitation', '#apply', :id => 'request-invitation-footer'
+      = link_to 'Log In', new_session_path(User)
+  %a.feedback-button{ :href => '#feedback' }

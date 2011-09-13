@@ -81,8 +81,32 @@ $(document).ready(function() {
     _.delay(function() { alertNotice.slideUp(); }, 5000);
   });
 
+  /* Standard UserEcho link code */
+  var _ues = {
+    host:'easybacklog.userecho.com',
+    forum:'4890',
+    lang:'en',
+    tab_show:false,
+  };
+  (function() {
+      var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
+      _ue.src = ('https:' == document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
+  })();
+
+  // enable feedback button
+  setTimeout(function() {
+    $('a.feedback-button').mouseover(function() {
+      UE.Popin.preload();
+    }).click(function(event) {
+      event.preventDefault();
+      UE.Popin.show();
+    }).fadeIn();
+  }, 1500);
+
   // check that browsers are supported
-  var version = Number(String($.browser.version).match(/^\d+/)); // strip 6.0.2 down to 6 for example
+  var version = Number(String($.browser.version).match(/^\d+/)[0]); // strip 6.0.2 down to 6 for example
+  $.browser.versionInt = version; // store so we can use elsewhere
   var supported = (($.browser.webkit) || ($.browser.mozilla && (version >= 2.0)) || ($.browser.msie && (version >= 9.0)));
   if (!supported) {
     $('.unsupported_browser .hide_notice a').click(function(event) {
