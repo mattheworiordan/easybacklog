@@ -18,7 +18,7 @@ class Backlog < ActiveRecord::Base
 
   before_save :check_can_modify
 
-  scope :all, where(:deleted => false)
+  scope :available, where(:deleted => false)
   scope :active, where(:archived => false).where(:deleted => false)
   scope :deleted, where(:deleted => true)
   scope :archived, where(:archived => true).where(:deleted => false)

@@ -8,7 +8,7 @@ class BacklogsController < ApplicationController
 
   def show
     begin
-      @backlog = current_account.backlogs.all.find(params[:id], :include => BACKLOG_INCLUDES)
+      @backlog = current_account.backlogs.available.find(params[:id], :include => BACKLOG_INCLUDES)
     rescue ActiveRecord::RecordNotFound => exception
       flash[:warning] = 'The backlog you were looking for does not exist'
       redirect_to account_path(current_account)
@@ -19,7 +19,7 @@ class BacklogsController < ApplicationController
 
   def show_snapshot
     begin
-      @backlog = current_account.backlogs.all.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
+      @backlog = current_account.backlogs.available.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
     rescue ActiveRecord::RecordNotFound => exception
       flash[:warning] = 'The snapshot you were looking for does not exist'
       redirect_to account_path(current_account)
@@ -50,7 +50,7 @@ class BacklogsController < ApplicationController
 
   def edit
     begin
-      @backlog = Backlog.all.where(:account_id => current_account.id).find(params[:id])
+      @backlog = Backlog.available.where(:account_id => current_account.id).find(params[:id])
     rescue
       flash[:warning] = 'The backlog or snapshot does not exist'
       redirect_to account_path(current_account)
@@ -59,7 +59,7 @@ class BacklogsController < ApplicationController
 
   # put action to archive a backlog
   def archive
-    @backlog = current_account.backlogs.all.find(params[:id])
+    @backlog = current_account.backlogs.available.find(params[:id])
     @backlog.mark_archived
     flash[:notice] = "#{@backlog.name} archived"
     redirect_to account_path(current_account)
@@ -67,7 +67,7 @@ class BacklogsController < ApplicationController
 
   # put action to recover from archive
   def recover_from_archive
-    @backlog = current_account.backlogs.all.find(params[:id])
+    @backlog = current_account.backlogs.available.find(params[:id])
     @backlog.recover_from_archive
     flash[:notice] = "#{@backlog.name} recovered from archive"
     redirect_to account_path(current_account)
@@ -80,7 +80,7 @@ class BacklogsController < ApplicationController
   end
 
   def create_snapshot
-    @backlog = current_account.backlogs.all.find(params[:id])
+    @backlog = current_account.backlogs.available.find(params[:id])
     name = params[:name]
     new_snapshot = @backlog.create_snapshot(name)
     flash[:notice] = "New snapshot created"
@@ -89,7 +89,7 @@ class BacklogsController < ApplicationController
 
   # only supports JSON updates
   def update
-    @backlog = current_account.backlogs.all.find(params[:id])
+    @backlog = current_account.backlogs.available.find(params[:id])
     if @backlog.archived? && params[:backlog][:archived] == 'false'
       @backlog.recover_from_archive
       flash[:notice] = 'Backlog has been restored from archive and is now active'
@@ -120,21 +120,21 @@ class BacklogsController < ApplicationController
   end
 
   def destroy
-    @backlog = current_account.backlogs.all.find(params[:id])
+    @backlog = current_account.backlogs.available.find(params[:id])
     @backlog.mark_deleted
     flash[:notice] = 'Backlog was successfully deleted.'
     redirect_to account_path(current_account)
   end
 
   def destroy_snapshot
-    @backlog = Backlog.all.where(:account_id => current_account.id).where(:id => params[:snapshot_id]).first
+    @backlog = Backlog.available.where(:account_id => current_account.id).where(:id => params[:snapshot_id]).first
     @backlog.mark_deleted
     flash[:notice] = 'Snapshot was successfully deleted'
     redirect_to account_backlog_path(current_account, current_account.backlogs.find(params[:id]))
   end
 
   def duplicate
-    @backlog = current_account.backlogs.all.find(params[:id])
+    @backlog = current_account.backlogs.available.find(params[:id])
     @new_backlog = current_account.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
     @new_backlog.author = @backlog.author
     @new_backlog.last_modified_user = current_user
@@ -150,7 +150,7 @@ class BacklogsController < ApplicationController
   # Used by AJAX form validator
   def name_available
     name = (params[:backlog] || {})[:name] || ''
-    backlogs = current_account.backlogs.all
+    backlogs = current_account.backlogs.available
     backlogs = backlogs.where('ID <> ?', params[:exclude]) if params[:exclude]
     if backlogs.where('UPPER(name) like ?', name.upcase).empty?
       render :text => 'true'
