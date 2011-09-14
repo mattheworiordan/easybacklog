@@ -265,6 +265,21 @@ footer {
       text-decoration: underline;
     };
   }
+
+  /* fixed position */
+  a.feedback-button {
+    /* only show when DOM is ready */
+    display: none;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: url(/images/feedback.png) no-repeat;
+    &:hover {
+      background-position: 0px -100px;
+    }
+  }
 }
 
 /* errors, notices, warnings and inline form errors */
