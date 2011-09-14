@@ -1,5 +1,7 @@
 /*global $,document,jQuery */
 $(document).ready(function () {
+  var visibleCriteriaCard, lightBoxOptions, featureNavs, animatingCards;
+
   // validate method for apply form
   function validateEmail (required) {
     var valid = false;
@@ -47,12 +49,12 @@ $(document).ready(function () {
     }
   });
 
-  var featureNavs = $('.feature-nav ul li'),
-      animatingCards = false;
+  featureNavs = $('.feature-nav ul li');
+  animatingCards = false;
 
   // show's relevant card based on selected feature nav
   function showCard (moveForward) {
-    var selectedIndex, visibleCard, visibleStoryCard, visibleCriteriaCard;
+    var selectedIndex, visibleCard, visibleStoryCard;
     featureNavs.each(function (index, elem) {
       if ($(elem).hasClass('selected')) {
         selectedIndex = index + 1;
@@ -125,8 +127,10 @@ $(document).ready(function () {
   });
 
   // lightbox relevant media items
-  $('a.light-box').lightBox();
-  $('a.light-box-group, .screen-shots a').lightBox({fixedNavigation:true});
+  lightBoxOptions = { imageBtnPrev: '/images/beta_signup/lightbox-prev.png', imageBtnNext: '/images/beta_signup/lightbox-next.png' };
+  $('.content-mix a.light-box').lightBox(lightBoxOptions);
+  $('.features a.light-box').lightBox(lightBoxOptions);
+  $('a.light-box-group, .screen-shots a').lightBox($.extend(lightBoxOptions, {fixedNavigation:true}));
 });
 
 jQuery.fn.inputLabelize = function () {
