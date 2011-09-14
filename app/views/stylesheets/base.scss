@@ -2,6 +2,12 @@ $base-brand-font: "ClarendonRoman", "Lucida Grande", "Verdana", Arial, Helvetica
 $base-pretty-font: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
 $roll-over-header-color: #649EFF;
 
+/* Firefox and Chrome on Windows don't anti-alias type, so we can "force" a correction of this issue */
+@mixin fix-type {
+  text-shadow: rgba(255, 255, 255, 0.2) 0 0 1px;
+}
+
+
 /* generic & fix from reset */
 body {
   font-family: $base-pretty-font;
@@ -15,6 +21,7 @@ select, input {
 
 h1 {
   font-family: $base-brand-font;
+  @include fix-type;
   .description {
     display: inline;
     font-size: 90%;
@@ -24,6 +31,7 @@ h1 {
 
 h2 {
   font-family: $base-brand-font;
+  @include fix-type;
   font-weight: normal;
   margin-bottom: 0.5em;
 }
@@ -68,6 +76,7 @@ header {
   font-size: 13px;
   overflow: hidden;
   font-family: $base-brand-font;
+  @include fix-type;
 
   a {
     color: #FFF;

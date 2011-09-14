@@ -16,9 +16,22 @@ $ninesixty-gutter-width: 10px;
   margin: 0 auto 0 auto;
 }
 
+/* Firefox and Chrome on Windows don't anti-alias type, so we can "force" a correction of this issue */
+@mixin fix-type {
+  text-shadow: rgba(255, 255, 255, 0.2) 0 0 1px;
+}
+
 $body-bg: #5584D4;
 $clarendon-font: 'ClarendonRoman', "Lucida Grande", Arial, Helvetica, sans-serif;
 $handwritten-font: 'DakotaRegular', Arial, Helvetica, sans-serif;
+@mixin clarendon-font {
+  font-family: $clarendon-font;
+  @include fix-type;
+}
+@mixin handwritten-font {
+  font-family: $handwritten-font;
+  @include fix-type;
+}
 
 /* fonts generated from http://www.fontsquirrel.com/ */
 @font-face {
@@ -62,7 +75,7 @@ header {
       padding-top: 4px;
       color: white;
       font-size: 14px;
-      font-family: $clarendon-font;
+      @include clarendon-font;
       @include grid($ninesixty-columns);
       a {
         color: #FFF;
@@ -97,7 +110,7 @@ header {
       }
     } /* /nav */
     .notes {
-      font-family: $handwritten-font;
+      @include handwritten-font;
       line-height: 1em;
       font-size: 18px;
       color: #FFF;
@@ -150,7 +163,7 @@ section.features {
       padding-top: 15px;
       h1.logo {
         float: left;
-        font-family: $clarendon-font;
+        @include clarendon-font;
         font-size: 70px;
         color: #FFF;
       }
@@ -164,7 +177,7 @@ section.features {
       h2.strap-line {
         clear: left;
         position: relative;
-        font-family: $handwritten-font;
+        @include handwritten-font;
         font-size: 20px;
         color: #6E9DDB;
         top: -45px;
@@ -227,17 +240,18 @@ section.features {
           margin: 32px 0 0 11px;
           padding: 20px 30px 20px 30px;
           .title {
-            font-family: $clarendon-font;
+            @include clarendon-font;
             font-size: 25px;
             border-bottom: 2px solid $title-color;
             color: $title-color;
           }
           .value {
-            font-family: $handwritten-font;
+            @include handwritten-font;
             font-size: 23px;
             color: #003366;
             line-height: 1.2em;
             margin-bottom: 10px;
+            margin-top: 1px;
           }
         }
         .criteria-card {
@@ -248,7 +262,7 @@ section.features {
           margin: 32px 0 0 350px;
           padding: 20px 30px 20px 30px;
           .title {
-            font-family: $clarendon-font;
+            @include clarendon-font;
             font-size: 20px;
             border-bottom: 2px solid $title-color;
             color: $title-color;
@@ -259,7 +273,8 @@ section.features {
               margin: 0;
               padding: 8px 0 8px 0;
               list-style: none;
-              font-family: $handwritten-font;
+              @include handwritten-font;
+
               font-size: 16px;
               line-height: 1em;
               color: #003366;
@@ -272,7 +287,7 @@ section.features {
         }
         .front-label, .back-label {
           position: relative;
-          font-family: $handwritten-font;
+          @include handwritten-font;
           color: #6B8CB8;
           font-size: 18px;
           top: 425px;
@@ -294,7 +309,7 @@ section.features {
       @include grid-prefix(1);
       @include grid(3);
       margin-top: 30px;
-      font-family: $handwritten-font;
+      @include handwritten-font;
       color: #FFF;
       font-size: 18px;
       a.video-demo {
@@ -331,7 +346,7 @@ section.content-mix {
     background: url(/images/beta_signup/sprites.png) no-repeat 0px -350px;
     width: 150px;
     height: 152px;
-    font-family: $handwritten-font;
+    @include handwritten-font;
     color: #264C4C;
     vertical-align: middle;
     padding: 20px;
@@ -359,7 +374,7 @@ section.content-mix {
     h2 {
       color: #335284;
       font-size: 28px;
-      font-family: $clarendon-font;
+      @include clarendon-font;
     }
 
     a {
@@ -379,7 +394,7 @@ section.content-mix {
         .quote-mark {
           color: #335284;
           font-size: 60px;
-          font-family: $clarendon-font;
+          @include clarendon-font;
           margin-top: -15px;
           margin-bottom: -35px;
           &.closed {
@@ -389,7 +404,7 @@ section.content-mix {
       }
       .credit {
         color: #335284;
-        font-family: $handwritten-font;
+        @include handwritten-font;
         font-size: 23px;
       }
       .job-title {
@@ -448,7 +463,7 @@ section.content-mix {
           text-align: center;
           font-weight: bold;
           padding: 3px;
-          font-family: $handwritten-font;
+          @include handwritten-font;
           font-size: 18px;
           margin-bottom: 5px;
         }
@@ -521,7 +536,7 @@ section.header {
         }
         .copy {
           @include grid(6);
-          font-family: $handwritten-font;
+          @include handwritten-font;
           font-size: 16px;
           margin-top: 10px;
           display: block;
