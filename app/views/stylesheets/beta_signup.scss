@@ -3,6 +3,7 @@
 @import 'compass/css3/text-shadow';
 @import 'compass/css3/box-shadow';
 @import 'compass/css3/border-radius';
+@import 'compass/css3/opacity';
 @import '960.grid';
 @import '960.text';
 @import 'browser_support';
@@ -454,6 +455,7 @@ section.content-mix {
         @include single-box-shadow(#666, 0, 0, 4px, false, false);
       }
       input[type=submit] {
+        float: left;
         background: transparent url('/images/beta_signup/sprites.png') no-repeat 0px -545px;
         width: 145px;
         height: 55px;
@@ -461,6 +463,17 @@ section.content-mix {
         font-weight: bold;
         border: none;
         cursor: pointer;
+        &.disabled {
+          @include opacity(0.4);
+        }
+      }
+      .progress {
+        display: none;
+        float: left;
+        margin: 17px 0 0 20px;
+        background: url(/images/progress.gif);
+        width: 16px;
+        height: 16px;
       }
 
       .error-message {

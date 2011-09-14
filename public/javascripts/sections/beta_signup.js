@@ -39,8 +39,12 @@ $(document).ready(function () {
         });
       });
       return false;
+    } else {
+      $('.request-access input[type=submit]').addClass('disabled');
+      $('.request-access input[type=submit]').attr('disabled', true);
+      $('.request-access .progress').show();
+      return true;
     }
-    return true;
   });
 
   var featureNavs = $('.feature-nav ul li'),
