@@ -46,6 +46,7 @@ group :test, :cucumber do
   gem 'timecop'
   gem 'launchy', '>=2'
   gem 'pdf-reader'
+  gem 'email_spec'
 end
 
 group :development do

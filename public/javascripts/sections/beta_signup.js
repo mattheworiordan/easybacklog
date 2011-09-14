@@ -101,9 +101,11 @@ $(document).ready(function() {
   // set class on clicked nav li
   featureNavs.click(function(event) {
     if (!animatingCards) {
-      featureNavs.removeClass('selected');
-      $(this).addClass('selected');
-      showCard();
+      if (!$(this).hasClass('selected')) {
+        featureNavs.removeClass('selected');
+        $(this).addClass('selected');
+        showCard();
+      }
     }
   }).disableSelection();
 

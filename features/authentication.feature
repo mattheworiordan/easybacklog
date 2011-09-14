@@ -1,4 +1,3 @@
-@wip
 Feature: Authentication
   In order to identify a user
   A visitor
