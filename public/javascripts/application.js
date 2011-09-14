@@ -1,4 +1,4 @@
-/*global Backbone:false, $:false, _:false, JST:false */
+/*global Backbone:false, $:false, _:false, JST:false, document:false, setTimeout:false, UE:false */
 
 // MVC namespace for Backbone.js
 var App = {
@@ -41,23 +41,26 @@ var App = {
       this.saving = false;
     }
   };
-})();
+}());
 
 $(document).ready(function() {
+  var alertNotice, _ues, version, supported;
+
   // JQuery UI confirm dialog for links with data-confirm for delete actions
   $('a').live('confirm', function(event) {
+    var clickedLink, title, actionButton, buttons;
+
     event.preventDefault();
     event.stopPropagation();
-    var clickedLink = $(this);
+    clickedLink = $(this);
     $('#dialog-confirm').remove();
-    var title = (clickedLink.attr('title') ? clickedLink.attr('title') :
-      (clickedLink.data('vtip-title') ? clickedLink.data('vtip-title') : 'Please confirm') );
+    title = (clickedLink.attr('title') || (clickedLink.data('vtip-title') || 'Please confirm') );
     $('body').append(JST['layouts/confirm-dialog']({
       title: title,
       confirmationMessage: clickedLink.data('confirm')
     }));
-    var actionButton = 'Delete';
-    var buttons = {};
+    actionButton = 'Delete';
+    buttons = {};
     buttons[actionButton] = function() {
       clickedLink.data('confirm','');
       clickedLink.click();
@@ -76,38 +79,46 @@ $(document).ready(function() {
   });
 
   // hide notices & alerts after some time
-  var alertNotice = $('#alert-space .notice, #alert-space .error, #alert-space .warning');
+  alertNotice = $('#alert-space .notice, #alert-space .error, #alert-space .warning');
   alertNotice.css('display','none').slideDown(function() {
     _.delay(function() { alertNotice.slideUp(); }, 5000);
   });
 
   /* Standard UserEcho link code */
-  var _ues = {
+  _ues = {
     host:'easybacklog.userecho.com',
     forum:'4890',
     lang:'en',
-    tab_show:false,
+    tab_show:false
   };
   (function() {
-      var _ue = document.createElement('script'); _ue.type = 'text/javascript'; _ue.async = true;
-      _ue.src = ('https:' == document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
-  })();
+      var s, _ue = document.createElement('script');
+      _ue.type = 'text/javascript';
+      _ue.async = true;
+      _ue.src = ('https:' === document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
+      s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
+  }());
 
   // enable feedback button
   setTimeout(function() {
     $('a.feedback-button').mouseover(function() {
-      UE.Popin.preload();
+      if (typeof UE !== 'undefined') {
+        UE.Popin.preload();
+      }
     }).click(function(event) {
       event.preventDefault();
-      UE.Popin.show();
+      if (typeof UE !== 'undefined') {
+        UE.Popin.show();
+      } else {
+        document.location.href = '/contact';
+      }
     }).fadeIn();
   }, 1500);
 
   // check that browsers are supported
-  var version = Number(String($.browser.version).match(/^\d+/)[0]); // strip 6.0.2 down to 6 for example
+  version = Number(String($.browser.version).match(/^\d+/)[0]); // strip 6.0.2 down to 6 for example
   $.browser.versionInt = version; // store so we can use elsewhere
-  var supported = (($.browser.webkit) || ($.browser.mozilla && (version >= 2.0)) || ($.browser.msie && (version >= 9.0)));
+  supported = (($.browser.webkit) || ($.browser.mozilla && (version >= 2.0)) || ($.browser.msie && (version >= 9.0)));
   if (!supported) {
     $('.unsupported_browser .hide_notice a').click(function(event) {
       event.preventDefault();
