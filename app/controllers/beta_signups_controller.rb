@@ -19,9 +19,11 @@ class BetaSignupsController < ApplicationController
   # shares same view as index, index is responsible for serving different content unless RJS involved
   def create
     @beta_signup = BetaSignup.find_or_create_by_email(params[:beta_signup][:email])
-    @beta_signup.company = params[:beta_signup][:company] unless params[:beta_signup][:company] = 'Your company name'
+    @beta_signup.company = params[:beta_signup][:company] unless params[:beta_signup][:company] == 'Your company name'
     if @beta_signup.save
       @show_thank_you = true
+      @short_url = get_short_url
+      BetaSignupsNotifier.receipt_of_application(@beta_signup.email, @short_url).deliver
     end
     respond_to do |format|
       format.html { render 'index' }
@@ -39,5 +41,4 @@ class BetaSignupsController < ApplicationController
       bitly.shorten(beta_signup_referral_url(@beta_signup.unique_code)).url
     end
   end
-  helper_method :get_short_url
 end
