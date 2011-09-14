@@ -135,11 +135,21 @@ jQuery.fn.inputLabelize = function() {
     faded.css('width', $(this).width() + 'px');
     faded.css('height', $(this).height() + 'px');
     var that = this;
+    var offset = '1 -3'; // default;
+    if ($.browser.mozilla) {
+      if ($.browser.versionInt >= 5) {
+        offset = '0 -2';
+      } else {
+        offset = '1 -2';
+      }
+    } else if ($.browser.msie) {
+      offset = '-1 -2';
+    }
     faded.position({
       my: 'top left',
       at: 'top left',
       of: $(this),
-      offset: $.browser.webkit ? '1 -3' : '1 -4'
+      offset: offset
     }).click(function() {
       $(that).focus();
     });
