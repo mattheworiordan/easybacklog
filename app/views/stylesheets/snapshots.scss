@@ -1,4 +1,4 @@
-@import 'reset';
+@import 'reset_and_extensions';
 @import 'mixins_and_constants';
 @import 'base';
 
@@ -87,6 +87,7 @@
       }
     }
     td {
+      vertical-align: top;
       padding: 2px;
       border: 1px solid #DDD;
       &:first-child {
