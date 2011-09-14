@@ -5227,15 +5227,17 @@ proxyAjaxEvent("error",saveArgs.options,this);
 Backbone.Model.prototype._save.call(this,saveArgs.attrs,saveArgs.options)
 }else{this.saving=false
 }}
-})();
-$(document).ready(function(){$("a").live("confirm",function(event){event.preventDefault();
+}());
+$(document).ready(function(){var alertNotice,_ues,version,supported;
+$("a").live("confirm",function(event){var clickedLink,title,actionButton,buttons;
+event.preventDefault();
 event.stopPropagation();
-var clickedLink=$(this);
+clickedLink=$(this);
 $("#dialog-confirm").remove();
-var title=(clickedLink.attr("title")?clickedLink.attr("title"):(clickedLink.data("vtip-title")?clickedLink.data("vtip-title"):"Please confirm"));
+title=(clickedLink.attr("title")||(clickedLink.data("vtip-title")||"Please confirm"));
 $("body").append(JST["layouts/confirm-dialog"]({title:title,confirmationMessage:clickedLink.data("confirm")}));
-var actionButton="Delete";
-var buttons={};
+actionButton="Delete";
+buttons={};
 buttons[actionButton]=function(){clickedLink.data("confirm","");
 clickedLink.click();
 $(this).dialog("close")
@@ -5245,26 +5247,27 @@ buttons.Cancel=function(){$(this).dialog("close")
 $("#dialog-confirm").dialog({resizable:false,height:140,modal:true,buttons:buttons});
 return(false)
 });
-var alertNotice=$("#alert-space .notice, #alert-space .error, #alert-space .warning");
+alertNotice=$("#alert-space .notice, #alert-space .error, #alert-space .warning");
 alertNotice.css("display","none").slideDown(function(){_.delay(function(){alertNotice.slideUp()
 },5000)
 });
-var _ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false,};
-(function(){var _ue=document.createElement("script");
+_ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false};
+(function(){var s,_ue=document.createElement("script");
 _ue.type="text/javascript";
 _ue.async=true;
-_ue.src=("https:"==document.location.protocol?"https://s3.amazonaws.com/":"http://")+"cdn.userecho.com/js/widget-1.4.gz.js";
-var s=document.getElementsByTagName("script")[0];
+_ue.src=("https:"===document.location.protocol?"https://s3.amazonaws.com/":"http://")+"cdn.userecho.com/js/widget-1.4.gz.js";
+s=document.getElementsByTagName("script")[0];
 s.parentNode.insertBefore(_ue,s)
-})();
-setTimeout(function(){$("a.feedback-button").mouseover(function(){UE.Popin.preload()
-}).click(function(event){event.preventDefault();
-UE.Popin.show()
-}).fadeIn()
+}());
+setTimeout(function(){$("a.feedback-button").mouseover(function(){if(typeof UE!=="undefined"){UE.Popin.preload()
+}}).click(function(event){event.preventDefault();
+if(typeof UE!=="undefined"){UE.Popin.show()
+}else{document.location.href="/contact"
+}}).fadeIn()
 },1500);
-var version=Number(String($.browser.version).match(/^\d+/)[0]);
+version=Number(String($.browser.version).match(/^\d+/)[0]);
 $.browser.versionInt=version;
-var supported=(($.browser.webkit)||($.browser.mozilla&&(version>=2))||($.browser.msie&&(version>=9)));
+supported=(($.browser.webkit)||($.browser.mozilla&&(version>=2))||($.browser.msie&&(version>=9)));
 if(!supported){$(".unsupported_browser .hide_notice a").click(function(event){event.preventDefault();
 $.cookie("hide_unsupported_browser_notice","true",{expires:30});
 $(".unsupported_browser").slideUp()

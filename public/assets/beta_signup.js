@@ -140,36 +140,37 @@ do{var curDate=new Date()
 }return this.unbind("click").click(_initialize)
 }
 })(jQuery);
-$(document).ready(function(){var validateEmail=function(required){var valid=false;
-if($(this).val().match(/^([^\s]+)((?:[-a-z0-9]\.)[a-z]{2,})$/i)){valid=true
+$(document).ready(function(){function validateEmail(required){var valid=false;
+if($(this).val().match(/^\b[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,4}\b$/i)){valid=true
 }else{if(!$(this).data("original-value")||($(this).data("original-value")===$(this).val())){if(!required){valid=true
 }}}if(valid){$(this).removeClass("invalid");
 $(".error-message .container").html("")
 }else{$(this).addClass("invalid");
 $(".error-message .container").html("Oops, that's not a valid email.<br/>Please try again.")
 }return valid
-};
-$("input[type=text]").inputLabelize();
+}$("input[type=text]").inputLabelize();
 $("input#beta_signup_email").blur(function(){validateEmail.call(this)
 });
 $("form").submit(function(){if(!validateEmail.call($("input#beta_signup_email")[0],true)){$(".error-message .container").animate({backgroundColor:"#FFFF00"},500,function(){$(this).animate({backgroundColor:"#FAFAFA"},function(){$(this).css("background-color","transparent")
 })
 });
 return false
-}return true
-});
-var featureNavs=$(".feature-nav ul li");
-var animatingCards=false;
-var showCard=function(moveForward){var selectedIndex;
+}else{$(".request-access input[type=submit]").addClass("disabled");
+$(".request-access input[type=submit]").attr("disabled",true);
+$(".request-access .progress").show();
+return true
+}});
+var featureNavs=$(".feature-nav ul li"),animatingCards=false;
+function showCard(moveForward){var selectedIndex,visibleCard,visibleStoryCard,visibleCriteriaCard;
 featureNavs.each(function(index,elem){if($(elem).hasClass("selected")){selectedIndex=index+1
 }});
 if(moveForward){featureNavs.removeClass("selected");
-if(selectedIndex<featureNavs.length){selectedIndex++
+if(selectedIndex<featureNavs.length){selectedIndex+=1
 }else{selectedIndex=1
 }$(".feature-nav ul li:nth-child("+selectedIndex+")").addClass("selected")
-}var visibleCard=$(".dual-cards .card.visible").css("z-index",10);
-var visibleStoryCard=visibleCard.find(".story-card");
-var visibleCriteriaCard=visibleCard.find(".criteria-card");
+}visibleCard=$(".dual-cards .card.visible").css("z-index",10);
+visibleStoryCard=visibleCard.find(".story-card");
+visibleCriteriaCard=visibleCard.find(".criteria-card");
 animatingCards=true;
 $(".dual-cards .card:nth-child("+(selectedIndex+2)+")").addClass("visible").css("z-index",5);
 visibleStoryCard.animate({left:"-=330",top:"-=60"},300,"easeInCubic",function(){visibleCard.css("z-index",1);
@@ -179,40 +180,39 @@ animatingCards=false
 });
 visibleCriteriaCard.animate({left:"+=330",top:"+=60"},300,"easeInCubic",function(){visibleCriteriaCard.animate({left:"-=330",top:"-=60"},300,"easeOutCubic")
 })
-};
-featureNavs.click(function(event){if(!animatingCards){featureNavs.removeClass("selected");
+}featureNavs.click(function(){if(!animatingCards){if(!$(this).hasClass("selected")){featureNavs.removeClass("selected");
 $(this).addClass("selected");
 showCard()
+}}}).disableSelection();
+$(".dual-cards .card").click(function(){if(!animatingCards){showCard(true)
 }}).disableSelection();
-$(".dual-cards .card").click(function(event){if(!animatingCards){showCard(true)
-}}).disableSelection();
-$("a#request-invitation-footer").click(function(event){$("#beta_signup_email").focus()
+$("a#request-invitation-footer").click(function(){$("#beta_signup_email").focus()
 });
 $("a.light-box").lightBox();
 $("a.light-box-group, .screen-shots a").lightBox({fixedNavigation:true})
 });
-jQuery.fn.inputLabelize=function(){this.focus(function(){var firstClick=false;
+jQuery.fn.inputLabelize=function(){this.focus(function(){var firstClick=false,faded,offset,that;
 if(!$(this).data("original-value")){firstClick=true;
 $(this).data("original-value",$(this).val())
-}var faded=$('<div id="'+$(this).attr("id")+'_faded" class="faded-request-access">');
+}faded=$('<div id="'+$(this).attr("id")+'_faded" class="faded-request-access">');
 faded.text($(this).data("original-value"));
 faded.css("position","absolute");
 faded.css("width",$(this).width()+"px");
 faded.css("height",$(this).height()+"px");
-var that=this;
-var offset="1 -3";
+that=this;
+offset="1 -3";
 if($.browser.mozilla){if($.browser.versionInt>=5){offset="0 -2"
 }else{offset="1 -2"
 }}else{if($.browser.msie){offset="-1 -2"
 }}faded.position({my:"top left",at:"top left",of:$(this),offset:offset}).click(function(){$(that).focus()
 });
-if((!this.firstClick)&&($(this).data("original-value")!=$(this).val())){faded.hide()
+if((!this.firstClick)&&($(this).data("original-value")!==$(this).val())){faded.hide()
 }else{$(this).val("")
 }$("section.content").append(faded);
 $(this).addClass("enabled")
-}).keyup(function(evt){if($(this).val()==""){$(".faded-request-access").show()
+}).keyup(function(){if($(this).val()===""){$(".faded-request-access").show()
 }else{$(".faded-request-access").hide()
-}}).blur(function(){if($(this).val().replace(/\s+/)==""){$(this).val($(this).data("original-value"));
+}}).blur(function(){if($(this).val().replace(/\s+/)===""){$(this).val($(this).data("original-value"));
 $(this).removeClass("enabled")
 }$(".faded-request-access").remove()
 })
