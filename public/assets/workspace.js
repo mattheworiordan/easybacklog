@@ -5262,7 +5262,9 @@ setTimeout(function(){$("a.feedback-button").mouseover(function(){UE.Popin.prelo
 UE.Popin.show()
 }).fadeIn()
 },1500);
-var supported=(($.browser.webkit)||($.browser.mozilla&&($.browser.version>=2))||($.browser.msie&&($.browser.version>=9)));
+var version=Number(String($.browser.version).match(/^\d+/)[0]);
+$.browser.versionInt=version;
+var supported=(($.browser.webkit)||($.browser.mozilla&&(version>=2))||($.browser.msie&&(version>=9)));
 if(!supported){$(".unsupported_browser .hide_notice a").click(function(event){event.preventDefault();
 $.cookie("hide_unsupported_browser_notice","true",{expires:30});
 $(".unsupported_browser").slideUp()
