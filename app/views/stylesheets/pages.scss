@@ -9,17 +9,17 @@
 @mixin within-content-notice {
   font-size: 16px;
   margin-bottom: 2em;
-  color: #333;
-  background-color: #CCEECC;
+  color: #FFF;
+  background-color: $title-area-color;
   -moz-border-radius: 10px;
   border-radius: 10px;
   padding: 5px;
   text-align: center;
   a {
-    color: #008800;
+    color: #fff;
     text-decoration: underline;
     &:hover {
-      color: #003300;
+      color: $light-text-on-title-area-color;
     };
   }
 }
@@ -50,11 +50,10 @@ ul.your-backlog-list {
   li {
     margin: 0 0 0 6px;
     .name a {
-      border-bottom: 1px dotted #666;
-      color: #333;
+      color: #555;
       &:hover {
-        border-bottom: 1px solid black;
-        text-decoration: none;
+        text-decoration: underline;
+        color: #000;
       };
     }
   }

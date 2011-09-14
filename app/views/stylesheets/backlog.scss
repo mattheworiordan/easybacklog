@@ -41,7 +41,15 @@ header.for-backlog {
   .padded-container {
     margin-right: $ninesixty-gutter-width * 2;
   }
+  /* make the top nav less in your face */
+  a {
+    @include opacity(0.65);
+    &:hover {
+      @include opacity(1);
+    }
+  }
 }
+
 /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
 section.for-backlog {
   margin-top: $ninesixty-vertical * 5;
@@ -102,9 +110,10 @@ section.content .not-editable-backlog-notice {
     a {
       display: block;
       float: left;
+      color: white;
     }
     .divider {
-      border-right: 1px solid #AADDAA;
+      border-right: 1px solid lighten($title-area-color, 10%);
       height: 1.25em;
       padding-left: 1em;
       margin-right: 1em;
@@ -129,6 +138,7 @@ section.content .not-editable-backlog-notice {
       padding: 0;
       height: 28px;
       font-size: 20px;
+      color: #FFF;
       >div {
         padding: 2px;
         display: inline;
@@ -140,7 +150,7 @@ section.content .not-editable-backlog-notice {
     }
     h3.company {
       display: inline;
-      color: #666;
+      color: $light-text-on-title-area-color;
       font-size: 16px;
       padding-left: 0.5em;
     }
@@ -154,7 +164,7 @@ section.content .not-editable-backlog-notice {
       margin-right: 5px;
     }
     .title {
-      color: #999;
+      color: $light-text-on-title-area-color;
       float: left;
     }
     .selector {
@@ -165,6 +175,7 @@ section.content .not-editable-backlog-notice {
         border: 1px solid darken($title-area-color, 60%);
         font-size: 12px;
         font-family: $base-pretty-font;
+        color: lighten($light-text-on-title-area-color, 20%);
       }
     }
     .new, .compare {
@@ -207,7 +218,7 @@ section.content .not-editable-backlog-notice {
     background-color: #FFF;
     float: right;
     margin: 0 $standard-header-padding-height*2 0 0;
-    @include drop-shadow(0px, 4px, #6C6);
+    @include single-box-shadow(#FFFFFF, 0, 0, 3px, false, false);
     div.title {
       padding: 5px 0 5px 5px;
       float: left;

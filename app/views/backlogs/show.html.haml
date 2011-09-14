@@ -4,6 +4,8 @@
 
 - content_for :global_nav_left do
   .logo
+    = link_to root_path do
+      .icon
     =link_to raw('← Back to dashboard'), account_path(@backlog.account)
 
 - if @backlog.is_snapshot?

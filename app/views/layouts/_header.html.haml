@@ -2,8 +2,9 @@
   - if !content_for?(:global_nav_left)
     .logo
       = link_to root_path do
-        %span.easy>="easy"
-        %span.backlog Backlog
+        .icon
+      = link_to root_path do
+        easyBacklog
       %sup BETA
     - if !accounts.blank? && accounts.count >= 1
       .divider

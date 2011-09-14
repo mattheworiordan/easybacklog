@@ -3,10 +3,12 @@ $ninesixty-columns: 12;
 $ninesixty-gutter-width: 20px;
 $ninesixty-vertical: 15px;
 
-$link-button-color: green; /* links and buttons that are styled */
-$title-area-color: #EDFEED; /* area beneath the black toolbar */
+$link-button-color: #001F83; /* links and buttons that are styled */
+$title-area-color: #4070B8; /* area beneath the black toolbar */
+$light-text-on-title-area-color: #88B6EB;
+
 $standard-header-padding-height: 6px;
-$standard-header-padding: $standard-header-padding-height $ninesixty-gutter-width $standard-header-padding-height $ninesixty-gutter-width; /* padding for the black header area */
+$standard-header-padding: ($standard-header-padding-height - 2px) $ninesixty-gutter-width $standard-header-padding-height $ninesixty-gutter-width; /* padding for the black header area */
 $standard-body-margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) $ninesixty-vertical (-$ninesixty-gutter-width);
 $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-vertical $ninesixty-gutter-width;
 

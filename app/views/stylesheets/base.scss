@@ -1,10 +1,12 @@
+$base-brand-font: "ClarendonRoman", "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
 $base-pretty-font: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+$roll-over-header-color: #649EFF;
 
 /* generic & fix from reset */
 body {
   font-family: $base-pretty-font;
   padding: 0em 0em 0.5em 0em;
-  background-color: #DDD;
+  background: #FAFAFA;
 }
 
 select, input {
@@ -12,16 +14,16 @@ select, input {
 }
 
 h1 {
-  font-family: $base-pretty-font;
+  font-family: $base-brand-font;
   .description {
     display: inline;
     font-size: 90%;
-    color: #666;
+    color: $light-text-on-title-area-color;
   }
 }
 
 h2 {
-  font-family: $base-pretty-font;
+  font-family: $base-brand-font;
   font-weight: normal;
   margin-bottom: 0.5em;
 }
@@ -57,27 +59,24 @@ p {
   display: none;
 }
 
-/* header styles */
-span.easy {
-  font-style: italic;
-  padding-right: 0.1em;
-}
-
-$header-height: $ninesixty-vertical * 2;
+$header-height: 34px;
 header {
-  background-color: #000;
+  background: #000 url(/images/embed/header_bg.png) repeat-x;
   padding: $standard-header-padding;
   color: #666;
-  height: $header-height - $standard-header-padding-height*2;
-  font-size: 12px;
+  height: 23px; /* 11px of padding */
+  font-size: 13px;
   overflow: hidden;
+  font-family: $base-brand-font;
 
   a {
-    color: #CCC;
+    color: #FFF;
     text-decoration: none;
+    @include opacity(0.8);
     &:hover {
-      color: #FFF;
-      text-decoration: underline;
+      @include opacity(1);
+      color: $roll-over-header-color;
+      text-decoration: none;
     }
   }
 
@@ -95,10 +94,21 @@ header {
   .main-title-area {
     .logo {
       float: left;
-      font-size: 110%;
+      font-size: 16px;
+      .icon {
+        background: url(/images/embed/eb_logo_icon.png) no-repeat;
+        width: 30px;
+        height: 18px;
+        float: left;
+        margin: 3px 10px 0 0;
+        &:hover {
+          background-position: 0px -18px;
+        }
+      }
     }
     .account {
       float: left;
+      margin-top: 2px;
       .jump-to-account {
         color: #999;
       }
@@ -128,6 +138,7 @@ header {
   }
 
   .account-info {
+    padding-top: 2px;
     float: right;
     &>div {
       float: right;
@@ -169,6 +180,7 @@ section.title {
   background-color: $title-area-color;
   h1 {
     margin-bottom: 0;
+    color: white;
   }
   /* back link in title area */
   .back {
@@ -176,14 +188,22 @@ section.title {
     padding-top: 10px;
     padding-left: 0.5em;
   }
+  a {
+    color: lighten($light-text-on-title-area-color, 20%);
+    &:hover {
+      color: #FFF
+    }
+  }
 }
 section.main-content-pod {
+  border: 1px solid #CCC;
   background-color: white;
   padding: $standard-body-padding;
   clear: left;
   margin-top: $ninesixty-vertical;
   overflow: hidden;
-  @include drop-shadow(5px, 5px);
+  @include single-box-shadow(#999999, 0, 0, 6px, false, false);
+  @include border-radius(5px, 5px);
 
   h2.divider {
     background-color: #EDF3FE;
@@ -208,7 +228,7 @@ section.side-panel {
   h2 {
     clear: left;
     background-color: #EDF3FE;
-    border-bottom: 1px solid darken(#EDF3FE, 10%);
+    border-bottom: 1px solid darken(#EDF3FE, 20%);
     padding: 7px 0 0 $ninesixty-gutter-width;
     height: $ninesixty-vertical * 3 - 7px;
     margin: 0 0 $ninesixty-vertical 0;
