@@ -1,3 +1,4 @@
+@wip
 Feature: Authentication
   In order to identify a user
   A visitor
@@ -40,7 +41,7 @@ Feature: Authentication
   Scenario: Login
     Given a user named "John" is registered
     When I am on the home page
-      And I follow "Already invited? Login"
+      And I follow "Log In"
       And I press "Log in"
     Then I should see the error "Invalid email or password."
     When I fill in "Email" with "John@acme.com"
