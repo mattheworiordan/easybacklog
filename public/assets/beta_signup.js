@@ -140,7 +140,8 @@ do{var curDate=new Date()
 }return this.unbind("click").click(_initialize)
 }
 })(jQuery);
-$(document).ready(function(){function validateEmail(required){var valid=false;
+$(document).ready(function(){var visibleCriteriaCard,lightBoxOptions,featureNavs,animatingCards;
+function validateEmail(required){var valid=false;
 if($(this).val().match(/^\b[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,4}\b$/i)){valid=true
 }else{if(!$(this).data("original-value")||($(this).data("original-value")===$(this).val())){if(!required){valid=true
 }}}if(valid){$(this).removeClass("invalid");
@@ -160,8 +161,9 @@ $(".request-access input[type=submit]").attr("disabled",true);
 $(".request-access .progress").show();
 return true
 }});
-var featureNavs=$(".feature-nav ul li"),animatingCards=false;
-function showCard(moveForward){var selectedIndex,visibleCard,visibleStoryCard,visibleCriteriaCard;
+featureNavs=$(".feature-nav ul li");
+animatingCards=false;
+function showCard(moveForward){var selectedIndex,visibleCard,visibleStoryCard;
 featureNavs.each(function(index,elem){if($(elem).hasClass("selected")){selectedIndex=index+1
 }});
 if(moveForward){featureNavs.removeClass("selected");
@@ -188,8 +190,10 @@ $(".dual-cards .card").click(function(){if(!animatingCards){showCard(true)
 }}).disableSelection();
 $("a#request-invitation-footer").click(function(){$("#beta_signup_email").focus()
 });
-$("a.light-box").lightBox();
-$("a.light-box-group, .screen-shots a").lightBox({fixedNavigation:true})
+lightBoxOptions={imageBtnPrev:"/images/beta_signup/lightbox-prev.png",imageBtnNext:"/images/beta_signup/lightbox-next.png"};
+$(".content-mix a.light-box").lightBox(lightBoxOptions);
+$(".features a.light-box").lightBox(lightBoxOptions);
+$("a.light-box-group, .screen-shots a").lightBox($.extend(lightBoxOptions,{fixedNavigation:true}))
 });
 jQuery.fn.inputLabelize=function(){this.focus(function(){var firstClick=false,faded,offset,that;
 if(!$(this).data("original-value")){firstClick=true;
