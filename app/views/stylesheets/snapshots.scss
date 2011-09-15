@@ -1,6 +1,6 @@
-@import 'reset_and_extensions';
-@import 'mixins_and_constants';
-@import 'base';
+@import 'partials/reset_and_extensions';
+@import 'partials/mixins_and_constants';
+@import 'partials/base';
 
 /* this style sheet contains all styles not necessary for Excel to import i.e. styling only for browser view */
 #compare-snapshots {
