@@ -1,6 +1,5 @@
 class CompaniesController < ApplicationController
   include AccountResource
-  ssl_required :show if use_ssl?
 
   def show
     @company = current_account.companies.find(params[:id])

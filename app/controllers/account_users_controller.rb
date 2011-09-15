@@ -3,7 +3,6 @@
 class AccountUsersController < ApplicationController
   include AccountResource
   before_filter :check_account_admin
-  ssl_required :index, :destroy, :create, :update if use_ssl?
 
   def index
     @users = current_account.account_users

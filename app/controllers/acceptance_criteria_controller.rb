@@ -1,7 +1,6 @@
 class AcceptanceCriteriaController < ApplicationController
   before_filter :authenticate_user!, :set_theme_and_protect
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
-  ssl_required :index, :show, :new, :create, :update, :destroy if use_ssl?
 
   def index
     @acceptance_criteria = @story.acceptance_criteria.all

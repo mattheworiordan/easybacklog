@@ -1,7 +1,6 @@
 class StoriesController < ApplicationController
   before_filter :authenticate_user!, :set_theme_and_protect
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy, :move_to_theme]
-  ssl_required :index, :show, :new, :create, :update, :move_to_theme, :destroy if use_ssl?
 
   def index
     @stories = @theme.stories.find(:all, :include => [:acceptance_criteria])

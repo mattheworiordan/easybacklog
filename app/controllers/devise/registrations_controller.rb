@@ -3,8 +3,6 @@ class Devise::RegistrationsController < ApplicationController
   prepend_before_filter :authenticate_scope!, :only => [:edit, :update, :destroy]
   include Devise::Controllers::InternalHelpers
 
-  ssl_required :new, :create, :edit, :update, :destroy  if use_ssl?
-
   # GET /resource/sign_up
   def new
     build_resource({})

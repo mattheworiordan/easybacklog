@@ -1,7 +1,6 @@
 class AccountsController < ApplicationController
   before_filter :authenticate_user!, :except => :name_available
-  ssl_required :index, :show, :edit, :new, :create, :update if use_ssl?
-  ssl_allowed :name_available
+  basic_allowed :name_available
 
   def index
     redirect_to account_path(current_user.accounts.first) if current_user.accounts.length == 1

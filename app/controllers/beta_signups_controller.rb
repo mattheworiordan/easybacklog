@@ -1,10 +1,10 @@
 class BetaSignupsController < ApplicationController
   layout 'application.960'
+  basic_allowed :index, :create
 
   def index
     if user_signed_in?
-      @recent_backlogs = current_user.accounts.map { |account| account.backlogs.active }.flatten.sort_by(&:updated_at).reverse[0..10]
-      render 'pages/home', :layout => 'application'
+      redirect_to dashboard_path
     else
       @beta_signup = BetaSignup.new
       unless params[:unique_code].blank?
@@ -32,14 +32,15 @@ class BetaSignupsController < ApplicationController
     end
   end
 
-  def get_short_url
-    bitly = Shortly::Clients::Bitly
-    bitly.apiKey  = 'R_307345880bbf4768a139b0df71374269'
-    bitly.login   = 'mattheworiordan'
-    if (Rails.env.development?)
-      bitly.shorten('http://easybacklog.com' + beta_signup_referral_path(@beta_signup.unique_code)).url
-    else
-      bitly.shorten(beta_signup_referral_url(@beta_signup.unique_code)).url
+  private
+    def get_short_url
+      bitly = Shortly::Clients::Bitly
+      bitly.apiKey  = 'R_307345880bbf4768a139b0df71374269'
+      bitly.login   = 'mattheworiordan'
+      if (Rails.env.development?)
+        bitly.shorten('http://easybacklog.com' + beta_signup_referral_path(@beta_signup.unique_code)).url
+      else
+        bitly.shorten(beta_signup_referral_url(@beta_signup.unique_code)).url
+      end
     end
-  end
 end

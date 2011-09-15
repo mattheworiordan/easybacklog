@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/retr0h/ssl_requirement.git
-  revision: bc96ad96407a72a60e0542cf3b0cecc6ff9e278e
-  specs:
-    ssl_requirement (0.1.0)
-
-GIT
   remote: git://github.com/thoughtbot/capybara-webkit.git
   revision: 578e5c758ef840c91531685319cfdfffd7ccedeb
   specs:
@@ -292,7 +286,6 @@ DEPENDENCIES
   shortly
   shoulda-matchers
   sqlite3-ruby
-  ssl_requirement!
   taps (>= 0.3.23)
   timecop
   watchr

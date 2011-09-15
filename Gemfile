@@ -15,7 +15,6 @@ gem 'prawn', '~> 0.12'
 
 gem 'hoptoad_notifier','>=2.4.8'
 
-gem 'ssl_requirement', :git => 'git://github.com/retr0h/ssl_requirement.git'
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
 gem 'compass'
