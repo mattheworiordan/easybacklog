@@ -71,7 +71,7 @@ class Theme < ActiveRecord::Base
         # if less than 3 words, take more letters from words
         # take from latter words if first word is single letter
         words = name.gsub(/[^a-z0-9 ]/i,' ').strip.split(/[ ]+/).compact
-        self.code = case words.length
+        self.code = case [words.length, 3].min
           when 3 then words[0].first + words[1].first + words[2].first
           when 2 then words[0].first(2) + words[1].first(words[0].length > 1 ? 1 : 2)
           when 1 then words[0].first(3)

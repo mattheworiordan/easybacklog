@@ -12,7 +12,7 @@ describe Theme do
 
     # take 1st 3 letters from 1st word
     Factory.create(:theme, :name => 'Visitors').code.should eql('VIS')
-    
+
     # ignore punctuation and treat as words
     Factory.create(:theme, :name => 'Here-is////A').code.should eql('HIA')
 
@@ -67,5 +67,12 @@ describe Theme do
     story1.reload.unique_id.should eql(2)
     story2.reload.unique_id.should eql(3)
     story3.reload.unique_id.should eql(1)
+  end
+
+  # Hoptoad/Airbrake error https://herokuapp439683herokucom.hoptoadapp.com/errors/4865945
+  it 'should create a new theme with edge case theme name "Safe hands user tests"' do
+    theme = Factory.create(:theme, :name => 'Safe hands users tests')
+    theme.code.should == 'SHU'
+    theme.name.should == 'Safe hands users tests'
   end
 end
