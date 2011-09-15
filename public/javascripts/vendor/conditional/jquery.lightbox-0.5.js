@@ -44,7 +44,8 @@
 			keyToNext:				'n',		// (string) (n = next) Letter to show the next image.
 			// Don´t alter these variables in any way
 			imageArray:				[],
-			activeImage:			0
+			activeImage:			0,
+			hideNavigation: false
 		},settings);
 		// Caching the jQuery object with all elements matched
 		var jQueryMatchedObj = this; // This, in this context, refer to jQuery object
@@ -53,7 +54,8 @@
 		 *
 		 * @return boolean false
 		 */
-		function _initialize() {
+		function _initialize(event) {
+		  event.preventDefault();
 			_start(this,jQueryMatchedObj); // This, in this context, refer to object (link) which the user have clicked
 			return false; // Avoid the browser following the link
 		}
@@ -76,7 +78,7 @@
 			if ( jQueryMatchedObj.length == 1 ) {
 				settings.imageArray.push(new Array(objClicked.getAttribute('href'),objClicked.getAttribute('title')));
 			} else {
-				// Add an Array (as many as we have), with href and title atributes, inside the Array that storage the images references		
+				// Add an Array (as many as we have), with href and title atributes, inside the Array that storage the images references
 				for ( var i = 0; i < jQueryMatchedObj.length; i++ ) {
 					settings.imageArray.push(new Array(jQueryMatchedObj[i].getAttribute('href'),jQueryMatchedObj[i].getAttribute('title')));
 				}
@@ -125,7 +127,7 @@
 		 */
 		function _set_interface() {
 			// Apply the HTML markup into body tag
-			$('body').append('<div id="jquery-overlay"></div><div id="jquery-lightbox"><div id="lightbox-container-image-box"><div id="lightbox-container-image"><img id="lightbox-image"><div style="" id="lightbox-nav"><a href="#" id="lightbox-nav-btnPrev"></a><a href="#" id="lightbox-nav-btnNext"></a></div><div id="lightbox-loading"><a href="#" id="lightbox-loading-link"><img src="' + settings.imageLoading + '"></a></div></div></div><div id="lightbox-container-image-data-box"><div id="lightbox-container-image-data"><div id="lightbox-image-details"><span id="lightbox-image-details-caption"></span><span id="lightbox-image-details-currentNumber"></span></div><div id="lightbox-secNav"><a href="#" id="lightbox-secNav-btnClose"><img src="' + settings.imageBtnClose + '"></a></div></div></div></div>');	
+			$('body').append('<div id="jquery-overlay"></div><div id="jquery-lightbox"><div id="lightbox-container-image-box"><div id="lightbox-container-image"><img id="lightbox-image"><div style="" id="lightbox-nav"><a href="#" id="lightbox-nav-btnPrev"></a><a href="#" id="lightbox-nav-btnNext"></a></div><div id="lightbox-loading"><a href="#" id="lightbox-loading-link"><img src="' + settings.imageLoading + '"></a></div></div></div><div id="lightbox-container-image-data-box"><div id="lightbox-container-image-data"><div id="lightbox-image-details"><span id="lightbox-image-details-caption"></span><span id="lightbox-image-details-currentNumber"></span></div><div id="lightbox-secNav"><a href="#" id="lightbox-secNav-btnClose"><img src="' + settings.imageBtnClose + '"></a></div></div></div></div>');
 			// Get page sizes
 			var arrPageSizes = ___getPageSize();
 			// Style overlay and show it
@@ -144,7 +146,7 @@
 			}).show();
 			// Assigning click events in elements to close overlay
 			$('#jquery-overlay,#jquery-lightbox').click(function() {
-				_finish();									
+				_finish();
 			});
 			// Assign the _finish function to lightbox-loading-link and lightbox-secNav-btnClose objects
 			$('#lightbox-loading-link,#lightbox-secNav-btnClose').click(function() {
@@ -182,16 +184,29 @@
 				// Hide some elements
 				$('#lightbox-image,#lightbox-nav,#lightbox-nav-btnPrev,#lightbox-nav-btnNext,#lightbox-container-image-data-box,#lightbox-image-details-currentNumber').hide();
 			}
-			// Image preload process
-			var objImagePreloader = new Image();
-			objImagePreloader.onload = function() {
-				$('#lightbox-image').attr('src',settings.imageArray[settings.activeImage][0]);
-				// Perfomance an effect in the image container resizing it
-				_resize_container_image_box(objImagePreloader.width,objImagePreloader.height);
-				//	clear onLoad, IE behaves irratically with animated gifs otherwise
-				objImagePreloader.onload=function(){};
-			};
-			objImagePreloader.src = settings.imageArray[settings.activeImage][0];
+			var imgUrl = settings.imageArray[settings.activeImage][0];
+			if (imgUrl.match(/player\.vimeo\.com/i)) {
+			  // this is a Vimeo Video
+			  var width = Number(imgUrl.match(/width=(\d+)/)[1]);
+			  var height = Number(imgUrl.match(/height=(\d+)/)[1]);
+			  if (!width || !height) { alert ('Vimeo dimensions are missing from URL: ' + imgUrl); }
+			  var embedElem = $('<iframe src="' + imgUrl + '" width="' + width + '" height="' + height + '" frameborder="0" webkitAllowFullScreen allowFullScreen></iframe>');
+			  embedElem.css('position','absolute').css('top','0').css('left', '0');
+			  $('img#lightbox-image').css('position', 'relative').css('width', width).css('height', height).after(embedElem);
+			  settings.hideNavigation = true;
+			  _resize_container_image_box(width,height);
+			} else {
+  			// Image preload process
+  			var objImagePreloader = new Image();
+  			objImagePreloader.onload = function() {
+  				$('#lightbox-image').attr('src',settings.imageArray[settings.activeImage][0]);
+  				// Perfomance an effect in the image container resizing it
+  				_resize_container_image_box(objImagePreloader.width,objImagePreloader.height);
+  				//	clear onLoad, IE behaves irratically with animated gifs otherwise
+  				objImagePreloader.onload=function(){};
+  			};
+  			objImagePreloader.src = settings.imageArray[settings.activeImage][0];
+  		}
 		};
 		/**
 		 * Perfomance an effect in the image container resizing it
@@ -215,9 +230,9 @@
 				if ( $.browser.msie ) {
 					___pause(250);
 				} else {
-					___pause(100);	
+					___pause(100);
 				}
-			} 
+			}
 			$('#lightbox-container-image-data-box').css({ width: intImageWidth });
 			$('#lightbox-nav-btnPrev,#lightbox-nav-btnNext').css({ height: intImageHeight + (settings.containerBorderSize * 2) });
 		};
@@ -246,18 +261,22 @@
 			// If we have a image set, display 'Image X of X'
 			if ( settings.imageArray.length > 1 ) {
 				$('#lightbox-image-details-currentNumber').html(settings.txtImage + ' ' + ( settings.activeImage + 1 ) + ' ' + settings.txtOf + ' ' + settings.imageArray.length).show();
-			}		
+			}
 		}
 		/**
 		 * Display the button navigations
 		 *
 		 */
 		function _set_navigation() {
+		  if (settings.hideNavigation) {
+			  return;
+			}
+
 			$('#lightbox-nav').show();
 
 			// Instead to define this configuration in CSS file, we define here. And it´s need to IE. Just.
 			$('#lightbox-nav-btnPrev,#lightbox-nav-btnNext').css({ 'background' : 'transparent url(' + settings.imageBlank + ') no-repeat' });
-			
+
 			// Show the prev button, if not the first image in set
 			if ( settings.activeImage != 0 ) {
 				if ( settings.fixedNavigation ) {
@@ -281,7 +300,7 @@
 					});
 				}
 			}
-			
+
 			// Show the next button, if not the last image in set
 			if ( settings.activeImage != ( settings.imageArray.length -1 ) ) {
 				if ( settings.fixedNavigation ) {
@@ -395,7 +414,7 @@
 		 */
 		function ___getPageSize() {
 			var xScroll, yScroll;
-			if (window.innerHeight && window.scrollMaxY) {	
+			if (window.innerHeight && window.scrollMaxY) {
 				xScroll = window.innerWidth + window.scrollMaxX;
 				yScroll = window.innerHeight + window.scrollMaxY;
 			} else if (document.body.scrollHeight > document.body.offsetHeight){ // all but Explorer Mac
@@ -408,7 +427,7 @@
 			var windowWidth, windowHeight;
 			if (self.innerHeight) {	// all except Explorer
 				if(document.documentElement.clientWidth){
-					windowWidth = document.documentElement.clientWidth; 
+					windowWidth = document.documentElement.clientWidth;
 				} else {
 					windowWidth = self.innerWidth;
 				}
@@ -419,16 +438,16 @@
 			} else if (document.body) { // other Explorers
 				windowWidth = document.body.clientWidth;
 				windowHeight = document.body.clientHeight;
-			}	
+			}
 			// for small pages with total height less then height of the viewport
 			if(yScroll < windowHeight){
 				pageHeight = windowHeight;
-			} else { 
+			} else {
 				pageHeight = yScroll;
 			}
 			// for small pages with total width less then width of the viewport
-			if(xScroll < windowWidth){	
-				pageWidth = xScroll;		
+			if(xScroll < windowWidth){
+				pageWidth = xScroll;
 			} else {
 				pageWidth = windowWidth;
 			}
@@ -451,7 +470,7 @@
 				xScroll = document.documentElement.scrollLeft;
 			} else if (document.body) {// all other Explorers
 				yScroll = document.body.scrollTop;
-				xScroll = document.body.scrollLeft;	
+				xScroll = document.body.scrollLeft;
 			}
 			arrayPageScroll = new Array(xScroll,yScroll);
 			return arrayPageScroll;
@@ -461,7 +480,7 @@
 		  *
 		  */
 		 function ___pause(ms) {
-			var date = new Date(); 
+			var date = new Date();
 			curDate = null;
 			do { var curDate = new Date(); }
 			while ( curDate - date < ms);
