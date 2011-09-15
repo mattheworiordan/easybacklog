@@ -285,7 +285,6 @@ DEPENDENCIES
   ruby_parser
   shortly
   shoulda-matchers
-  sqlite3-ruby
   taps (>= 0.3.23)
   timecop
   watchr
