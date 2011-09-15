@@ -1,6 +1,7 @@
-(function($){$.fn.lightBox=function(settings){settings=jQuery.extend({overlayBgColor:"#000",overlayOpacity:0.8,fixedNavigation:false,imageLoading:"images/lightbox-ico-loading.gif",imageBtnPrev:"images/lightbox-btn-prev.gif",imageBtnNext:"images/lightbox-btn-next.gif",imageBtnClose:"images/lightbox-btn-close.gif",imageBlank:"images/lightbox-blank.gif",containerBorderSize:10,containerResizeSpeed:400,txtImage:"Image",txtOf:"of",keyToClose:"c",keyToPrev:"p",keyToNext:"n",imageArray:[],activeImage:0},settings);
+(function($){$.fn.lightBox=function(settings){settings=jQuery.extend({overlayBgColor:"#000",overlayOpacity:0.8,fixedNavigation:false,imageLoading:"images/lightbox-ico-loading.gif",imageBtnPrev:"images/lightbox-btn-prev.gif",imageBtnNext:"images/lightbox-btn-next.gif",imageBtnClose:"images/lightbox-btn-close.gif",imageBlank:"images/lightbox-blank.gif",containerBorderSize:10,containerResizeSpeed:400,txtImage:"Image",txtOf:"of",keyToClose:"c",keyToPrev:"p",keyToNext:"n",imageArray:[],activeImage:0,hideNavigation:false},settings);
 var jQueryMatchedObj=this;
-function _initialize(){_start(this,jQueryMatchedObj);
+function _initialize(event){event.preventDefault();
+_start(this,jQueryMatchedObj);
 return false
 }function _start(objClicked,jQueryMatchedObj){$("embed, object, select").css({"visibility":"hidden"});
 _set_interface();
@@ -30,13 +31,22 @@ $("#jquery-lightbox").css({top:arrPageScroll[1]+(arrPageSizes[3]/10),left:arrPag
 }function _set_image_to_view(){$("#lightbox-loading").show();
 if(settings.fixedNavigation){$("#lightbox-image,#lightbox-container-image-data-box,#lightbox-image-details-currentNumber").hide()
 }else{$("#lightbox-image,#lightbox-nav,#lightbox-nav-btnPrev,#lightbox-nav-btnNext,#lightbox-container-image-data-box,#lightbox-image-details-currentNumber").hide()
-}var objImagePreloader=new Image();
+}var imgUrl=settings.imageArray[settings.activeImage][0];
+if(imgUrl.match(/player\.vimeo\.com/i)){var width=Number(imgUrl.match(/width=(\d+)/)[1]);
+var height=Number(imgUrl.match(/height=(\d+)/)[1]);
+if(!width||!height){alert("Vimeo dimensions are missing from URL: "+imgUrl)
+}var embedElem=$('<iframe src="'+imgUrl+'" width="'+width+'" height="'+height+'" frameborder="0" webkitAllowFullScreen allowFullScreen></iframe>');
+embedElem.css("position","absolute").css("top","0").css("left","0");
+$("img#lightbox-image").css("position","relative").css("width",width).css("height",height).after(embedElem);
+settings.hideNavigation=true;
+_resize_container_image_box(width,height)
+}else{var objImagePreloader=new Image();
 objImagePreloader.onload=function(){$("#lightbox-image").attr("src",settings.imageArray[settings.activeImage][0]);
 _resize_container_image_box(objImagePreloader.width,objImagePreloader.height);
 objImagePreloader.onload=function(){}
 };
 objImagePreloader.src=settings.imageArray[settings.activeImage][0]
-}function _resize_container_image_box(intImageWidth,intImageHeight){var intCurrentWidth=$("#lightbox-container-image-box").width();
+}}function _resize_container_image_box(intImageWidth,intImageHeight){var intCurrentWidth=$("#lightbox-container-image-box").width();
 var intCurrentHeight=$("#lightbox-container-image-box").height();
 var intWidth=(intImageWidth+(settings.containerBorderSize*2));
 var intHeight=(intImageHeight+(settings.containerBorderSize*2));
@@ -57,7 +67,8 @@ _preload_neighbor_images()
 $("#lightbox-image-details-caption").hide();
 if(settings.imageArray[settings.activeImage][1]){$("#lightbox-image-details-caption").html(settings.imageArray[settings.activeImage][1]).show()
 }if(settings.imageArray.length>1){$("#lightbox-image-details-currentNumber").html(settings.txtImage+" "+(settings.activeImage+1)+" "+settings.txtOf+" "+settings.imageArray.length).show()
-}}function _set_navigation(){$("#lightbox-nav").show();
+}}function _set_navigation(){if(settings.hideNavigation){return
+}$("#lightbox-nav").show();
 $("#lightbox-nav-btnPrev,#lightbox-nav-btnNext").css({"background":"transparent url("+settings.imageBlank+") no-repeat"});
 if(settings.activeImage!=0){if(settings.fixedNavigation){$("#lightbox-nav-btnPrev").css({"background":"url("+settings.imageBtnPrev+") left 15% no-repeat"}).unbind().bind("click",function(){settings.activeImage=settings.activeImage-1;
 _set_image_to_view();
