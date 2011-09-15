@@ -4,6 +4,7 @@ class BetaSignupsController < ApplicationController
 
   def index
     if user_signed_in?
+      flash.keep
       redirect_to dashboard_path
     else
       @beta_signup = BetaSignup.new
