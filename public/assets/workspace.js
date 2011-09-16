@@ -5162,14 +5162,6 @@ $("form").live("ajax:beforeSend.rails",function(event){if(this==event.target){di
 $("form").live("ajax:complete.rails",function(event){if(this==event.target){enableFormElements($(this))
 }})
 })(jQuery);
-var _ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false,};
-(function(){var _ue=document.createElement("script");
-_ue.type="text/javascript";
-_ue.async=true;
-_ue.src=("https:"==document.location.protocol?"https://s3.amazonaws.com/":"http://")+"cdn.userecho.com/js/widget-1.4.gz.js";
-var s=document.getElementsByTagName("script")[0];
-s.parentNode.insertBefore(_ue,s)
-})();
 this.vtip=function(){this.xOffset=-10;
 this.yOffset=10;
 $(".vtip").unbind().live("mouseenter",function(e){$(this).data("vtip-title",this.title);
@@ -5207,7 +5199,7 @@ i<lines.length;
 i++){lines[i]=htmlEncode(lines[i])
 }return lines.join("<br/>")
 }else{return""
-}}var App={Views:{},Collections:{},Controllers:{}};
+}}var App={Views:{},Collections:{},Controllers:{}},_ues;
 (function(){function proxyAjaxEvent(event,options,dit){var eventCallback=options[event];
 options[event]=function(){if(eventCallback){eventCallback.apply(options,arguments)
 }dit.processQueue()
@@ -5228,7 +5220,7 @@ Backbone.Model.prototype._save.call(this,saveArgs.attrs,saveArgs.options)
 }else{this.saving=false
 }}
 }());
-$(document).ready(function(){var alertNotice,_ues,version,supported;
+$(document).ready(function(){var alertNotice,version,supported;
 $("a").live("confirm",function(event){var clickedLink,title,actionButton,buttons;
 event.preventDefault();
 event.stopPropagation();
@@ -5251,15 +5243,15 @@ alertNotice=$("#alert-space .notice, #alert-space .error, #alert-space .warning"
 alertNotice.css("display","none").slideDown(function(){_.delay(function(){alertNotice.slideUp()
 },5000)
 });
-_ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false};
+if(App.environment!=="test"){_ues={host:"easybacklog.userecho.com",forum:"4890",lang:"en",tab_show:false};
 (function(){var s,_ue=document.createElement("script");
 _ue.type="text/javascript";
 _ue.async=true;
 _ue.src=("https:"===document.location.protocol?"https://s3.amazonaws.com/":"http://")+"cdn.userecho.com/js/widget-1.4.gz.js";
 s=document.getElementsByTagName("script")[0];
 s.parentNode.insertBefore(_ue,s)
-}());
-setTimeout(function(){$("a.feedback-button").mouseover(function(){if(typeof UE!=="undefined"){UE.Popin.preload()
+}())
+}setTimeout(function(){$("a.feedback-button").mouseover(function(){if(typeof UE!=="undefined"){UE.Popin.preload()
 }}).click(function(event){event.preventDefault();
 if(typeof UE!=="undefined"){UE.Popin.show()
 }else{document.location.href="/contact"
