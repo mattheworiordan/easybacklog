@@ -5,7 +5,8 @@ var App = {
     Views: {},
     Collections: {},
     Controllers: {}
-};
+},
+    _ues; // user echo needs to be in global space (urrgghh)
 
 // Patch for Backbone to ensure save is completed before more requests are sent to the server
 // http://stackoverflow.com/questions/5886748/backbone-js-problem-when-saving-a-model-before-previous-save-issues-postcreate
@@ -44,7 +45,7 @@ var App = {
 }());
 
 $(document).ready(function() {
-  var alertNotice, _ues, version, supported;
+  var alertNotice, version, supported;
 
   // JQuery UI confirm dialog for links with data-confirm for delete actions
   $('a').live('confirm', function(event) {
@@ -84,20 +85,22 @@ $(document).ready(function() {
     _.delay(function() { alertNotice.slideUp(); }, 5000);
   });
 
-  /* Standard UserEcho link code */
-  _ues = {
-    host:'easybacklog.userecho.com',
-    forum:'4890',
-    lang:'en',
-    tab_show:false
-  };
-  (function() {
-      var s, _ue = document.createElement('script');
-      _ue.type = 'text/javascript';
-      _ue.async = true;
-      _ue.src = ('https:' === document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
-      s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
-  }());
+  if (App.environment !== 'test') {
+    /* Standard UserEcho link code */
+    _ues = {
+      host:'easybacklog.userecho.com',
+      forum:'4890',
+      lang:'en',
+      tab_show:false
+    };
+    (function() {
+        var s, _ue = document.createElement('script');
+        _ue.type = 'text/javascript';
+        _ue.async = true;
+        _ue.src = ('https:' === document.location.protocol ? 'https://s3.amazonaws.com/' : 'http://') + 'cdn.userecho.com/js/widget-1.4.gz.js';
+        s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(_ue, s);
+    }());
+  }
 
   // enable feedback button
   setTimeout(function() {
