@@ -55,7 +55,7 @@ $(document).ready(function() {
       },
       'user[email]': {
         email: 'Please enter a valid email address',
-        remote: 'Someone is already registered with that email address.  <a href="/users/sign_in/">Click here to login now</a>.'
+        remote: 'Someone is already registered with that email address.  <a href="/users/sign_in/">Login now</a>.'
       },
       'user[password_confirmation]': {
         equalTo: 'The password confirmation is not the same as the password entered'

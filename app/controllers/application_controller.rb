@@ -10,7 +10,11 @@ class ApplicationController < ActionController::Base
         if current_account
           account_path current_account
         else
-          root_path
+          if accounts.length > 0
+            root_path
+          else
+            accounts_path
+          end
         end
       else
         # redirect after register/sign in path was set, used by invite process where someone registers

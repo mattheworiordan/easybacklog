@@ -103,7 +103,7 @@ ul.your-backlog-list {
     text-align:center;
   }
   .login {
-    width: 280px;
+    width: 400px;
     margin-left: 480px;
     padding: 10px;
     background-color: #D6D6D6;
@@ -123,6 +123,10 @@ ul.your-backlog-list {
   .beta-notice {
     @include within-content-notice;
   }
+}
+
+#invite .new-account-notice {
+  display: none;
 }
 
 /* Account users management */

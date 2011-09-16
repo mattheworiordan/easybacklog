@@ -5,8 +5,8 @@ class AccountUsersController < ApplicationController
   before_filter :check_account_admin
 
   def index
-    @users = current_account.account_users
-    @invites = current_account.invited_users
+    @users = current_account.account_users.sort_by { |d| d.user.name }
+    @invites = current_account.invited_users.sort_by(&:email)
   end
 
   # Support JSON updates only
@@ -22,7 +22,7 @@ class AccountUsersController < ApplicationController
   end
 
   def destroy
-    @user = current_account.accoung_users.find_by_user_id(params[:id])
+    @user = current_account.account_users.find_by_user_id(params[:id])
     @user.destroy
     redirect_to account_users_path(current_account)
   end
@@ -30,12 +30,12 @@ class AccountUsersController < ApplicationController
   def create
     valid_emails = []
     @emails = params[:emails] || ''
-    @emails.split(/[,;\n\r]/).each do |email|
+    @emails.split(/[,;\n\r\s]+/).each do |email|
       unless (email.strip.empty?)
         if !(email =~ /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/i)
           flash.now[:error] = "The email address '#{email}' is not valid.  Please correct this to continue."
         else
-          valid_emails << email
+          valid_emails << email.strip
         end
       end
     end

@@ -1,11 +1,13 @@
 - title 'Account'
 - if @accounts.blank?
   - content_for :title do
-    %h1 No account exists
+    %h1 You do not have an account
   %p
     You do not have access to an account yet.  If you would like to get access to an existing account, please contact the person who manages the account and request an invite for access.
   %p
-    Or alternatively you may #{link_to 'set up a new account', new_account_path} now.
+    Or alternatively you may set up a new account below.
+  %p
+    = link_to 'Create an account', new_account_path, :class => 'button'
 - else
   - content_for :title do
     %h1 Please select an account

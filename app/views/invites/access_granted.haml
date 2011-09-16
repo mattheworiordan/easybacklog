@@ -1,9 +1,13 @@
-- title "Access to #{@invite_account.name}"
+- title "You've now got access to #{@invite_account.name}"
 
 - content_for :title do
-  %h1= "Access to “#{truncate(@invite_account.name, :length => 40)}”"
+  %h1= "You've now got access to “#{truncate(@invite_account.name, :length => 40)}”"
 
 %p
-  = "You have just been granted access to the account “#{truncate(@invite_account.name, :length => 40)}”."
+  = "As you now have access to the “#{truncate(@invite_account.name, :length => 40)}” account, you can now browse and view the backlogs for this account."
+%p
+  The person who invited you can probably answer any questions you have, however feel free to
+  = link_to 'get in touch with the team at easyBacklog.', contact_path
+  if you have any further questions.
 
-= link_to "Go to “#{truncate(@invite_account.name, :length => 40)}” account", account_path(@invite_account), :class => 'button'
+= link_to "View the #{truncate(@invite_account.name, :length => 40)} account", account_path(@invite_account), :class => 'button'
