@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  after_filter :log_last_page_viewed
   include SslRequired
+
+  after_filter :log_last_page_viewed
+  before_filter :test_env_mail_config if Rails.env.test? # set up ActionMailer host when running Cuke so links work
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
@@ -72,5 +74,9 @@ class ApplicationController < ActionController::Base
         headers['Cache-Control'] = 'no-cache, must-revalidate, post-check=0, pre-check=0'
         headers['Expires'] = "0"
       end
+    end
+
+    def test_env_mail_config
+      ActionMailer::Base.default_url_options[:host] = request.host_with_port
     end
 end

@@ -204,6 +204,38 @@ module HtmlSelectorHelpers
       '.request-access'
 
     ##
+    # Account user management, invite and sign up
+    when /^account user$/
+      'table.users tr:has(td)'
+
+    when /^account user table$/
+      'table.users'
+
+    when /^account user table rows$/
+      'table.users tr'
+
+    when /^invite user table rows$/
+      'table.invites tr'
+
+    when /^revoke invite icon for (.+)$/
+      "table.invites tr:contains(#{$1}) td:last-child a"
+
+    when /^delete user icon for (.+)$/
+      "table.users tr:contains(#{$1}) td:last-child a"
+
+    when /^sign up form$/
+      '.sign-up form'
+
+    when /^this field is required messages?$/
+      'label.error:contains(This field is required)'
+
+    when /^Sign Up Account Name$/
+      'input#account_name'
+
+    when /^Sign Up Email$/
+      'input#user_email'
+
+    ##
     # Generic and other selectors
     when /^(a|the) dialog(?:| box)$/
       '.ui-dialog'
@@ -227,11 +259,20 @@ module HtmlSelectorHelpers
     when /^checkboxes$/
       'input[type=checkbox]'
 
+    when /^(un)checked checkboxes$/
+      "input[type=checkbox]:#{$1 == 'un' ? ':not(:checked)' : ':checked'}"
+
     when /^drop down options with the text .+$/
       "select option:contains($1)"
 
     when /^submit button$/
       'input[type=submit]'
+
+    when /^primary page heading$/
+      'section.title h1'
+
+    when /^top nav$/
+      'header'
 
     else
       # no mapping exists, assume location is a CSS/XPath selector

@@ -65,6 +65,26 @@ When /^(?:|I )click (?:|the element |on |on the )"([^"]+)"(?: within (?:|the )"(
   page.execute_script "$('#{scope}#{selector.gsub(/'/,'"')}').mousedown().click()"
 end
 
+When /^(?:|I )fill in "([^"]+)" using Javascript with "([^"]+)"$/ do |selector, value|
+  page.evaluate_script("$('#{selector_to(selector)}').length").should > 0
+  page.execute_script "$('#{selector_to(selector)}').val('#{value}').keyup().blur();"
+  sleep 0.25
+end
+
+When /^(?:|I )(|un)check the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) checkbox$/ do |negation, position|
+  position = string_quantity_to_numeric(position) - 1
+  page.evaluate_script("$($('input[type=checkbox]')[#{position}]).length").should > 0
+  checked = page.evaluate_script("$($('input[type=checkbox]')[#{position}]).attr('checked')")
+  if checked != (negation == 'un') # don't do anything if already checked
+    page.execute_script "$($('input[type=checkbox]')[#{position}]).click()"
+  end
+end
+
+Then /^the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) checkbox should be (|un)checked$/ do |position, negation|
+  position = string_quantity_to_numeric(position) - 1
+  page.evaluate_script("$($('input[type=checkbox]')[#{position}]).attr('checked') + ''").should == (negation == 'un' ? 'undefined' : 'checked')
+end
+
 Then /^(?:|I )there should be (\d+) (?:|elements matching )"([^"]+)"(?:| elements)$/ do |quantity, selector|
   selector = selector_to(selector)
   page.evaluate_script("$('#{selector.gsub(/'/,'"')}').length").to_i.should == quantity.to_i
@@ -78,6 +98,15 @@ end
 Then /^the (?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
   selector = selector_to(selector)
   page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
+end
+
+Then /^I should see the following data in column (\d+) of "([^"]+)" table:$/ do |data_column, table_path, expected_table|
+  table_path = selector_to(table_path)
+  actual_table = tableish(table_path, "th:nth-child(#{data_column}),td:nth-child(#{data_column})")
+  # remove column heading
+  actual_table.shift
+  actual_table = table(actual_table)
+  expected_table.diff!(actual_table)
 end
 
 When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|

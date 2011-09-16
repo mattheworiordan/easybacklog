@@ -1,5 +1,7 @@
-Factory.define :account_user do |a|
-  a.association :user, :factory => :user
-  a.association :account, :factory => :account
-  a.admin false
+FactoryGirl.define do |a|
+  factory :account_user do
+    association :account
+    association :user
+    admin false
+  end
 end
