@@ -72,7 +72,7 @@ Feature: Backlog Other Functionality
       And there should be 0 "delete theme buttons"
     When I click on the "first theme's name"
     Then there should be 0 "editable text fields"
-    When I follow "Snapshot Settings"
+    When I follow "Settings"
     Then I should see "Snapshot name" within a "label"
       And the "text input fields" should be disabled
       And the "checkboxes" should be disabled

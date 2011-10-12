@@ -20,6 +20,29 @@
 
 #backlog-data-area
   .actions
+    .snapshot
+      .title
+        =label_tag 'snapshot-selector', 'Snapshot:'
+      .selector
+        =form_tag :url => '#' do
+          %select#snapshot-selector
+            %option
+              Working version (current)
+            %optgroup{ :label => "Snapshots..." }
+              - if @backlog.snapshot_master.blank?
+                - @backlog.snapshots.each do |snapshot|
+                  %option{:value => snapshot.id}= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
+              - else
+                - @backlog.snapshot_master.snapshots.each do |snapshot|
+                  %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
+      - if @backlog.editable?
+        .new.vtip{ :title => 'Create new snapshot' }
+          %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
+            New
+      .compare.vtip{ :title => 'Compare snapshots' }
+        %a#compare-snapshot.ui-icon.ui-icon-transferthick-e-w{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
+          New
+    .divider
     - if @backlog.snapshot_master.blank?
       = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
       .divider
@@ -30,9 +53,9 @@
       = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     .divider
     - if @backlog.is_snapshot?
-      = link_to 'Snapshot Settings', edit_account_backlog_path(@backlog.account, @backlog)
+      = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog)
     - else
-      = link_to 'Backlog Settings', edit_account_backlog_path(@backlog.account, @backlog)
+      = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog)
   .name-company-container
     %h2.name{ :class => @backlog.editable? ? '' : 'locked'}
       - if @backlog.snapshot_master.blank?
@@ -43,31 +66,12 @@
       %h3.company= truncate(@backlog.company.name, :length => 25)
     -else
       %h3.company= truncate(@backlog.account.name, :length => 25)
-  .snapshot
-    .title
-      =label_tag 'snapshot-selector', 'Snapshot:'
-    .selector
-      =form_tag :url => '#' do
-        %select#snapshot-selector
-          %option
-            Working version (current)
-          %optgroup{ :label => "Snapshots..." }
-            - if @backlog.snapshot_master.blank?
-              - @backlog.snapshots.each do |snapshot|
-                %option{:value => snapshot.id}= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
-            - else
-              - @backlog.snapshot_master.snapshots.each do |snapshot|
-                %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
-    - if @backlog.editable?
-      .new.vtip{ :title => 'Create new snapshot' }
-        %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
-          New
-    .compare.vtip{ :title => 'Compare snapshots' }
-      %a#compare-snapshot.ui-icon.ui-icon-transferthick-e-w{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
-        New
   .backlog-stats
     %div.title Backlog total:
     %div.output &nbsp;
+
+#backlog-tabs
+  %ul.infinite-tabs
 
 #backlog-container
   = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
@@ -85,4 +89,11 @@
     App.Collections.Backlogs.add(backlog);
     var view = new App.Views.Backlogs.Show({ model: backlog, el: $('#backlog-container') });
     view.render();
+    var sprints = [];
+    for (var i = 1; i < 30; i++) {
+      sprints.push({ id: i, iteration: i });
+    }
+    backlog.Sprints().add(sprints);
+    var tabs = new App.Views.SprintTabs.Index({ collection: backlog.Sprints(), el: $('#backlog-tabs') });
+    tabs.render();
   });

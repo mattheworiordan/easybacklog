@@ -1,0 +1,257 @@
+$tab-background-color: #88b6e6; /* background color of tabs */
+$active-tab-background-color: #fff; /* background color of selected tab */
+$tab-container-background-color: #4070b8; /* background color of the space the tabs are contained within, must be solid colour */
+$tab-container-margin: 5px; /* left & right margin of tabs, can set to zero but left and right rounded bottom corners may not appear */
+$tab-padding-width: 10px;
+$tab-padding-height: 2px;
+$tab-corner-radius: 10px;
+
+$tab-background-color-alternate: lighten($tab-background-color, 10%);
+$tab-button-divider-color: ($tab-background-color + $tab-container-background-color) / 2;
+$shadow-color: $tab-container-background-color;
+
+ul.infinite-tabs {
+  list-style: none;
+  margin: 0 $tab-container-margin;
+  zoom: 1;
+
+  li.scroller {
+    z-index: 1;
+    div {
+      width: 50px;
+      overflow: hidden;
+      padding-left: 10px;
+      position: relative;
+      left: -10px;
+      margin-right: -10px;
+      ul {
+        width: 10000px;
+        list-style: none;
+        margin: 0;
+        position: relative;
+        li {
+          /* if no locked tabs, then show the curve */
+          &.absolute-first:first-child:before, &.absolute-first:first-child a:before {
+            display: block;
+          }
+          &:first-child:before, &:first-child a:before {
+            display: none;
+          }
+          &.active:first-child:before, &.active:first-child a:before {
+            display: block;
+          }
+          &.absolute-first.active:first-child a:before {
+            background: $tab-container-background-color;
+          }
+          &.active:first-child a:before {
+            background: $tab-background-color;
+          }
+          &:nth-child(2n+1).active>a:before {
+            background: $tab-background-color-alternate;
+          }
+        }
+      }
+    }
+  }
+
+  &:before, &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+
+  li {
+    /* Makes a horizontal row */
+    float: left;
+    z-index: 2;
+
+    /* So the psueudo elements can be abs. positioned inside */
+    position: relative;
+    margin: 0;
+
+    /* prevent selection */
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+
+    a {
+      /* Make them block level
+         and only as wide as they need */
+      float: left;
+      padding: $tab-padding-height $tab-padding-width;
+      text-decoration: none;
+
+      /* Default colors */
+      color: black;
+      background: $tab-background-color;
+
+      /* Only round the top corners */
+      -webkit-border-top-left-radius: $tab-corner-radius;
+      -webkit-border-top-right-radius: $tab-corner-radius;
+      -moz-border-radius-topleft: $tab-corner-radius;
+      -moz-border-radius-topright: $tab-corner-radius;
+      border-top-left-radius: $tab-corner-radius;
+      border-top-right-radius: $tab-corner-radius;
+    }
+
+    &:nth-child(2n+0)>a {
+      background: $tab-background-color-alternate;
+    }
+
+    &.active {
+      /* Highest, active tab is on top */
+      z-index: 3;
+
+      a {
+        /* Colors when tab is active */
+        background: $active-tab-background-color;
+        color: black;
+      }
+    }
+
+    &:before, &:after, a:before, a:after {
+      /* All pseudo elements are
+         abs. positioned and on bottom */
+      position: absolute;
+      bottom: 0;
+    }
+
+    /* Only the first, last, and active
+       tabs need pseudo elements at all */
+    &:last-child:after, &:last-child>a:after, &:first-child:before, &:first-child>a:before,
+      &.active:after, &.active:before, &.active a:after, &.active a:before {
+      content: "";
+    }
+
+    &.active:before, &.active:after {
+      background: $active-tab-background-color;
+      /* Squares below circles */
+      z-index: 1;
+    }
+
+    /* Squares */
+    &:before, &:after {
+      background: $tab-background-color;
+      width: $tab-corner-radius;
+      height: $tab-corner-radius;
+    }
+    &:before {
+      left: -$tab-corner-radius;
+    }
+    &:after {
+      right: -$tab-corner-radius;
+    }
+    &:nth-child(2n+0):after {
+      background: $tab-background-color-alternate;
+    }
+    /* selector above takes precedence over previous active-tab-background-color so need explicit declaration here */
+    &.active:nth-child(2n+0):after {
+      background: $active-tab-background-color;
+    }
+
+
+    /* Circle overlays */
+    a:before {
+      width: $tab-corner-radius;
+      height: $tab-corner-radius;
+      left: -$tab-corner-radius;
+      /* Quarter circle from bottom right for before tab elem */
+      -webkit-border-bottom-right-radius: $tab-corner-radius;
+      -moz-border-radius-bottomright:    $tab-corner-radius;
+      border-bottom-right-radius:         $tab-corner-radius;
+      background: $tab-container-background-color;
+
+      /* Quarter circles over squares */
+      z-index: 2;
+    }
+    a:after {
+      width: $tab-corner-radius;
+      height: $tab-corner-radius;
+      right: -$tab-corner-radius;
+      /* Quarter circle from bottom left for after tab elem */
+      -webkit-border-bottom-left-radius: $tab-corner-radius;
+      -moz-border-radius-bottomleft:    $tab-corner-radius;
+      border-bottom-left-radius:         $tab-corner-radius;
+      background: $tab-container-background-color;
+
+      /* Quarter circles over squares */
+      z-index: 2;
+    }
+
+    &.active a:after, &.active a:before {
+      background: $tab-background-color;
+    }
+    &:nth-child(2n+1).active {
+      a:after, a:before {
+        background: $tab-background-color-alternate;
+      }
+    }
+
+    /* First and last tabs have different outside color needs */
+    &:first-child.active a:before, &:last-child.active a:after {
+      background: $tab-container-background-color;
+    }
+
+    &.scroller:after, &.scroller:before {
+      display:none
+    }
+
+    &.hidden {
+      display: none;
+    }
+
+    /* navigation arrows are added as an extra li */
+    &.navigation {
+      &:after, &:before {
+        display:none;
+      }
+      z-index: 4;
+      position: absolute;
+      display: none; /* not visible by default */
+
+      /* this div ensures the drop shadow is only visible horizontally */
+      div {
+        overflow: hidden;
+        position: relative;
+        left: -10px;
+        padding-left: 10px;
+      }
+      a {
+        font-size: 115%;
+        padding: 0 5px;
+        font-family: "Arial Unicode MS",sans-serif;
+        -webkit-border-radius: 0;
+        -moz-border-radius:    0;
+        border-radius:         0;
+        &.next-tab {
+          border-right: 1px solid $tab-button-divider-color;
+          -moz-box-shadow: -3px 0 4px $shadow-color;
+          -webkit-box-shadow: -3px 0 4px $shadow-color;
+          box-shadow: -3px 0 4px $shadow-color;
+          -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=270, Color='#000000')";
+          filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=270, Color='#000000');
+        }
+      }
+    }
+
+    /* show shadow and no curve when tab scroller has moved left, indicate the tabs have slid underneath this last pinned tab */
+    &.active.overlay:after, &.active.overlay a:after {
+      display: none;
+    }
+    &.overlay {
+      overflow: hidden;
+      padding-right: 10px;
+      margin-right: -10px;
+      a {
+        -moz-box-shadow: 3px 0 4px $shadow-color;
+        -webkit-box-shadow: 3px 0 4px $shadow-color;
+        box-shadow: 3px 0 4px $shadow-color;
+        /* hidden border right that is shown as 1px in <IE9 */
+        border-right: 0px solid $shadow-color;
+      }
+    }
+  }
+}

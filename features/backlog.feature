@@ -40,14 +40,14 @@ Feature: Backlog
 
     # now check that duplicate works, but assign a company too to ensure that copies across
     When I follow "Project X"
-      And I follow "Backlog Settings"
+      And I follow "Settings"
       And I choose "Yes, I would like to assign this to a client"
       # no companies exist yet, so don't give the user an option to select a company
     Then the focus is on the "new backlog new company field"
     When I fill in "New company name" with "Separate company"
       And I press "Update backlog settings"
     And I should see "Separate company" within "backlog company"
-    When I follow "Backlog Settings"
+    When I follow "Settings"
       And I follow "Duplicate backlog"
       And I fill in "New backlog name" with "Project X Duplicate"
       And I press "Duplicate backlog"
@@ -56,7 +56,7 @@ Feature: Backlog
     Then I should see "Project X Duplicate" within the "backlog list"
       And I should see "Project X" within the "backlog list"
     When I follow "Project X Duplicate"
-      And I follow "Backlog Settings"
+      And I follow "Settings"
     Then "Separate company" should be selected for the "backlog setting company drop down"
 
   @javascript
@@ -107,7 +107,7 @@ Feature: Backlog
       And I should see "Company cheap" within "backlog company"
 
     # go into Backlog settings and add a new company and change all settings
-    When I follow "Backlog Settings"
+    When I follow "Settings"
     Then the "No, this is an internal project" checkbox should not be checked
       And the "Yes, I would like to assign this to a client" checkbox should be checked
     When I fill in "Name the backlog" with "New backlog name"
@@ -119,7 +119,7 @@ Feature: Backlog
       And I press "Update backlog"
     Then I should see "New backlog name" within "backlog heading"
       And I should see "New company" within "backlog company"
-    When I follow "Backlog Settings"
+    When I follow "Settings"
     Then the "No, this is an internal project" checkbox should not be checked
       And the "Yes, I would like to assign this to a client" checkbox should be checked
       And "New company" should be selected for "new backlog company drop down"
@@ -146,7 +146,7 @@ Feature: Backlog
   Scenario: Delete backlog
     Then I should see "Acme Backlog"
     When I follow "Acme Backlog"
-      And I follow "Backlog Settings"
+      And I follow "Settings"
       And I follow "Yes, I understand — delete this backlog"
       And I press "Delete" within "a dialog"
     Then I should see the notice "Backlog was successfully deleted."
@@ -155,14 +155,14 @@ Feature: Backlog
   @javascript
   Scenario: Archive backlogs
     When I follow "Acme Backlog"
-      And I follow "Backlog Settings"
+      And I follow "Settings"
       And I choose "Archived — This backlog is locked: it can be viewed but not edited"
       And I press "Update backlog settings"
     Then I should see the notice "Backlog is now archived"
     # ensure it's not editable
     When I click on the "first theme's name"
     Then there should be 0 "editable text fields"
-    When I follow "Backlog Settings"
+    When I follow "Settings"
     Then I should see "This backlog is archived and is not editable." within the "non editable notice"
       And the "text input fields" should be disabled
       And the "checkboxes" should be disabled

@@ -156,10 +156,9 @@ section.content .not-editable-backlog-notice {
     }
   }
   .snapshot {
-    margin-top: 3px;
+    /* use white icons */
+    .ui-icon { background-image: url(/stylesheets/ui-lightness/images/ui-icons_ffffff_256x240.png); }
     float: left;
-    clear: left;
-    padding-left: $ninesixty-gutter-width;
     label {
       margin-right: 5px;
     }
@@ -226,6 +225,17 @@ section.content .not-editable-backlog-notice {
     div.output {
       padding: 5px;
       float: left;
+    }
+  }
+}
+
+#backlog-tabs {
+  position: fixed;
+  top: 63px;
+  li {
+    cursor: pointer;
+    a:hover {
+      text-decoration: none
     }
   }
 }
