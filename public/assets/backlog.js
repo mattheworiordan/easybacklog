@@ -14,7 +14,12 @@ var Backlog=Backbone.Model.extend({url:function(){return(this.collection.url()+(
 },Themes:function(){if(!this._themes){this._themes=new ThemesCollection(this.get("themes"),{backlog:this});
 this.unset("themes")
 }return(this._themes)
+},Sprints:function(){if(!this._sprints){this._sprints=new SprintsCollection(this.get("sprints"),{backlog:this});
+this.unset("sprints")
+}return(this._sprints)
 },Account_ID:function(){return this.collection.account_id
+}});
+var Sprint=Backbone.Model.extend({Backlog:function(){return this.collection.backlog
 }});
 var Story=Backbone.Model.extend({Theme:function(){return this.collection.theme
 },IsEditable:function(){return(this.collection.theme.IsEditable())
@@ -58,6 +63,10 @@ criterion.save()
 var BacklogsCollection=Backbone.Collection.extend({model:Backlog,account_id:null,url:function(){if(!this.account_id){var errorView=new App.Views.Error("Error, missing necessary Account ID to display Backlog")
 }else{return"/accounts/"+this.account_id+"/backlogs"
 }},initialize:function(models,options){this.account_id=options?options.account_id:null
+}});
+var SprintsCollection=Backbone.Collection.extend({model:Sprint,backlog_id:null,url:function(){if(!this.backlog_id){var errorView=new App.Views.Error("Error, missing necessary Backlog ID to display Sprint")
+}else{return"/backlogs/"+this.account_id+"/sprints"
+}},initialize:function(models,options){this.backlog_id=options?options.backlog_id:null
 }});
 var StoriesCollection=Backbone.Collection.extend({model:Story,theme:null,url:function(){if(!this.theme||!this.theme.get("id")){var errorView=new App.Views.Error("Error, missing necessary data ID to display Story")
 }else{return"/themes/"+this.theme.get("id")+"/stories"
@@ -312,6 +321,40 @@ return this
 }});
 App.Views.Error=App.Views.Notice.extend({className:"error",defaultMessage:"Uh oh! Something went wrong. Please try again."});
 App.Views.Warning=App.Views.Notice.extend({className:"warning",defaultMessage:"Unfortunately we could not perform that action."});
+App.Views.SprintTabs={Index:App.Views.BaseView.extend({childId:function(model){return"tab-sprint-"+model.get("id")
+},events:{"click a.new-sprint":"createNew"},initialize:function(){this.collection=this.options.collection
+},render:function(){var view=this;
+var addTabView=function(model){var tabView=new App.Views.SprintTabs.Show({model:model,id:view.childId(model)});
+view.$("ul.infinite-tabs").append(tabView.render().el)
+};
+var pinnedTabs=[{childId:function(){return"tab-backlog"
+},get:function(){return"Backlog"
+},active:true,locked:true},{childId:function(){return"tab-stats"
+},get:function(){return"Stats"
+},locked:true},];
+_(pinnedTabs).each(addTabView);
+_(this.collection.sortBy(function(model){return -model.get("id")
+})).each(addTabView);
+var totalTabWidth=($("#backlog-data-area .backlog-stats").offset().left-$(view.el).offset().left-10);
+var windowWidth=$(window).width();
+$(view.el).css("width",totalTabWidth+"px");
+$(window).resize(function(){var resizeWidthBy=$(window).width()-windowWidth;
+if(resizeWidthBy){totalTabWidth+=resizeWidthBy;
+windowWidth=$(window).width();
+$(view.el).css("width",totalTabWidth+"px")
+}});
+$(this.el).css("top",($("#themes-header").offset().top-$(this.el.find("ul li:first")).outerHeight())+"px");
+view.$("ul.infinite-tabs").activateInfiniteTabs();
+return this
+},}),Show:App.Views.BaseView.extend({tagName:"li",className:"sprint-tab",events:{"click":"activate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
+_.bindAll(this)
+},render:function(){$(this.el).html(JST["sprints/tabs/show"]({model:this.model}));
+if(this.model.active){$(this.el).addClass("active")
+}if(this.model.locked){$(this.el).addClass("locked")
+}return this
+},activate:function(){$(this.el).parents(".infinite-tabs").find("li").removeClass("active");
+$(this.el).addClass("active")
+}})};
 App.Views.Stories={Index:Backbone.View.extend({tagName:"div",className:"stories",childId:function(model){return"story-"+model.get("id")
 },events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"storyKeyPress"},initialize:function(){this.collection=this.options.collection;
 this.use5090estimates=this.options.use5090estimates;

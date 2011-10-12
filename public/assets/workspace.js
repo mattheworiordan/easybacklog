@@ -4872,6 +4872,87 @@ if(cookie.substring(0,name.length+1)==(name+"=")){cookieValue=decodeURIComponent
 break
 }}}return cookieValue
 }};
+(function($){$.fn.activateInfiniteTabs=function(options){var opts=$.extend({},$.fn.activateInfiniteTabs.defaults,options);
+return this.each(function(){var scroller=$('<li class="scroller"><div><ul></ul></div></li>'),scrollableTabs=$(this).find("li:not(.locked)"),that=this,scrollableTabOffset=0,windowWidth=$(window).width(),scrollerWidth,nav;
+moveNonFixedTabsToScroller(this,scrollableTabs,scroller);
+scrollerWidth=$(this).innerWidth()-scroller.position().left;
+nav=addNav(this);
+positionNav(this,nav,scroller,scrollerWidth);
+$(nav).find("a.previous-tab").click(function(e){e.preventDefault();
+e.stopPropagation();
+scrollableTabOffset=shiftTabOffset(-1,scrollableTabOffset,scroller,nav,opts);
+shiftScroller(scrollableTabOffset,scroller,that)
+});
+$(nav).find("a.next-tab").click(function(e){e.preventDefault();
+e.stopPropagation();
+scrollableTabOffset=shiftTabOffset(1,scrollableTabOffset,scroller,nav,opts);
+shiftScroller(scrollableTabOffset,scroller,that)
+});
+scroller.find("div").css("width",(scrollerWidth-20)+"px");
+$(window).resize(function(e){var resizeWidthBy=$(window).width()-windowWidth;
+if(resizeWidthBy){scrollerWidth+=resizeWidthBy;
+windowWidth=$(window).width();
+scroller.find("div").css("width",(scrollerWidth-20)+"px");
+positionNav(that,nav,scroller,scrollerWidth)
+}});
+$(this).find("li.scroller li").click(function(e){var scrollerList=scroller.find("ul"),tabRightEdge;
+if(-scrollableTabOffset>$(this).position().left){scrollableTabOffset=-$(this).position().left+($(this).is(":first-child")?0:opts.initialTabSlideOffset);
+scrollerList.css("left",scrollableTabOffset+"px")
+}else{if($(nav).is(":visible")){tabRightEdge=$(this).offset().left+$(this).outerWidth();
+if(tabRightEdge>$(nav).offset().left){scrollableTabOffset-=tabRightEdge-$(nav).offset().left+opts.initialTabSlideOffset;
+scrollerList.css("left",scrollableTabOffset+"px")
+}}}});
+$(this).find("li.scroller").click(function(e){e.preventDefault();
+e.stopImmediatePropagation()
+})
+})
+};
+function getLeftMostTabIndex(scroller,scrollableTabOffset){var tabIndex=0;
+var tabFound=false;
+scroller.find("ul li").each(function(index,elem){if(!tabFound){if($(elem).position().left>=-scrollableTabOffset){tabFound=true
+}else{tabIndex++
+}}});
+return tabIndex
+}function totalElemWidth(elems){var width=0;
+elems.each(function(index,elem){width+=$(elem).outerWidth()
+});
+return width
+}function addNav(outerMostList){var backArrow=($.browser.msie&&$.browser.version<=8)?"&lt;":"&#x25C0;";
+var forwardArrow=($.browser.msie&&$.browser.version<=8)?"&gt;":"&#x25B6;";
+var nav=$('<li class="navigation"><div><a href="#next" class="next-tab">'+backArrow+'</a><a href="#previous" class="previous-tab">'+forwardArrow+"</a></div></li>");
+$(outerMostList).append(nav);
+var navHeightDiff=$(outerMostList).outerHeight()-nav.outerHeight();
+var navPadTop=Math.round(navHeightDiff/2);
+$(nav).find("a").css("padding-top",navPadTop+"px").css("padding-bottom",(navHeightDiff-navPadTop)+"px");
+return nav
+}function positionNav(outerMostList,nav,scroller,scrollerWidth){if($(nav).data("scrollerWidth")){var currentPos=parseInt(nav.css("left").replace(/px/,""));
+currentPos+=scrollerWidth-parseInt($(nav).data("scrollerWidth"));
+nav.css("left",currentPos+"px")
+}else{var navPosition=($(outerMostList).width()-$(nav).width()+10);
+nav.css("left",navPosition+"px")
+}$(nav).data("scrollerWidth",scrollerWidth);
+if(totalElemWidth(scroller.find("li"))>scrollerWidth-20){nav.css("display","block")
+}else{nav.css("display","none")
+}}function moveNonFixedTabsToScroller(containerList,scrollableTabs,scroller){scrollableTabs.each(function(index,elem){scroller.find("ul").append(elem)
+});
+if($(containerList).find("li.locked").length%2===1){scroller.find("ul").prepend($('<li class="hidden"></li>'))
+}$(containerList).append(scroller);
+if($(containerList).find(">li:not(.scroller):not(.nav)").length==0){scroller.find("ul li:first").addClass("absolute-first")
+}}function shiftTabOffset(direction,currentScrollableTabOffset,scroller,nav,opts){var currentTabIndex=getLeftMostTabIndex(scroller,currentScrollableTabOffset);
+var scrollerList=scroller.find("ul");
+if(direction<0){if(currentScrollableTabOffset===0){currentScrollableTabOffset-=scrollerList.find("li:first").outerWidth()-opts.initialTabSlideOffset
+}else{currentScrollableTabOffset-=scrollerList.find("li:nth-child("+(currentTabIndex+1)+")").outerWidth()
+}var scrollMax=-scroller.find("li:last").position().left+nav.position().left-scroller.position().left-nav.innerWidth()+8-opts.initialTabSlideOffset;
+if(currentScrollableTabOffset<scrollMax){currentScrollableTabOffset=scrollMax
+}}else{currentScrollableTabOffset+=scrollerList.find("li:nth-child("+(currentTabIndex)+")").outerWidth();
+if(currentScrollableTabOffset>=0){currentScrollableTabOffset=0
+}}return currentScrollableTabOffset
+}function shiftScroller(scrollableTabOffset,scroller,outerMostList){var scrollerList=scroller.find("ul");
+scrollerList.css("left",scrollableTabOffset+"px");
+if(scrollableTabOffset<0){$(outerMostList).find("li.locked").filter(":last").addClass("overlay")
+}else{$(outerMostList).find("li.locked").filter(":last").removeClass("overlay")
+}}$.fn.activateInfiniteTabs.defaults={initialTabSlideOffset:10}
+})(jQuery);
 (function($){$.fn.editable=function(target,options){if("disable"==target){$(this).data("disabled.editable",true);
 return
 }if("enable"==target){$(this).data("disabled.editable",false);
@@ -5276,6 +5357,7 @@ window.JST["backlogs/print-dialog"]=_.template('<div id="dialog-print" title="Pr
 window.JST["backlogs/stats"]=_.template("<%= addCommas((model.get('points') || 0).toFixed(1)) %> points / <%= model.get('cost_formatted')%> / <strong><%= addCommas((model.get('days') || 0).toFixed(1)) %> days</strong>");
 window.JST["layouts/confirm-dialog"]=_.template('<div id="dialog-confirm" class="dialog" title="<%= title %>"}\n  <p>\n    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>\n    <%= confirmationMessage %>\n  </p>\n</div>');
 window.JST["snapshots/snapshot-header"]=_.template('<td class="logo-space" colspan="<%=columns%>">\n  <a href="/" target="_blank" class="main-title">\n    <span class="easy">easy</span><span class="backlog">Backlog</span>\n  </a>\n  <span class="divider">|</span>\n  <b>Comparing Snapshots</b>\n</td>\n<td class="actions" colspan="<%=columns%>">\n  <a href="#help" id="help">Help?\n    <div id="help-rollover">\n      <div class="key"><span class="deleted"></span> Deleted from left</div>\n      <div class="key"><span class="new"></span> Added to right</div>\n      <div class="key"><span class="changed"></span> Value changed</div>\n      <div class="key"><span class="changed">▽</span> Value decreased</div>\n      <div class="key"><span class="changed">△</span> Value increased</div>\n    </div>\n  </a>\n  <span class="divider">|</span>\n  <a href="<%= document.location.href %>.xls">Export</a>\n  <span class="divider">|</span>\n  <a href="#print" id="print">Print</a>\n  <span class="divider">|</span>\n  <a href="#close-window" id="close-window">Close</a>\n</td>');
+window.JST["sprints/tabs/show"]=_.template("<a>\n  <%= model.get('iteration')%>\n</a>");
 window.JST["stories/delete-dialog"]=_.template('<div id="dialog-delete" title="Delete story?">\n  <p>\n    <span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;" />\n    This story will be permanently deleted and cannot be recovered. Are you sure?\n  </p>\n</div>');
 window.JST["stories/index"]=_.template('<ul class="stories">\n</ul>');
 window.JST["stories/move-dialog"]=_.template("<div id=\"dialog-move-story\" title=\"Move story\">\n  <p>\n    <span class=\"ui-icon ui-icon-arrow-4\" style=\"float:left; margin:0 7px 20px 0;\" />\n    Move story '<%=story.Theme().get('code') + story.get('unique_id')%>' to which theme?\n  </p>\n  <p>\n    <form>\n    <select id=\"theme-target\">\n      <% themes.each(function(theme) { %>\n        <option id=\"<%=theme.get('id')%>\"<%=(theme == story.Theme() ? ' selected=\"\"' : '') %>><%=theme.get('name')%></option>\n      <% }); %>\n    </select>\n    </form>\n  </p>\n</div>");
