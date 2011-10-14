@@ -26,6 +26,9 @@ group :development, :test, :cucumber do
   gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
   gem 'watchr'
   gem 'growl'
+  gem 'pry'
+  gem 'pry-rails'
+  gem 'pry-doc'
 end
 
 group :test, :cucumber do
