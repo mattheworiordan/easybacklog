@@ -1,0 +1,111 @@
+# encoding: UTF-8
+
+require 'spec_helper'
+
+describe Sprint do
+  it 'should create a new iteration automatically for each sprint created' do
+    # get a backlog set up with at least one story
+    acceptance_criterion = Factory.create(:acceptance_criterion)
+    backlog = acceptance_criterion.story.theme.backlog
+    sprint_status = Factory.create(:sprint_status)
+
+    sprint = backlog.sprints.create!(:start_on => Date.today, :number_team_members => 2, :duration_days => 10, :sprint_status => sprint_status)
+    sprint.iteration.should == 1
+
+    sprint = backlog.sprints.create!(:start_on => Date.today + 10.days, :number_team_members => 2, :duration_days => 10, :sprint_status => sprint_status)
+    sprint.iteration.should == 2
+  end
+
+  it 'should not allow overlapping iterations in terms of days' do
+    sprint1 = Factory.create(:sprint, :start_on => Date.today, :duration_days => 10)
+    expect { sprint2 = Factory.create(:sprint, :start_on => Date.today, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
+    expect { sprint2 = Factory.create(:sprint, :start_on => Date.today + 9.days, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
+    sprint1.iteration.should == 1
+
+    sprint2 = Factory.create(:sprint, :start_on => Date.today + 10.days, :backlog_id => sprint1.backlog.id)
+    sprint2.start_on = Date.today
+    expect { sprint2.save! }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
+    sprint2.iteration.should == 2
+
+    sprint1.reload
+    sprint1.duration_days = 15
+    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 2/
+  end
+
+  it 'should not allow you to delete a sprint unless it is the last sprint' do
+    sprint1 = Factory.create(:sprint, :start_on => Date.today, :duration_days => 1)
+    backlog = sprint1.backlog
+    sprint2 = Factory.create(:sprint, :start_on => Date.today + 1.day, :duration_days => 1, :backlog_id => backlog.id)
+    sprint3 = Factory.create(:sprint, :start_on => Date.today + 2.days, :duration_days => 1, :backlog_id => backlog.id)
+    sprint4 = Factory.create(:sprint, :start_on => Date.today + 3.days, :duration_days => 1, :backlog_id => backlog.id)
+
+    sprint2.reload
+    expect { sprint2.destroy }.should raise_error
+    sprint3.reload
+    expect { sprint3.destroy }.should raise_error
+    sprint4.reload
+    sprint4.destroy
+    sprint3.reload
+    sprint3.destroy
+    sprint1.reload
+    expect { sprint1.destroy }.should raise_error
+  end
+
+  it 'should not allow you to change a sprint iteration' do
+    sprint1 = Factory.create(:sprint, :start_on => Date.today, :duration_days => 1)
+    backlog = sprint1.backlog
+    sprint2 = Factory.create(:sprint, :start_on => Date.today + 1.day, :duration_days => 1, :backlog_id => backlog.id)
+    sprint1.iteration = 3
+    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+    sprint2.iteration = 4
+    expect { sprint2.save! }.should raise_error ActiveRecord::RecordInvalid
+
+    sprint1.update_attributes :iteration => 3
+    sprint1.reload
+    sprint1.iteration.should == 1
+  end
+
+  it 'should not allow you to make changes once marked as completed' do
+    done = Factory.create(:sprint_status, :status => 'Done', :code => SprintStatus::DONE_CODE)
+    sprint1 = Factory.create(:sprint, :start_on => Date.today)
+    theme = Factory.create(:theme, :backlog_id => sprint1.backlog.id)
+    story = Factory.create(:story, :theme_id => theme.id, :sprint_status_id => done.id)
+    sprint1.stories << story
+
+    # now mark as completed (read-only)
+    sprint1.completed_at = Time.now
+    sprint1.save!
+
+    story2 = Factory.create(:story, :theme_id => theme.id)
+    expect { sprint1.stories << story2 }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
+    expect { sprint1.stories.delete(sprint1.stories.first) }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
+
+    # All sprint fields should be non-editable
+    sprint1.start_on = Date.today + 1.day
+    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+    sprint1.reload
+    sprint1.duration_days = sprint1.duration_days + 1
+    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+  end
+
+  it 'should not allow to be marked as complete if any of the stories are not done' do
+    done = Factory.create(:sprint_status, :status => 'Done', :code => SprintStatus::DONE_CODE)
+    sprint = Factory.create(:sprint, :start_on => Date.today)
+    theme = Factory.create(:theme, :backlog_id => sprint.backlog.id)
+
+    # 0 stories, so allow mark as complete
+    expect { sprint.mark_as_complete }.should_not raise_error
+
+    sprint.mark_as_incomplete
+    Factory.create(:story, :theme_id => theme.id, :sprint_id => sprint.id)
+    sprint.reload
+    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
+
+    sprint.stories.first.sprint_status = done
+    expect { sprint.mark_as_incomplete }.should_not raise_error
+
+    Factory.create(:story, :theme_id => theme.id, :sprint_id => sprint.id)
+    sprint.reload
+    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
+  end
+end

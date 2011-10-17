@@ -3,11 +3,13 @@ class Backlog < ActiveRecord::Base
   belongs_to :author, :class_name => 'User'
   belongs_to :last_modified_user, :class_name => 'User'
   belongs_to :company
+  belongs_to :snapshot_for_sprint, :class_name => 'Sprint'
 
   has_many :themes, :dependent => :destroy, :order => 'position'
+  has_many :sprints, :dependent => :destroy, :order => 'iteration'
 
   # self references for snapshots
-  has_many :snapshots, :class_name => 'Backlog',:conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
+  has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
   validates_uniqueness_of :name, :scope => [:account_id], :message => 'has already been taken for another backlog'
