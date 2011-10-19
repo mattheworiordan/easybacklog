@@ -401,7 +401,9 @@ App.Views.Stories = {
       var colorWithoutHex = (color.match(/^#/) ? color.substring(1) : color);
       var colorWithHex = '#' + colorWithoutHex;
       if (colorWithoutHex.toLowerCase() === 'ffffff') { colorWithoutHex = colorWithHex = ''; }
-      $(this.el).css('background-color',colorWithHex);
+      var colors = colorWithoutHex.match(/[\d\w]{2}/g);
+      $(this.el).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.15)');
+      $(this.el).find('.background-color-indicator').css('background-color', colorWithHex);
       if (!options || !options.silent) {
         this.model.set({ color: colorWithoutHex });
         this.model.save();

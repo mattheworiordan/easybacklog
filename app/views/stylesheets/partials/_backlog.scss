@@ -10,7 +10,8 @@ $backlog-horizontal-padding: 5px;
   &>div {
     margin: 0 0 1px 1px;
     padding: 2px;
-    border: 1px solid #DDD;
+    border: 1px solid rgba(0,0,0,0.15);
+    border-width: 1px 0px 0px 1px;
   }
 }
 
@@ -214,16 +215,16 @@ section.content .not-editable-backlog-notice {
     }
   }
   .backlog-stats {
-    background-color: #FFF;
+    background-color: lighten($title-area-color, 25%);
     float: right;
-    margin: 0 $standard-header-padding-height*2 0 0;
+    margin: 2px $standard-header-padding-height*2 0 0;
     @include single-box-shadow(#FFFFFF, 0, 0, 3px, false, false);
     div.title {
-      padding: 5px 0 5px 5px;
+      padding: 3px 0 5px 5px;
       float: left;
     }
     div.output {
-      padding: 5px;
+      padding: 3px;
       float: left;
     }
   }
@@ -497,6 +498,15 @@ ul.themes {
           overflow: hidden;
           clear: left;
           margin: 0;
+          position: relative;
+          .background-color-indicator {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            left: 0px;
+            margin: 2px 0 2px 0;
+          }
           &>.unique-id {
             @include table-col(7%);
             >.story-actions {
@@ -504,19 +514,16 @@ ul.themes {
               margin: 0;
               padding: 0 0 0 3px;
             }
-            &>div.data { background-color: rgba(255,255,255,0.6); }
           }
           &>.user-story, &>.acceptance-criteria, &>.comments {
             @include table-col(22%);
             &>div {
-              background-color: rgba(255,255,255,0.6);
               min-height: 1.1em;
             }
           }
           &>.score-50, &>.score-90, &>.score {
             @include table-col(3%);
             &>div {
-              background-color: rgba(255,255,255,0.6);
               min-height: 1.1em;
             }
           }
@@ -542,7 +549,7 @@ ul.themes {
               float: left;
               clear: left;
               padding-right: 0.25em;
-              color: #666;
+              color: rgba(0,0,0,0.65);
               font-style: italic;
             }
           }
