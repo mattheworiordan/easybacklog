@@ -6,7 +6,7 @@ var StoriesCollection = Backbone.Collection.extend({
 
   url: function() {
     if ( !this.theme || !this.theme.get('id') ) {
-      var errorView = new App.Views.Error('Error, missing necessary data ID to display Story');
+      var errorView = new App.Views.Error({ message: 'Error, missing necessary data ID to display Story' });
     } else {
       return '/themes/' + this.theme.get('id') + '/stories';
     }

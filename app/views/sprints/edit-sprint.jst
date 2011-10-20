@@ -1,0 +1,35 @@
+<form class="edit_sprint">
+  <div id="form-errors"></div>
+  <label for="number-team-members">Number of team members</label>
+  <div class='label-hint'>
+    (working on this sprint completing stories)
+  </div>
+  <div class='input-row'>
+    <input id="number-team-members" name="number_team_members" type="text" value="<%=model.get('number_team_members')%>" class="narrow"/>
+  </div>
+
+  <div class='label-spacer'></div>
+
+  <label for="start-on">Sprint start date</label>
+  <div class='label-hint'>
+    (click to show the calendar)
+  </div>
+  <div class='input-row'>
+    <input id="start-on" name="start_on" type="text" value="" />
+  </div>
+
+  <div class='label-spacer'></div>
+
+  <label for="duration-days">Duration of sprint in days</label>
+  <div class='label-hint'>
+    (typically working days)
+  </div>
+  <div class='input-row'>
+    <input id="duration-days" name="duration_days" type="text" value="<%=model.get('duration_days')%>" class="narrow"/>
+  </div>
+
+  <div class='label-spacer'></div>
+
+  <input id="sprint_submit" type="submit" value="Update sprint settings">
+  <a id="sprint_cancel" href="#cancel">cancel</a>
+</form>

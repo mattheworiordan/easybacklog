@@ -10,6 +10,7 @@ javascripts:
     - public/javascripts/vendor/underscore.js
     - public/javascripts/vendor/jquery-1.6.js
     - public/javascripts/vendor/*.js
+    - public/javascripts/locale/*.js
     - public/javascripts/utilities.js
     - public/javascripts/application.js
     - app/views/**/*.jst
@@ -18,7 +19,13 @@ javascripts:
     - public/javascripts/collections/**/*.js
     - public/javascripts/controllers/**/*.js
     - public/javascripts/views/base/*.js
-    - public/javascripts/views/*.js
+    - public/javascripts/views/acceptance_criteria.js
+    - public/javascripts/views/backlogs.js
+    - public/javascripts/views/notice.js
+    - public/javascripts/views/sprint_tabs.js
+    - public/javascripts/views/stories.js
+    - public/javascripts/views/themes.js
+    - public/javascripts/routers/backlog_router.js
   ie_compatibility:
     - public/javascripts/ie_compatibility/*
   users:
@@ -26,6 +33,8 @@ javascripts:
   register:
     - public/javascripts/sections/register.js
   manage_backlog:
+    - public/javascripts/views/backlog_settings.js
+    - public/javascripts/routers/backlog_settings_router.js
     - public/javascripts/sections/manage_backlog.js
   validation:
     - public/javascripts/vendor/conditional/jquery.validate.js

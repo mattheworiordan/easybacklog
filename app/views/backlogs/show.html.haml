@@ -71,6 +71,9 @@
     %div.output &nbsp;
 
 #backlog-tabs
+  #protect-beneath-tabs
+  #add-sprint.vtip{ :title => 'Create sprint' }
+    %a.ui-icon.ui-icon-plusthick
   %ul.infinite-tabs
 
 #backlog-container
@@ -84,16 +87,25 @@
       Loading...
 :javascript
   $(document).ready(function() {
-    App.Collections.Backlogs = new BacklogsCollection(false, { account_id: #{@backlog.account.id} });
-    var backlog = new Backlog(#{embedded_json_safe backlog_json(@backlog)});
-    App.Collections.Backlogs.add(backlog);
-    var view = new App.Views.Backlogs.Show({ model: backlog, el: $('#backlog-container') });
-    view.render();
-    var sprints = [];
-    for (var i = 1; i < 30; i++) {
-      sprints.push({ id: i, iteration: i });
+    if ($.datepicker.regional['#{current_account_locale_code}']) {
+      $.datepicker.setDefaults($.datepicker.regional['#{current_account_locale_code}']);
     }
-    backlog.Sprints().add(sprints);
-    var tabs = new App.Views.SprintTabs.Index({ collection: backlog.Sprints(), el: $('#backlog-tabs') });
-    tabs.render();
+
+    var router = new App.Routers.Backlog();
+
+    App.Collections.SprintStatuses = new SprintStatusesCollection(#{embedded_json_safe sprint_statuses_json});
+    App.Collections.Backlogs = new BacklogsCollection(false, { account_id: #{@backlog.account.id} });
+    var thisBacklog = new Backlog(#{embedded_json_safe backlog_json(@backlog)});
+    App.Collections.Backlogs.add(thisBacklog);
+
+    var view = new App.Views.Backlogs.Show({ model: thisBacklog, el: $('#backlog-container') });
+    view.render();
+    var sprintTabs = new App.Views.SprintTabs.Index({ collection: thisBacklog.Sprints(), el: $('#backlog-tabs'), router: router });
+    sprintTabs.render();
+
+    router.setTabsReference(sprintTabs);
+    Backbone.history.start();
+
+    // validation only needed for tabs, so load after page is ready
+    $('head').append('#{escape_javascript(include_javascripts :validation)}');
   });

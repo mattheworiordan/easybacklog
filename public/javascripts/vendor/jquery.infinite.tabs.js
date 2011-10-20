@@ -7,82 +7,109 @@
    *
    * options are:
    * - initialTabSlideOffset: amount tabs are offset by when slid under a locked tab
+   *
+   * commands are:
+   * - check-for-resize: useful when a tab has been added directly via the DOM
+   *
+   * Command usage example:
+   *   $('ul#tabs').infiniteTabs('check-for-resize');
    */
-  $.fn.activateInfiniteTabs = function(options) {
-    // build main options before element iteration
-    var opts = $.extend({}, $.fn.activateInfiniteTabs.defaults, options);
 
-    // iterate and move each matched element
-    return this.each(function() {
-      var scroller = $('<li class="scroller"><div><ul></ul></div></li>'),
-          scrollableTabs = $(this).find('li:not(.locked)'),
-          that = this,
-          scrollableTabOffset = 0,
-          windowWidth = $(window).width(),
-          scrollerWidth,
-          nav;
+  var opts;
 
-      // move non-fixed tabs into the scroller ul
-      moveNonFixedTabsToScroller(this, scrollableTabs, scroller);
-      scrollerWidth = $(this).innerWidth() - scroller.position().left;
+  $.fn.infiniteTabs = function(command, options) {
+    if ( (typeof command === 'object') || !command ) {
+      // build main options before element iteration
+      opts = $.extend({}, $.fn.infiniteTabs.defaults, command);
 
-      // add nav to DOM regardless of whether we need it
-      nav = addNav(this);
-      positionNav(this, nav, scroller, scrollerWidth);
+      // iterate and initialize matched element
+      return this.each(initialize);
+    }
 
-      $(nav).find('a.previous-tab').click(function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        scrollableTabOffset = shiftTabOffset(-1, scrollableTabOffset, scroller, nav, opts);
-        shiftScroller(scrollableTabOffset, scroller, that);
-      });
-      $(nav).find('a.next-tab').click(function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        scrollableTabOffset = shiftTabOffset(1, scrollableTabOffset, scroller, nav, opts);
-        shiftScroller(scrollableTabOffset, scroller, that);
-      });
+    if (typeof command === 'string') {
+      switch (command.toLowerCase()) {
+        case 'check-for-resize':
+          return this.each(checkForResize);
+      }
+    }
+  }
 
-      // set scroller width with buffer to ensure resize event picks up resize before CSS wraps
-      scroller.find('div').css('width', (scrollerWidth-20) + 'px');
+  function initialize() {
+    var scroller = $('<li class="scroller"><div><ul></ul></div></li>'),
+        scrollableTabs = $(this).find('li:not(.locked)'),
+        that = this,
+        scrollableTabOffset = 0,
+        windowWidth = $(window).width(),
+        scrollerWidth,
+        nav;
 
-      // resize scroller area when window resizes
-      $(window).resize(function(e) {
-        var resizeWidthBy = $(window).width() - windowWidth;
-        if (resizeWidthBy) {
-          scrollerWidth += resizeWidthBy;
-          windowWidth = $(window).width();
-          scroller.find('div').css('width', (scrollerWidth-20) + 'px');
-          positionNav(that, nav, scroller, scrollerWidth);
-        }
-      });
+    // move non-fixed tabs into the scroller ul
+    moveNonFixedTabsToScroller(this, scrollableTabs, scroller);
+    scrollerWidth = $(this).innerWidth() - scroller.position().left;
 
-      // ensure tab is completely visible when clicked on if in scroller area
-      $(this).find('li.scroller li').click(function(e) {
-        var scrollerList = scroller.find('ul'),
-            tabRightEdge;
-        // tab clicked on is under locked tabs on the left
-        if (-scrollableTabOffset > $(this).position().left) {
-          scrollableTabOffset = -$(this).position().left + ($(this).is(':first-child') ? 0 : opts.initialTabSlideOffset);
-          scrollerList.css('left', scrollableTabOffset + 'px');
-        } else {
-          if ($(nav).is(':visible')) {
-            tabRightEdge = $(this).offset().left + $(this).outerWidth();
-            if (tabRightEdge > $(nav).offset().left) {
-              scrollableTabOffset -= tabRightEdge - $(nav).offset().left + opts.initialTabSlideOffset;
-              scrollerList.css('left', scrollableTabOffset + 'px');
-            }
+    // add navigation for tabs to DOM regardless of whether we need it
+    nav = addNav(this);
+    positionNav(this, nav, scroller, scrollerWidth);
+
+    $(nav).find('a.previous-tab').click(function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      scrollableTabOffset = shiftTabOffset(-1, scrollableTabOffset, scroller, nav, opts);
+      shiftScroller(scrollableTabOffset, scroller, that);
+    });
+    $(nav).find('a.next-tab').click(function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      scrollableTabOffset = shiftTabOffset(1, scrollableTabOffset, scroller, nav, opts);
+      shiftScroller(scrollableTabOffset, scroller, that);
+    });
+
+    // set scroller width with buffer to ensure resize event picks up resize before CSS wraps
+    scroller.find('div').css('width', (scrollerWidth-20) + 'px');
+
+    // reference to this method in context is needed for the check-for-resize command
+    var positionNavFunction = function() {
+      positionNav(that, nav, scroller, scrollerWidth);
+    }
+    // add reference to the ul.infinite-tabs DOM element so it can be called by the plugin command
+    $(this).data('positionNavFunction', positionNavFunction);
+
+    // resize scroller area when window resizes
+    $(window).resize(function(e) {
+      var resizeWidthBy = $(window).width() - windowWidth;
+      if (resizeWidthBy) {
+        scrollerWidth += resizeWidthBy;
+        windowWidth = $(window).width();
+        scroller.find('div').css('width', (scrollerWidth-20) + 'px');
+        positionNavFunction();
+      }
+    });
+
+    // ensure tab is completely visible when clicked on if in scroller area
+    $(this).find('li.scroller li').click(function(e) {
+      var scrollerList = scroller.find('ul'),
+          tabRightEdge;
+      // tab clicked on is under locked tabs on the left
+      if (-scrollableTabOffset > $(this).position().left) {
+        scrollableTabOffset = -$(this).position().left + ($(this).is(':first-child') ? 0 : opts.initialTabSlideOffset);
+        scrollerList.css('left', scrollableTabOffset + 'px');
+      } else {
+        if ($(nav).is(':visible')) {
+          tabRightEdge = $(this).offset().left + $(this).outerWidth();
+          if (tabRightEdge > $(nav).offset().left) {
+            scrollableTabOffset -= tabRightEdge - $(nav).offset().left + opts.initialTabSlideOffset;
+            scrollerList.css('left', scrollableTabOffset + 'px');
           }
         }
-      });
-
-      // the scroller li is not clickable
-      $(this).find('li.scroller').click(function(e) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      })
+      }
     });
-  };
+
+    // the scroller li is not clickable
+    $(this).find('li.scroller').click(function(e) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    })
+  }
 
   /* determine currently left most completely visible tab */
   function getLeftMostTabIndex(scroller, scrollableTabOffset) {
@@ -189,10 +216,17 @@
       $(outerMostList).find('li.locked').filter(':last').removeClass('overlay'); // remove the shadow on first locked tab indicating tabs have slid under
     }
   }
+
+  function checkForResize() {
+    if ($(this).is('ul.infinite-tabs')) {
+      $(this).data('positionNavFunction')();
+    }
+  }
+
   //
   // plugin defaults
   //
-  $.fn.activateInfiniteTabs.defaults = {
+  $.fn.infiniteTabs.defaults = {
     initialTabSlideOffset: 10
   };
 })(jQuery);

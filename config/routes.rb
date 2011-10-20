@@ -44,6 +44,7 @@ Ibacklog::Application.routes.draw do
         match 're-number-stories' => 'themes#re_number_stories', :via => [:post]
       end
     end
+    resources :sprints
   end
   resources :themes, :only => [:show] do
     resources :stories do
@@ -55,6 +56,8 @@ Ibacklog::Application.routes.draw do
   resources :stories, :only => [:show] do
     resources :acceptance_criteria
   end
+
+  get '/sprint-statuses' => 'sprint_statuses#index'
 
   resources :beta_signups, :only => [:index, :create, :show]
 

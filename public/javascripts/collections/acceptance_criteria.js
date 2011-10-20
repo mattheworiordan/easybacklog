@@ -6,7 +6,7 @@ var AcceptanceCriteriaCollection = Backbone.Collection.extend({
 
   url: function() {
     if ( !this.story || !this.story.get('id') ) {
-      var errorView = new App.Views.Error('Error, missing necessary data ID to display Acceptance Criteria');
+      var errorView = new App.Views.Error({ message: 'Error, missing necessary data ID to display Acceptance Criteria' });
     } else {
       return '/stories/' + this.story.get('id') + '/acceptance_criteria';
     }

@@ -4,7 +4,8 @@
 var App = {
     Views: {},
     Collections: {},
-    Controllers: {}
+    Controllers: {},
+    Routers: {}
 },
     _ues; // user echo needs to be in global space (urrgghh)
 

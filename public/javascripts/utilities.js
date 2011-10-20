@@ -35,3 +35,25 @@ function multiLineHtmlEncode(value) {
     return '';
   }
 }
+
+function parseRubyDate(value) {
+  var dateParts = String(value).split('-'); // yyyy-mm-dd
+  return new Date(dateParts[0], Number(dateParts[1])-1, dateParts[2]);
+}
+
+// deep look at whether two set of DOM elements have the same values
+//  assumes two are clones of each other and have unique IDs for all form elements
+function haveFormElementValuesChanged(dom1, dom2) {
+  var same = false;
+  $(dom1).find('input[type=text],input[type=password],select').each(function(i, elem) {
+    if ($(dom2).find('#' + $(elem).attr('id')).val() !== $(elem).val()) {
+      same = true;
+    }
+  });
+  $(dom1).find('input[type=checkbox],input[type=radio]').each(function(i, elem) {
+    if ($(dom2).find('#' + $(elem).attr('id')).is(':checked') !== $(elem).is(':checked')) {
+      same = true;
+    }
+  });
+  return same;
+}

@@ -185,7 +185,6 @@ section.content {
 
 section.title {
   margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) 0 (-$ninesixty-gutter-width);
-  height: $ninesixty-vertical * 3 - 6px;
   padding: 3px $ninesixty-gutter-width 3px $ninesixty-gutter-width;
   background-color: $title-area-color;
   h1 {
@@ -260,8 +259,16 @@ section.side-panel {
   overflow: hidden;
   display: block;
 }
-.ui-dialog .progress-icon {
-  background: url(/images/progress_on_grey.gif);
+.ui-dialog {
+  .progress-icon {
+    background: url(/images/progress_on_grey.gif);
+  }
+  .ui-dialog-title {
+    font-size: 130%;
+  }
+  label {
+    font-weight: bold;
+  }
 }
 
 /* footer styles */

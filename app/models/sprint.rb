@@ -10,7 +10,7 @@ class Sprint < ActiveRecord::Base
 
   attr_accessible :number_team_members, :duration_days, :start_on, :completed_at
 
-  before_validation :restrict_iteration_changes, :assign_iteration, :check_date_overlaps, :restrict_changes_if_completed, :ensure_all_stories_are_done
+  before_validation :restrict_iteration_changes, :assign_iteration, :check_date_overlaps_and_successive, :restrict_changes_if_completed, :ensure_all_stories_are_done
   before_destroy :ensure_sprint_allows_delete
 
   def end_on
@@ -36,6 +36,16 @@ class Sprint < ActiveRecord::Base
     !editable?
   end
 
+  def deletable?
+    if !editable?
+      # not deletable if marked as completed
+      return false
+    else
+      # deletable if no sprint exist with a higher iteration than this one
+      return backlog.sprints.where('iteration > ?', [iteration]).blank?
+    end
+  end
+
   private
     # automatically assign a sequential iteration number
     def assign_iteration
@@ -59,15 +69,19 @@ class Sprint < ActiveRecord::Base
     end
 
     # ensure the date does not overlap with another iteration
-    def check_date_overlaps
+    def check_date_overlaps_and_successive
       unless backlog.blank?
-        other_sprints = backlog.sprints.reject { |s| s.iteration == self.iteration }
+        other_sprints = backlog.sprints.order('iteration').reject { |s| s.iteration == self.iteration }
         other_sprints.each do |sprint|
           date_range = sprint.start_on..sprint.end_on
           if (date_range === self.start_on) ||
               (date_range === self.end_on) ||
               (self.start_on < sprint.start_on && self.end_on > sprint.end_on)
             self.errors.add :base, "Start date and duration overlaps with sprint #{sprint.iteration}"
+            return false
+          end
+          if (self.start_on < sprint.start_on) && (self.iteration > sprint.iteration)
+            self.errors.add :base, "Start date is before sprint #{sprint.iteration}"
             return false
           end
         end

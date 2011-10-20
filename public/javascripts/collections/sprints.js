@@ -2,17 +2,17 @@
 
 var SprintsCollection = Backbone.Collection.extend({
   model: Sprint,
-  backlog_id: null,
+  backlog: null,
 
   url: function() {
-    if (!this.backlog_id) {
-      var errorView = new App.Views.Error('Error, missing necessary Backlog ID to display Sprint');
+    if (!this.backlog) {
+      var errorView = new App.Views.Error({ message: 'Error, missing necessary Backlog ID to display Sprint' });
     } else {
-      return '/backlogs/' + this.account_id + '/sprints';
+      return '/backlogs/' + this.backlog.get('id') + '/sprints';
     }
   },
 
   initialize: function(models, options) {
-    this.backlog_id = options ? options.backlog_id : null;
+    this.backlog = options ? options.backlog : null;
   }
 });

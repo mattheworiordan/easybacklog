@@ -67,7 +67,7 @@ section.for-backlog {
 
 #backlog-container {
   clear: left;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 section.content .not-editable-backlog-notice {
@@ -233,10 +233,54 @@ section.content .not-editable-backlog-notice {
 #backlog-tabs {
   position: fixed;
   top: 63px;
+  #add-sprint {
+    .ui-icon { background-image: url(/stylesheets/ui-lightness/images/ui-icons_ffffff_256x240.png); }
+    position: absolute;
+    z-index: 10;
+    margin: 3px 0 0 0;
+    a {
+      cursor: pointer;
+    }
+    background-color: $title-area-color;
+  }
+  #protect-beneath-tabs {
+    position: absolute;
+    left: -20px;
+    width: 300px;
+    height: 30px;
+    z-index: 1;
+    background-color: $title-area-color;
+  }
+  > ul {
+    margin-left: 22px;
+  }
   li {
     cursor: pointer;
     a:hover {
       text-decoration: none
+    }
+    &:hover>a {
+      color: white;
+    }
+    &.active:hover>a {
+      color: inherit;
+    }
+  }
+}
+
+#backlog-settings-tabs {
+  margin-bottom: -3px;
+  margin-top: 5px;
+  li {
+    cursor: pointer;
+    a:hover {
+      text-decoration: none
+    }
+    &:hover>a {
+      color: white;
+    }
+    &.active:hover>a {
+      color: inherit;
     }
   }
 }
@@ -599,6 +643,20 @@ ul.themes {
 #dialog-print {
   .progress-placeholder {
     font-weight: bold;
+  }
+}
+
+#dialog-new-sprint {
+  .progress-placeholder {
+    font-weight: bold;
+    font-style: italic;
+  }
+  p.error {
+    font-weight: bold;
+    color: red;
+  }
+  input.error {
+    border: 2px solid red;
   }
 }
 

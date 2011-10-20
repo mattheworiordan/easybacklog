@@ -1,17 +1,22 @@
 - page_title = @backlog.is_snapshot? ? 'Snapshot settings' : 'Backlog settings'
 - title page_title
+
 - content_for :head do
+  = include_javascripts :backlog
   = include_javascripts :validation
   = include_javascripts :manage_backlog
 
 - content_for :title do
   %h1= page_title
+  - unless @backlog.is_snapshot?
+    #backlog-settings-tabs
+      %ul.infinite-tabs
 
 - content_for :global_nav_left do
   .logo
     = link_to root_path do
       .icon
-    =link_to raw('← Back to Backlog'), account_backlog_path(@backlog.account, @backlog)
+    =link_to raw('← Back to Backlog'), account_backlog_path(@backlog.account, @backlog), :id => 'back-to-backlog'
 
 - content_for :side_panel do
   - unless @backlog.is_snapshot?
@@ -27,8 +32,8 @@
       Deleting a snapshot immediately and
       %b permanently deletes
       this snapshot.
-      %b There is no Undo
-      so make sure you're absolutely sure you want to delete this snapshot?
+      %b There is no undo
+      so make sure you're absolutely sure you want to delete this snapshot.
       .button-container
         = link_to 'Yes, I understand — delete this snapshot', snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :method => 'delete', :title => 'Delete snapshot', :confirm => 'This snapshot will be permanently deleted and cannot be recovered. Are you sure?', :class => 'delete-backlog'
   - else
@@ -37,41 +42,60 @@
       Deleting a backlog immediately and
       %b permanently deletes
       all the data associated with this backlog.
-      %b There is no Undo
-      so make sure you're absolutely sure you want to delete this backlog?
+      %b There is no undo
+      so make sure you're absolutely sure you want to delete this backlog.
       .button-container
         = link_to 'Yes, I understand — delete this backlog', account_backlog_path(@backlog.account, @backlog), :method => 'delete', :title => 'Delete backlog', :confirm => 'This backlog will be permanently deleted and cannot be recovered. Are you sure?', :class => 'delete-backlog'
 
+.backlog-settings-body
+  = form_for(@backlog, :url => account_backlog_path(current_account, @backlog)) do |f|
+    - unless @backlog.errors.blank?
+      .form_errors
+        We were unable to update the backlog settings.  Please correct the following fields first:
+        %ul
+          - @backlog.errors.full_messages.each do |error|
+            %li
+              = error
 
-= form_for(@backlog, :url => account_backlog_path(current_account, @backlog)) do |f|
-  - unless @backlog.errors.blank?
-    .form_errors
-      We were unable to update the backlog settings.  Please correct the following fields first:
-      %ul
-        - @backlog.errors.full_messages.each do |error|
-          %li
-            = error
+    != render :partial => 'form', :locals => { :f => f }
 
-  != render :partial => 'form', :locals => { :f => f }
+    - unless @backlog.is_snapshot?
+      .label-spacer
+      = f.label :status, "Backlog Status: This backlog is..."
+      .form-box
+        .input-row
+          = f.radio_button :archived?, false
+          = label_tag 'backlog_archived_false', raw('Active <span class="detail">— Fully functional backlog</span>')
+        .input-row
+          = f.radio_button :archived?, true
+          = label_tag 'backlog_archived_true', raw('Archived <span class="detail">— This backlog is locked: it can be viewed but not edited</span>')
 
-  - unless @backlog.is_snapshot?
-    .label-spacer
-    = f.label :status, "Backlog Status: This backlog is..."
-    .form-box
-      .input-row
-        = f.radio_button :archived?, false
-        = label_tag 'backlog_archived_false', raw('Active <span class="detail">— Fully functional backlog</span>')
-      .input-row
-        = f.radio_button :archived?, true
-        = label_tag 'backlog_archived_true', raw('Archived <span class="detail">— This backlog is locked: it can be viewed but not edited</span>')
+    %br/
+    - if @backlog.archived?
+      = f.submit "Update backlog archive status"
+      = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
+    - elsif @backlog.is_snapshot?
+      = link_to "← Back to Snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :class => 'button'
+    - else
+      = f.submit "Update backlog settings"
+      = link_to "cancel", account_backlog_path(@backlog.account, @backlog), :id => 'cancel_backlog_update'
 
-  %br/
-  - if @backlog.archived?
-    = f.submit "Update backlog archive status"
-    = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
-  - elsif @backlog.is_snapshot?
-    = link_to "← Back to Snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :class => 'button'
-  - else
-    = f.submit "Update backlog settings"
-    = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
+- unless @backlog.is_snapshot?
+  :javascript
+    $(document).ready(function() {
+      if ($.datepicker.regional['#{current_account_locale_code}']) {
+        $.datepicker.setDefaults($.datepicker.regional['#{current_account_locale_code}']);
+      }
 
+      var router = new App.Routers.BacklogSettings();
+
+      var backlog = new Backlog({ id: #{@backlog.id} });
+      App.Collections.SprintStatuses = new SprintStatusesCollection(#{embedded_json_safe sprint_statuses_json});
+      App.Collections.Sprints = new SprintsCollection(#{embedded_json_safe sprints_json(@backlog)}, { backlog: backlog });
+
+      var sprintTabs = new App.Views.SprintTabs.Index({ collection: App.Collections.Sprints, el: $('#backlog-settings-tabs'), router: router });
+      sprintTabs.render();
+
+      router.setTabsReference(sprintTabs);
+      Backbone.history.start();
+    });

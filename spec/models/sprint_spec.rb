@@ -30,6 +30,9 @@ describe Sprint do
     sprint1.reload
     sprint1.duration_days = 15
     expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 2/
+
+    sprint1.duration_days = 5
+    expect { sprint1.save! }.should_not raise_error
   end
 
   it 'should not allow you to delete a sprint unless it is the last sprint' do
@@ -40,10 +43,13 @@ describe Sprint do
     sprint4 = Factory.create(:sprint, :start_on => Date.today + 3.days, :duration_days => 1, :backlog_id => backlog.id)
 
     sprint2.reload
+    sprint2.deletable?.should be_false
     expect { sprint2.destroy }.should raise_error
     sprint3.reload
+    sprint3.deletable?.should be_false
     expect { sprint3.destroy }.should raise_error
     sprint4.reload
+    sprint4.deletable?.should be_true
     sprint4.destroy
     sprint3.reload
     sprint3.destroy
@@ -107,5 +113,15 @@ describe Sprint do
     Factory.create(:story, :theme_id => theme.id, :sprint_id => sprint.id)
     sprint.reload
     expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
+  end
+
+  it 'should not allow a successive sprint start on or before a previous sprint even if it doesn\'t overlap' do
+    sprint1 = Factory.create(:sprint, :start_on => Date.today, :duration_days => 10)
+    expect { sprint2 = Factory.create(:sprint, :start_on => Date.today - 10.days, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date is before sprint 1/
+
+    sprint2 = Factory.create(:sprint, :start_on => Date.today + 30.days, :backlog_id => sprint1.backlog.id)
+
+    # in between sprint 1 and 2, but still before print 2
+    expect { Factory.create(:sprint, :start_on => Date.today + 15.days, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date is before sprint 2/
   end
 end

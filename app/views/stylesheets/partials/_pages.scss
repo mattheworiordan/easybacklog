@@ -194,7 +194,7 @@ form#new_account {
   }
 }
 
-form#new_backlog, form.edit_backlog, form.edit_company {
+form#new_backlog, form.edit_backlog, form.edit_company, form.edit_sprint {
   .not-editable-notice {
     @include within-content-notice;
   }
@@ -241,6 +241,12 @@ form#new_backlog, form.edit_backlog, form.edit_company {
       }
     }
   }
+  input.narrow {
+    width: 80px;
+  }
+  input.error {
+    border: 2px solid red;
+  }
 }
 
 /* Tools on the Backlog edit page */
@@ -250,7 +256,7 @@ section.side-panel .backlog-tool-panel {
     font-size: 18px;
     height: 32px;
   }
-  a.delete-backlog {
+  a.delete-backlog, a.delete-sprint {
     color: #C00;
     text-decoration: underline;
     &:hover {

@@ -6,7 +6,7 @@ var BacklogsCollection = Backbone.Collection.extend({
 
   url: function() {
     if (!this.account_id) {
-      var errorView = new App.Views.Error('Error, missing necessary Account ID to display Backlog');
+      var errorView = new App.Views.Error({ message: 'Error, missing necessary Account ID to display Backlog' });
     } else {
       return '/accounts/' + this.account_id + '/backlogs';
     }
