@@ -191,7 +191,7 @@ ul.infinite-tabs {
     }
 
     /* First and last tabs have different outside color needs */
-    &:first-child.active a:before, &:last-child.active a:after {
+    &:first-child.active a:before, &:last-child.active a:after, &.absolute-last.active a:after {
       background: $tab-container-background-color;
     }
 
