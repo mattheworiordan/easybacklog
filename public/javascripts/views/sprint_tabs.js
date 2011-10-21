@@ -76,12 +76,14 @@ App.Views.SprintTabs = {
       var tabView = new App.Views.SprintTabs.Show({ model: model, id: this.childId(model), router: this.router });
       $(this.el).find('li.scroller ul').prepend(tabView.render().el);
       $(tabView.render().el).click();
-      $(this.el).find('ul.infinite-tabs').infiniteTabs('check-for-resize'); // may need a scroll bar now so check
+      this.$('.infinite-tabs').infiniteTabs('adjust-to-fit'); // reconfigure tabs as size has changed
     },
 
     // select the tab represented by this model
     select: function(model) {
-      this.$('li#' + this.childId(model)).click();
+      var tab = this.$('li#' + this.childId(model))
+      tab.parents('.infinite-tabs').find('li').removeClass('active');
+      tab.addClass('active');
     },
 
     // restore tab back to previous state i.e. when user cancels a tab change because of changes
@@ -95,7 +97,7 @@ App.Views.SprintTabs = {
     destroy: function(model, callback) {
       var view = this;
       this.$('li#' + this.childId(model)).remove();
-      $(this.el).find('ul.infinite-tabs').infiniteTabs('check-for-resize'); // may not need a scroll bar now so check
+      this.$('.infinite-tabs').infiniteTabs('adjust-to-fit'); // reconfigure tabs as size has changed
 
       if (model.get('iteration') > 1) {
         // reload the next in line tab as some settings will have changed now that it's the latest sprint (i.e. deletable? = true)
