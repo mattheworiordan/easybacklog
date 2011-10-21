@@ -7,7 +7,7 @@ App.Views.SprintTabs = {
     models: {},
 
     events: {
-      "click #add-sprint a": "createNew"
+      "click #add-sprint>a": "createNew"
     },
 
     initialize: function() {
@@ -245,7 +245,7 @@ App.Views.SprintTabs = {
     className: 'sprint-tab',
 
     events: {
-      "click": "activate"
+      "click a": "activate"
     },
 
     initialize: function() {

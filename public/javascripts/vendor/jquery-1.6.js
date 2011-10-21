@@ -5940,7 +5940,7 @@ function cloneFixAttributes( src, dest ) {
 		// a checked appearance if the defaultChecked value isn't also set
 		if ( src.checked ) {
 			dest.defaultChecked = dest.checked = src.checked;
-			if (dest.setAttribute) { dest.setAttribute('checked','checked'); }
+			// if (dest.setAttribute) { dest.setAttribute('checked', src.getAttribute('checked')); }
 		}
 
 		// IE6-7 get confused and end up setting the value of a cloned

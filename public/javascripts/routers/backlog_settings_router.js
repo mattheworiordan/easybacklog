@@ -38,12 +38,11 @@ App.Routers.BacklogSettings = Backbone.Router.extend({
     // provide 2 callbacks for different outcomes
     this.confirmDiscardChanges(
       function() {
-        // success callback, discard changes
-        var target = $('section.content .backlog-settings-body');
-        target.replaceWith(target.clone()); // replace .backlog-settings-body each time as residual bound events reside from other tabs shown
-        that.view = new App.Views.BacklogSettings.Show({ model: model, el: $('section.content .backlog-settings-body'), sprintTabsView: that.sprintTabsView });
-        that.sprintTabsView.select(model);
+        // success callback and if appropriate discard changes
+        if (that.view) { that.view.restoreState(); } // revert changes in view back to original state before jumping to next tab as for Backlog settings we store the complete DOM and don't use front end templates
+        that.view = new App.Views.BacklogSettings.Show({ model: model, sprintTabsView: that.sprintTabsView });
         that.view.render();
+        that.sprintTabsView.select(model);
         // store current tab so we can revert if necessary
         that.currentIteration = model.get('iteration');
       }, function() {

@@ -20,3 +20,8 @@
   %br/
   = f.submit "Create new backlog"
   = link_to "cancel", account_path(current_account)
+
+:javascript
+  $(function() {
+    App.Views.BacklogCreateUpdateMethods.initializeManageBacklog();
+  });

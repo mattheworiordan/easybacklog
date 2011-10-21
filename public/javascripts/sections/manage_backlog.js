@@ -1,6 +1,6 @@
 /*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
 
-App.Views.BacklogSettings.ShowBacklogMethods = (function() {
+App.Views.BacklogCreateUpdateMethods = (function() {
   function initializeManageBacklog() {
     var excludeThisBacklog = '';
     if (isEditingBacklog()) {
@@ -49,14 +49,17 @@ App.Views.BacklogSettings.ShowBacklogMethods = (function() {
       setCompanyVisibility();
     })
     // show new company text boxes
-    $('a#add_new_company').click(function() {
+    $('a#add_new_company').click(function(event) {
+      event.preventDefault();
       $('.client-select .existing').hide();
       $('.client-select .new').show();
+      return;
       setAccountDefaults(); // use account defaults as adding a new company
       $('input#company_name').focus();
     });
     // show drop down of existing companies
-    $('a#select_an_existing_company').click(function() {
+    $('a#select_an_existing_company').click(function(event) {
+      event.preventDefault();
       $('input#company_name').val('');
       $('.client-select .existing').show();
       $('.client-select .new').hide();
@@ -70,7 +73,7 @@ App.Views.BacklogSettings.ShowBacklogMethods = (function() {
     if ($('.not-editable-notice').length) {
       $('input[type=text],input[type=checkbox],select').attr('disabled', true);
       $('#backlog_has_company_false, #backlog_has_company_true').attr('disabled', true);
-      $('.new-company').remove();
+      $('.client-select .new-company').hide();
     }
   };
 
@@ -86,12 +89,12 @@ App.Views.BacklogSettings.ShowBacklogMethods = (function() {
       $('.client-select').show();
       if ($('#backlog_company_id option').length > 0) {
         // existing companies exist so let user choose a company as first option
-        $('.client-select .existing').slideDown();
+        $('.client-select .existing').css('height','auto').slideDown(); // strange bug when redisplaying this tab height is set to 1px
         $('select#backlog_company_id').focus();
         getCompanyDefaults();
       } else {
         // no companies, force user to enter a new company name
-        $('.client-select .new').slideDown();
+        $('.client-select .new').css('height','auto').slideDown(); // strange bug when redisplaying this tab height is set to 1px
         $('.client-select .existing').hide();
         $('input#company_name').focus();
         setAccountDefaults(); // use account defaultas as adding a new company

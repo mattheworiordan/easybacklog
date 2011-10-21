@@ -7,33 +7,34 @@ App.Views.BacklogSettings = {
     stateHtml: false, // keeps state of HTML so we can determine if user has made changes and can ask to keep changes
 
     events: {
-      "click .delete-sprint": "deleteSprint",
-      "click #sprint_submit": "updateSprint",
-      "click #sprint_cancel": "cancel"
+      "click a.delete-sprint": "deleteSprint",
+      "click a#sprint_submit": "updateSprint",
+      "click a#sprint_cancel": "cancel"
     },
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
       this.sprintTabsView = this.options.sprintTabsView;
-      _.bindAll(this, 'storeBacklogSettings', 'retrieveBacklogSettings', 'deleteSprint', 'storeState', 'stateChanged');
+      _.bindAll(this, 'storeBacklogSettings', 'retrieveBacklogSettings', 'deleteSprint', 'storeState', 'stateChanged', 'restoreState');
     },
 
     render: function() {
       if (this.model.get('iteration') === 'Backlog') {
         this.retrieveBacklogSettings();
-        App.Views.BacklogSettings.ShowBacklogMethods.initializeManageBacklog(); // special non name spaced method to access manage_backlog.js initialize
+        App.Views.BacklogCreateUpdateMethods.initializeManageBacklog(); // special non name spaced method to access manage_backlog.js initialize
+        this.el = $('section.content .backlog-settings-body');
       } else {
         this.storeBacklogSettings();
         // these 2 areas fall outside the view technically
         $('section.title h1').html('Sprint ' + this.model.get('iteration') + ' settings');
         $('section.side-panel').html(JST['sprints/sprint-delete-panel']({ model: this.model }));
         $('section.side-panel a.delete-sprint').click(this.deleteSprint); // outside of the view DOM element
-        $(this.el).html(JST['sprints/edit-sprint']({ model: this.model }));
+        this.el = $('section.content .backlog-settings-body').html(JST['sprints/edit-sprint']({ model: this.model }));
         this.$('#start-on').datepicker().datepicker("setDate", parseRubyDate(this.model.get('start_on')));
 
         this.$('form').validate({
           rules: {
-            duration_days: {
+              duration_days: {
               required: true,
               digits: true,
               min: 1
@@ -85,13 +86,12 @@ App.Views.BacklogSettings = {
       if (!App.Views.BacklogSettings.fragments) {
         // only store if not already stored
         App.Views.BacklogSettings.fragments = {
-          'section.title h1': false,
+          'section.title .heading': false,
           'section.side-panel': false,
           'section.main-content-pod .backlog-settings-body': false
         };
         _(App.Views.BacklogSettings.fragments).each(function(val, key) {
           App.Views.BacklogSettings.fragments[key] = $(key).clone();
-          console.log($(key).clone().html());
         });
       }
     },
@@ -101,7 +101,7 @@ App.Views.BacklogSettings = {
       if (App.Views.BacklogSettings.fragments) {
         // only retrieve if not already retrieved or already visible (i.e. multiple clicks on the backlog tab)
         _(App.Views.BacklogSettings.fragments).each(function(val, key) {
-          $(key).html(App.Views.BacklogSettings.fragments[key].html());
+          $(key).replaceWith(App.Views.BacklogSettings.fragments[key]);
         });
       }
       delete App.Views.BacklogSettings.fragments;

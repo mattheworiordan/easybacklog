@@ -4,10 +4,12 @@
 - content_for :head do
   = include_javascripts :backlog
   = include_javascripts :validation
+  = include_javascripts :backlog_settings
   = include_javascripts :manage_backlog
 
 - content_for :title do
-  %h1= page_title
+  .heading
+    %h1= page_title
   - unless @backlog.is_snapshot?
     #backlog-settings-tabs
       %ul.infinite-tabs

@@ -32,9 +32,10 @@ javascripts:
     - public/javascripts/sections/users.js
   register:
     - public/javascripts/sections/register.js
-  manage_backlog:
+  backlog_settings:
     - public/javascripts/views/backlog_settings.js
     - public/javascripts/routers/backlog_settings_router.js
+  manage_backlog:
     - public/javascripts/sections/manage_backlog.js
   validation:
     - public/javascripts/vendor/conditional/jquery.validate.js
