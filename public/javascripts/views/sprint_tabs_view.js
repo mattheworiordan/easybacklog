@@ -81,17 +81,21 @@ App.Views.SprintTabs = {
 
     // select the tab represented by this model
     select: function(model) {
+      var infinityTab = this.$('ul.infinite-tabs'),
+          currentActive = this.$('li.active');
+      if (currentActive.length) {
+        infinityTab.infiniteTabs('set-tab-content', currentActive, currentActive.find('a').html().replace(/^\s*Sprint (\d+)\s*$/, '$1'));
+      }
       var tab = this.$('li#' + this.childId(model))
       tab.parents('.infinite-tabs').find('li').removeClass('active');
       tab.addClass('active');
+      infinityTab.infiniteTabs('set-tab-content', tab, tab.find('a').html().replace(/^\s*(\d+)\s*$/, "Sprint $1"));
     },
 
     // restore tab back to previous state i.e. when user cancels a tab change because of changes
     restoreTab: function(iteration) {
       var model = this.getModelFromIteration(iteration);
-      var thisTab = this.$('li#' + this.childId(model));
-      thisTab.parents('.infinite-tabs').find('li').removeClass('active');
-      thisTab.addClass('active');
+      this.select(model);
     },
 
     destroy: function(model, callback) {
@@ -265,8 +269,6 @@ App.Views.SprintTabs = {
     },
 
     activate: function() {
-      $(this.el).parents('.infinite-tabs').find('li').removeClass('active');
-      $(this.el).addClass('active');
       this.router.navigate(String(this.model.get('iteration')), true);
     }
   })
