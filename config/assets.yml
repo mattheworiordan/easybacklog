@@ -19,14 +19,14 @@ javascripts:
     - public/javascripts/collections/**/*.js
     - public/javascripts/controllers/**/*.js
     - public/javascripts/views/base/*.js
-    - public/javascripts/views/acceptance_criteria.js
-    - public/javascripts/views/backlogs.js
-    - public/javascripts/views/backlog_stats.js
-    - public/javascripts/views/notice.js
-    - public/javascripts/views/sprints.js
-    - public/javascripts/views/sprint_tabs.js
-    - public/javascripts/views/stories.js
-    - public/javascripts/views/themes.js
+    - public/javascripts/views/acceptance_criteria_view.js
+    - public/javascripts/views/backlogs_view.js
+    - public/javascripts/views/backlog_stats_view.js
+    - public/javascripts/views/notice_view.js
+    - public/javascripts/views/sprints_view.js
+    - public/javascripts/views/sprint_tabs_view.js
+    - public/javascripts/views/stories_view.js
+    - public/javascripts/views/themes_view.js
     - public/javascripts/routers/backlog_router.js
   ie_compatibility:
     - public/javascripts/ie_compatibility/*
@@ -35,7 +35,7 @@ javascripts:
   register:
     - public/javascripts/sections/register.js
   backlog_settings:
-    - public/javascripts/views/backlog_settings.js
+    - public/javascripts/views/backlog_settings_view.js
     - public/javascripts/routers/backlog_settings_router.js
   manage_backlog:
     - public/javascripts/sections/manage_backlog.js
