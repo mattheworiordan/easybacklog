@@ -21,7 +21,9 @@ javascripts:
     - public/javascripts/views/base/*.js
     - public/javascripts/views/acceptance_criteria.js
     - public/javascripts/views/backlogs.js
+    - public/javascripts/views/backlog_stats.js
     - public/javascripts/views/notice.js
+    - public/javascripts/views/sprints.js
     - public/javascripts/views/sprint_tabs.js
     - public/javascripts/views/stories.js
     - public/javascripts/views/themes.js

@@ -57,7 +57,7 @@ Ibacklog::Application.routes.draw do
     resources :acceptance_criteria
   end
 
-  get '/sprint-statuses' => 'sprint_statuses#index'
+  get '/sprint-story-statuses' => 'sprint_story_statuses#index'
 
   resources :beta_signups, :only => [:index, :create, :show]
 

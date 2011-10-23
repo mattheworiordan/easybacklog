@@ -92,7 +92,7 @@
       var router = new App.Routers.BacklogSettings();
 
       var backlog = new Backlog({ id: #{@backlog.id} });
-      App.Collections.SprintStatuses = new SprintStatusesCollection(#{embedded_json_safe sprint_statuses_json});
+      App.Collections.SprintStoryStatuses = new SprintStoryStatusesCollection(#{embedded_json_safe sprint_story_statuses_json});
       App.Collections.Sprints = new SprintsCollection(#{embedded_json_safe sprints_json(@backlog)}, { backlog: backlog });
 
       var sprintTabs = new App.Views.SprintTabs.Index({ collection: App.Collections.Sprints, el: $('#backlog-settings-tabs'), router: router });

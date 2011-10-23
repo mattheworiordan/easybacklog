@@ -1,5 +1,5 @@
 $tab-background-color: #88b6e6; /* background color of tabs */
-$active-tab-background-color: #fff; /* background color of selected tab */
+$active-tab-background-color: #FAFAFA; /* background color of selected tab */
 $tab-container-background-color: #4070b8; /* background color of the space the tabs are contained within, must be solid colour */
 $tab-container-margin: 5px; /* left & right margin of tabs, can set to zero but left and right rounded bottom corners may not appear */
 $tab-padding-width: 10px;
@@ -10,13 +10,15 @@ $tab-background-color-alternate: lighten($tab-background-color, 10%);
 $tab-button-divider-color: ($tab-background-color + $tab-container-background-color) / 2;
 $shadow-color: $tab-container-background-color;
 
+$base-zindex: 3;
+
 ul.infinite-tabs {
   list-style: none;
   margin: 0 $tab-container-margin;
   zoom: 1;
 
   li.scroller {
-    z-index: 1;
+    z-index: $base-zindex;
     div {
       width: 50px;
       overflow: hidden;
@@ -65,7 +67,7 @@ ul.infinite-tabs {
   li {
     /* Makes a horizontal row */
     float: left;
-    z-index: 2;
+    z-index: $base-zindex + 1;
 
     /* So the psueudo elements can be abs. positioned inside */
     position: relative;
@@ -103,7 +105,7 @@ ul.infinite-tabs {
 
     &.active {
       /* Highest, active tab is on top */
-      z-index: 3;
+      z-index: $base-zindex + 2;
 
       a {
         /* Colors when tab is active */
@@ -129,7 +131,7 @@ ul.infinite-tabs {
     &.active:before, &.active:after {
       background: $active-tab-background-color;
       /* Squares below circles */
-      z-index: 1;
+      z-index: $base-zindex;
     }
 
     /* Squares */
@@ -165,7 +167,7 @@ ul.infinite-tabs {
       background: $tab-container-background-color;
 
       /* Quarter circles over squares */
-      z-index: 2;
+      z-index: $base-zindex + 1;
     }
     a:after {
       width: $tab-corner-radius;
@@ -178,7 +180,7 @@ ul.infinite-tabs {
       background: $tab-container-background-color;
 
       /* Quarter circles over squares */
-      z-index: 2;
+      z-index: $base-zindex + 1;
     }
 
     &.active a:after, &.active a:before {
@@ -208,7 +210,7 @@ ul.infinite-tabs {
       &:after, &:before {
         display:none;
       }
-      z-index: 4;
+      z-index: $base-zindex + 3;
       position: absolute;
       display: none; /* not visible by default */
 

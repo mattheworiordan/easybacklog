@@ -1,0 +1,23 @@
+$default-main-content-margin: 12px;
+
+section.main-content-pod {
+  &.showing-backlog {
+    #sprints-container, #stats-container {
+      display: none;
+    }
+  }
+  &.showing-sprints {
+    margin-left: $default-main-content-margin;
+    margin-right: $default-main-content-margin;
+    #backlog-container, #stats-container {
+      display: none;
+    }
+  }
+  &.showing-stats {
+    margin-left: $default-main-content-margin;
+    margin-right: $default-main-content-margin;
+    #sprints-container, #backlog-container {
+      display: none;
+    }
+  }
+}

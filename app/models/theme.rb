@@ -1,5 +1,5 @@
 class Theme < ActiveRecord::Base
-  acts_as_list
+  acts_as_list :scope => :backlog
 
   belongs_to :backlog
   validates_presence_of :backlog

@@ -2,7 +2,7 @@ class BacklogsController < ApplicationController
   include AccountResource
   after_filter :update_backlog_metadata, :only => [:update]
   basic_allowed :name_available
-  BACKLOG_INCLUDES = [:themes, :sprints, { :themes => { :stories => :acceptance_criteria } }, { :sprints => :stories } ]
+  BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => :story } } ]
 
   def show
     begin
@@ -162,10 +162,11 @@ class BacklogsController < ApplicationController
     backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_editable]
     theme_fields = [:id, :name, :code, :position]
     sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days]
-    sprint_story_fields = [:id, :theme_id, :sprint_status_id]
+    sprint_story_fields = [:id, :story_id, :sprint_story_status_id, :position]
     story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
     criteria_fields =  [:id, :criterion, :position]
-    backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
+
+    @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
       :include =>
       { :themes =>
         { :only => theme_fields,
@@ -184,8 +185,11 @@ class BacklogsController < ApplicationController
         { :only => sprint_fields,
           :methods => :completed?,
           :include =>
-          { :stories =>
-            { :only => sprint_story_fields }
+          { :sprint_stories =>
+            {
+              :only => sprint_story_fields,
+              :methods => :theme_id
+            }
           }
         }
       })
@@ -193,7 +197,7 @@ class BacklogsController < ApplicationController
   helper_method :backlog_json
 
   def sprints_json(backlog)
-    backlog.sprints.to_json(:only => [:id, :iteration, :start_on, :number_team_members, :duration_days], :methods => [:completed?, :deletable?])
+    @backlog.sprints.to_json(:only => [:id, :iteration, :start_on, :number_team_members, :duration_days], :methods => [:completed?, :deletable?])
   end
   helper_method :sprints_json
 

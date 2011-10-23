@@ -4,8 +4,12 @@ class SprintsController < ApplicationController
   SPRINT_METHODS = [:completed?, :deletable?]
 
   def index
-    @sprints = @backlog.sprints.find(:all, :include => :stories)
-    render :json => @sprints.to_json(:include => { :stories => { :only => [:id, :theme_id, :sprint_status_id] } }, :methods => SPRINT_METHODS)
+    @sprints = @backlog.sprints.find(:all, :include => { :sprint_stories => :story })
+    render :json => @sprints.to_json(:include => {
+      :sprint_stories =>
+        { :only => [:id, :story_id, :sprint_story_status_id, :position], :methods => :theme_id }
+      },
+      :methods => SPRINT_METHODS)
   end
 
   def show

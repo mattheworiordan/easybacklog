@@ -99,31 +99,13 @@ describe Story do
     story.score_90.should == 3
   end
 
-  it 'should assign the sprint scoring fields automatically when assigned to a sprint' do
-    story = Factory.create(:story, :score_50 => 1, :score_90 => 2)
-    sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id)
-    sprint.stories << story
-    story.sprint_score_50_when_assigned.should == 1
-    story.sprint_score_90_when_assigned.should == 2
-  end
-
-  it 'should not allow the sprint scoring fields to be modified directly' do
-    story = Factory.create(:story, :score_50 => 1, :score_90 => 2)
-    sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id)
-    sprint.stories << story
-    story.sprint_score_50_when_assigned = 2
-    story.sprint_score_90_when_assigned = 3
-    expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Sprint score 50 when assigned/
-    expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Sprint score 90 when assigned/
-  end
-
   it 'should not allow modification once marked as done' do
-    done = Factory.create(:sprint_status, :status => 'Done', :code => SprintStatus::DONE_CODE)
+    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     story = Factory.create(:story, :score_50 => 1)
     sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id)
     sprint.stories << story
 
-    story.sprint_status = done
+    story.sprint_story_status = done
     story.save!
     story.reload
 
@@ -131,27 +113,26 @@ describe Story do
     expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Changes to a completed story are not allowed/
   end
 
-  it 'should not allow to be assigned or removed (using sprint_id) from a sprint when the sprint is marked as complete' do
+  it 'should not allow to be assigned or removed from a sprint when the sprint is marked as complete' do
+    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     story = Factory.create(:story)
     sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id, :completed_at => Time.now)
     sprint.completed?.should == true
 
-    story.sprint_id = sprint.id
-    expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Cannot be assigned to or removed from a sprint that is completed/
+    expect { sprint.stories << story }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
 
     sprint.mark_as_incomplete
     story.reload
-    story.sprint_id = sprint.id
-    expect { story.save! }.should_not raise_error
+    expect { sprint.stories << story }.should_not raise_error
 
+    story.sprint_story_status = done
+    sprint.reload
     sprint.mark_as_complete
     story.reload
-    story.sprint_id = nil
-    expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Cannot be assigned to or removed from a sprint that is completed/
+    expect { sprint.stories.destroy(story) }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
 
     sprint.mark_as_incomplete
     story.reload
-    story.sprint_id = nil
-    expect { story.save! }.should_not raise_error
+    expect { sprint.stories.destroy(story) }.should_not raise_error
   end
 end

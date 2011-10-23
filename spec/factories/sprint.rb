@@ -7,5 +7,4 @@ Factory.define :sprint do |a|
   a.number_team_members 2
   a.duration_days 10
   a.association :backlog, :factory => :backlog
-  a.association :sprint_status, :factory => :sprint_status
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111014163559) do
+ActiveRecord::Schema.define(:version => 20111022170035) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -106,12 +106,27 @@ ActiveRecord::Schema.define(:version => 20111014163559) do
     t.datetime "updated_at"
   end
 
-  create_table "sprint_statuses", :force => true do |t|
+  create_table "sprint_stories", :force => true do |t|
+    t.integer  "sprint_id",                     :null => false
+    t.integer  "story_id",                      :null => false
+    t.integer  "position"
+    t.integer  "sprint_score_50_when_assigned"
+    t.integer  "sprint_score_90_when_assigned"
+    t.integer  "sprint_story_status_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sprint_stories", ["sprint_id", "story_id"], :name => "index_sprint_stories_on_sprint_id_and_story_id"
+  add_index "sprint_stories", ["sprint_id"], :name => "index_sprint_stories_on_sprint_id"
+  add_index "sprint_stories", ["story_id"], :name => "index_sprint_stories_on_story_id"
+
+  create_table "sprint_story_statuses", :force => true do |t|
     t.string "status"
     t.string "code"
   end
 
-  add_index "sprint_statuses", ["code"], :name => "index_sprint_statuses_on_code"
+  add_index "sprint_story_statuses", ["code"], :name => "index_sprint_statuses_on_code"
 
   create_table "sprints", :force => true do |t|
     t.integer  "backlog_id",          :null => false
@@ -127,8 +142,8 @@ ActiveRecord::Schema.define(:version => 20111014163559) do
   add_index "sprints", ["backlog_id"], :name => "index_sprints_on_backlog_id"
 
   create_table "stories", :force => true do |t|
-    t.integer  "theme_id",                      :null => false
-    t.integer  "unique_id",                     :null => false
+    t.integer  "theme_id",   :null => false
+    t.integer  "unique_id",  :null => false
     t.string   "as_a"
     t.string   "i_want_to"
     t.string   "so_i_can"
@@ -139,14 +154,9 @@ ActiveRecord::Schema.define(:version => 20111014163559) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "color"
-    t.integer  "sprint_id"
-    t.integer  "sprint_score_50_when_assigned"
-    t.integer  "sprint_score_90_when_assigned"
-    t.integer  "sprint_status_id"
   end
 
   add_index "stories", ["as_a"], :name => "index_stories_on_as_a"
-  add_index "stories", ["sprint_id"], :name => "index_stories_on_sprint_id"
   add_index "stories", ["theme_id", "unique_id"], :name => "index_stories_on_theme_id_and_unique_id", :unique => true
   add_index "stories", ["theme_id"], :name => "index_stories_on_theme_id"
 

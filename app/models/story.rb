@@ -1,23 +1,21 @@
 class Story < ActiveRecord::Base
-  acts_as_list
+  acts_as_list :scope => :theme
 
   belongs_to :theme
-  belongs_to :sprint
+  has_one :sprint, :through => :sprint_story
+  has_one :sprint_story, :dependent => :destroy
   has_many :acceptance_criteria, :dependent => :destroy, :order => 'position'
-  belongs_to :sprint_status
 
   validates_presence_of :theme
   validates_uniqueness_of :unique_id, :scope => [:theme_id], :message => 'ID has already been taken'
   validates_numericality_of :score_50, :score_90, :allow_nil => true
   validates_numericality_of :unique_id, :greater_than => 0, :allow_nil => true, :message => 'ID must be a number greater than or equal to one'
   validates_format_of :score_50, :score_90, :with => /^(0|1|2|3|5|8|13|21)$/, :message => 'must be in the Fibonacci sequence and less than or equal to 21', :allow_nil => true
-  validates_numericality_of :sprint_score_50_when_assigned, :sprint_score_90_when_assigned, :allow_nil => true
   validate :score_90_greater_than_50
 
   before_save :assign_unique_id
   before_save :check_can_modify # Snapshot method
-  before_save :assign_sprint_scores_when_assigned
-  before_validation :protect_sprint_scores_when_assigned, :prevent_changes_when_done, :prevent_assign_to_sprint_when_complete
+  before_validation :prevent_changes_when_done
 
   attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :score, :position, :color
 
@@ -72,7 +70,20 @@ class Story < ActiveRecord::Base
 
   # story is marked as done and assigned to a sprint
   def done?
-    self.sprint.present? && self.sprint_status.present? && self.sprint_status.code == SprintStatus::DONE_CODE
+    self.sprint.present? && self.sprint_story_status.present? && self.sprint_story_status.code == SprintStoryStatus::DONE_CODE
+  end
+
+  def sprint_story_status=(status)
+    if (self.sprint_story.present?)
+      self.sprint_story.sprint_story_status = status
+      self.sprint_story.save!
+    else
+      raise 'Story is not assigned to a sprint'
+    end
+  end
+
+  def sprint_story_status
+    self.sprint_story.present? && self.sprint_story.sprint_story_status
   end
 
   private
@@ -107,30 +118,8 @@ class Story < ActiveRecord::Base
       end
     end
 
-    # for reporting purposes, when a story is assigned to a sprint, store the scores at that time so we can report on change during a sprint
-    def assign_sprint_scores_when_assigned
-      if sprint_id_changed?
-        self.sprint_score_50_when_assigned = score_50
-        self.sprint_score_90_when_assigned = score_90
-      end
-    end
-
-    # changes to scores stored for reporting purposes must only be changed by this model
-    def protect_sprint_scores_when_assigned
-      message = 'is not editable'
-      errors.add :sprint_score_50_when_assigned, message if sprint_score_50_when_assigned_changed?
-      errors.add :sprint_score_90_when_assigned, message if sprint_score_90_when_assigned_changed?
-    end
-
     def prevent_changes_when_done
-      errors.add :base, 'Changes to a completed story are not allowed' if done? && !sprint_status_id_changed?
-    end
-
-    def prevent_assign_to_sprint_when_complete
-      if (sprint.present? && sprint.completed?) ||
-        sprint_id_was.present? && Sprint.find(sprint_id_was).completed?
-        errors.add :sprint_id, 'Cannot be assigned to or removed from a sprint that is completed'
-      end
+      errors.add :base, 'Changes to a completed story are not allowed' if done?
     end
 end
 

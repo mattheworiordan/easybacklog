@@ -1,5 +1,5 @@
 class AcceptanceCriterion < ActiveRecord::Base
-  acts_as_list
+  acts_as_list :scope => :story
 
   belongs_to :story
 

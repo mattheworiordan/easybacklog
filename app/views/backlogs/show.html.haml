@@ -78,6 +78,8 @@
 
 #backlog-container
   = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
+#sprints-container
+#stats-container
 
 #loading-new-snapshot
   %div.background.ui-widget-overlay
@@ -93,13 +95,11 @@
 
     var router = new App.Routers.Backlog();
 
-    App.Collections.SprintStatuses = new SprintStatusesCollection(#{embedded_json_safe sprint_statuses_json});
+    App.Collections.SprintStoryStatuses = new SprintStoryStatusesCollection(#{embedded_json_safe sprint_story_statuses_json});
     App.Collections.Backlogs = new BacklogsCollection(false, { account_id: #{@backlog.account.id} });
     var thisBacklog = new Backlog(#{embedded_json_safe backlog_json(@backlog)});
     App.Collections.Backlogs.add(thisBacklog);
 
-    var view = new App.Views.Backlogs.Show({ model: thisBacklog, el: $('#backlog-container') });
-    view.render();
     var sprintTabs = new App.Views.SprintTabs.Index({ collection: thisBacklog.Sprints(), el: $('#backlog-tabs'), router: router });
     sprintTabs.render();
 

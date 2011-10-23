@@ -1,8 +1,8 @@
 class Sprint < ActiveRecord::Base
   belongs_to :backlog
   has_one :snapshot, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :dependent => :destroy, :foreign_key => 'snapshot_for_sprint_id'
-  has_many :stories, :before_add => :check_editable_before_stories_changed, :before_remove => :check_editable_before_stories_changed
-  has_one :sprint_status
+  has_many :stories, :before_add => :check_editable_before_stories_changed, :before_remove => :check_editable_before_stories_changed, :through => :sprint_stories
+  has_many :sprint_stories
 
   validates_uniqueness_of :iteration, :scope => [:backlog_id], :message => 'has already been taken for another sprint'
   validates_presence_of :iteration, :start_on, :number_team_members, :duration_days
@@ -42,7 +42,7 @@ class Sprint < ActiveRecord::Base
       return false
     else
       # deletable if no sprint exist with a higher iteration than this one
-      return backlog.sprints.where('iteration > ?', [iteration]).blank?
+      return backlog.sprints.select { |s| s.iteration > self.iteration }.blank?
     end
   end
 
@@ -112,7 +112,7 @@ class Sprint < ActiveRecord::Base
     # ensure stories are all marked as done if this sprint is marked as complete, you cannot mark a sprint as complete with incomplete stories
     def ensure_all_stories_are_done
       if completed_at_changed? && completed_at.present?
-        if stories.reject { |s| s.sprint_status.present? && s.sprint_status.code == SprintStatus::DONE_CODE }.count > 0
+        if stories.reject { |s| s.sprint_story_status.present? && s.sprint_story_status.code == SprintStoryStatus::DONE_CODE }.count > 0
           errors.add :base, "Sprint cannot be marked as complete when it contains stories that are not done"
           return false
         end

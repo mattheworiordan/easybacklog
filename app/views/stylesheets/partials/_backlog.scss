@@ -56,7 +56,7 @@ section.for-backlog {
   margin-top: $ninesixty-vertical * 5;
   padding-right: 0;
   padding-left: 0;
-  section.main-content-pod {
+  section.main-content-pod.showing-backlog {
     @include drop-shadow(0px, 0px);
     padding: 12px $backlog-horizontal-padding 0 $backlog-horizontal-padding;
   }
@@ -99,7 +99,7 @@ section.content .not-editable-backlog-notice {
   top: $ninesixty-vertical * 2;
   left: 0;
   overflow: hidden;
-  height: 4.5em;
+  height: 56px;
   width: 100%;
   background-color: $title-area-color;
   z-index: 1;
@@ -233,10 +233,11 @@ section.content .not-editable-backlog-notice {
 #backlog-tabs {
   position: fixed;
   top: 63px;
+  left: 5px;
   #add-sprint {
     .ui-icon { background-image: url(/stylesheets/ui-lightness/images/ui-icons_ffffff_256x240.png); }
     position: absolute;
-    z-index: 10;
+    z-index: 3;
     margin: 3px 0 0 0;
     a {
       cursor: pointer;
@@ -245,11 +246,12 @@ section.content .not-editable-backlog-notice {
   }
   #protect-beneath-tabs {
     position: absolute;
-    left: -20px;
+    bottom: 0px;
+    left: -10px;
     width: 300px;
-    height: 30px;
-    z-index: 1;
+    height: 25px;
     background-color: $title-area-color;
+    z-index: 2;
   }
   > ul {
     margin-left: 22px;

@@ -7,12 +7,11 @@ describe Sprint do
     # get a backlog set up with at least one story
     acceptance_criterion = Factory.create(:acceptance_criterion)
     backlog = acceptance_criterion.story.theme.backlog
-    sprint_status = Factory.create(:sprint_status)
 
-    sprint = backlog.sprints.create!(:start_on => Date.today, :number_team_members => 2, :duration_days => 10, :sprint_status => sprint_status)
+    sprint = backlog.sprints.create!(:start_on => Date.today, :number_team_members => 2, :duration_days => 10)
     sprint.iteration.should == 1
 
-    sprint = backlog.sprints.create!(:start_on => Date.today + 10.days, :number_team_members => 2, :duration_days => 10, :sprint_status => sprint_status)
+    sprint = backlog.sprints.create!(:start_on => Date.today + 10.days, :number_team_members => 2, :duration_days => 10)
     sprint.iteration.should == 2
   end
 
@@ -72,11 +71,14 @@ describe Sprint do
   end
 
   it 'should not allow you to make changes once marked as completed' do
-    done = Factory.create(:sprint_status, :status => 'Done', :code => SprintStatus::DONE_CODE)
+    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     sprint1 = Factory.create(:sprint, :start_on => Date.today)
     theme = Factory.create(:theme, :backlog_id => sprint1.backlog.id)
-    story = Factory.create(:story, :theme_id => theme.id, :sprint_status_id => done.id)
-    sprint1.stories << story
+    story1 = Factory.create(:story, :theme_id => theme.id)
+
+    sprint1.stories << story1
+    story1.reload
+    story1.sprint_story_status = done
 
     # now mark as completed (read-only)
     sprint1.completed_at = Time.now
@@ -95,7 +97,7 @@ describe Sprint do
   end
 
   it 'should not allow to be marked as complete if any of the stories are not done' do
-    done = Factory.create(:sprint_status, :status => 'Done', :code => SprintStatus::DONE_CODE)
+    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     sprint = Factory.create(:sprint, :start_on => Date.today)
     theme = Factory.create(:theme, :backlog_id => sprint.backlog.id)
 
@@ -103,14 +105,14 @@ describe Sprint do
     expect { sprint.mark_as_complete }.should_not raise_error
 
     sprint.mark_as_incomplete
-    Factory.create(:story, :theme_id => theme.id, :sprint_id => sprint.id)
+    sprint.stories << Factory.create(:story, :theme_id => theme.id)
     sprint.reload
     expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
 
-    sprint.stories.first.sprint_status = done
+    sprint.stories.first.sprint_story_status = done
     expect { sprint.mark_as_incomplete }.should_not raise_error
 
-    Factory.create(:story, :theme_id => theme.id, :sprint_id => sprint.id)
+    sprint.stories << Factory.create(:story, :theme_id => theme.id)
     sprint.reload
     expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
   end

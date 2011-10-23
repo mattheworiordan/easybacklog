@@ -149,7 +149,7 @@ describe Backlog do
   it 'should provide a compare_with method returning a comparison object' do
     # create a simple base which has two stories, two themes, and two acceptance criterion on the first story
     @base = Factory.create(:acceptance_criterion).story.theme.backlog
-    @base.themes[0].stories[0].update_attributes :score_50 => 1, :score_90 => 21
+    @base.themes[0].stories[0].update_attributes :score_50 => 1, :score_90 => 21, :as_a => 'As story 1'
 
     empty_backlog = Factory.create(:backlog)
     # compare with an empty backlog as target (newer)
@@ -167,7 +167,7 @@ describe Backlog do
     # add two additional criterion to the base, one story and one theme to index 0 of theme, story and backlog
     Factory.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
     Factory.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
-    Factory.create(:story, :theme => @base.themes.first)
+    Factory.create(:story, :theme => @base.themes.first, :as_a => 'As story 2')
     Factory.create(:theme, :backlog => @base)
 
     # base is typically the older version
@@ -221,9 +221,9 @@ describe Backlog do
     comparison.themes[2].should be_new
 
     # story changes
-    story_3 = Factory.create(:story, :theme => @target.themes[0]) # create a new story in target
-    story_4 = Factory.create(:story, :theme => @target.themes[0]) # create a new story in target
-    story_5 = Factory.create(:story, :theme => @target.themes[0]) # create a new story in target
+    story_3 = Factory.create(:story, :theme => @target.themes[0], :as_a => 'As story 3') # create a new story in target
+    story_4 = Factory.create(:story, :theme => @target.themes[0], :as_a => 'As story 4') # create a new story in target
+    story_5 = Factory.create(:story, :theme => @target.themes[0], :as_a => 'As story 5') # create a new story in target
     story_4.move_to_bottom # this should be listed as the last story in target collection
     @target.themes[0].stories[1].destroy # remove the second existing story in target, now index 1 will be the new item from above
     @target.themes[0].stories[0].as_a = 'Changed the as_a field' # change the as_a field in 2nd story of 1st theme

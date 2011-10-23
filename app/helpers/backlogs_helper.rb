@@ -8,7 +8,7 @@ module BacklogsHelper
     json.gsub(/<\/script>/i,'<" + "/script>')
   end
 
-  def sprint_statuses_json
-    SprintStatus.all.to_json
+  def sprint_story_statuses_json
+    SprintStoryStatus.all.to_json
   end
 end
