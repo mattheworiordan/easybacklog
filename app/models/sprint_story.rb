@@ -11,6 +11,8 @@ class SprintStory < ActiveRecord::Base
   before_save :assign_sprint_scores_when_assigned
   before_validation :protect_sprint_scores_when_assigned, :prevent_assign_to_sprint_when_complete
 
+  attr_accessible :position, :sprint_story_status_id, :sprint_id, :story_id
+
   def theme_id
     if story.present?
       story.theme_id

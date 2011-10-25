@@ -14,5 +14,15 @@ var SprintStoriesCollection = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.sprint = options ? options.sprint : null;
+  },
+
+  getByStoryId: function(storyId) {
+    var sprintStoryMatch = null;
+    this.each(function (sprintStory) {
+      if (Number(sprintStory.get('story_id')) === Number(storyId)) {
+        sprintStoryMatch = sprintStory;
+      }
+    });
+    return sprintStoryMatch;
   }
 });

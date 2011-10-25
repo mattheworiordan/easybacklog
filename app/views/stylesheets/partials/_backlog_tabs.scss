@@ -239,6 +239,14 @@ section.showing-sprints {
     }
   }
 
+  .story-card-place-holder {
+    border: 2px dashed #999;
+    @include border-radius(3px);
+    height: 85px;
+    margin-top: 10px;
+    background-color: #EEE;
+  }
+
   .contracted-unassigned-stories {
     .unassigned-stories-container {
       .story-card {

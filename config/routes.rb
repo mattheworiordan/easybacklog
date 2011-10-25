@@ -46,6 +46,9 @@ Ibacklog::Application.routes.draw do
     end
     resources :sprints
   end
+  resources :sprints, :only => [:show] do
+    resources :sprint_stories, :path => "sprint-stories"
+  end
   resources :themes, :only => [:show] do
     resources :stories do
       member do
