@@ -1,15 +1,17 @@
 App.Routers.Backlog = Backbone.Router.extend({
   backlogView: false,
+  oldView: false,
 
   routes: {
     '': 'showBacklog',
     'Backlog': 'showBacklog',
     'Stats': 'showStats',
-    ':iteration': 'viewSprint' // #1,#2,#3 etc.
+    'Sprints': 'showSprintsHelp',
+    ':iteration': 'showSprint' // #1,#2,#3 etc.
   },
 
   initialize: function(options) {
-    _.bindAll(this, 'setTabsReference');
+    _.bindAll(this, 'setTabsReference', 'cleanUpOldView');
   },
 
   // need a reference set to the tabs so that we can obtain the model from the index view which may differ somewhat from the
@@ -19,6 +21,7 @@ App.Routers.Backlog = Backbone.Router.extend({
   },
 
   showBacklog: function() {
+    this.cleanUpOldView();
     if (!this.backlogView) {
       this.backlogView = new App.Views.Backlogs.Show({ model: App.Collections.Backlogs.at(0), el: $('#backlog-container') });
       this.showContainer('#backlog-container'); // needs to be visible as render sets focus on first theme
@@ -30,21 +33,33 @@ App.Routers.Backlog = Backbone.Router.extend({
   },
 
   showStats: function() {
-    var view = new App.Views.BacklogStats.Show({ model: App.Collections.Backlogs.at(0), el: this.replaceWithNew('#stats-container') });
+    this.cleanUpOldView();
+    this.oldView = new App.Views.BacklogStats.Show({ model: App.Collections.Backlogs.at(0), el: this.replaceWithNew('#stats-container') });
     this.showContainer('#stats-container');
-    view.render();
+    this.oldView.render();
     this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration('Stats'));
   },
 
-  viewSprint: function(iteration) {
+
+  showSprintsHelp: function() {
+    this.cleanUpOldView();
+    this.oldView = new App.Views.Sprints.Help({ sprintTabsView: this.sprintTabsView, el: this.replaceWithNew('#sprints-help-container') });
+    this.showContainer('#sprints-help-container');
+    this.oldView.render();
+    this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration('Sprints'));
+  },
+
+  showSprint: function(iteration) {
     var model = this.sprintTabsView.getModelFromIteration(iteration);
+
+    this.cleanUpOldView();
 
     if (!model) {
       var err = new App.Views.Error({ message: 'Internal error, could not display sprint correctly.  Please refresh your browser' });
     } else {
-      this.view = new App.Views.Sprints.Show({ model: model, el: this.replaceWithNew('#sprints-container') });
+      this.oldView = new App.Views.Sprints.Show({ model: model, el: this.replaceWithNew('#sprints-container') });
       this.showContainer('#sprints-container');
-      this.view.render();
+      this.oldView.render();
       this.sprintTabsView.select(model);
     }
   },
@@ -58,10 +73,19 @@ App.Routers.Backlog = Backbone.Router.extend({
 
   // set the class on the main content pod which in turns toggles visiblity of divs and sets styles
   showContainer: function(container) {
-    containers = ['#sprints-container', '#stats-container', '#backlog-container'];
+    containers = ['#sprints-container', '#sprints-help-container', '#stats-container', '#backlog-container'];
     _(containers).each(function(elem) {
       $('section.main-content-pod').removeClass('showing-' + elem.replace(/#|\-container/gi,''));
     });
     $('section.main-content-pod').addClass('showing-' + container.replace(/#|\-container/gi,''));
+  },
+
+  cleanUpOldView: function() {
+    if (this.oldView) {
+      if (_.isFunction(this.oldView.cleanUp)) {
+        this.oldView.cleanUp();
+      }
+      this.oldView = false;
+    }
   }
 });

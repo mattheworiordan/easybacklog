@@ -2,14 +2,14 @@ $default-main-content-margin: 12px;
 
 section.main-content-pod {
   &.showing-backlog {
-    #sprints-container, #stats-container {
+    #sprints-container, #stats-container, #sprints-help-container {
       display: none;
     }
   }
   &.showing-sprints {
     margin-left: $default-main-content-margin;
     margin-right: $default-main-content-margin;
-    #backlog-container, #stats-container {
+    #backlog-container, #stats-container, #sprints-help-container {
       display: none;
     }
     #sprints-container {
@@ -19,7 +19,14 @@ section.main-content-pod {
   &.showing-stats {
     margin-left: $default-main-content-margin;
     margin-right: $default-main-content-margin;
-    #sprints-container, #backlog-container {
+    #sprints-container, #backlog-container, #sprints-help-container {
+      display: none;
+    }
+  }
+  &.showing-sprints-help {
+    margin-left: $default-main-content-margin;
+    margin-right: $default-main-content-margin;
+    #sprints-container, #backlog-container, #stats-container {
       display: none;
     }
   }
@@ -264,5 +271,12 @@ section.showing-sprints {
         }
       }
     }
+  }
+}
+
+section.side-panel {
+  .button-help {
+    padding: 10px 10px 0 0;
+    color: #666;
   }
 }

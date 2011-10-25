@@ -99,6 +99,31 @@ App.Views.Sprints = {
     }
   }),
 
+  Help: App.Views.BaseView.extend({
+    pod: false,
+
+    initialize: function(options) {
+      App.Views.BaseView.prototype.initialize.call(this);
+      this.sprintTabsView = options.sprintTabsView;
+      _.bindAll(this, 'addSprint');
+    },
+
+    render: function() {
+      $(this.el).html(JST['sprints/help']());
+      this.pod = $(JST['sprints/help-pod']());
+      this.pod.find('a.add-new-sprint').click(this.addSprint);
+      $('section.main-content-pod').before(this.pod);
+    },
+
+    addSprint: function(event) {
+      this.sprintTabsView.createNew(event);
+    },
+
+    cleanUp: function() {
+      this.pod.remove();
+    }
+  }),
+
   SprintStory: App.Views.BaseView.extend({
     tagName: 'div',
     className: 'story-card',

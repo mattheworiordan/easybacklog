@@ -38,6 +38,11 @@ App.Views.SprintTabs = {
           locked: true
         });
       }
+      if (!this.isSettingsPage && !this.collection.length) {
+        pinnedTabs.push({
+          get: function() { return 'Sprints'; }
+        });
+      }
 
       // add special tabs + sprints
       _(pinnedTabs).each(addTabView);
@@ -77,7 +82,13 @@ App.Views.SprintTabs = {
 
       // add new view HTML to DOM
       var tabView = new App.Views.SprintTabs.Show({ model: model, id: this.childId(model), router: this.router });
-      $(this.el).find('li.scroller ul').prepend(tabView.render().el);
+      this.$('ul.infinite-tabs').infiniteTabs('prepend-tab', tabView.render().el);
+
+      // Sprints help tab is visible, let's hide it as we only want it when a sprint does not yet exist
+      if (this.models['Sprints']) {
+        this.$('ul.infinite-tabs').infiniteTabs('remove-tab', this.$('li#' + this.childId(this.models['Sprints'])));
+        delete this.models['Sprints'];
+      }
 
       // call the router to navigate to this tab
       this.router.navigate(model.get('iteration').toString(), true);
@@ -104,8 +115,7 @@ App.Views.SprintTabs = {
 
     destroy: function(model, callback) {
       var view = this;
-      this.$('li#' + this.childId(model)).remove();
-      this.$('.infinite-tabs').infiniteTabs('adjust-to-fit'); // reconfigure tabs as size has changed
+      this.$('ul.infinite-tabs').infiniteTabs('remove-tab', this.$('li#' + this.childId(model)));
       delete this.models[model.get('iteration')];
 
       if (model.get('iteration') > 1) {
