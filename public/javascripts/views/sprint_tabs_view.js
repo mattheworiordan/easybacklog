@@ -73,10 +73,14 @@ App.Views.SprintTabs = {
 
     // show the new sprint model added to collection
     showNew: function(model) {
+      this.models[model.get('iteration')] = model; // add to models cache
+
+      // add new view HTML to DOM
       var tabView = new App.Views.SprintTabs.Show({ model: model, id: this.childId(model), router: this.router });
       $(this.el).find('li.scroller ul').prepend(tabView.render().el);
-      $(tabView.render().el).click();
-      this.$('.infinite-tabs').infiniteTabs('adjust-to-fit'); // reconfigure tabs as size has changed
+
+      // call the router to navigate to this tab
+      this.router.navigate(model.get('iteration').toString(), true);
     },
 
     // select the tab represented by this model
@@ -102,6 +106,7 @@ App.Views.SprintTabs = {
       var view = this;
       this.$('li#' + this.childId(model)).remove();
       this.$('.infinite-tabs').infiniteTabs('adjust-to-fit'); // reconfigure tabs as size has changed
+      delete this.models[model.get('iteration')];
 
       if (model.get('iteration') > 1) {
         // reload the next in line tab as some settings will have changed now that it's the latest sprint (i.e. deletable? = true)
