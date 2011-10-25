@@ -1,0 +1,29 @@
+<div class="fields">
+  <div class="code">
+    <div class="heading">ID:</div>
+    <div class="data"><%= model.Theme().get('code')%><%= model.get('unique_id')%></div>
+  </div>
+  <div class="points">
+    <div class="heading">Points:</div>
+    <div class="data"><%= model.get('score_50')%>/<%= model.get('score_90')%></div>
+  </div>
+</div>
+
+<div class="story">
+  <div class="theme"><div class="heading">Theme:</div><div class="data"><%= htmlEncode(model.Theme().get('name')) %></div></div>
+  <div class="as-a"><div class="heading">As </div><div class="data"><%= htmlEncode(model.get('as_a')) %></div></div>
+  <div class="i-want-to"><div class="heading">I want to </div><div class="data"><%= multiLineHtmlEncode(model.get('i_want_to')) %></div></div>
+  <div class="so-i-can"><div class="heading">So I can </div><div class="data"><%= multiLineHtmlEncode(model.get('so_i_can')) %></div></div>
+</div>
+
+<div class="acceptance-criteria">
+  <ol>
+    <% model.AcceptanceCriteria().each(function(criterion) { %>
+      <li><%= multiLineHtmlEncode(criterion.get('criterion')) %></li>
+    <% }); %>
+  </ol>
+</div>
+
+<div class="more"><div class="tab"></div></div>
+
+<div class="move">move</div>

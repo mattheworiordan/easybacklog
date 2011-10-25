@@ -1,4 +1,10 @@
-<h2 class="divider">Sprint <%= model.get('iteration') %></h2>
+<h2 class="divider">Sprint <%= model.get('iteration') %> stories</h2>
 
-<div class="stories-container">
+<div class="all-stories">
+  <div class="stories-container story-droppable"></div>
+  <div class="unassigned-stories-heading">Unassigned stories</div>
+  <div class="stories-divider">
+    <div class="handle"><div class="change-size">expand</div></div>
+  </div>
+  <div class="unassigned-stories-container story-droppable"></div>
 </div>

@@ -12,12 +12,257 @@ section.main-content-pod {
     #backlog-container, #stats-container {
       display: none;
     }
+    #sprints-container {
+      margin-bottom: -15px;
+    }
   }
   &.showing-stats {
     margin-left: $default-main-content-margin;
     margin-right: $default-main-content-margin;
     #sprints-container, #backlog-container {
       display: none;
+    }
+  }
+}
+
+section.showing-sprints {
+  .all-stories {
+    overflow: hidden;
+    position: relative;
+    margin-top: -70px;
+    padding-top: 70px;
+  }
+  .stories-container, .unassigned-stories-container {
+    float: left;
+    width: 48.5%;
+    vertical-align: top;
+    min-height: 200px; /* for increased drop target when empty */
+    padding-bottom: 15px;
+  }
+  .unassigned-stories-container {
+    margin-left: 3%;
+  }
+  .stories-divider {
+    width: 1%;
+    vertical-align: top;
+    background-color: #CCC;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 49.5%;
+    .handle {
+      top: 23px;
+      left: 100%;
+      width: 100px;
+      position: absolute;
+      .change-size {
+        display: inline;
+        border: 1px solid #CCC;
+        border-width: 1px 1px 1px 0;
+        background-color: #FFF;
+        padding: 2px 10px 4px 10px;
+        @include border-radius(0 5px 5px 0);
+        color: #666;
+        cursor: pointer;
+        &:after {
+          content: " ⇉";
+          font-family: sans-serif;
+        }
+        &:before {
+          display: none;
+          content: "⇇ ";
+          font-family: sans-serif;
+        }
+        &:hover {
+          color: #000;
+          background-color: #EEE;
+        }
+      }
+    }
+  }
+  .unassigned-stories-heading {
+    top: 0;
+    width: 49.5%;
+    left: 50%;
+    height: 35px;
+    padding: 20px 0 0 20px;
+    position: absolute;
+    font-size: 17px;
+    font-family: $base-brand-font;
+    text-align: center;
+    color: $title-area-color;
+  }
+
+  .story-card {
+    border: 1px solid #DDD;
+    @include border-radius(3px);
+    @include single-box-shadow(#EEE, 0, 0, 3px, 1px);
+    margin-top: 8px;
+    overflow: hidden;
+    font-size: 12px;
+    position: relative;
+    background-color: #FFF;
+    cursor: move;
+
+    &.ui-sortable-helper {
+      @include rotate(-3deg);
+    }
+
+    .fields {
+      float: left;
+      width: 20%;
+      .code {
+        padding: 4px;
+        overflow: hidden;
+      }
+      .points {
+        padding: 0 4px 4px 4px;
+        overflow: hidden;
+      }
+    }
+    .story {
+      float: left;
+      width: 40%;
+      >div {
+        padding: 0 4px 0 4px;
+        overflow: hidden;
+      }
+    }
+    .acceptance-criteria {
+      float: left;
+      width: 40%;
+      ol {
+        margin: 0 4px 4px 0;
+      }
+    }
+
+    .heading {
+      color: rgba(0,0,0,0.6);
+      float: left;
+      padding-right: 0.25em;
+    }
+
+    .more {
+      bottom: 0px;
+      height: 0px;
+      position: absolute;
+      @include single-box-shadow(#CCC, 0, 0, 12px, 3px);
+      width: 100%;
+      display: none;
+      .tab {
+        cursor: pointer;
+        bottom: 0px;
+        position: absolute;
+        background-color: #FFF;
+        border: 1px solid #DDD;
+        border-width: 1px 1px 0 0;
+        @include border-radius(0 3px 0);
+        padding: 0 1em 0 1em;
+        font-size: 11px;
+        color: #666;
+        &:after {
+          content: " ⇊";
+          font-family: sans-serif;
+          font-size: 13px;
+        };
+        &:hover {
+          color: #000;
+          background-color: #EEE;
+        }
+      }
+      &.less {
+        @include single-box-shadow(#000, 0, 0, 0, 0);
+        .tab {
+          &:after {
+            content: " ⇈";
+          }
+        }
+      }
+    }
+
+    .move {
+      display: none;
+    }
+
+    &.hover {
+      background-color: #FAFAFA;
+      .move {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 50%;
+        margin-top: -24px;
+        cursor: pointer;
+        background-color: $title-area-color;
+        color: #FFF;
+        padding: 10px 15px 10px 15px;
+        font-size: 20px;
+        @include border-radius(10px 0 0 10px);
+        @include opacity(0.75);
+        &:after {
+          content: " ⇉";
+          font-family: sans-serif;
+        }
+        &:before {
+          display: none;
+          content: "⇇ ";
+          font-family: sans-serif;
+        }
+        &:hover {
+          @include opacity(1);
+        }
+      }
+    }
+  }
+
+  /* Move needs to be on the left hand side if story card is in unassigned-stories-container */
+  .unassigned-stories-container {
+    &:hover {
+      .move {
+        right: auto;
+        left: 0;
+        @include border-radius(0 10px 10px 0);
+        &:after {
+          display: none;
+        }
+        &:before {
+          display: inline;
+        }
+      }
+    }
+  }
+
+  .contracted-unassigned-stories {
+    .unassigned-stories-container {
+      .story-card {
+        .fields {
+          width: 35%;
+        }
+        .story {
+          width: 65%;
+        }
+        .acceptance-criteria {
+          display: none;
+        }
+      }
+    }
+    .stories-divider {
+      .handle {
+        left: auto;
+        right: 0;
+        text-align: right;
+        padding-right: 100%;
+        .change-size {
+          border-width: 1px 0 1px 1px;
+          @include border-radius(5px 0 0 5px);
+          &:before {
+            display: block;
+          }
+          &:after {
+            display: none;
+          }
+        }
+      }
     }
   }
 }
