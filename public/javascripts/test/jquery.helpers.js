@@ -1,10 +1,11 @@
 (function($) {
   $.fn.extend({
     outerHtml: function(limitChars) {
+      var html = this[0].outerHTML || new XMLSerializer().serializeToString(this[0]);
       if (limitChars && !isNaN(parseInt(limitChars))) {
-        return this[0].outerHTML.substring(0,limitChars);
+        return html.substring(0,limitChars);
       } else {
-        return this[0].outerHTML;
+        return html.outerHTML;
       }
     }
   });
