@@ -30,7 +30,7 @@ App.Routers.Backlog = Backbone.Router.extend({
   },
 
   showStats: function() {
-    var view = new App.Views.BacklogStats.Show({ model: App.Collections.Backlogs.at(0), el: $('#stats-container') });
+    var view = new App.Views.BacklogStats.Show({ model: App.Collections.Backlogs.at(0), el: this.replaceWithNew('#stats-container') });
     this.showContainer('#stats-container');
     view.render();
     this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration('Stats'));
@@ -42,11 +42,18 @@ App.Routers.Backlog = Backbone.Router.extend({
     if (!model) {
       var err = new App.Views.Error({ message: 'Internal error, could not display sprint correctly.  Please refresh your browser' });
     } else {
-      this.view = new App.Views.Sprints.Show({ model: model, el: $('#sprints-container') });
+      this.view = new App.Views.Sprints.Show({ model: model, el: this.replaceWithNew('#sprints-container') });
       this.showContainer('#sprints-container');
       this.view.render();
       this.sprintTabsView.select(model);
     }
+  },
+
+  replaceWithNew: function(nodePath) {
+    var oldNode = $(nodePath).empty(), // empty the node of all children
+        oldNodeHtml = oldNode[0].outerHTML || new XMLSerializer().serializeToString(oldNode[0]);
+    $(nodePath).replaceWith($(oldNodeHtml));
+    return $(nodePath);
   },
 
   // set the class on the main content pod which in turns toggles visiblity of divs and sets styles
