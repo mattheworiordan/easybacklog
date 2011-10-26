@@ -140,6 +140,7 @@ App.Views.Sprints = {
       // Remove SprintStory models from Sprint that are no longer in the list
       this.model.SprintStories().each(function(story) {
         if (!that.$('.stories-container #' + that.childId(story.Story())).length) {
+          $('.unassigned-stories-container #' + that.childId(story.Story())).data('reset-toggle')(); // show the more/less as necessary, contract after drag
           story.destroy({
             success: function(model, response) {
               that.updateStatistics(response.sprint_statistics);
@@ -158,6 +159,7 @@ App.Views.Sprints = {
       this.$('.stories-container .story-card').each(function(index, storyNode) {
         var storyId = Number($(storyNode).attr('id').replace('sprint-story-',''));
         if (!that.model.SprintStories().getByStoryId(storyId)) {
+          $(storyNode).data('reset-toggle')(); // show the more/less as necessary, contract after drag
           // we need to persist this sprint story as it's not in the SprintStories collection
           var newSprintStory = new SprintStory({
             story_id: $(storyNode).data('story_id'),
