@@ -55,7 +55,7 @@ App.Views.Sprints = {
       }).disableSelection();
 
       // ensure stories container is never completely off the screen when scrolling down
-      $(window).scroll(this.positionStoriesContainerOnScroll).resize(this.positionStoriesContainerOnScroll);
+      $(window).bind('scroll.sprints', this.positionStoriesContainerOnScroll).bind('resize.sprints', this.positionStoriesContainerOnScroll);
 
       // set up a mouse tracker if one does not exist already so we can track where the mouse is
       // and when we move an element under the cursor, we can trigger hover
@@ -208,6 +208,10 @@ App.Views.Sprints = {
       if (storyContainer.css('width') !== storiesWidth + 'px') {
         storyContainer.css('width', storiesWidth + 'px');
       }
+    },
+
+    cleanUp: function() {
+      $(window).unbind('.sprints');
     }
   }),
 
