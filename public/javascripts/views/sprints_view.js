@@ -8,9 +8,10 @@ App.Views.Sprints = {
       "click .stories-divider .change-size": "toggleUnassignedStoriesSize"
     },
 
-    initialize: function() {
+    initialize: function(options) {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'toggleMore', 'persistSprintStories', 'positionStoriesContainerOnScroll');
+      this.sprintTabsView = options.sprintTabsView;
+      _.bindAll(this, 'toggleMore', 'persistSprintStories', 'positionStoriesContainerOnScroll', 'updateStatistics');
     },
 
     render: function() {
@@ -23,10 +24,12 @@ App.Views.Sprints = {
       // if contracted, then update the sizes of the divs
       that.toggleUnassignedStoriesSize(true);
 
+      this.updateStatistics(this.model.attributes);
+
       // show stories assigned to sprint
       this.model.SprintStories().each(function(model) {
         var view = new App.Views.Sprints.SprintStory({ model: model.Story(), parentView: that, id: that.childId(model.Story()) });
-        $(that.el).find('.stories-container').append(view.render().el);
+        $(that.el).find('.stories-container .cards').append(view.render().el);
       });
 
       // get a list of all stories assigned to all sprints
@@ -48,9 +51,9 @@ App.Views.Sprints = {
       });
 
       // allow drag & drop of stories
-      this.$('.stories-container, .unassigned-stories-container').sortable({
+      this.$('.stories-container .cards, .unassigned-stories-container').sortable({
         connectWith: ".story-droppable",
-        stop: this.persistSprintStories,
+        stop: that.persistSprintStories,
         placeholder: 'story-card-place-holder'
       }).disableSelection();
 
@@ -66,6 +69,17 @@ App.Views.Sprints = {
       }
 
       return this;
+    },
+
+    updateStatistics: function(attributes) {
+      $('#backlog-data-area .backlog-stats').html( JST['sprints/stats']({ attributes: attributes }) );
+      var totals = this.$('.stories-container .totals');
+      if (this.model.SprintStories().length === 0) {
+        totals.addClass('notice').html( JST['sprints/empty']() );
+      } else {
+        totals.removeClass('notice').html( JST['sprints/totals']({ attributes: attributes, storyCount: this.model.SprintStories().length }) );
+      }
+      this.sprintTabsView.adjustTabConstraints(true);
     },
 
     // allow unassigned stories area to be minimised / expanded
@@ -127,6 +141,10 @@ App.Views.Sprints = {
       this.model.SprintStories().each(function(story) {
         if (!that.$('.stories-container #' + that.childId(story.Story())).length) {
           story.destroy({
+            success: function(model, response) {
+              that.updateStatistics(response.sprint_statistics);
+              that.model.set(response.sprint_statistics); // update Sprint with new statistics
+            },
             error: function(model, response) {
               var errorMessage = 'Oops, we\'ve been unable to remove that story from this sprint.  Please refresh your browser.';
               try {
@@ -147,6 +165,10 @@ App.Views.Sprints = {
           });
           that.model.SprintStories().add(newSprintStory);
           newSprintStory.save(false, {
+            success: function(model, response) {
+              that.updateStatistics(model.get('sprint_statistics'));
+              that.model.set(model.get('sprint_statistics')); // update Sprint with new statistics
+            },
             error: function(model, response) {
               var errorMessage = 'we\'ve got a problem on our side';
               try {
@@ -306,7 +328,7 @@ App.Views.Sprints = {
 
     moveStory: function() {
       $(this.el).removeClass('hover'); // see IE issue http://stackoverflow.com/questions/7891761/
-      var target = $(this.el).parents('.stories-container').length == 0 ? this.parentView.$('.stories-container') : this.parentView.$('.unassigned-stories-container');
+      var target = $(this.el).parents('.stories-container .cards').length == 0 ? this.parentView.$('.stories-container .cards') : this.parentView.$('.unassigned-stories-container');
       target.append(this.el);
       this.parentView.persistSprintStories();
     }

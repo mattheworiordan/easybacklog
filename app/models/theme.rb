@@ -23,9 +23,7 @@ class Theme < ActiveRecord::Base
   include Snapshot
 
   def points
-    total_score_diff = stories.inject(0) { |val, story| val + story.score_diff ** 2 }
-    total_lowest_score = stories.inject(0) { |val, story| val + story.lowest_score }
-    Math.sqrt(total_score_diff) + total_lowest_score
+    ScoreCalculator.total_points stories
   end
 
   def days

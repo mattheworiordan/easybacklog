@@ -19,6 +19,14 @@ class SprintStory < ActiveRecord::Base
     end
   end
 
+  def sprint_statistics
+    {
+      :total_expected_points => sprint.total_expected_points,
+      :total_completed_points => sprint.total_completed_points,
+      :total_allocated_points => sprint.total_allocated_points
+    }
+  end
+
   private
     def prevent_assign_to_sprint_when_complete
       if sprint_id_changed? && (sprint.completed? || (sprint_id_was.present? && Sprint.find(sprint_id_was).completed?) )

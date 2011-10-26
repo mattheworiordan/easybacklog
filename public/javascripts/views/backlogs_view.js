@@ -4,9 +4,10 @@ App.Views.Backlogs = {
   Show: App.Views.BaseView.extend({
     dataArea: $('#backlog-data-area'), // this view will never exist with others so build an absolute JQuery link
 
-    initialize: function() {
+    initialize: function(options) {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent','print','newSnapshot','jumpToSnapshot','compareSnapshot');
+      this.sprintTabsView = options.sprintTabsView;
+      _.bindAll(this, 'navigateEvent', 'print', 'newSnapshot', 'jumpToSnapshot', 'compareSnapshot', 'activated');
     },
 
     render: function() {
@@ -42,7 +43,13 @@ App.Views.Backlogs = {
     },
 
     updateStatistics: function() {
-      $('#backlog-data-area .backlog-stats div.output').html( JST['backlogs/stats']({ model: this.model }) );
+      $('#backlog-data-area .backlog-stats').html( JST['backlogs/stats']({ model: this.model }) );
+      this.sprintTabsView.adjustTabConstraints(true);
+    },
+
+    // view is made active, but not necessarily re-rendered for performance reasons
+    activated: function() {
+      this.updateStatistics();
     },
 
     // Tab or Enter key pressed so let's move on

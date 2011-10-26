@@ -46,6 +46,18 @@ class Sprint < ActiveRecord::Base
     end
   end
 
+  def total_expected_points
+    backlog.velocity * number_team_members * duration_days
+  end
+
+  def total_allocated_points
+    ScoreCalculator.total_points stories
+  end
+
+  def total_completed_points
+    ScoreCalculator.total_points stories.select { |s| s.done? }
+  end
+
   private
     # automatically assign a sequential iteration number
     def assign_iteration

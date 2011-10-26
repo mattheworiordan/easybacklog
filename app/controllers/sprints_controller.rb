@@ -1,7 +1,7 @@
 class SprintsController < ApplicationController
   before_filter :authenticate_user!, :set_backlog_and_protect
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
-  SPRINT_METHODS = [:completed?, :deletable?]
+  SPRINT_METHODS = [:completed?, :deletable?, :total_allocated_points, :total_expected_points, :total_completed_points]
 
   def index
     @sprints = @backlog.sprints.find(:all, :include => { :sprint_stories => :story })

@@ -183,7 +183,7 @@ class BacklogsController < ApplicationController
         },
         :sprints =>
         { :only => sprint_fields,
-          :methods => :completed?,
+          :methods => [:completed?, :deletable?, :total_allocated_points, :total_expected_points, :total_completed_points],
           :include =>
           { :sprint_stories =>
             {

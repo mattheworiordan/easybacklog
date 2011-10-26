@@ -2,14 +2,16 @@ class SprintStoriesController < ApplicationController
   before_filter :authenticate_user!, :set_sprint_and_protect
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
+  METHODS = [:theme_id, :sprint_statistics]
+
   def index
     @sprint_stories = @sprint.sprint_stories.find(:all)
-    render :json => @sprint_stories.to_json(:methods => :theme_id)
+    render :json => @sprint_stories.to_json(:methods => METHODS)
   end
 
   def show
     @sprint_story = @sprint.sprint_stories.find(params[:id])
-    render :json => @sprint_story.to_json(:methods => :theme_id)
+    render :json => @sprint_story.to_json(:methods => METHODS)
   end
 
   def create
@@ -17,7 +19,7 @@ class SprintStoriesController < ApplicationController
     @sprint_story.sprint_id = params[:sprint_id]
     @sprint_story.story_id = params[:story_id]
     if @sprint_story.save
-      render :json => @sprint_story.to_json(:methods => :theme_id)
+      render :json => @sprint_story.to_json(:methods => METHODS)
     else
       send_json_error @sprint_story.errors.full_messages.join(', ')
     end
@@ -27,7 +29,7 @@ class SprintStoriesController < ApplicationController
     @sprint_story = @sprint.sprint_stories.find(params[:id])
     @sprint_story.update_attributes params
     if @sprint_story.save
-      render :json => @sprint_story.to_json(:methods => :theme_id)
+      render :json => @sprint_story.to_json(:methods => METHODS)
     else
       send_json_error @sprint_story.errors.full_messages.join(', ')
     end
@@ -37,7 +39,11 @@ class SprintStoriesController < ApplicationController
     begin
       @sprint_story = @sprint.sprint_stories.find(params[:id])
       @sprint_story.destroy
-      send_json_notice "Sprint story removed from sprint"
+      send_json_notice "Sprint story removed from sprint", :sprint_statistics => {
+        :total_expected_points => @sprint.total_expected_points,
+        :total_completed_points => @sprint.total_completed_points,
+        :total_allocated_points => @sprint.total_allocated_points
+      }
     rescue ActiveRecord::RecordNotFound
       send_json_notice "Sprint story was not found and is likely deleted"
     end

@@ -38,15 +38,49 @@ section.showing-sprints {
     position: relative;
     margin-top: -70px;
     padding-top: 70px;
+    .totals {
+      margin-top: 10px;
+      padding: 3px;
+      border: 1px solid #BBB;
+      border-width: 1px 0 1px 0;
+      overflow: hidden;
+      &.notice {
+        padding: 0 20px 0 20px;
+        text-align: center;
+        color: #666;
+        border: none;
+      }
+      .title {
+        float: left;
+      }
+      .output {
+        color: #666;
+        float: right;
+      }
+      .amount {
+        float: right;
+        width: 40px;
+        color: #000;
+        clear: right;
+        text-align: right;
+      }
+      .highlight {
+        font-weight: bold;
+        color: red;
+      }
+    }
   }
-  .stories-container, .unassigned-stories-container {
-    vertical-align: top;
-    min-height: 200px; /* for increased drop target when empty */
+  .stories-container .cards {
+    min-height: 100px; /* for increased drop target when empty */
+  }
+  .unassigned-stories-container {
+    min-height: 100px; /* for increased drop target when empty */
     padding-bottom: 15px;
   }
   .stories-container {
     width: 70%;
     float: left;
+    padding-bottom: 15px;
   }
   .unassigned-stories-container {
     margin-left: 73%;

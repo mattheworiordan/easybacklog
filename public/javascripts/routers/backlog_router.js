@@ -23,10 +23,11 @@ App.Routers.Backlog = Backbone.Router.extend({
   showBacklog: function() {
     this.cleanUpOldView();
     if (!this.backlogView) {
-      this.backlogView = new App.Views.Backlogs.Show({ model: App.Collections.Backlogs.at(0), el: $('#backlog-container') });
+      this.backlogView = new App.Views.Backlogs.Show({ model: App.Collections.Backlogs.at(0), el: $('#backlog-container'), sprintTabsView: this.sprintTabsView });
       this.showContainer('#backlog-container'); // needs to be visible as render sets focus on first theme
       this.backlogView.render();
     } else {
+      this.backlogView.activated();
       this.showContainer('#backlog-container');
     }
     this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration('Backlog'));
@@ -57,7 +58,7 @@ App.Routers.Backlog = Backbone.Router.extend({
     if (!model) {
       var err = new App.Views.Error({ message: 'Internal error, could not display sprint correctly.  Please refresh your browser' });
     } else {
-      this.oldView = new App.Views.Sprints.Show({ model: model, el: this.replaceWithNew('#sprints-container') });
+      this.oldView = new App.Views.Sprints.Show({ model: model, el: this.replaceWithNew('#sprints-container'), sprintTabsView: this.sprintTabsView });
       this.showContainer('#sprints-container');
       this.oldView.render();
       this.sprintTabsView.select(model);

@@ -1,0 +1,24 @@
+<div class="title">
+  Sprint totals
+</div>
+
+<div class="amount<% if (Number(attributes.total_allocated_points) > Number(attributes.total_expected_points)) { %> highlight<% } %>">
+<%= addCommas((Number(attributes.total_allocated_points) || 0).toFixed(1)) %>
+</div>
+<div class="output<% if (Number(attributes.total_allocated_points) > Number(attributes.total_expected_points)) { %> highlight<% } %>">
+  Points in this sprint from the <%= (storyCount === 1 ? storyCount + ' story' : storyCount + ' stories' ) %>:
+</div>
+
+<div class="amount">
+<%= addCommas((Number(attributes.total_expected_points) || 0).toFixed(1)) %>
+</div>
+<div class="output">
+  Points expected in this sprint:
+</div>
+
+<div class="amount">
+<%= addCommas((Number(attributes.total_completed_points) || 0).toFixed(1)) %>
+</div>
+<div class="output">
+  Points completed:
+</div>

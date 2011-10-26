@@ -226,6 +226,17 @@ section.content .not-editable-backlog-notice {
     div.output {
       padding: 3px;
       float: left;
+      &.highlight {
+        color: white;
+      }
+    }
+    div.divider {
+      float: left;
+      padding: 0 0 0 3px;
+      border-right: 1px solid $title-area-color;
+      height: 30px;
+      width: 1px;
+      margin-right: 3px;
     }
   }
 }

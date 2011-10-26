@@ -49,18 +49,7 @@ App.Views.SprintTabs = {
       _(this.collection.sortBy(function(model) { return -model.get('id'); })).each(addTabView);
 
       if (!this.isSettingsPage) {
-        // lets set the UL width as it is not auto-sized as position is fixed, and then resize as the document is resized
-        var totalTabWidth = ($('#backlog-data-area .backlog-stats').offset().left - $(view.el).offset().left - 10);
-        var windowWidth = $(window).width();
-        $(view.el).css('width', totalTabWidth + 'px');
-        $(window).resize(function() {
-          var resizeWidthBy = $(window).width() - windowWidth;
-          if (resizeWidthBy) {
-            totalTabWidth += resizeWidthBy;
-            windowWidth = $(window).width();
-            $(view.el).css('width', totalTabWidth + 'px');
-          }
-        });
+        this.adjustTabConstraints();
 
         // fix the slight variances in the DOM where the tab system is one pixel too high or low
         $(this.el).css('top', ($('#themes-header').offset().top - $(this.el.find('ul li:first')).outerHeight()) + 'px');
@@ -70,6 +59,30 @@ App.Views.SprintTabs = {
       view.$('ul.infinite-tabs').infiniteTabs();
 
       return this;
+    },
+
+    adjustTabConstraints: function(resizeExpected) {
+      var that = this;
+      // set the UL width as it is not auto-sized as position is fixed, and then resize as the document is resized
+      this.totalTabWidth = $('#backlog-data-area .backlog-stats').offset().left - $(this.el).offset().left;
+      this.windowWidth = $(window).width();
+      $(this.el).css('width', this.totalTabWidth + 'px');
+
+      if (resizeExpected) {
+        $(this.el).find('ul.infinite-tabs').infiniteTabs('adjust-to-fit');
+      }
+
+      if (!this.resizeEventAdded) {
+        this.resizeEventAdded = true;
+        $(window).resize(function() {
+          var resizeWidthBy = $(window).width() - that.windowWidth;
+          if (resizeWidthBy) {
+            that.totalTabWidth += resizeWidthBy;
+            that.windowWidth = $(window).width();
+            $(that.el).css('width', that.totalTabWidth + 'px');
+          }
+        });
+      }
     },
 
     getModelFromIteration: function(iteration) {

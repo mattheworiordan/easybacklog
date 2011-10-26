@@ -1,0 +1,15 @@
+<div class="title">
+  Sprint total
+</div>
+<div class="divider"></div>
+<div class="output<% if (Number(attributes.total_allocated_points) > Number(attributes.total_expected_points)) { %> highlight<% } %>">
+  <%= addCommas((Number(attributes.total_allocated_points) || 0).toFixed(1)) %> pts allocated
+</div>
+<div class="divider"></div>
+<div class="output">
+  <%= addCommas((Number(attributes.total_expected_points) || 0).toFixed(1)) %> pts expected
+</div>
+<div class="divider"></div>
+<div class="output">
+  <%= addCommas((Number(attributes.total_completed_points) || 0).toFixed(1)) %> pts completed
+</div>
