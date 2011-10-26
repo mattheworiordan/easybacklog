@@ -10,7 +10,7 @@ App.Views.Sprints = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'toggleMore', 'persistSprintStories');
+      _.bindAll(this, 'toggleMore', 'persistSprintStories', 'positionStoriesContainerOnScroll');
     },
 
     render: function() {
@@ -54,6 +54,9 @@ App.Views.Sprints = {
         placeholder: 'story-card-place-holder'
       }).disableSelection();
 
+      // ensure stories container is never completely off the screen when scrolling down
+      $(window).scroll(this.positionStoriesContainerOnScroll).resize(this.positionStoriesContainerOnScroll);
+
       return this;
     },
 
@@ -77,7 +80,10 @@ App.Views.Sprints = {
       if (dontToggle !== true) {
         this.$('.stories-divider .handle').hide();
         this.$('.stories-container').animate({ width: newStoryContainerSize + '%' }, 'fast');
-        this.$('.unassigned-stories-container').animate({ width: (100 - newStoryContainerSize - spaceBetween) + '%' }, 'fast');
+        this.$('.unassigned-stories-container').animate({
+          width: (100 - newStoryContainerSize - spaceBetween) + '%',
+          'margin-left': (newStoryContainerSize + spaceBetween) + '%'
+        }, 'fast');
         this.$('.stories-divider').animate({ left: (newStoryContainerSize + dividerOffset) + '%' }, 'fast');
         this.$('.unassigned-stories-heading').animate({
           left: (newStoryContainerSize + headingOffset) + '%',
@@ -92,7 +98,9 @@ App.Views.Sprints = {
       } else {
         // use has not toggled, so just resize immediately
         this.$('.stories-container').css('width', newStoryContainerSize + '%');
-        this.$('.unassigned-stories-container').css('width', (100 - newStoryContainerSize - spaceBetween) + '%');
+        this.$('.unassigned-stories-container').
+          css('width', (100 - newStoryContainerSize - spaceBetween) + '%').
+          css('margin-left', (newStoryContainerSize + spaceBetween) + '%');
         this.$('.stories-divider').css('left', (newStoryContainerSize + dividerOffset) + '%');
         this.$('.unassigned-stories-heading').css('left', (newStoryContainerSize + headingOffset) + '%').css('width', (100 - 0.5 - (newStoryContainerSize + headingOffset)) + '%')
 
@@ -138,6 +146,50 @@ App.Views.Sprints = {
           });
         }
       });
+
+      // now ensure stories container is still at correct height as it could shift up or down whilst scrolled down
+      this.positionStoriesContainerOnScroll();
+    },
+
+    positionStoriesContainerOnScroll: function() {
+      var storyContainer = this.$('.stories-container'),
+          unassignedContainer = this.$('.unassigned-stories-container'),
+          storiesDivider = this.$('.stories-divider'),
+          height = storyContainer.outerHeight(),
+          windowHeight = $(window).height(),
+          scrollAmount = $(window).scrollTop(),
+          // max scroll is at least until story container has moved up to tabs, and at most when half the stories remain on the page
+          maxScroll = Math.max(height - (windowHeight/2) + $('.main-content-pod').offset().top, $('.main-content-pod').offset().top);
+
+      // cache the top as this shouldn't change but does when position is adjusted
+      if (!this.storiesContainerTop) {
+        this.storiesContainerTop = storyContainer.offset().top;
+      }
+
+      // story width needs to be calculated dynamically as unassigned stories panel changes in size when expanded / contracted, or on browser resize
+      var storiesWidth = unassignedContainer.offset().left - storiesDivider.width() - storyContainer.offset().left +
+        (storiesDivider.offset().left + storiesDivider.width() - unassignedContainer.offset().left) * 2;
+
+      // ensure at least half of the stories container is visible on the page based on it's starting position
+      if ( (scrollAmount > maxScroll) && (storyContainer.height() < unassignedContainer.height()) ) {
+        if (storyContainer.css('position') !== 'fixed') {
+          storyContainer.css('position', 'fixed').css('top', Math.floor(this.storiesContainerTop - maxScroll) + 'px').css('width', storiesWidth + 'px');
+        }
+        if (storyContainer.css('top') !== Math.floor(this.storiesContainerTop - maxScroll) + 'px') {
+          storyContainer.animate({
+            top: Math.floor(this.storiesContainerTop - maxScroll) + 'px'
+          }, 'fast');
+        }
+      } else {
+        if (storyContainer.css('position') !== 'static') {
+          storyContainer.css('position', 'static').css('top', 'auto');
+        }
+      }
+
+      // unfortunately we've had to fix the width when jumping to fixed, so we need to keep checking width is accurate
+      if (storyContainer.css('width') !== storiesWidth + 'px') {
+        storyContainer.css('width', storiesWidth + 'px');
+      }
     }
   }),
 
@@ -204,6 +256,8 @@ App.Views.Sprints = {
       return this;
     },
 
+    // set the heights of the story card so that it's no more than this.contractedHeight
+    // if it is, then set to this.contractedHeight and show the more button
     resetToggle: function() {
       $(this.el).css('height', 'auto');
       if ($(this.el).height() > this.contractedHeight) {
@@ -215,13 +269,14 @@ App.Views.Sprints = {
     },
 
     toggleMore: function(speed) {
-      var delay = typeof speed === 'undefined' ? 'fast' : speed;
+      var delay = isNaN(parseInt(speed)) ? 'fast' : speed,
+          that = this;
       $(this.el).find('.more').css('display', 'block');
       if ($(this.el).css('height') === this.contractedHeight + 'px') {
-        $(this.el).animate({ height: $(this.el).data('original-height') }, delay);
+        $(this.el).animate({ height: $(this.el).data('original-height') }, delay, null, that.parentView.positionStoriesContainerOnScroll);
         $(this.el).find('.more').addClass('less').find('.tab').text('less');
       } else {
-        $(this.el).animate({ height: this.contractedHeight + 'px' }, delay);
+        $(this.el).animate({ height: this.contractedHeight + 'px' }, delay, null, that.parentView.positionStoriesContainerOnScroll);
         $(this.el).find('.more').removeClass('less').find('.tab').text('more');
       }
     },
