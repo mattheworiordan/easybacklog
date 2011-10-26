@@ -223,6 +223,7 @@ App.Views.Sprints = {
     tagName: 'div',
     className: 'story-card',
     contractedHeight: 85,
+    heightBuffer: 10,
 
     events: {
       "click .more .tab": "toggleMore",
@@ -261,7 +262,7 @@ App.Views.Sprints = {
     // if it is, then set to this.contractedHeight and show the more button
     resetToggle: function() {
       $(this.el).css('height', 'auto');
-      if ($(this.el).height() > this.contractedHeight) {
+      if ($(this.el).height() > this.contractedHeight + this.heightBuffer) {
         $(this.el).data('original-height', $(this.el).height());
         this.toggleMore(0);
       } else {

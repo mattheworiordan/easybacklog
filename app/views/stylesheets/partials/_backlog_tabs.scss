@@ -201,11 +201,11 @@ section.showing-sprints {
         position: absolute;
         right: 0;
         top: 50%;
-        margin-top: -24px;
+        margin-top: -21px;
         cursor: pointer;
         background-color: $title-area-color;
         color: #FFF;
-        padding: 10px 15px 10px 15px;
+        padding: 6px 15px 6px 15px;
         font-size: 20px;
         @include border-radius(10px 0 0 10px);
         @include opacity(0.75);
