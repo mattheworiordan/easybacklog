@@ -57,3 +57,27 @@ function haveFormElementValuesChanged(dom1, dom2) {
   });
   return same;
 }
+
+// keeps track of recent mouse position and provides functionality to check if mouse is over an object
+// useful for when nodes appear underneath the mouse without mouse movement and we need to trigger hover
+// see http://stackoverflow.com/questions/4403518
+function MouseTracker($) {
+  var mouseX, mouseY;
+
+  $(document).mousemove(function(e) {
+    mouseX = e.pageX;
+    mouseY = e.pageY;
+  });
+
+  return {
+    isOver: function(node) {
+      var p = $(node).offset();
+      if (mouseX >= p.left && mouseX <= p.left + $(node).width()
+         && mouseY >= p.top && mouseY <= p.top + $(node).height())
+      {
+        return true;
+      }
+      return false;
+    }
+  }
+}

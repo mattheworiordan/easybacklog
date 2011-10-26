@@ -57,6 +57,14 @@ App.Views.Sprints = {
       // ensure stories container is never completely off the screen when scrolling down
       $(window).scroll(this.positionStoriesContainerOnScroll).resize(this.positionStoriesContainerOnScroll);
 
+      // set up a mouse tracker if one does not exist already so we can track where the mouse is
+      // and when we move an element under the cursor, we can trigger hover
+      // this happens when a story is moved assigned, and a new story falls under the mouse but the move button does not appear
+      // as there is no hover event without a mouse move
+      if (!App.Views.MouseTracker) {
+        App.Views.MouseTracker = new MouseTracker(jQuery);
+      }
+
       return this;
     },
 
@@ -111,6 +119,8 @@ App.Views.Sprints = {
       }
     },
 
+    // stories stories that are removed / added to the database
+    // called every time a story shifts in the lists
     persistSprintStories: function() {
       var that = this;
       // Remove SprintStory models from Sprint that are no longer in the list
@@ -150,6 +160,13 @@ App.Views.Sprints = {
 
       // now ensure stories container is still at correct height as it could shift up or down whilst scrolled down
       this.positionStoriesContainerOnScroll();
+
+      // now check if a new story has fallen under the mouse i.e. it has shifted up / down under the mouse
+      $('.story-card').each(function(index, story) {
+        if (App.Views.MouseTracker.isOver(story)) {
+          $(story).trigger('mouseenter');
+        }
+      });
     },
 
     positionStoriesContainerOnScroll: function() {
