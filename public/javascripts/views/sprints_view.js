@@ -60,8 +60,9 @@ App.Views.Sprints = {
       return this;
     },
 
+    // allow unassigned stories area to be minimised / expanded
     toggleUnassignedStoriesSize: function(dontToggle) {
-      var storyContainerSizes = [70, 48.5],
+      var storyContainerSizes = [70, 48.5], // 1st is main story container contracted size, 2nd is expanded size
           spaceBetween = 3,
           dividerOffset = 1,
           headingOffset = 1.5,

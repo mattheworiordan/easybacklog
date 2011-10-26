@@ -40,16 +40,17 @@ section.showing-sprints {
     padding-top: 70px;
   }
   .stories-container, .unassigned-stories-container {
-    width: 48.5%;
     vertical-align: top;
     min-height: 200px; /* for increased drop target when empty */
     padding-bottom: 15px;
   }
   .stories-container {
+    width: 70%;
     float: left;
   }
   .unassigned-stories-container {
-    margin-left: 51.5%;
+    margin-left: 73%;
+    width: 27%;
   }
   .stories-divider {
     width: 1%;
