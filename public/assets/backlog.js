@@ -20,7 +20,24 @@ this.unset("sprints")
 },Account_ID:function(){return this.collection.account_id
 }});
 var Sprint=Backbone.Model.extend({Backlog:function(){return this.collection.backlog
+},SprintStories:function(){if(!this._sprint_stories){this._sprint_stories=new SprintStoriesCollection(this.get("sprint_stories"),{sprint:this});
+this.unset("sprint_stories")
+}return(this._sprint_stories)
 }});
+var SprintStory=Backbone.Model.extend({initialize:function(){if(!App.Collections.SprintStoryStatuses){App.Collections.SprintStoryStatuses=new SprintStoryStatusesCollection();
+App.Collections.SprintStoryStatuses.fetch()
+}},Sprint:function(){return this.collection.sprint
+},Story:function(){var that=this;
+if(!this._story){var theme=this.Sprint().Backlog().Themes().get(this.get("theme_id"));
+if(!theme){this.Sprint().Backlog().Themes().each(function(theme){if(!that._story){var story=theme.Stories().get(that.get("story_id"));
+if(story){that._story=story
+}}})
+}else{this._story=theme.Stories().get(this.get("story_id"))
+}if(!this._story){throw"Data inconsistency error, story "+this.get("story_id")+" does not exist"
+}}return this._story
+},Status:function(){return App.Collections.SprintStoryStatuses.get(this.get("sprint_story_status_id"))
+}});
+var SprintStoryStatus=Backbone.Model.extend({});
 var Story=Backbone.Model.extend({Theme:function(){return this.collection.theme
 },IsEditable:function(){return(this.collection.theme.IsEditable())
 },AcceptanceCriteria:function(){if(!this._acceptance_criteria){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
@@ -36,6 +53,12 @@ if(_.isFunction(options.success)){options.success(story,response)
 }}).error(function(event,response){if(window.console){console.log("Move to theme failed")
 }if(_.isFunction(options.error)){options.error(story,response)
 }})
+},SprintStory:function(){var sprintStoryFound=null,that=this;
+this.Theme().Backlog().Sprints().each(function(sprint){if(sprintStoryFound){return
+}sprint.SprintStories().each(function(sprintStory){if(!sprintStoryFound&&(sprintStory.get("story_id")===that.get("id"))){sprintStoryFound=sprintStory
+}})
+});
+return sprintStoryFound
 }});
 var Theme=Backbone.Model.extend({Stories:function(){if(!this._stories){this._stories=new StoriesCollection(this.get("stories"),{theme:this});
 this.unset("stories")
@@ -50,7 +73,7 @@ if(_.isFunction(options.success)){options.success(theme,response)
 }if(_.isFunction(options.error)){options.error(theme,response)
 }})
 }});
-var AcceptanceCriteriaCollection=Backbone.Collection.extend({model:AcceptanceCriterion,story:null,url:function(){if(!this.story||!this.story.get("id")){var errorView=new App.Views.Error("Error, missing necessary data ID to display Acceptance Criteria")
+var AcceptanceCriteriaCollection=Backbone.Collection.extend({model:AcceptanceCriterion,story:null,url:function(){if(!this.story||!this.story.get("id")){var errorView=new App.Views.Error({message:"Error, missing necessary data ID to display Acceptance Criteria"})
 }else{return"/stories/"+this.story.get("id")+"/acceptance_criteria"
 }},initialize:function(models,options){this.story=options?options.story:null;
 _.bindAll(this,"saveOrder")
@@ -60,15 +83,33 @@ if(criterion){criterion.set({"position":idOrderCollection[key]});
 criterion.save()
 }})
 }});
-var BacklogsCollection=Backbone.Collection.extend({model:Backlog,account_id:null,url:function(){if(!this.account_id){var errorView=new App.Views.Error("Error, missing necessary Account ID to display Backlog")
+var BacklogsCollection=Backbone.Collection.extend({model:Backlog,account_id:null,url:function(){if(!this.account_id){var errorView=new App.Views.Error({message:"Error, missing necessary Account ID to display Backlog"})
 }else{return"/accounts/"+this.account_id+"/backlogs"
 }},initialize:function(models,options){this.account_id=options?options.account_id:null
 }});
-var SprintsCollection=Backbone.Collection.extend({model:Sprint,backlog_id:null,url:function(){if(!this.backlog_id){var errorView=new App.Views.Error("Error, missing necessary Backlog ID to display Sprint")
-}else{return"/backlogs/"+this.account_id+"/sprints"
-}},initialize:function(models,options){this.backlog_id=options?options.backlog_id:null
+var SprintStoriesCollection=Backbone.Collection.extend({model:SprintStory,sprint:null,url:function(){if(!this.sprint){var errorView=new App.Views.Error({message:"Error, cannot find Sprint and thus cannot load SprintStory"})
+}else{return"/sprints/"+this.sprint.get("id")+"/sprint-stories"
+}},initialize:function(models,options){this.sprint=options?options.sprint:null
+},getByStoryId:function(storyId){var sprintStoryMatch=null;
+this.each(function(sprintStory){if(Number(sprintStory.get("story_id"))===Number(storyId)){sprintStoryMatch=sprintStory
 }});
-var StoriesCollection=Backbone.Collection.extend({model:Story,theme:null,url:function(){if(!this.theme||!this.theme.get("id")){var errorView=new App.Views.Error("Error, missing necessary data ID to display Story")
+return sprintStoryMatch
+},batchUpdatePosition:function(params,options){var url="/sprints/"+this.sprint.get("id")+"/sprint-stories/update-order",that=this;
+options=options||{};
+data=_(params).map(function(val,key){return"ids["+key+"]="+val
+}).join("&");
+$.ajax(url,{success:function(data){_(data).each(function(val){that.get(val.id).set(val)
+});
+if(options.success){options.success.apply(this,arguments)
+}},error:function(){if(options.error){options.error.apply(this,arguments)
+}},data:data,dataType:"json",type:"PUT"})
+}});
+var SprintStoryStatusesCollection=Backbone.Collection.extend({model:SprintStoryStatus,url:"/sprint-story-statuses"});
+var SprintsCollection=Backbone.Collection.extend({model:Sprint,backlog:null,url:function(){if(!this.backlog){var errorView=new App.Views.Error({message:"Error, missing necessary Backlog ID to display Sprint"})
+}else{return"/backlogs/"+this.backlog.get("id")+"/sprints"
+}},initialize:function(models,options){this.backlog=options?options.backlog:null
+}});
+var StoriesCollection=Backbone.Collection.extend({model:Story,theme:null,url:function(){if(!this.theme||!this.theme.get("id")){var errorView=new App.Views.Error({message:"Error, missing necessary data ID to display Story"})
 }else{return"/themes/"+this.theme.get("id")+"/stories"
 }},initialize:function(models,options){this.theme=options?options.theme:null
 },saveOrder:function(idOrderCollection){var thisCollection=this;
@@ -77,7 +118,7 @@ if(story){story.set({"position":idOrderCollection[key]});
 story.save()
 }})
 }});
-var ThemesCollection=Backbone.Collection.extend({model:Theme,backlog:null,url:function(){if(!this.backlog){var errorView=new App.Views.Error("Error, cannot find Backlog and thus cannot load Theme")
+var ThemesCollection=Backbone.Collection.extend({model:Theme,backlog:null,url:function(){if(!this.backlog){var errorView=new App.Views.Error({message:"Error, cannot find Backlog and thus cannot load Theme"})
 }else{return"/backlogs/"+this.backlog.get("id")+"/themes"
 }},initialize:function(models,options){this.backlog=options?options.backlog:null
 },saveOrder:function(idOrderCollection){var thisCollection=this;
@@ -219,8 +260,9 @@ if(!event.shiftKey){if(_.first(liElem)!=_.last(liElem.parent("ul").find("li.crit
 }}}else{if(_.first(liElem)==_.first(liElem.parent("ul").find("li.criterion"))){$(this.el).parents("li.story").find("div.so-i-can .data").click()
 }else{liElem.prev().find(".data").click()
 }}}}})};
-App.Views.Backlogs={Show:App.Views.BaseView.extend({dataArea:$("#backlog-data-area"),initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
-_.bindAll(this,"navigateEvent","print","newSnapshot","jumpToSnapshot","compareSnapshot")
+App.Views.Backlogs={Show:App.Views.BaseView.extend({dataArea:$("#backlog-data-area"),initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+this.sprintTabsView=options.sprintTabsView;
+_.bindAll(this,"navigateEvent","print","newSnapshot","jumpToSnapshot","compareSnapshot","activated")
 },render:function(){var use5090estimates=$("#backlog-container #themes-header .columns .score-50").length?true:false;
 var view=new App.Views.Themes.Index({collection:this.model.Themes(),use5090estimates:use5090estimates});
 this.$("#themes-container").html(view.render().el);
@@ -236,7 +278,11 @@ if(firstEditableElem.length){firstEditableElem.click()
 }}else{$("#backlog-data-area").addClass("not-editable");
 $("#backlog-container").addClass("not-editable")
 }return(this)
-},updateStatistics:function(){$("#backlog-data-area .backlog-stats div.output").html(JST["backlogs/stats"]({model:this.model}))
+},updateStatistics:function(){$("#backlog-data-area .backlog-stats").html(JST["backlogs/stats"]({model:this.model}));
+this.sprintTabsView.adjustTabConstraints(true)
+},activated:function(){this.updateStatistics();
+this.$("ul.stories>li.story").each(function(index,elem){$(elem).data("populate-html-from-template")()
+})
 },navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){$(event.target).blur();
 try{event.preventDefault()
 }catch(e){}if(!event.shiftKey){var firstTheme=$("#themes-container ul.themes li.theme:first>.theme-data .name .data");
@@ -305,6 +351,10 @@ if(App.environment==="test"){document.location.href=url
 }},Cancel:function(){$(this).dialog("close")
 }}})
 }})};
+App.Views.BacklogStats={Show:App.Views.BaseView.extend({events:{},initialize:function(){App.Views.BaseView.prototype.initialize.call(this)
+},render:function(){$(this.el).html(JST["backlogs/sprint-progress-stats"]({model:this.model}));
+return this
+}})};
 App.Views.Notice=Backbone.View.extend({className:"notice",displayLength:5000,defaultMessage:"",initialize:function(){_.bindAll(this,"render");
 this.message=this.options.message||this.defaultMessage;
 this.render()
@@ -321,39 +371,282 @@ return this
 }});
 App.Views.Error=App.Views.Notice.extend({className:"error",defaultMessage:"Uh oh! Something went wrong. Please try again."});
 App.Views.Warning=App.Views.Notice.extend({className:"warning",defaultMessage:"Unfortunately we could not perform that action."});
-App.Views.SprintTabs={Index:App.Views.BaseView.extend({childId:function(model){return"tab-sprint-"+model.get("id")
-},events:{"click a.new-sprint":"createNew"},initialize:function(){this.collection=this.options.collection
-},render:function(){var view=this;
-var addTabView=function(model){var tabView=new App.Views.SprintTabs.Show({model:model,id:view.childId(model)});
-view.$("ul.infinite-tabs").append(tabView.render().el)
+App.Views.Sprints={Show:App.Views.BaseView.extend({childId:function(model){return"sprint-story-"+model.get("id")
+},events:{"click .stories-divider .change-size":"toggleUnassignedStoriesSize"},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+this.sprintTabsView=options.sprintTabsView;
+_.bindAll(this,"toggleMore","persistSprintStories","positionStoriesContainerOnScroll","updateStatistics")
+},render:function(){var that=this,storiesAssignedToSprints={},sortFn;
+$(this.el).html(JST["sprints/show"]({model:this.model}));
+that.toggleUnassignedStoriesSize(true);
+this.updateStatistics(this.model.attributes);
+sortFn=function(t){return t.get("position")
 };
-var pinnedTabs=[{childId:function(){return"tab-backlog"
-},get:function(){return"Backlog"
-},active:true,locked:true},{childId:function(){return"tab-stats"
-},get:function(){return"Stats"
-},locked:true},];
-_(pinnedTabs).each(addTabView);
+_(this.model.SprintStories().sortBy(sortFn)).each(function(model){var view=new App.Views.Sprints.SprintStory({model:model.Story(),parentView:that,id:that.childId(model.Story())});
+$(that.el).find(".stories-container .cards").append(view.render().el)
+});
+this.model.collection.each(function(sprint){sprint.SprintStories().each(function(sprintStory){storiesAssignedToSprints[sprintStory.get("story_id")]=sprintStory
+})
+});
+_(this.model.Backlog().Themes().sortBy(sortFn)).each(function(theme){_(theme.Stories().sortBy(sortFn)).each(function(story){if(!storiesAssignedToSprints[story.get("id")]){var view=new App.Views.Sprints.SprintStory({model:story,parentView:that,id:that.childId(story)});
+$(that.el).find(".unassigned-stories-container").append(view.render().el)
+}})
+});
+this.$(".stories-container .cards, .unassigned-stories-container").sortable({connectWith:".story-droppable",stop:that.persistSprintStories,placeholder:"story-card-place-holder"}).disableSelection();
+$(window).bind("scroll.sprints",this.positionStoriesContainerOnScroll).bind("resize.sprints",this.positionStoriesContainerOnScroll);
+if(!App.Views.MouseTracker){App.Views.MouseTracker=new MouseTracker(jQuery)
+}return this
+},updateStatistics:function(attributes){this.model.set(attributes);
+$("#backlog-data-area .backlog-stats").html(JST["sprints/stats"]({attributes:attributes}));
+var totals=this.$(".stories-container .totals");
+if(this.model.SprintStories().length===0){totals.addClass("notice").html(JST["sprints/empty"]())
+}else{totals.removeClass("notice").html(JST["sprints/totals"]({attributes:attributes,storyCount:this.model.SprintStories().length}))
+}this.sprintTabsView.adjustTabConstraints(true)
+},toggleUnassignedStoriesSize:function(dontToggle){var storyContainerSizes=[70,48.5],spaceBetween=3,dividerOffset=1,headingOffset=1.5,that=this;
+if(dontToggle!==true){$(this.el).toggleClass("contracted-unassigned-stories")
+}if($(this.el).hasClass("contracted-unassigned-stories")){newStoryContainerSize=storyContainerSizes[0]
+}else{newStoryContainerSize=storyContainerSizes[1]
+}if(dontToggle!==true){this.$(".stories-divider .handle").hide();
+this.$(".stories-container").animate({width:newStoryContainerSize+"%"},"fast");
+this.$(".unassigned-stories-container").animate({width:(100-newStoryContainerSize-spaceBetween)+"%","margin-left":(newStoryContainerSize+spaceBetween)+"%"},"fast");
+this.$(".stories-divider").animate({left:(newStoryContainerSize+dividerOffset)+"%"},"fast");
+this.$(".unassigned-stories-heading").animate({left:(newStoryContainerSize+headingOffset)+"%",width:(100-0.5-(newStoryContainerSize+headingOffset))+"%"},"fast",null,function(){var direction=($(that.el).hasClass("contracted-unassigned-stories"))?"right":"left";
+that.$(".stories-divider .handle").show("slide",{direction:direction},"fast");
+that.$(".story-card").each(function(index,elem){$(elem).data("reset-toggle")()
+})
+})
+}else{this.$(".stories-container").css("width",newStoryContainerSize+"%");
+this.$(".unassigned-stories-container").css("width",(100-newStoryContainerSize-spaceBetween)+"%").css("margin-left",(newStoryContainerSize+spaceBetween)+"%");
+this.$(".stories-divider").css("left",(newStoryContainerSize+dividerOffset)+"%");
+this.$(".unassigned-stories-heading").css("left",(newStoryContainerSize+headingOffset)+"%").css("width",(100-0.5-(newStoryContainerSize+headingOffset))+"%");
+this.$(".story-card").each(function(index,elem){$(elem).data("reset-toggle")()
+})
+}},persistSprintStories:function(){var that=this,persistActions=0,persistOrder;
+persistOrder=function(){persistActions-=1;
+if(persistActions<=0){var updateParams={};
+this.$(".stories-container .story-card").each(function(index,storyNode){var storyId=Number($(storyNode).attr("id").replace("sprint-story-",""));
+var sprintStory=that.model.SprintStories().getByStoryId(storyId);
+if(sprintStory.get("position")!==index+1){updateParams[sprintStory.get("id")]=index+1
+}});
+if(Object.keys(updateParams).length){that.model.SprintStories().batchUpdatePosition(updateParams,{error:function(){var errorView=new App.Views.Error({message:"Order of stories could not be saved.  Please refresh your browser"})
+}})
+}}};
+this.model.SprintStories().each(function(story){if(!that.$(".stories-container #"+that.childId(story.Story())).length){var storyNode=$(".unassigned-stories-container #"+that.childId(story.Story()));
+storyNode.data("reset-toggle")();
+persistActions+=1;
+story.destroy({success:function(model,response){that.updateStatistics(response.sprint_statistics);
+that.model.set(response.sprint_statistics);
+persistOrder();
+storyNode.data("update-sprint-story-status")()
+},error:function(model,response){var errorMessage="Oops, we've been unable to remove that story from this sprint.  Please refresh your browser.";
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:errorMessage})
+}})
+}});
+this.$(".stories-container .story-card").each(function(index,storyNode){var storyId=Number($(storyNode).attr("id").replace("sprint-story-",""));
+if(!that.model.SprintStories().getByStoryId(storyId)){$(storyNode).data("reset-toggle")();
+var newSprintStory=new SprintStory({story_id:$(storyNode).data("story_id"),sprint_id:that.model.get("id")});
+that.model.SprintStories().add(newSprintStory);
+persistActions+=1;
+newSprintStory.save(false,{success:function(model,response){that.updateStatistics(model.get("sprint_statistics"));
+that.model.set(model.get("sprint_statistics"));
+persistOrder();
+$(storyNode).data("update-sprint-story-status")()
+},error:function(model,response){var errorMessage="we've got a problem on our side";
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:"Oops, "+errorMessage+".  Please refresh your browser"})
+}})
+}});
+if(persistActions===0){persistOrder()
+}this.positionStoriesContainerOnScroll();
+$(".story-card").each(function(index,story){if(App.Views.MouseTracker.isOver(story)){$(story).trigger("mouseenter")
+}})
+},positionStoriesContainerOnScroll:function(){var storyContainer=this.$(".stories-container"),unassignedContainer=this.$(".unassigned-stories-container"),storiesDivider=this.$(".stories-divider"),height=storyContainer.outerHeight(),windowHeight=$(window).height(),scrollAmount=$(window).scrollTop(),maxScroll=Math.max(height-(windowHeight/2)+$(".main-content-pod").offset().top,$(".main-content-pod").offset().top);
+if(!this.storiesContainerTop){this.storiesContainerTop=storyContainer.offset().top
+}var storiesWidth=unassignedContainer.offset().left-storiesDivider.width()-storyContainer.offset().left+(storiesDivider.offset().left+storiesDivider.width()-unassignedContainer.offset().left)*2;
+if((scrollAmount>maxScroll)&&(storyContainer.height()<unassignedContainer.height())){if(storyContainer.css("position")!=="fixed"){storyContainer.css("position","fixed").css("top",Math.floor(this.storiesContainerTop-maxScroll)+"px").css("width",storiesWidth+"px")
+}if(storyContainer.css("top")!==Math.floor(this.storiesContainerTop-maxScroll)+"px"){storyContainer.animate({top:Math.floor(this.storiesContainerTop-maxScroll)+"px"},"fast")
+}}else{if(storyContainer.css("position")!=="static"){storyContainer.css("position","static").css("top","auto")
+}}if(storyContainer.css("width")!==storiesWidth+"px"){storyContainer.css("width",storiesWidth+"px")
+}},cleanUp:function(){$(window).unbind(".sprints")
+}}),Help:App.Views.BaseView.extend({pod:false,initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+this.sprintTabsView=options.sprintTabsView;
+_.bindAll(this,"addSprint")
+},render:function(){$(this.el).html(JST["sprints/help"]());
+this.pod=$(JST["sprints/help-pod"]());
+this.pod.find("a.add-new-sprint").click(this.addSprint);
+$("section.main-content-pod").before(this.pod)
+},addSprint:function(event){this.sprintTabsView.createNew(event)
+},cleanUp:function(){this.pod.remove()
+}}),SprintStory:App.Views.BaseView.extend({tagName:"div",className:"story-card",contractedHeight:90,heightBuffer:10,events:{"click .more .tab":"toggleMore","click .move":"moveStory","click .status .tab":"statusChangeClick","blur .status .drop-down select":"statusDropDownLostFocus","change .status .drop-down select":"statusDropDownChanged",},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+this.parentView=options.parentView;
+_.bindAll(this,"resetToggle","updateSprintStoryStatus")
+},render:function(){var that=this;
+$(this.el).html(JST["sprints/sprint-story"]({model:this.model}));
+this.setStatusHover();
+setTimeout(function(){that.resetToggle()
+},1);
+$(this.el).data("reset-toggle",this.resetToggle);
+$(this.el).hover(function(){$(this).addClass("hover")
+},function(){$(this).removeClass("hover")
+});
+$(this.el).data("story_id",this.model.get("id"));
+$(this.el).data("update-sprint-story-status",this.updateSprintStoryStatus);
+return this
+},resetToggle:function(){$(this.el).css("height","auto");
+if($(this.el).height()>this.contractedHeight+this.heightBuffer){$(this.el).data("original-height",$(this.el).height());
+this.toggleMore(0)
+}else{$(this.el).find(".more").css("display","none")
+}},updateSprintStoryStatus:function(){$(this.el).find(".status").html($(JST["sprints/sprint-story"]({model:this.model})).find(".status"));
+this.setStatusHover()
+},setStatusHover:function(){App.Views.Sprints.Shared.setStatusHover.apply(this,arguments)
+},statusChangeClick:function(){App.Views.Sprints.Shared.statusChangeClick.apply(this,arguments)
+},statusDropDownChanged:function(){App.Views.Sprints.Shared.statusDropDownChanged.apply(this,arguments)
+},statusDropDownLostFocus:function(){App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this,arguments)
+},toggleMore:function(speed){var delay=isNaN(parseInt(speed))?"fast":speed,that=this;
+$(this.el).find(".more").css("display","block");
+if($(this.el).css("height")===this.contractedHeight+"px"){$(this.el).animate({height:$(this.el).data("original-height")},delay,null,that.parentView.positionStoriesContainerOnScroll);
+$(this.el).find(".more").addClass("less").find(".tab").text("less")
+}else{$(this.el).animate({height:this.contractedHeight+"px"},delay,null,that.parentView.positionStoriesContainerOnScroll);
+$(this.el).find(".more").removeClass("less").find(".tab").text("more")
+}},moveStory:function(){$(this.el).removeClass("hover");
+var target=$(this.el).parents(".stories-container .cards").length==0?this.parentView.$(".stories-container .cards"):this.parentView.$(".unassigned-stories-container");
+target.append(this.el);
+this.parentView.persistSprintStories()
+}}),Shared:{setStatusHover:function(){$(this.el).find(".status .tab").hover(function(){$(this).addClass("hover")
+},function(){$(this).removeClass("hover")
+})
+},statusChangeClick:function(){var dropDownOptions=App.Collections.SprintStoryStatuses.sortBy(function(s){return s.get("position")
+}).map(function(status){return('<option value="'+status.get("id")+'">'+htmlEncode(status.get("status"))+"</option>")
+}).join(""),dropDownNode=$(this.el).find(".status .drop-down"),className=$(this.el).find(".status .tab").attr("class").match(/(status-code-\w+)/)[1];
+$(this.el).find(".status .tab").hide();
+dropDownNode.find("select").empty().append($(dropDownOptions)).attr("class",className);
+dropDownNode.find("select option[value="+this.model.SprintStory().get("sprint_story_status_id")+"]").attr("selected","selected");
+dropDownNode.show().focus()
+},statusDropDownChanged:function(){var selected=$(this.el).find(".status .drop-down select option:selected"),code=App.Collections.SprintStoryStatuses.get(selected.val()).get("code"),that=this;
+$(this.el).find(".status .tab").text(selected.text()).attr("class","tab status-code-"+code);
+this.model.SprintStory().set({sprint_story_status_id:selected.val()});
+this.model.SprintStory().save(false,{success:function(model){if(that.parentView){that.parentView.updateStatistics(model.get("sprint_statistics"))
+}else{that.model.SprintStory().Sprint().set(model.get("sprint_statistics"))
+}},error:function(model,response){var errorMessage="we've got a problem on our side";
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:"Oops, "+errorMessage+".  Please refresh your browser"})
+}});
+this.statusDropDownLostFocus()
+},statusDropDownLostFocus:function(){$(this.el).find(".status .tab").show();
+$(this.el).find(".status .drop-down").hide()
+}}};
+App.Views.SprintTabs={Index:App.Views.BaseView.extend({childId:function(model){return"tab-sprint-"+model.get("id")
+},isSettingsPage:false,models:{},events:{"click #add-sprint>a":"createNew"},initialize:function(){this.collection=this.options.collection;
+this.router=this.options.router;
+_.bindAll(this,"showNew","getModelFromIteration","restoreTab")
+},render:function(){var view=this;
+this.isSettingsPage=$("#backlog-data-area").length==0;
+var addTabView=function(model){var tabView=new App.Views.SprintTabs.Show({model:model,id:view.childId(model),router:view.router});
+view.$("ul.infinite-tabs").append(tabView.render().el);
+view.models[model.get("iteration")]=model
+};
+var pinnedTabs=[{get:function(){return"Backlog"
+},active:true,locked:true}];
+if(!this.isSettingsPage){pinnedTabs.push({get:function(){return"Stats"
+},locked:true})
+}if(!this.isSettingsPage&&!this.collection.length){pinnedTabs.push({get:function(){return"Sprints"
+}})
+}_(pinnedTabs).each(addTabView);
 _(this.collection.sortBy(function(model){return -model.get("id")
 })).each(addTabView);
-var totalTabWidth=($("#backlog-data-area .backlog-stats").offset().left-$(view.el).offset().left-10);
-var windowWidth=$(window).width();
-$(view.el).css("width",totalTabWidth+"px");
-$(window).resize(function(){var resizeWidthBy=$(window).width()-windowWidth;
-if(resizeWidthBy){totalTabWidth+=resizeWidthBy;
-windowWidth=$(window).width();
-$(view.el).css("width",totalTabWidth+"px")
-}});
-$(this.el).css("top",($("#themes-header").offset().top-$(this.el.find("ul li:first")).outerHeight())+"px");
-view.$("ul.infinite-tabs").activateInfiniteTabs();
+if(!this.isSettingsPage){this.adjustTabConstraints();
+$(this.el).css("top",($("#themes-header").offset().top-$(this.el.find("ul li:first")).outerHeight())+"px")
+}view.$("ul.infinite-tabs").infiniteTabs();
 return this
-},}),Show:App.Views.BaseView.extend({tagName:"li",className:"sprint-tab",events:{"click":"activate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
-_.bindAll(this)
+},adjustTabConstraints:function(resizeExpected){var that=this;
+this.totalTabWidth=$("#backlog-data-area .backlog-stats").offset().left-$(this.el).offset().left;
+this.windowWidth=$(window).width();
+$(this.el).css("width",this.totalTabWidth+"px");
+if(resizeExpected){$(this.el).find("ul.infinite-tabs").infiniteTabs("adjust-to-fit")
+}if(!this.resizeEventAdded){this.resizeEventAdded=true;
+$(window).resize(function(){var resizeWidthBy=$(window).width()-that.windowWidth;
+if(resizeWidthBy){that.totalTabWidth+=resizeWidthBy;
+that.windowWidth=$(window).width();
+$(that.el).css("width",that.totalTabWidth+"px")
+}})
+}},getModelFromIteration:function(iteration){return this.models[iteration]
+},showNew:function(model){this.models[model.get("iteration")]=model;
+var tabView=new App.Views.SprintTabs.Show({model:model,id:this.childId(model),router:this.router});
+this.$("ul.infinite-tabs").infiniteTabs("prepend-tab",tabView.render().el);
+if(this.models["Sprints"]){this.$("ul.infinite-tabs").infiniteTabs("remove-tab",this.$("li#"+this.childId(this.models["Sprints"])));
+delete this.models["Sprints"]
+}this.router.navigate(model.get("iteration").toString(),true)
+},select:function(model){var infinityTab=this.$("ul.infinite-tabs"),currentActive=this.$("li.active");
+if(currentActive.length){infinityTab.infiniteTabs("set-tab-content",currentActive,currentActive.find("a").html().replace(/^\s*Sprint (\d+)\s*$/,"$1"))
+}var tab=this.$("li#"+this.childId(model));
+tab.parents(".infinite-tabs").find("li").removeClass("active");
+tab.addClass("active");
+infinityTab.infiniteTabs("set-tab-content",tab,tab.find("a").html().replace(/^\s*(\d+)\s*$/,"Sprint $1"))
+},restoreTab:function(iteration){var model=this.getModelFromIteration(iteration);
+this.select(model)
+},destroy:function(model,callback){var view=this;
+this.$("ul.infinite-tabs").infiniteTabs("remove-tab",this.$("li#"+this.childId(model)));
+delete this.models[model.get("iteration")];
+if(model.get("iteration")>1){this.models[model.get("iteration")-1].fetch({success:function(previousModel){view.router.navigate(String(previousModel.get("iteration")),true);
+if(_.isFunction(callback)){callback()
+}},failure:function(){new App.Views.Error({message:"Internal error, unable to refresh sprint data.  Please refresh your browser"});
+view.router.navigate(String(previousModel.get("iteration")),true);
+if(_.isFunction(callback)){callback()
+}}})
+}else{this.router.navigate("Backlog",true);
+if(_.isFunction(callback)){callback()
+}}},createNew:function(event){var view=this;
+event.preventDefault();
+$("#dialog-new-sprint").remove();
+$("body").append(JST["sprints/new-dialog"]({sprints:this.collection}));
+$("#dialog-new-sprint").dialog({resizable:false,height:350,width:400,modal:true,buttons:{Create:function(){var dialog=$(this);
+if(!dialog.find("form").valid()){$(dialog).find("p.intro").addClass("error").html("One or more fields are not completed correctly.  Please correct these to continue.");
+return false
+}$(this).find("p.progress-placeholder").html("Please wait, creating new sprint...");
+$(this).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Preparing...");
+$(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").hide();
+var model=new Sprint({start_on:$.datepicker.formatDate("yy-mm-dd",dialog.find("#start-on").datepicker("getDate")),duration_days:dialog.find("#duration-days").val(),number_team_members:dialog.find("#number-team-members").val()});
+view.collection.add(model);
+model.save(false,{success:function(model,response){view.showNew(model);
+new App.Views.Notice({message:"Sprint number "+model.get("iteration")+" has been added"});
+$(dialog).dialog("close")
+},error:function(model,error){if(window.console){console.log(JSON.stringify(error))
+}if($(dialog).is(":visible")){$(dialog).find("p.intro").addClass("error").html("Oops, we could not create a sprint as it looks like you haven't filled in everything correctly:<br>"+JSON.parse(error.responseText).message);
+$(dialog).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Cancel");
+$(dialog).parent().find(".ui-dialog-buttonset button:nth-child(1)").show();
+$(dialog).find("p.progress-placeholder").html("")
+}else{var errorView=new App.Views.Error({message:"Sprint was not created, please try again"})
+}view.collection.remove(model)
+}})
+},Cancel:function(){$(this).dialog("close")
+}}});
+var dialog=$("#dialog-new-sprint");
+dialog.find("#start-on").datepicker();
+if(_.isFunction($.fn.validate)){dialog.find("form").validate({rules:{duration_days:{required:true,digits:true,min:1},number_team_members:{required:true,digits:true,min:1}},messages:{duration_days:{required:"Sprint duration is required",digits:"Enter a value using whole numbers only",min:"Sprint duration must be at least 1 day"},number_team_members:{required:"Number of team members is required",digits:"Enter a value using whole numbers only",min:"Team must comprise of at least one member"}}})
+}if(this.collection.length==0){dialog.find("#start-on").datepicker("setDate",new Date(new Date().getTime()+1000*60*60*24));
+dialog.find("#duration-days").val("10");
+dialog.find("#number-team-members").val("1")
+}else{if(this.collection.length==1){var dayInMs=1000*60*60*24,lastSprint=this.collection.at(0),lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),nextDate=lastDate+((lastDuration+1)*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs);
+dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
+dialog.find("#duration-days").val(lastDuration);
+dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
+}else{var dayInMs=1000*60*60*24,sprintsDesc=this.collection.sortBy(function(sprint){return sprint.get("iteration")
+}).reverse(),lastSprint=sprintsDesc[0],previousSprint=sprintsDesc[1],timePassedBetweenDates=parseRubyDate(lastSprint.get("start_on")).getTime()-parseRubyDate(previousSprint.get("start_on")).getTime(),nextDate=parseRubyDate(lastSprint.get("start_on")).getTime()+timePassedBetweenDates;
+dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
+dialog.find("#duration-days").val(lastSprint.get("duration_days"));
+dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
+}}}}),Show:App.Views.BaseView.extend({tagName:"li",className:"sprint-tab",events:{"click a":"activate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
+this.router=this.options.router;
+this.parentView=this.options.parentView;
+_.bindAll(this,"remove")
 },render:function(){$(this.el).html(JST["sprints/tabs/show"]({model:this.model}));
 if(this.model.active){$(this.el).addClass("active")
 }if(this.model.locked){$(this.el).addClass("locked")
 }return this
-},activate:function(){$(this.el).parents(".infinite-tabs").find("li").removeClass("active");
-$(this.el).addClass("active")
+},activate:function(){this.router.navigate(String(this.model.get("iteration")),true)
 }})};
 App.Views.Stories={Index:Backbone.View.extend({tagName:"div",className:"stories",childId:function(model){return"story-"+model.get("id")
 },events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"storyKeyPress"},initialize:function(){this.collection=this.options.collection;
@@ -404,10 +697,11 @@ if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate"},initialize:function(){this.use5090estimates=this.options.use5090estimates;
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate","click .status .tab":"statusChangeClick","blur .status .drop-down select":"statusDropDownLostFocus","change .status .drop-down select":"statusDropDownChanged",},initialize:function(){this.use5090estimates=this.options.use5090estimates;
 App.Views.BaseView.prototype.initialize.call(this);
-_.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor")
-},render:function(){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
+_.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor","populateHtmlFromTemplate")
+},render:function(){this.populateHtmlFromTemplate();
+$(this.el).data("populate-html-from-template",this.populateHtmlFromTemplate);
 var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()});
 this.$(".acceptance-criteria").html(view.render().el);
 if(this.model.IsEditable()){this.makeFieldsEditable();
@@ -423,6 +717,14 @@ this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){sh
 },colorsPerLine:4,colors:["#ffffff","#dddddd","#bbbbbb","#999999","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#6666ff","#9900ff","#ff00ff","#f4cccc","#d9ead3","#cfe2f3","#ead1dc","#ffe599","#b6d7a8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d"]})
 }if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
 }return this
+},populateHtmlFromTemplate:function(){if(this.populatedHtml){$(this.el).find(".sprint-story-info").html($(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates})).find(".sprint-story-info"))
+}else{this.populatedHtml=true;
+$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
+}this.setStatusHover()
+},setStatusHover:function(){App.Views.Sprints.Shared.setStatusHover.apply(this,arguments)
+},statusChangeClick:function(){App.Views.Sprints.Shared.statusChangeClick.apply(this,arguments)
+},statusDropDownLostFocus:function(){App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this,arguments)
+},statusDropDownChanged:function(){App.Views.Sprints.Shared.statusDropDownChanged.apply(this,arguments)
 },makeFieldsEditable:function(){var show_view=this;
 var contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(value,settings,this)
 };
@@ -512,7 +814,9 @@ this.model.MoveToTheme(themeId,{success:function(model,response){var errorView=n
 },changeColor:function(color,options){var colorWithoutHex=(color.match(/^#/)?color.substring(1):color);
 var colorWithHex="#"+colorWithoutHex;
 if(colorWithoutHex.toLowerCase()==="ffffff"){colorWithoutHex=colorWithHex=""
-}$(this.el).css("background-color",colorWithHex);
+}var colors=colorWithoutHex.match(/[\d\w]{2}/g);
+$(this.el).css("background-color","rgba("+parseInt(colors[0],16)+", "+parseInt(colors[1],16)+", "+parseInt(colors[2],16)+", 0.15)");
+$(this.el).find(".background-color-indicator").css("background-color",colorWithHex);
 if(!options||!options.silent){this.model.set({color:colorWithoutHex});
 this.model.save()
 }},duplicate:function(event){var model=new Story();
@@ -674,3 +978,39 @@ view.model.ReNumberStories({success:function(){$(dialog).dialog("close")
 $(dialog).dialog("close")
 }})
 }})};
+App.Routers.Backlog=Backbone.Router.extend({backlogView:false,oldView:false,routes:{"":"showBacklog","Backlog":"showBacklog","Stats":"showStats","Sprints":"showSprintsHelp",":iteration":"showSprint"},initialize:function(options){_.bindAll(this,"setTabsReference","cleanUpOldView")
+},setTabsReference:function(tabs){this.sprintTabsView=tabs
+},showBacklog:function(){this.cleanUpOldView();
+if(!this.backlogView){this.backlogView=new App.Views.Backlogs.Show({model:App.Collections.Backlogs.at(0),el:$("#backlog-container"),sprintTabsView:this.sprintTabsView});
+this.showContainer("#backlog-container");
+this.backlogView.render()
+}else{this.backlogView.activated();
+this.showContainer("#backlog-container")
+}this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Backlog"))
+},showStats:function(){this.cleanUpOldView();
+this.oldView=new App.Views.BacklogStats.Show({model:App.Collections.Backlogs.at(0),el:this.replaceWithNew("#stats-container")});
+this.showContainer("#stats-container");
+this.oldView.render();
+this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Stats"))
+},showSprintsHelp:function(){this.cleanUpOldView();
+this.oldView=new App.Views.Sprints.Help({sprintTabsView:this.sprintTabsView,el:this.replaceWithNew("#sprints-help-container")});
+this.showContainer("#sprints-help-container");
+this.oldView.render();
+this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Sprints"))
+},showSprint:function(iteration){var model=this.sprintTabsView.getModelFromIteration(iteration);
+this.cleanUpOldView();
+if(!model){var err=new App.Views.Error({message:"Internal error, could not display sprint correctly.  Please refresh your browser"})
+}else{this.oldView=new App.Views.Sprints.Show({model:model,el:this.replaceWithNew("#sprints-container"),sprintTabsView:this.sprintTabsView});
+this.showContainer("#sprints-container");
+this.oldView.render();
+this.sprintTabsView.select(model)
+}},replaceWithNew:function(nodePath){var oldNode=$(nodePath).empty(),oldNodeHtml=oldNode[0].outerHTML||new XMLSerializer().serializeToString(oldNode[0]);
+$(nodePath).replaceWith($(oldNodeHtml));
+return $(nodePath)
+},showContainer:function(container){containers=["#sprints-container","#sprints-help-container","#stats-container","#backlog-container"];
+_(containers).each(function(elem){$("section.main-content-pod").removeClass("showing-"+elem.replace(/#|\-container/gi,""))
+});
+$("section.main-content-pod").addClass("showing-"+container.replace(/#|\-container/gi,""))
+},cleanUpOldView:function(){if(this.oldView){if(_.isFunction(this.oldView.cleanUp)){this.oldView.cleanUp()
+}this.oldView=false
+}}});
