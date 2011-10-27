@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 describe Sprint do
+  # default sprint story status is needed when any story is assigned to a sprint
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+
   it 'should create a new iteration automatically for each sprint created' do
     # get a backlog set up with at least one story
     acceptance_criterion = Factory.create(:acceptance_criterion)

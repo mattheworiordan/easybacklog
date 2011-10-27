@@ -1,5 +1,6 @@
 class SprintStoryStatus < ActiveRecord::Base
   DONE_CODE = 'D'
+  DEFAULT_CODE = 'T' # default to to do
 
   has_many :sprint_stories
 

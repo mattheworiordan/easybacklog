@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 describe SprintStory do
+  # default sprint story status is needed when any story is assigned to a sprint
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+
   it 'should assign the sprint scoring fields automatically when assigned to a sprint' do
     story = Factory.create(:story, :score_50 => 1, :score_90 => 2)
     sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id)
@@ -48,5 +51,14 @@ describe SprintStory do
     story.reload
     story.sprint_story.sprint_id = sprint2.id
     expect { story.sprint_story.save! }.should_not raise_error
+  end
+
+  it 'should be allocated a sprint story status whenever it is added to a sprint' do
+    story = Factory.create(:story)
+    sprint = Factory.create(:sprint, :backlog => story.theme.backlog )
+
+    sprint.stories << story
+
+    story.sprint_story.sprint_story_status.should == default_sprint_story_status
   end
 end

@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 describe Story do
+  # default sprint story status is needed when any story is assigned to a sprint
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+
   it 'should create a unique ID sequentially and fill up gaps' do
     # create 2 stories without IDs, so should be 1,2
     Factory.create(:theme, :name => "Theme A")

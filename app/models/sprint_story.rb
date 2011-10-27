@@ -4,12 +4,12 @@ class SprintStory < ActiveRecord::Base
   belongs_to :story
   belongs_to :sprint_story_status
 
-  validates_presence_of :story_id, :sprint_id
+  validates_presence_of :story_id, :sprint_id, :sprint_story_status_id
   validates_uniqueness_of :story_id, :scope => :sprint_id
   validates_numericality_of :sprint_score_50_when_assigned, :sprint_score_90_when_assigned, :allow_nil => true
 
   before_save :assign_sprint_scores_when_assigned
-  before_validation :protect_sprint_scores_when_assigned, :prevent_assign_to_sprint_when_complete
+  before_validation :protect_sprint_scores_when_assigned, :prevent_assign_to_sprint_when_complete, :assign_default_sprint_story_status
 
   attr_accessible :position, :sprint_story_status_id, :sprint_id, :story_id
 
@@ -48,5 +48,11 @@ class SprintStory < ActiveRecord::Base
       message = 'is not editable'
       errors.add :sprint_score_50_when_assigned, message if sprint_score_50_when_assigned_changed?
       errors.add :sprint_score_90_when_assigned, message if sprint_score_90_when_assigned_changed?
+    end
+
+    def assign_default_sprint_story_status
+      if (sprint_story_status.blank?)
+        self.sprint_story_status = SprintStoryStatus.find_by_code(SprintStoryStatus::DEFAULT_CODE)
+      end
     end
 end
