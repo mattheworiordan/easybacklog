@@ -10,8 +10,11 @@ class SprintStory < ActiveRecord::Base
 
   before_save :assign_sprint_scores_when_assigned
   before_validation :protect_sprint_scores_when_assigned, :prevent_assign_to_sprint_when_complete, :assign_default_sprint_story_status
+  before_destroy :prevent_delete_when_done_or_sprint_complete
 
   attr_accessible :position, :sprint_story_status_id, :sprint_id, :story_id
+
+  include ActiveRecordExceptions
 
   def theme_id
     if story.present?
@@ -34,6 +37,9 @@ class SprintStory < ActiveRecord::Base
       end
     end
 
+    def prevent_delete_when_done_or_sprint_complete
+      raise RecordNotDestroyable, 'Story cannot be unassigend from sprint when story done or sprint is complete' if sprint.completed? || story.done?
+    end
 
     # for reporting purposes, when a story is assigned to a sprint, store the scores at that time so we can report on change during a sprint
     def assign_sprint_scores_when_assigned
