@@ -32,8 +32,8 @@ group :development, :test, :cucumber do
 end
 
 group :test, :cucumber do
-  gem 'rspec','>=2.0.0'
-  gem 'rspec-rails','>=2.0.0'
+  gem 'rspec','>=2.7.0'
+  gem 'rspec-rails','>=2.7.0'
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'webrat'
