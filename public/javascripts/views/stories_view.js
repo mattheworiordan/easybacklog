@@ -127,7 +127,10 @@ App.Views.Stories = {
 
     events: {
       "click .delete-story>a": "remove",
-      "click .duplicate-story>a": "duplicate"
+      "click .duplicate-story>a": "duplicate",
+      "click .status .tab": 'statusChangeClick',
+      "blur .status .drop-down select": 'statusDropDownLostFocus',
+      "change .status .drop-down select": 'statusDropDownChanged',
     },
 
     initialize: function() {
@@ -184,6 +187,23 @@ App.Views.Stories = {
         this.populatedHtml = true;
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
       }
+      this.setStatusHover();
+    },
+
+    setStatusHover: function() {
+      App.Views.Sprints.Shared.setStatusHover.apply(this, arguments);
+    },
+
+    statusChangeClick: function() {
+      App.Views.Sprints.Shared.statusChangeClick.apply(this, arguments);
+    },
+
+    statusDropDownLostFocus: function() {
+      App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this, arguments);
+    },
+
+    statusDropDownChanged: function() {
+      App.Views.Sprints.Shared.statusDropDownChanged.apply(this, arguments);
     },
 
     makeFieldsEditable: function() {

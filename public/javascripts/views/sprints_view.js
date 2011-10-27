@@ -73,6 +73,7 @@ App.Views.Sprints = {
     },
 
     updateStatistics: function(attributes) {
+      this.model.set(attributes);
       $('#backlog-data-area .backlog-stats').html( JST['sprints/stats']({ attributes: attributes }) );
       var totals = this.$('.stories-container .totals');
       if (this.model.SprintStories().length === 0) {
@@ -165,13 +166,15 @@ App.Views.Sprints = {
       // Remove SprintStory models from Sprint that are no longer in the list
       this.model.SprintStories().each(function(story) {
         if (!that.$('.stories-container #' + that.childId(story.Story())).length) {
-          $('.unassigned-stories-container #' + that.childId(story.Story())).data('reset-toggle')(); // show the more/less as necessary, contract after drag
+          var storyNode = $('.unassigned-stories-container #' + that.childId(story.Story()));
+          storyNode.data('reset-toggle')(); // show the more/less as necessary, contract after drag
           persistActions += 1;
           story.destroy({
             success: function(model, response) {
               that.updateStatistics(response.sprint_statistics);
               that.model.set(response.sprint_statistics); // update Sprint with new statistics
               persistOrder();
+              storyNode.data('update-sprint-story-status')();
             },
             error: function(model, response) {
               var errorMessage = 'Oops, we\'ve been unable to remove that story from this sprint.  Please refresh your browser.';
@@ -200,6 +203,7 @@ App.Views.Sprints = {
               that.updateStatistics(model.get('sprint_statistics'));
               that.model.set(model.get('sprint_statistics')); // update Sprint with new statistics
               persistOrder();
+              $(storyNode).data('update-sprint-story-status')();
             },
             error: function(model, response) {
               var errorMessage = 'we\'ve got a problem on our side';
@@ -299,26 +303,31 @@ App.Views.Sprints = {
     }
   }),
 
+  // Note this view gets passed a Story model as story cards can appear unassigned and thus don't have a SprintStory
   SprintStory: App.Views.BaseView.extend({
     tagName: 'div',
     className: 'story-card',
-    contractedHeight: 85,
+    contractedHeight: 90,
     heightBuffer: 10,
 
     events: {
       "click .more .tab": "toggleMore",
-      "click .move": 'moveStory'
+      "click .move": 'moveStory',
+      "click .status .tab": 'statusChangeClick',
+      "blur .status .drop-down select": 'statusDropDownLostFocus',
+      "change .status .drop-down select": 'statusDropDownChanged',
     },
 
     initialize: function(options) {
       App.Views.BaseView.prototype.initialize.call(this);
       this.parentView = options.parentView;
-      _.bindAll(this, 'resetToggle');
+      _.bindAll(this, 'resetToggle', 'updateSprintStoryStatus');
     },
 
     render: function() {
       var that = this;
       $(this.el).html(JST['sprints/sprint-story']({ model: this.model }));
+      this.setStatusHover();
 
       // set heights of story cards to no greater than contractedHeight, must do after this element has actually rendered in the page
       setTimeout(function() {
@@ -335,6 +344,10 @@ App.Views.Sprints = {
 
       // store data so we can identify this DOM element
       $(this.el).data('story_id', this.model.get('id'));
+
+      // add reference to method to update sprintStoryStatus as this will change when moved
+      $(this.el).data('update-sprint-story-status', this.updateSprintStoryStatus);
+
       return this;
     },
 
@@ -348,6 +361,27 @@ App.Views.Sprints = {
       } else {
         $(this.el).find('.more').css('display', 'none');
       }
+    },
+
+    updateSprintStoryStatus: function() {
+      $(this.el).find('.status').html( $(JST['sprints/sprint-story']({ model: this.model })).find('.status') );
+      this.setStatusHover();
+    },
+
+    setStatusHover: function() {
+      App.Views.Sprints.Shared.setStatusHover.apply(this, arguments);
+    },
+
+    statusChangeClick: function() {
+      App.Views.Sprints.Shared.statusChangeClick.apply(this, arguments);
+    },
+
+    statusDropDownChanged: function() {
+      App.Views.Sprints.Shared.statusDropDownChanged.apply(this, arguments);
+    },
+
+    statusDropDownLostFocus: function() {
+      App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this, arguments);
     },
 
     toggleMore: function(speed) {
@@ -369,5 +403,64 @@ App.Views.Sprints = {
       target.append(this.el);
       this.parentView.persistSprintStories();
     }
-  })
+  }),
+
+  // methods that are shared between this view and the stories view
+  Shared: {
+    // because we change the DOM whilst the mouse is over the element
+    // the :hover does not work corretly, we need to use JQuery hover instead and manually deal with exceptions
+    setStatusHover: function() {
+      $(this.el).find('.status .tab').hover(
+        function() { $(this).addClass('hover'); },
+        function() { $(this).removeClass('hover'); }
+      );
+    },
+
+    statusChangeClick: function() {
+      var dropDownOptions = App.Collections.SprintStoryStatuses.sortBy(function(s) { return s.get('position'); }).map(function(status) {
+        return ('<option value="' + status.get('id') + '">' + htmlEncode(status.get('status')) + '</option>');
+      }).join(''),
+          dropDownNode = $(this.el).find('.status .drop-down'),
+          className = $(this.el).find('.status .tab').attr('class').match(/(status-code-\w+)/)[1];
+
+      $(this.el).find('.status .tab').hide();
+      dropDownNode.find('select').empty().append($(dropDownOptions)).attr('class', className);
+      dropDownNode.find('select option[value=' + this.model.SprintStory().get('sprint_story_status_id') + ']').attr("selected", "selected");
+      dropDownNode.show().focus();
+    },
+
+    statusDropDownChanged: function() {
+      var selected = $(this.el).find('.status .drop-down select option:selected'),
+          code = App.Collections.SprintStoryStatuses.get(selected.val()).get('code'),
+          that = this;
+
+      $(this.el).find('.status .tab').text(selected.text()).attr('class', 'tab status-code-' + code);
+      this.model.SprintStory().set({ sprint_story_status_id: selected.val() });
+      this.model.SprintStory().save(false, {
+        success: function(model) {
+          // update the stats as completed count may change
+          // If parentView exists, let it handle this,
+          // else update the sprint model as no realtime update is needed
+          if (that.parentView) {
+            that.parentView.updateStatistics(model.get('sprint_statistics'));
+          } else {
+            that.model.SprintStory().Sprint().set(model.get('sprint_statistics'));
+          }
+        },
+        error: function(model, response) {
+          var errorMessage = 'we\'ve got a problem on our side';
+          try {
+            errorMessage = $.parseJSON(response.responseText).message;
+          } catch (e) { if (window.console) { console.log(e); } }
+          var errorView = new App.Views.Error({ message: 'Oops, ' + errorMessage + '.  Please refresh your browser' });
+        }
+      })
+      this.statusDropDownLostFocus();
+    },
+
+    statusDropDownLostFocus: function() {
+      $(this.el).find('.status .tab').show();
+      $(this.el).find('.status .drop-down').hide();
+    }
+  }
 };

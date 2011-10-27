@@ -7,6 +7,12 @@
     <div class="heading">Points:</div>
     <div class="data"><%= model.get('score_50')%>/<%= model.get('score_90')%></div>
   </div>
+  <div class="status">
+    <% if (model.SprintStory()) { %>
+      <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><%= model.SprintStory().Status().get('status') %></div>
+      <div class="drop-down"><select id="sprint-story-status"></select></div>
+    <% } %>
+  </div>
 </div>
 
 <div class="story">

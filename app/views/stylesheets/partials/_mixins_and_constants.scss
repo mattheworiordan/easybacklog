@@ -54,3 +54,47 @@ $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-v
   font-size: 1.3em;
   font-weight: bolder;
 }
+
+/* Colours used to indicate progress of a story when assigned to a sprint */
+@mixin status-code-colors($includeHover: yes) {
+  /* to do */
+  &.status-code-T {
+    background-color: #777;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#777, 20%);
+      }
+    }
+  }
+  /* in progress */
+  &.status-code-P {
+    background-color: #A00;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#A00, 15%);
+      }
+    }
+  }
+  /* ready for testing / testing */
+  &.status-code-R {
+    background-color: #FF8000;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#FF8000, 20%);
+      }
+    }
+  }
+  /* done */
+  &.status-code-D {
+    background-color: #090;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#090, 20%);
+      }
+    }
+  }
+}

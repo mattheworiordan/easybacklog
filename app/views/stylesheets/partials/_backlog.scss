@@ -566,17 +566,20 @@ ul.themes {
           }
           &>.unique-id {
             @include table-col(7%);
+            >.data {
+              margin-bottom: 0;
+            }
             >.story-actions {
-              border: none;
-              margin: 0;
+              border-top: none;
+              margin: 0 0 0 1px;
               padding: 0 0 0 3px;
               overflow: hidden;
             }
             .sprint-story-info {
-              border: none;
+              border-top: none;
             }
             .sprint {
-              padding: 5px;
+              padding: 5px 0 2px 5px;
               .tab {
                 background-color: lighten($title-area-color, 15%);
                 color: white;
@@ -593,6 +596,44 @@ ul.themes {
                 &:hover {
                   background-color: $title-area-color;
                 }
+              }
+            }
+            .status {
+              padding: 5px 0 0 5px;
+              position: relative;
+              min-height: 25px;
+              .drop-down {
+                display: none;
+                position: absolute;
+                select {
+                  font-size: 10px;
+                  height: 20px;
+                  margin: 0;
+                  padding: 0;
+                  @include status-code-colors(false);
+                }
+              }
+              .tab {
+                cursor: pointer;
+                background-color: lighten($title-area-color, 15%);
+                color: white;
+                font-size: 12px;
+                padding: 1px 5px 1px 5px;
+                &.status-code-T, &.status-code-R, &.status-code-D {
+                  padding: 1px 12px 1px 12px;
+                }
+                @include border-radius(10px);
+                display: inline;
+                a {
+                  color: white;
+                  &:hover {
+                    text-decoration: none;
+                  }
+                }
+                &:hover {
+                  background-color: $title-area-color;
+                }
+                @include status-code-colors;
               }
             }
           }

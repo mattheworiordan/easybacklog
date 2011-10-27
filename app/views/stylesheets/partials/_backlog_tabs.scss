@@ -163,6 +163,40 @@ section.showing-sprints {
         padding: 0 4px 4px 4px;
         overflow: hidden;
       }
+      .status {
+        padding: 0 4px 4px 4px;
+        overflow: hidden;
+        position: relative;
+        min-height: 25px;
+        .drop-down {
+          display: none;
+          position: absolute;
+          select {
+            font-size: 12px;
+            height: 20px;
+            @include status-code-colors(false);
+          }
+        }
+        .tab {
+          cursor: pointer;
+          background-color: lighten($title-area-color, 15%);
+          color: white;
+          font-size: 12px;
+          padding: 1px 15px 1px 15px;
+          @include border-radius(10px);
+          display: inline;
+          a {
+            color: white;
+            &:hover {
+              text-decoration: none;
+            }
+          }
+          &:hover {
+            background-color: $title-area-color;
+          }
+          @include status-code-colors;
+        }
+      }
     }
     .story {
       float: left;
@@ -279,7 +313,7 @@ section.showing-sprints {
   .story-card-place-holder {
     border: 2px dashed #999;
     @include border-radius(3px);
-    height: 85px;
+    height: 90px;
     margin-top: 10px;
     background-color: #EEE;
   }
