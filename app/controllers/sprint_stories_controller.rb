@@ -35,6 +35,25 @@ class SprintStoriesController < ApplicationController
     end
   end
 
+  def update_order
+    begin
+      ids = params[:ids]
+      sprint_stories = []
+      ids.each do |id, position|
+        sprint_story = @sprint.sprint_stories.find(id)
+        sprint_story.position = position
+        sprint_story.save!
+        sprint_stories << sprint_story
+      end
+      # now return all the updated sprint stories so we can update the models in the front end
+      render :json => sprint_stories
+    rescue ActiveRecord::RecordNotFound
+      send_json_error "Sprint story could not be found"
+    rescue
+      send_json_error "Sprint stories could not be reordered"
+    end
+  end
+
   def destroy
     begin
       @sprint_story = @sprint.sprint_stories.find(params[:id])

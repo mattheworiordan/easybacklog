@@ -16,7 +16,8 @@ App.Views.Sprints = {
 
     render: function() {
       var that = this,
-          storiesAssignedToSprints = {};
+          storiesAssignedToSprints = {},
+          sortFn;
 
       // load sprints view
       $(this.el).html(JST['sprints/show']({ model: this.model }));
@@ -27,7 +28,8 @@ App.Views.Sprints = {
       this.updateStatistics(this.model.attributes);
 
       // show stories assigned to sprint
-      this.model.SprintStories().each(function(model) {
+      sortFn = function(t) { return t.get('position'); };
+      _(this.model.SprintStories().sortBy(sortFn)).each(function(model) {
         var view = new App.Views.Sprints.SprintStory({ model: model.Story(), parentView: that, id: that.childId(model.Story()) });
         $(that.el).find('.stories-container .cards').append(view.render().el);
       });
@@ -40,7 +42,6 @@ App.Views.Sprints = {
       });
 
       // now show all stories not yet assigned to a sprint
-      var sortFn = function(t) { return t.get('position'); };
       _(this.model.Backlog().Themes().sortBy(sortFn)).each(function(theme) {
         _(theme.Stories().sortBy(sortFn)).each(function(story) {
           if (!storiesAssignedToSprints[story.get('id')]) {
@@ -136,15 +137,41 @@ App.Views.Sprints = {
     // stories stories that are removed / added to the database
     // called every time a story shifts in the lists
     persistSprintStories: function() {
-      var that = this;
+      var that = this,
+          persistActions = 0, // keep a counter of how many persist actions need to complete before we can set the ordering
+          persistOrder;
+
+      persistOrder = function() {
+        persistActions -= 1;
+        if (persistActions <= 0) {
+          var updateParams = {};
+          this.$('.stories-container .story-card').each(function(index, storyNode) {
+            var storyId = Number($(storyNode).attr('id').replace('sprint-story-',''));
+            var sprintStory = that.model.SprintStories().getByStoryId(storyId);
+            if (sprintStory.get('position') !== index+1) {
+              updateParams[sprintStory.get('id')] = index+1;
+            }
+          });
+          if (Object.keys(updateParams).length) {
+            that.model.SprintStories().batchUpdatePosition(updateParams, {
+              error: function() {
+                var errorView = new App.Views.Error({ message: 'Order of stories could not be saved.  Please refresh your browser' });
+              }
+            })
+          }
+        }
+      }
+
       // Remove SprintStory models from Sprint that are no longer in the list
       this.model.SprintStories().each(function(story) {
         if (!that.$('.stories-container #' + that.childId(story.Story())).length) {
           $('.unassigned-stories-container #' + that.childId(story.Story())).data('reset-toggle')(); // show the more/less as necessary, contract after drag
+          persistActions += 1;
           story.destroy({
             success: function(model, response) {
               that.updateStatistics(response.sprint_statistics);
               that.model.set(response.sprint_statistics); // update Sprint with new statistics
+              persistOrder();
             },
             error: function(model, response) {
               var errorMessage = 'Oops, we\'ve been unable to remove that story from this sprint.  Please refresh your browser.';
@@ -156,6 +183,7 @@ App.Views.Sprints = {
           });
         }
       });
+
       this.$('.stories-container .story-card').each(function(index, storyNode) {
         var storyId = Number($(storyNode).attr('id').replace('sprint-story-',''));
         if (!that.model.SprintStories().getByStoryId(storyId)) {
@@ -166,10 +194,12 @@ App.Views.Sprints = {
             sprint_id: that.model.get('id')
           });
           that.model.SprintStories().add(newSprintStory);
+          persistActions += 1;
           newSprintStory.save(false, {
             success: function(model, response) {
               that.updateStatistics(model.get('sprint_statistics'));
               that.model.set(model.get('sprint_statistics')); // update Sprint with new statistics
+              persistOrder();
             },
             error: function(model, response) {
               var errorMessage = 'we\'ve got a problem on our side';
@@ -181,6 +211,11 @@ App.Views.Sprints = {
           });
         }
       });
+
+      if (persistActions === 0) {
+        // looks like no stories have been added or removed, but order may have changed, trigger a check and update if necessary
+        persistOrder();
+      }
 
       // now ensure stories container is still at correct height as it could shift up or down whilst scrolled down
       this.positionStoriesContainerOnScroll();

@@ -24,5 +24,28 @@ var SprintStoriesCollection = Backbone.Collection.extend({
       }
     });
     return sprintStoryMatch;
+  },
+
+  // update order of multiple sprint stories simultaneously (reduce network traffic of individual updates)
+  // params is collection of { sprintStoryId: position (order), ... }
+  batchUpdatePosition: function(params, options) {
+    var url = '/sprints/' + this.sprint.get('id') + '/sprint-stories/update-order',
+        that = this;
+
+    options = options || {};
+    data = _(params).map(function(val, key) { return 'ids[' + key + ']=' + val; }).join('&');
+    $.ajax(url, {
+      success: function(data) {
+        // update models with new positions
+        _(data).each(function(val) {
+          that.get(val.id).set(val);
+        });
+        if (options.success) { options.success.apply(this, arguments); }
+      },
+      error: function() { if (options.error) { options.error.apply(this, arguments); } },
+      data: data,
+      dataType: 'json',
+      type: 'PUT'
+    })
   }
 });
