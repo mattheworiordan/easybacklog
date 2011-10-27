@@ -5,7 +5,16 @@
   </div>
   <div class="points">
     <div class="heading">Points:</div>
-    <div class="data"><%= model.get('score_50')%>/<%= model.get('score_90')%></div>
+    <div class="data"><% if (model.get('score_50') === model.get('score_90')) { %>
+        <%= !model.get('score_50') ? '0' : model.get('score_50') %>
+      <% } else {
+           if (!model.get('score_50') && !model.get('score_90')) { %>
+             0
+        <% } else { %>
+          <%= !model.get('score_50') ? 0 : model.get('score_50') %>/<%= !model.get('score_90') ? 0 : model.get('score_90')%>
+        <% } %>
+      <% } %>
+    </div>
   </div>
   <div class="status">
     <% if (model.SprintStory()) { %>
