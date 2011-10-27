@@ -236,7 +236,7 @@ end
 #
 Then /^the story with as equal to "([^"]*)" should be (red|green)$/ do |as_value, colour|
   color = colour == 'red' ? 'rgb(255, 0, 0)' : 'rgb(0, 255, 0)'
-  page.evaluate_script("$('li.story::has(.user-story .as-a .data:contains(#{as_value}))').css('backgroundColor')").should == color
+  page.evaluate_script("$('li.story::has(.user-story .as-a .data:contains(#{as_value})) .background-color-indicator').css('backgroundColor')").should == color
 end
 
 ##
