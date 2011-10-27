@@ -133,11 +133,12 @@ App.Views.Stories = {
     initialize: function() {
       this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme','changeColor');
+      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'populateHtmlFromTemplate');
     },
 
     render: function() {
-      $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
+      this.populateHtmlFromTemplate();
+      $(this.el).data('populate-html-from-template', this.populateHtmlFromTemplate);
 
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
       this.$('.acceptance-criteria').html(view.render().el);
@@ -173,6 +174,16 @@ App.Views.Stories = {
       if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
 
       return this;
+    },
+
+    populateHtmlFromTemplate: function() {
+      if (this.populatedHtml) {
+        // only update the sprint status and assigned sprint as this could be changed on other tabs, rest will remain the same
+        $(this.el).find('.sprint-story-info').html( $(JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates })).find('.sprint-story-info') );
+      } else {
+        this.populatedHtml = true;
+        $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
+      }
     },
 
     makeFieldsEditable: function() {

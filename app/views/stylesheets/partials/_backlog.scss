@@ -570,6 +570,30 @@ ul.themes {
               border: none;
               margin: 0;
               padding: 0 0 0 3px;
+              overflow: hidden;
+            }
+            .sprint-story-info {
+              border: none;
+            }
+            .sprint {
+              padding: 5px;
+              .tab {
+                background-color: lighten($title-area-color, 15%);
+                color: white;
+                font-size: 12px;
+                padding: 1px 10px 1px 10px;
+                @include border-radius(10px);
+                display: inline;
+                a {
+                  color: white;
+                  &:hover {
+                    text-decoration: none;
+                  }
+                }
+                &:hover {
+                  background-color: $title-area-color;
+                }
+              }
             }
           }
           &>.user-story, &>.acceptance-criteria, &>.comments {

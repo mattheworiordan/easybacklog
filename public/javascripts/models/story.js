@@ -38,5 +38,22 @@ var Story = Backbone.Model.extend({
         options.error(story, response);
       }
     });
+  },
+
+  // access the sprint object if it exists for this story
+  SprintStory: function() {
+    var sprintStoryFound = null,
+        that = this;
+
+    this.Theme().Backlog().Sprints().each(function(sprint) {
+      if (sprintStoryFound) { return; }
+      sprint.SprintStories().each(function(sprintStory) {
+        if (!sprintStoryFound && (sprintStory.get('story_id') === that.get('id'))) {
+          sprintStoryFound = sprintStory;
+        }
+      });
+    });
+
+    return sprintStoryFound;
   }
 });

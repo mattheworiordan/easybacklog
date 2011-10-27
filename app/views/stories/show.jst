@@ -15,6 +15,9 @@
       <a href="#move-story" class="vtip ui-icon ui-icon-arrow-4" title="Drag move to re-order this story, or click to move to another theme"></a>
     </div>
   </div>
+  <div class="sprint-story-info">
+  <% if (model.SprintStory()) { %><div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>">sprint <%= model.SprintStory().Sprint().get('iteration')%></a></div></div><% } %>
+  </div>
 </div>
 <div class="user-story">
   <div class="as-a"><div class="heading">As </div><div class="data"><%= htmlEncode(model.get('as_a')) %></div></div>

@@ -50,6 +50,9 @@ App.Views.Backlogs = {
     // view is made active, but not necessarily re-rendered for performance reasons
     activated: function() {
       this.updateStatistics();
+      this.$('ul.stories>li.story').each(function(index, elem) {
+        $(elem).data('populate-html-from-template')();
+      });
     },
 
     // Tab or Enter key pressed so let's move on
