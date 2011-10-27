@@ -64,7 +64,7 @@ class SprintStoriesController < ApplicationController
         :total_allocated_points => @sprint.total_allocated_points
       }
     rescue ActiveRecord::RecordNotFound
-      send_json_notice "Sprint story was not found and is likely deleted"
+      send_json_error "Sprint story was not found and is likely deleted"
     end
   end
 

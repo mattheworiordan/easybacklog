@@ -581,27 +581,28 @@ ul.themes {
             .sprint {
               padding: 5px 0 2px 5px;
               .tab {
-                background-color: lighten($title-area-color, 15%);
-                color: white;
+                border: 1px solid rgba(0,0,0,0.5);
                 font-size: 12px;
                 padding: 1px 10px 1px 10px;
                 @include border-radius(10px);
                 display: inline;
                 a {
-                  color: white;
+                  color: rgba(0,0,0,0.75);
                   &:hover {
                     text-decoration: none;
+                    color: #000;
                   }
                 }
                 &:hover {
-                  background-color: $title-area-color;
+                  border-color: #000;
+                  background-color: rgba(0,0,0,0.05);
                 }
               }
             }
             .status {
               padding: 5px 0 0 5px;
               position: relative;
-              min-height: 25px;
+              min-height: 16px;
               .drop-down {
                 display: none;
                 position: absolute;

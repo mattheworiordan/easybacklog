@@ -89,8 +89,15 @@ $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-v
   }
   /* done */
   &.status-code-D {
-    background-color: #090;
+    @if $includeHover == yes {
+      background: #090 url(/images/lock-tiny-fff.png) 10px 2px no-repeat;
+    } @else {
+      background-color: #090;
+    }
     color: white;
+    span {
+      margin-left: 10px;
+    }
     @if $includeHover == yes {
       &.hover {
         background-color: darken(#090, 20%);

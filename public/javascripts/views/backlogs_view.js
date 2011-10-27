@@ -51,7 +51,7 @@ App.Views.Backlogs = {
     activated: function() {
       this.updateStatistics();
       this.$('ul.stories>li.story').each(function(index, elem) {
-        $(elem).data('populate-html-from-template')();
+        $(elem).data('update-model-data')();
       });
     },
 

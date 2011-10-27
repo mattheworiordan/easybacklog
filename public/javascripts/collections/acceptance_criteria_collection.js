@@ -23,7 +23,11 @@ var AcceptanceCriteriaCollection = Backbone.Collection.extend({
       var criterion = thisCollection.get(key);
       if (criterion) { // might not exist as not yet saved
         criterion.set({ 'position': idOrderCollection[key] });
-        criterion.save();
+        criterion.save(false, {
+          error: function() {
+            var errorView = new App.Views.Error({ message: 'Error, could not save the new order of criteria' });
+          }
+        });
       }
     });
   }

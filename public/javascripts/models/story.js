@@ -5,9 +5,17 @@ var Story = Backbone.Model.extend({
     return this.collection.theme;
   },
 
-  // editable if no snapshot master
+  // editable if no snapshot master, or story is done
   IsEditable: function() {
-    return (this.collection.theme.IsEditable());
+    if (!this.collection.theme.IsEditable()) {
+      return false
+    } else {
+      var sprintStory = this.SprintStory();
+      if (sprintStory) {
+        return !sprintStory.Status().isDone();
+      }
+      return true;
+    }
   },
 
   // access to acceptance criteria child collection

@@ -65,8 +65,6 @@ App.Views.Stories = {
           $('#vtip').remove();
           $(event.target).mouseleave();
         });
-      } else {
-        this.$('.story-actions').remove();
       }
 
       return(this);
@@ -124,6 +122,7 @@ App.Views.Stories = {
     tagName: 'li',
     className: 'story',
     deleteDialogTemplate: 'stories/delete-dialog',
+    isEditable: false,
 
     events: {
       "click .delete-story>a": "remove",
@@ -136,23 +135,25 @@ App.Views.Stories = {
     initialize: function() {
       this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'populateHtmlFromTemplate');
+      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'modelDataHasChanged');
     },
 
     render: function() {
-      this.populateHtmlFromTemplate();
-      $(this.el).data('populate-html-from-template', this.populateHtmlFromTemplate);
+      this.modelDataHasChanged();
+      $(this.el).data('update-model-data', this.modelDataHasChanged);
 
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
       this.$('.acceptance-criteria').html(view.render().el);
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
+
         // make all input and textarea fields respond to Tab/Enter
         var show_view = this;
         var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data', '.score .data'];
-        _.each(tabElems, function(elem) { show_view.$(elem + ' textarea, ' + elem + ' input')
-          .live('keydown', show_view.navigateEvent); });
+        _.each(tabElems, function(elem) {
+          show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent);
+        });
 
         this.$('.move-story a').mousedown(function(event) {
           App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
@@ -174,15 +175,25 @@ App.Views.Stories = {
                    '#e06666', '#f6b26b', '#ffd966', '#93c47d']
         });
       }
+
       if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
 
       return this;
     },
 
-    populateHtmlFromTemplate: function() {
+    // called whenever a change is made to the model
+    modelDataHasChanged: function(onlyIfEditableStatusHasChanged) {
       if (this.populatedHtml) {
-        // only update the sprint status and assigned sprint as this could be changed on other tabs, rest will remain the same
-        $(this.el).find('.sprint-story-info').html( $(JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates })).find('.sprint-story-info') );
+        if (this.isEditable === this.model.IsEditable()) {
+          // only update the sprint status and assigned sprint as this could be changed on other tabs, rest will remain the same
+          if (!onlyIfEditableStatusHasChanged) {
+            $(this.el).find('.sprint-story-info').html( $(JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates })).find('.sprint-story-info') );
+          }
+        } else {
+          // we are now editable / not editable, so we have to generate a whole new view
+          var newView = new App.Views.Stories.Show({ model: this.model, id: $(this.el).attr('id'), use5090estimates: this.use5090estimates });
+          $(this.el).replaceWith(newView.render().el);
+        }
       } else {
         this.populatedHtml = true;
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
@@ -204,13 +215,17 @@ App.Views.Stories = {
 
     statusDropDownChanged: function() {
       App.Views.Sprints.Shared.statusDropDownChanged.apply(this, arguments);
+      this.modelDataHasChanged(true); // check to see if we need to update the UI
     },
 
     makeFieldsEditable: function() {
-      var show_view = this;
-      var contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); };
-      var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
+      var show_view = this,
+          contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); },
+          beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); },
+          defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
+
+      // need to maintain state if editable status changes and we need to make editable / make non-editable
+      this.isEditable = true;
 
       // for unique ID, we need to remove the code before editing and insert back in after editing
       var uniqueIdContentUpdatedFunc = function(value, settings) {

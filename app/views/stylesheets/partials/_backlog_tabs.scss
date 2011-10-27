@@ -195,6 +195,13 @@ section.showing-sprints {
             background-color: $title-area-color;
           }
           @include status-code-colors;
+          /* slight adjustments to icon and spacing as bigger font size */
+          &.status-code-D {
+            background-position-y: 3px;
+            span {
+              margin-left: 8px;
+            }
+          }
         }
       }
     }
@@ -289,6 +296,14 @@ section.showing-sprints {
         &:hover {
           @include opacity(1);
         }
+      }
+    }
+
+    &.locked.hover {
+      cursor: default;
+      background-color: inherit;
+      .move {
+        display: none;
       }
     }
   }

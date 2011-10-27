@@ -1,27 +1,31 @@
 <div class="background-color-indicator"></div>
 <div class="unique-id">
   <div class="data"><%= model.Theme().get('code')%><%= model.get('unique_id')%></div>
-  <div class="story-actions">
-    <div class="color-picker-icon">
-      <a class="vtip" title="Assign a color"></a>
+  <% if (model.IsEditable()) { %>
+    <div class="story-actions">
+      <div class="color-picker-icon">
+        <a class="vtip" title="Assign a color"></a>
+      </div>
+      <div class="delete-story">
+        <a href="#delete-story" class="ui-icon ui-icon-trash vtip" title="Delete this story"></a>
+      </div>
+      <div class="duplicate-story">
+        <a href="#duplicate-story" class="ui-icon ui-icon-newwin vtip" title="Duplicate this story"></a>
+      </div>
+      <div class="move-story">
+        <a href="#move-story" class="vtip ui-icon ui-icon-arrow-4" title="Drag move to re-order this story, or click to move to another theme"></a>
+      </div>
     </div>
-    <div class="delete-story">
-      <a href="#delete-story" class="ui-icon ui-icon-trash vtip" title="Delete this story"></a>
-    </div>
-    <div class="duplicate-story">
-      <a href="#duplicate-story" class="ui-icon ui-icon-newwin vtip" title="Duplicate this story"></a>
-    </div>
-    <div class="move-story">
-      <a href="#move-story" class="vtip ui-icon ui-icon-arrow-4" title="Drag move to re-order this story, or click to move to another theme"></a>
-    </div>
-  </div>
+  <% } %>
   <div class="sprint-story-info">
-  <% if (model.SprintStory()) { %><div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>">sprint <%= model.SprintStory().Sprint().get('iteration')%></a></div></div><% } %>
     <% if (model.SprintStory()) { %>
       <div class="status">
-        <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><%= model.SprintStory().Status().get('status') %></div>
+        <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><span><%= model.SprintStory().Status().get('status') %></span></div>
         <div class="drop-down"><select id="sprint-story-status"></select></div>
       </div>
+    <% } %>
+    <% if (model.SprintStory()) { %>
+      <div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>">sprint <%= model.SprintStory().Sprint().get('iteration')%></a></div></div>
     <% } %>
   </div>
 </div>

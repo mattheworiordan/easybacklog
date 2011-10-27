@@ -3,6 +3,7 @@
 App.Views.Sprints = {
   Show: App.Views.BaseView.extend({
     childId: function(model) { return 'sprint-story-' + model.get('id'); },
+    persistOrderActions: 0, // stop duplicate order actions from running, so keep track of queue and only execute when queue is empty
 
     events: {
       "click .stories-divider .change-size": "toggleUnassignedStoriesSize"
@@ -55,7 +56,8 @@ App.Views.Sprints = {
       this.$('.stories-container .cards, .unassigned-stories-container').sortable({
         connectWith: ".story-droppable",
         stop: that.persistSprintStories,
-        placeholder: 'story-card-place-holder'
+        placeholder: 'story-card-place-holder',
+        cancel: '.locked' // do not allow drag & drop of locked stories
       }).disableSelection();
 
       // ensure stories container is never completely off the screen when scrolling down
@@ -139,14 +141,15 @@ App.Views.Sprints = {
     // called every time a story shifts in the lists
     persistSprintStories: function() {
       var that = this,
-          persistActions = 0, // keep a counter of how many persist actions need to complete before we can set the ordering
           persistOrder;
 
+      // keep a counter of how many persist actions need to complete before we can set the ordering
       persistOrder = function() {
-        persistActions -= 1;
-        if (persistActions <= 0) {
+        that.persistOrderActions -= 1;
+        if (that.persistOrderActions <= 0) {
+          that.persistOrderActions = 0;
           var updateParams = {};
-          this.$('.stories-container .story-card').each(function(index, storyNode) {
+          that.$('.stories-container .story-card').each(function(index, storyNode) {
             var storyId = Number($(storyNode).attr('id').replace('sprint-story-',''));
             var sprintStory = that.model.SprintStories().getByStoryId(storyId);
             if (sprintStory.get('position') !== index+1) {
@@ -168,22 +171,28 @@ App.Views.Sprints = {
         if (!that.$('.stories-container #' + that.childId(story.Story())).length) {
           var storyNode = $('.unassigned-stories-container #' + that.childId(story.Story()));
           storyNode.data('reset-toggle')(); // show the more/less as necessary, contract after drag
-          persistActions += 1;
-          story.destroy({
-            success: function(model, response) {
-              that.updateStatistics(response.sprint_statistics);
-              that.model.set(response.sprint_statistics); // update Sprint with new statistics
-              persistOrder();
-              storyNode.data('update-sprint-story-status')();
-            },
-            error: function(model, response) {
-              var errorMessage = 'Oops, we\'ve been unable to remove that story from this sprint.  Please refresh your browser.';
-              try {
-                errorMessage = $.parseJSON(response.responseText).message;
-              } catch (e) { if (window.console) { console.log(e); } }
-              var errorView = new App.Views.Error({ message: errorMessage});
-            }
-          });
+          // prevent duplicate destroys being sent if a user removes a lot of items quickly and the server has not responded and updated the models yet
+          if (!story.beingDestroyed) {
+            that.persistOrderActions += 1;
+            story.beingDestroyed = true;
+            story.destroy({
+              success: function(model, response) {
+                story.beingDestroyed = false;
+                that.updateStatistics(response.sprint_statistics);
+                that.model.set(response.sprint_statistics); // update Sprint with new statistics
+                persistOrder();
+                storyNode.data('update-sprint-story-status')();
+              },
+              error: function(model, response) {
+                story.beingDestroyed = false;
+                var errorMessage = 'Oops, we\'ve been unable to remove that story from this sprint.  Please refresh your browser.';
+                try {
+                  errorMessage = $.parseJSON(response.responseText).message;
+                } catch (e) { if (window.console) { console.log(e); } }
+                var errorView = new App.Views.Error({ message: errorMessage});
+              }
+            });
+          }
         }
       });
 
@@ -197,7 +206,7 @@ App.Views.Sprints = {
             sprint_id: that.model.get('id')
           });
           that.model.SprintStories().add(newSprintStory);
-          persistActions += 1;
+          that.persistOrderActions += 1;
           newSprintStory.save(false, {
             success: function(model, response) {
               that.updateStatistics(model.get('sprint_statistics'));
@@ -216,7 +225,7 @@ App.Views.Sprints = {
         }
       });
 
-      if (persistActions === 0) {
+      if (that.persistOrderActions === 0) {
         // looks like no stories have been added or removed, but order may have changed, trigger a check and update if necessary
         persistOrder();
       }
@@ -348,6 +357,9 @@ App.Views.Sprints = {
       // add reference to method to update sprintStoryStatus as this will change when moved
       $(this.el).data('update-sprint-story-status', this.updateSprintStoryStatus);
 
+      // if not editable, set the class so it cannot be moved
+      this.setEditableState();
+
       return this;
     },
 
@@ -366,6 +378,7 @@ App.Views.Sprints = {
     updateSprintStoryStatus: function() {
       $(this.el).find('.status').html( $(JST['sprints/sprint-story']({ model: this.model })).find('.status') );
       this.setStatusHover();
+      this.setEditableState();
     },
 
     setStatusHover: function() {
@@ -378,10 +391,19 @@ App.Views.Sprints = {
 
     statusDropDownChanged: function() {
       App.Views.Sprints.Shared.statusDropDownChanged.apply(this, arguments);
+      this.setEditableState(); // model isEditable state is updated synchronously so this call works
     },
 
     statusDropDownLostFocus: function() {
       App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this, arguments);
+    },
+
+    setEditableState: function() {
+      if (this.model.IsEditable()) {
+        $(this.el).removeClass('locked');
+      } else {
+        $(this.el).addClass('locked');
+      }
     },
 
     toggleMore: function(speed) {
@@ -434,7 +456,7 @@ App.Views.Sprints = {
           code = App.Collections.SprintStoryStatuses.get(selected.val()).get('code'),
           that = this;
 
-      $(this.el).find('.status .tab').text(selected.text()).attr('class', 'tab status-code-' + code);
+      $(this.el).find('.status .tab').attr('class', 'tab status-code-' + code).find('span').text(selected.text());
       this.model.SprintStory().set({ sprint_story_status_id: selected.val() });
       this.model.SprintStory().save(false, {
         success: function(model) {
