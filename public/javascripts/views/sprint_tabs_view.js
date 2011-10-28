@@ -19,6 +19,7 @@ App.Views.SprintTabs = {
     render: function() {
       var view = this;
       this.isSettingsPage = $('#backlog-data-area').length == 0;
+      this.isSnapshot = $('.not-editable-backlog-notice')
 
       var addTabView = function(model) {
         var tabView = new App.Views.SprintTabs.Show({ model: model, id: view.childId(model), router: view.router });
@@ -32,13 +33,13 @@ App.Views.SprintTabs = {
         active: true,
         locked: true
       }];
-      if (!this.isSettingsPage) {
+      if (!this.isSettingsPage && !this.isSnapshot) {
         pinnedTabs.push({
           get: function() { return 'Stats'; },
           locked: true
         });
       }
-      if (!this.isSettingsPage && !this.collection.length) {
+      if (!this.isSettingsPage && !this.collection.length && !this.isSnapshot) {
         pinnedTabs.push({
           get: function() { return 'Sprints'; }
         });
