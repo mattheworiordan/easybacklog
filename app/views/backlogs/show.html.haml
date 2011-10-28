@@ -44,11 +44,11 @@
           New
     .divider
     - if @backlog.snapshot_master.blank?
-      = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
+      = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download Backlog in Excel format', :class => 'vtip'
       .divider
       = link_to "Print", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     - else
-      = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download in Excel format', :class => 'vtip'
+      = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download Snapshot in Excel format', :class => 'vtip'
       .divider
       = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     .divider
