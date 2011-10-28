@@ -151,8 +151,8 @@ module HtmlSelectorHelpers
 
     ##
     # Acceptance criteria
-    when /^add acceptance criteria button within (?:the )?(.*)$/
-      "#{selector_to($1)} ul.acceptance-criteria li.actions a.new-acceptance-criterion"
+    when /^edit acceptance criteria field within (?:the )?(.*)$/
+      "#{selector_to($1)} ul.acceptance-criteria li.new-acceptance-criterion div"
 
     when /^acceptance criteri(?:on|a)$/
       'ul.acceptance-criteria li.criterion .data'

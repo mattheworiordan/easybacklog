@@ -18,6 +18,7 @@ javascripts:
     - public/javascripts/models/**/*.js
     - public/javascripts/collections/**/*.js
     - public/javascripts/controllers/**/*.js
+    - public/javascripts/views/helpers/*.js
     - public/javascripts/views/base/*.js
     - public/javascripts/views/acceptance_criteria_view.js
     - public/javascripts/views/backlogs_view.js

@@ -89,12 +89,13 @@ App.Views.Themes = {
       });
     },
 
+    // New or Re-order button press
     themeKeyPress: function(event) {
       var target = $(event.target);
       if (9 == event.keyCode) { // tab pressed
         event.preventDefault();
         if (!event.shiftKey) { // --> moving forward
-          if (target.is('a.new-theme')) { // user on new theme button
+          if (target.is('a.new-theme')) { // user on add theme button
             this.$('a.reorder-themes').focus();
           } else if (target.is('a.reorder-themes')) {
             $('#backlog-data-area h2.name .data').click(); // focus on backlog name, we're at the last element
@@ -104,12 +105,12 @@ App.Views.Themes = {
             if (this.$('li.theme').length > 0) { // one or more themes exist
               var lastTheme = $('li.theme:last');
               if (lastTheme.has('li.actions a.new-story').length) {
-                lastTheme.find('li.actions a.new-story').focus();
+                lastTheme.find('li.actions a.new-story').focus(); // go to add story button of last theme
               } else {
-                lastTheme.find('.theme-data .name .data').click();
+                lastTheme.find('.theme-data .name .data').click(); // no new story button exists, focus on theme name
               }
             } else {
-              $('#backlog-data-area h2.name .data').click(); // focus on backlog name as no themes exist yet
+              // do nothing as we don't have anywhere to take the user
             }
           } else if (target.is('a.reorder-themes')) {
             this.$('a.new-theme').focus();
@@ -169,7 +170,6 @@ App.Views.Themes = {
           self.$('.theme-data ' + elem + '>.data input')
             .live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
         });
-        this.$('ul.stories li.actions a.new-story').live('keydown', this.navigateEvent); // hook up the add story button
       } else {
         this.$('ul.stories>li.actions').remove();
         this.$('.re-number-stories a').remove();
@@ -199,66 +199,63 @@ App.Views.Themes = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
+      var storyElem, thisThemeAddStory, target, dataField, prev;
+
       if (_.include([9,13,27], event.keyCode)) { // tab, enter, esc
         try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
           event.preventDefault();
         } catch (e) { }
 
-        if (!$(event.target).hasClass('new-story')) {
-          // Behaviour for Theme view
-          if (!event.shiftKey) { // going -->
-            $(event.target).blur();
-            // currently on theme name field
-            var storyElem = $(this.el).find('li.story:first-child');
-            if (storyElem.length) {
-              // move to story item
-              storyElem.find('.unique-id .data').click();
+        // Behaviour for Theme view name / code field
+        if (!event.shiftKey) { // going -->
+          $(event.target).blur();
+          // currently on theme name field
+          storyElem = $(this.el).find('li.story:not(.locked):first');
+          if (storyElem.length) {
+            // move to story item
+            App.Views.Helpers.scrollIntoBacklogView(storyElem.find('.unique-id .data'), function(elem) {
+              elem.click();
+            });
+          } else {
+            // focus on next theme button if next theme li holds add theme & reorder theme buttons
+            $(this.el).next().find('a.new-theme').focus();
+            thisThemeAddStory = $(this.el).find('ul.stories li a.new-story');
+            if (thisThemeAddStory.length) {
+              // and if a new story button exists move focus to that, takes precedence over new theme button from above
+              App.Views.Helpers.scrollIntoBacklogView(thisThemeAddStory, function(elem) {
+                elem.focus();
+              });
             } else {
-              // focus on next theme button if next theme li holds add theme & reorder theme buttons
-              $(this.el).next().find('a.new-theme').focus();
-              // and if a new story button exists move focus to that
-              $(this.el).find('ul.stories li a.new-story').focus();
-            }
-          } else { // going <--
-            var dataClass = $(event.target).parents('.data').parent().attr('class');
-            if (dataClass == 'name') {
-              var prev = $(this.el).prev();
-              if (prev.length) { // previous theme exists
-                if (prev.find('ul.stories li.actions a.new-story')) {
-                  $(event.target).blur();
-                  prev.find('ul.stories li.actions a.new-story').focus();
-                } else {
-                  $(event.target).blur();
-                  prev.find('.theme-data >.name .data').click();
-                }
-              } else {
-                // no previous theme, do nothing, leave field focussed
-              }
-            } else {
-              $(event.target).blur();
-              this.$('.theme-data >.name .data').click();
+              // active next theme's text field if that exists, typically happens if this theme is empty and no new story button exists (caught in next step)
+              App.Views.Helpers.scrollIntoBacklogView($(this.el).next().find('.theme-data > .name .data'), function(elem) {
+                elem.click();
+              });
             }
           }
-        } else {
-          $(event.target).blur();
-          // Behaviour for new story button
-          if (!event.shiftKey) { // going -->
-            var nextThemeLi = $(event.target).parents('li.theme').next();
-            if (nextThemeLi.hasClass('theme')) {
-              // focus on next theme's name
-              nextThemeLi.find('>.name .data').click();
+        } else { // going <--
+          dataField = $(event.target).parents('.data');
+          if (dataField.parent().hasClass('name')) { // on theme name field
+            prev = $(this.el).prev(); // previous theme
+            if (prev.length) { // previous theme exists
+              target = prev.find('ul.stories li.actions a.new-story');
+              if (target.length) {
+                $(event.target).blur();
+                App.Views.Helpers.scrollIntoBacklogView(target, function(elem) {
+                  elem.focus();
+                });
+              } else {
+                $(event.target).blur();
+                App.Views.Helpers.scrollIntoBacklogView(prev.find('.theme-data >.name .data'), function(elem) {
+                  elem.click();
+                });
+              }
             } else {
-              // focus on the add theme button as no more themes
-              nextThemeLi.find('a.new-theme').focus();
+              // no previous theme, do nothing, leave field focussed
             }
-          } else { // going <--
-            var previous_story_matcher = 'ul.stories li.story:last .score-90 .data, ul.stories li.story:last .score .data'
-            var previous_story = $(this.el).find(previous_story_matcher); // JQuery bug, :last-child did not work
-            if (previous_story.length) {
-              previous_story.click();
-            } else {
-              $(this.el).find('>.name .data').click();
-            }
+          } else {
+            // focus was on code field, just go back to name field
+            $(event.target).blur();
+            this.$('.theme-data >.name .data').click();
           }
         }
       }

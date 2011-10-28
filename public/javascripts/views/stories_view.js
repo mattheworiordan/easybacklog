@@ -9,7 +9,7 @@ App.Views.Stories = {
 
     events: {
       "click ul.stories .actions a.new-story": "createNew",
-      "keydown ul.stories .actions a.new-story": "storyKeyPress"
+      "keydown ul.stories .actions a.new-story": "addStoryKeyPress"
     },
 
     initialize: function() {
@@ -81,25 +81,40 @@ App.Views.Stories = {
       });
     },
 
-    storyKeyPress: function(event) {
+    addStoryKeyPress: function(event) {
+      var thisTheme, nextTheme, lastStory;
+
       if (9 == event.keyCode) { // tab pressed
+        event.preventDefault();
         if (event.shiftKey) { // <-- moving back
           event.preventDefault();
-          var thisTheme = $(this.el).parents('li.theme');
-          if (thisTheme.has('li.story:last .score-90 .data').length) {
-            thisTheme.find('li.story:last .score-90 .data').click();
+          thisTheme = $(this.el).parents('li.theme');
+          lastStory = thisTheme.find('li.story:not(.locked):last .score-90 .data, li.story:not(.locked):last .score .data');
+          if (lastStory.length) {
+            App.Views.Helpers.scrollIntoBacklogView(lastStory, function() {
+              lastStory.click();
+            });
           } else {
-            thisTheme.find('.theme-data .name .data').click();
+            App.Views.Helpers.scrollIntoBacklogView(thisTheme.find('.theme-data .name .data'), function(elem) {
+              elem.click();
+            });
           }
         } else { // --> moving forward
-          var nextTheme = $(this.el).parents('li.theme').next();
-          if (nextTheme.length) {
+          nextTheme = $(this.el).parents('li.theme').next();
+          if (nextTheme.hasClass('theme')) {
             // next theme exists, focus on the theme name field
-            nextTheme.find('.theme-data .name .data').click();
+            App.Views.Helpers.scrollIntoBacklogView(nextTheme.find('.theme-data .name .data'), function(elem) {
+              elem.click();
+            });
+          } else {
+            // focus on add theme button
+            App.Views.Helpers.scrollIntoBacklogView(nextTheme.find('a.new-theme'), function(elem) {
+              elem.focus();
+            });
           }
-          // else do nothing as browser will take the user to the Add Theme button
         }
-      } else if (13 == event.keyCode) { // enter pressed
+      } else if (13 === event.keyCode) { // enter pressed
+        event.preventDefault();
         this.createNew(event);
       }
     },
@@ -198,23 +213,31 @@ App.Views.Stories = {
         this.populatedHtml = true;
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
       }
+
+      // set class so that other elements (mainly for tab order) know if this class is locked or not
+      if (this.model.IsEditable()) {
+        $(this.el).removeClass('locked');
+      } else {
+        $(this.el).addClass('locked');
+      }
+
       this.setStatusHover();
     },
 
     setStatusHover: function() {
-      App.Views.Sprints.Shared.setStatusHover.apply(this, arguments);
+      App.Views.Helpers.setStatusHover.apply(this, arguments);
     },
 
     statusChangeClick: function() {
-      App.Views.Sprints.Shared.statusChangeClick.apply(this, arguments);
+      App.Views.Helpers.statusChangeClick.apply(this, arguments);
     },
 
     statusDropDownLostFocus: function() {
-      App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this, arguments);
+      App.Views.Helpers.statusDropDownLostFocus.apply(this, arguments);
     },
 
     statusDropDownChanged: function() {
-      App.Views.Sprints.Shared.statusDropDownChanged.apply(this, arguments);
+      App.Views.Helpers.statusDropDownChanged.apply(this, arguments);
       this.modelDataHasChanged(true); // check to see if we need to update the UI
     },
 
@@ -270,16 +293,17 @@ App.Views.Stories = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
-      var isInput = $(event.target).is('input');
-      if (_.include([9,13,27], event.keyCode) && (!event.ctrlKey || isInput) ) { // tab, enter, esc
+      var isInput = $(event.target).is('input'), // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
+          viewElements, dataClass, dataElem, sibling, previousSelector, lastCriterion, previousUnlocked;
+
+      if (_.include([9,13,27], event.keyCode) && (isInput || !event.ctrlKey) ) { // tab, enter, esc
         $(event.target).blur();
         try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
           event.preventDefault();
         } catch (e) { }
 
         // set up array of all elements in this view in the tab order
-        var viewElements = [
+        viewElements = [
           'unique-id .data',
           'as-a .data',
           'i-want-to .data',
@@ -294,10 +318,10 @@ App.Views.Stories = {
           viewElements.push('score .data');
         }
 
-        var dataClass = $(event.target);
+        dataClass = $(event.target);
         if (!dataClass.hasClass('data')) { dataClass = dataClass.parents('.data'); } // if event has come from esc, we're already on .data
-        dataClass = dataClass.parent().attr('class'); // get to the parent to get the class name which indicates the field name
-        var dataElem = _.detect(viewElements, function(id) { return (_.first(id.split(' ')) == dataClass); });
+        dataClass = dataClass.parent(); // get to the parent to get the class name which indicates the field name
+        dataElem = _.detect(viewElements, function(id) { return dataClass.hasClass(_.first(id.split(' '))); });
 
         if (dataElem) { // user has tabbed from a data element
           if (!event.shiftKey) { // moving -->
@@ -306,12 +330,16 @@ App.Views.Stories = {
               this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
             } else {
               // move onto next view as we're at the last element
-              var sibling = $(this.el).next();
+              var sibling = $(this.el).nextAll('li:not(.locked):first');
               if (sibling.find('a.new-story').length) {
                 // just a new story button
-                sibling.find('a.new-story').focus();
+                App.Views.Helpers.scrollIntoBacklogView(sibling.find('a.new-story'), function(elem) {
+                  elem.focus();
+                });
               } else {
-                sibling.find('.' + _.first(viewElements)).click();
+                App.Views.Helpers.scrollIntoBacklogView(sibling.find('.' + _.first(viewElements)), function(elem) {
+                  elem.click();
+                });
               }
             }
           } else { // moving <--
@@ -320,25 +348,26 @@ App.Views.Stories = {
               var previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
               if (previousSelector.indexOf('acceptance-criteria') === 0) {
                 // exception, we need to move to acceptance criteria
-                var lastCriterion = this.$('.acceptance-criteria ul.acceptance-criteria li.criterion:last>*');
-                if (lastCriterion.length) {
-                  // a criterion exists, jump to this
-                  lastCriterion.click();
-                } else {
-                  // create a new blank criteria
-                  this.$('.acceptance-criteria ul.acceptance-criteria li:last a').click();
-                }
+                var lastCriterion = this.$('.acceptance-criteria ul.acceptance-criteria li:visible:last>*');
+                App.Views.Helpers.scrollIntoBacklogView(lastCriterion, function(elem) {
+                  elem.click();
+                });
               } else {
                 this.$('.' + previousSelector).click();
               }
             } else {
-              // move to theme field name
-              if ($(this.el).prev().length) {
+              // user is at first field in story, so jump back to theme or previous story
+              previousUnlocked = $(this.el).prevAll('li:not(.locked):first');
+              if (previousUnlocked.length) {
                 // jump to end of previous story
-                $(this.el).prev().find('.score-90 .data, .score .data').click();
+                App.Views.Helpers.scrollIntoBacklogView(previousUnlocked.find('.score-90 .data, .score .data'), function(elem) {
+                  elem.click();
+                });
               } else {
                 // no previous stories so jump to theme
-                $(this.el).parents('li.theme').find('.theme-data >.name .data').click();
+                App.Views.Helpers.scrollIntoBacklogView($(this.el).parents('li.theme').find('.theme-data >.name .data'), function(elem) {
+                  elem.click();
+                });
               }
             }
           }

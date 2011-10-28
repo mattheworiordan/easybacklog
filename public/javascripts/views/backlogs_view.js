@@ -55,33 +55,6 @@ App.Views.Backlogs = {
       });
     },
 
-    // Tab or Enter key pressed so let's move on
-    navigateEvent: function(event) {
-      if (_.include([9,13,27], event.keyCode)) { // tab, enter, esc
-        $(event.target).blur();
-        try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
-          event.preventDefault();
-        } catch (e) { }
-
-        if (!event.shiftKey) { // moving -->
-          var firstTheme = $('#themes-container ul.themes li.theme:first>.theme-data .name .data');
-          if (firstTheme.length) {
-            firstTheme.click();
-          } else {
-            $('#themes-container ul.themes li.actions a.new-theme').focus();
-          }
-        } else {
-          // there are no further items so focus on title if not on title
-          if (!$(event.target).parents('h2.name').is('h2')) {
-            $('#backlog-data-area h2.name>div.data').click();
-          } else {
-            // nothing higher, focus on last button
-            $('li:last a:last').focus();
-          }
-        }
-      }
-    },
-
     print: function(event) {
       var view = this;
       event.preventDefault();

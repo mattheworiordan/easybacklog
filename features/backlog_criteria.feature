@@ -13,7 +13,7 @@ Background:
 
 @javascript
 Scenario: Add and remove acceptance criteria
-  When I click on the "add acceptance criteria button within the first story"
+  When I click on the "edit acceptance criteria field within the first story"
     And I wait for 0.5 seconds
     And I change the current editable text to "line 1"
     And I tab forwards and wait for AJAX
@@ -41,7 +41,7 @@ Scenario: Add and remove acceptance criteria
 
 @selenium
 Scenario: Drag and drop acceptance criteria
-  When I click on the "add acceptance criteria button within the first story"
+  When I click on the "edit acceptance criteria field within the first story"
     And I wait for 0.5 seconds
     And I change the current editable text to "line 1"
     And I tab forwards and wait for AJAX

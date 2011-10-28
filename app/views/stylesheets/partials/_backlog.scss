@@ -398,12 +398,6 @@ ul.themes {
       padding: 1px 5px 1px 5px;
       font-size: 90%;
       border-width: 1px;
-      &.new-acceptance-criterion {
-        border-color: #AAA;
-        background-color: #DDD;
-        padding: 0 0px 0 1px;
-        margin: 3px -3px 0 0;
-      }
     }
   }
 
@@ -687,9 +681,10 @@ ul.themes {
               margin-bottom: 4px;
               position: relative;
             }
-            li:last-child {
-              list-style: none;
-              margin: 0 0 3px 0;
+            li.new-acceptance-criterion {
+              margin: -2px 0 0 -2px;
+              color: #666;
+              font-size: 80%;
             }
             .index {
               width: 1.5em;

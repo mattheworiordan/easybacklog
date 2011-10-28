@@ -7,7 +7,7 @@ App.Views.AcceptanceCriteria = {
     childId: function(model) { return 'acceptance-criteria-' + model.get('id'); },
 
     events: {
-      "click .actions a.new-acceptance-criterion": "createNew"
+      "click li.new-acceptance-criterion div": "createNew"
     },
 
     initialize: function() {
@@ -41,6 +41,8 @@ App.Views.AcceptanceCriteria = {
         }).find('.index').disableSelection();
       }
 
+      this.hideEditIfCriteriaExist();
+
       this.displayOrderIndexes();
       return(this);
     },
@@ -53,12 +55,16 @@ App.Views.AcceptanceCriteria = {
       this.collection.add(model);
       var newElem = new App.Views.AcceptanceCriteria.Show({ model: model, parentView: this }).render().el;
 
+      // hide the edit criterion placeholder
+      this.hideEditIfCriteriaExist(true); // force hide
+
       if ( (lastCriterion.find('.data textarea').length) && (lastCriterion.find('.data textarea').val() === '') ) {
         // we have to delay this because we have to wait for the empty item which has lost focus to dissapear
         _.delay(function() {
           this_view.$('ul li:last').before(newElem);
           this_view.displayOrderIndexes();
           $(newElem).find('.data').click();
+          App.Views.Helpers.scrollIntoBacklogView($(newElem).find('.data'));
         }, 250);
       } else {
         this.$('ul li:last').before(newElem);
@@ -66,6 +72,7 @@ App.Views.AcceptanceCriteria = {
 
         this.$('ul li.criterion:last').css('display','none').slideDown(100, function() {
           $(newElem).find('.data').click(); // put focus onto new added element
+          App.Views.Helpers.scrollIntoBacklogView($(newElem).find('.data'));
         });
       }
     },
@@ -87,6 +94,14 @@ App.Views.AcceptanceCriteria = {
       this.$('li.criterion').each(function(index, elem) {
         $(elem).find('.index').html((index + 1) + '.');
       });
+    },
+
+    hideEditIfCriteriaExist: function(force) {
+      if (this.collection.length || force) {
+        this.$('li.new-acceptance-criterion').hide();
+      } else {
+        this.$('li.new-acceptance-criterion').show();
+      }
     }
   }),
 
@@ -96,8 +111,9 @@ App.Views.AcceptanceCriteria = {
 
     events: {},
 
-    initialize: function() {
+    initialize: function(options) {
       App.Views.BaseView.prototype.initialize.call(this);
+      this.parentView = options.parentView;
       _.bindAll(this, 'navigateEvent');
     },
 
@@ -126,20 +142,20 @@ App.Views.AcceptanceCriteria = {
         var model_collection = ac_view.model.collection;
         if (_.isEmpty(newVal)) {
           $(ac_view.el).slideUp('fast', function() {
+            ac_view.model.destroy({
+              error: function(model, response) {
+                var errorMessage = 'Unable to delete story...  Please refresh.';
+                try {
+                  errorMessage = $.parseJSON(response.responseText).message;
+                } catch (e) { if (window.console) { console.log(e); } }
+                var errorView = new App.Views.Error({ message: errorMessage});
+              }
+            });
+
+            // technically we should wait for a server response, but need speed in this instance so assume the delete works
             $(ac_view.el).remove(); // remove HTML for story
-            if (ac_view.model.isNew()) {
-              model_collection.remove(ac_view.model);
-            } else {
-              ac_view.model.destroy({
-                error: function(model, response) {
-                  var errorMessage = 'Unable to delete story...  Please refresh.';
-                  try {
-                    errorMessage = $.parseJSON(response.responseText).message;
-                  } catch (e) { if (window.console) { console.log(e); } }
-                  var errorView = new App.Views.Error({ message: errorMessage});
-                }
-              });
-            }
+            model_collection.remove(ac_view.model);
+            ac_view.parentView.hideEditIfCriteriaExist();
             ac_view.parentView.displayOrderIndexes();
           });
         } else {
@@ -165,12 +181,16 @@ App.Views.AcceptanceCriteria = {
           // not on the last item
           if ( _.first(liElem) != _.last(liElem.parent('ul').find('li.criterion')) ) {
             // move to next item
-            liElem.next().find('.data').click();
+            App.Views.Helpers.scrollIntoBacklogView(liElem.next().find('.data'), function(elem) {
+              elem.click();
+            });
           } else {
             if ($.trim(this.$('textarea').val()) === '') // current last criterion is empty
             {
-              // move back to comments field
-              $(this.el).parents('li.story').find('div.comments .data').click();
+              // move to comments field
+              App.Views.Helpers.scrollIntoBacklogView($(this.el).parents('li.story').find('div.comments .data'), function(elem) {
+                elem.click();
+              });
             } else {
               // last criterion is not empty so give the user a new blank criterion
               this.parentView.createNew(event);
@@ -179,9 +199,13 @@ App.Views.AcceptanceCriteria = {
         } else { // moving <--
           if ( _.first(liElem) == _.first(liElem.parent('ul').find('li.criterion')) ) {
             // move to user story field so-i-can
-            $(this.el).parents('li.story').find('div.so-i-can .data').click();
+            App.Views.Helpers.scrollIntoBacklogView($(this.el).parents('li.story').find('div.so-i-can .data'), function(elem) {
+              elem.click();
+            });
           } else {
-            liElem.prev().find('.data').click();
+            App.Views.Helpers.scrollIntoBacklogView(liElem.prev().find('.data'), function(elem) {
+              elem.click();
+            });
           }
         }
       }
