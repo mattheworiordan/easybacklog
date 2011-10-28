@@ -102,7 +102,7 @@ describe Story do
     story.score_90.should == 3
   end
 
-  it 'should not allow modification once marked as done' do
+  it 'should not allow modification other than position once marked as done' do
     done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     story = Factory.create(:story, :score_50 => 1)
     sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id)
@@ -114,6 +114,10 @@ describe Story do
 
     story.score_50 = 2
     expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Changes to a completed story are not allowed/
+
+    story.reload
+    story.position = 2
+    expect { story.save! }.should_not raise_error
   end
 
   it 'should not allow to be assigned or removed from a sprint when the sprint is marked as complete' do

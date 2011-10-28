@@ -70,4 +70,13 @@ describe SprintStory do
     expect { @sprint.sprint_stories.destroy @story.sprint_story }.should raise_error SprintStory::RecordNotDestroyable
     expect { @sprint.stories.destroy @story }.should raise_error ActiveRecord::RecordNotSaved
   end
+
+  it 'should not allow changes to the status or position once the sprint is complete' do
+    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id
+    @sprint.reload
+    @sprint.mark_as_complete
+
+    @story.sprint_story.update_attributes(:sprint_story_status_id => default_sprint_story_status.id).should_not be_false # false means record was not saved
+    @story.sprint_story.update_attributes(:position => 3).should_not be_false
+  end
 end

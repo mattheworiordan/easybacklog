@@ -119,7 +119,7 @@ class Story < ActiveRecord::Base
     end
 
     def prevent_changes_when_done
-      errors.add :base, 'Changes to a completed story are not allowed' if done?
+      errors.add :base, 'Changes to a completed story are not allowed' if changed? && done? && (changed != ['position']) # allow position changes only
     end
 end
 
