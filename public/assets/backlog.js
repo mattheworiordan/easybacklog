@@ -586,7 +586,7 @@ this.router=this.options.router;
 _.bindAll(this,"showNew","getModelFromIteration","restoreTab")
 },render:function(){var view=this;
 this.isSettingsPage=$("#backlog-data-area").length==0;
-this.isSnapshot=$(".not-editable-backlog-notice");
+this.isSnapshot=$(".not-editable-backlog-notice").length>=1?true:false;
 var addTabView=function(model){var tabView=new App.Views.SprintTabs.Show({model:model,id:view.childId(model),router:view.router});
 view.$("ul.infinite-tabs").append(tabView.render().el);
 view.models[model.get("iteration")]=model
