@@ -37,10 +37,14 @@ if(story){that._story=story
 }}return this._story
 },Status:function(){return App.Collections.SprintStoryStatuses.get(this.get("sprint_story_status_id"))
 }});
-var SprintStoryStatus=Backbone.Model.extend({});
+var SprintStoryStatus=Backbone.Model.extend({isDone:function(){return this.get("code").toUpperCase()=="D"
+}});
 var Story=Backbone.Model.extend({Theme:function(){return this.collection.theme
-},IsEditable:function(){return(this.collection.theme.IsEditable())
-},AcceptanceCriteria:function(){if(!this._acceptance_criteria){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
+},IsEditable:function(){if(!this.collection.theme.IsEditable()){return false
+}else{var sprintStory=this.SprintStory();
+if(sprintStory){return !sprintStory.Status().isDone()
+}return true
+}},AcceptanceCriteria:function(){if(!this._acceptance_criteria){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
 this.unset("acceptance_criteria")
 }return(this._acceptance_criteria)
 },MoveToTheme:function(newThemeId,options){var story=this;
@@ -80,7 +84,8 @@ _.bindAll(this,"saveOrder")
 },saveOrder:function(idOrderCollection){var thisCollection=this;
 _.each(idOrderCollection,function(index,key){var criterion=thisCollection.get(key);
 if(criterion){criterion.set({"position":idOrderCollection[key]});
-criterion.save()
+criterion.save(false,{error:function(){var errorView=new App.Views.Error({message:"Error, could not save the new order of criteria"})
+}})
 }})
 }});
 var BacklogsCollection=Backbone.Collection.extend({model:Backlog,account_id:null,url:function(){if(!this.account_id){var errorView=new App.Views.Error({message:"Error, missing necessary Account ID to display Backlog"})
@@ -139,6 +144,37 @@ if(theme){theme.set(themeData);
 theme.trigger("statisticsUpdated")
 }})
 }}};
+App.Views.Helpers={scrollIntoBacklogView:function(elem,callback){if($(elem).length){var scrollAmount=$(window).scrollTop(),currentPosition=$(elem).offset().top,bufferBottom=100,bufferTop=this.bufferTop?this.bufferTop:this.bufferTop=$("#backlog-container").offset().top,newScrollPosition=false;
+if(currentPosition<scrollAmount+bufferTop){newScrollPosition=currentPosition-bufferTop
+}else{if(currentPosition>scrollAmount+$(window).height()-bufferBottom){newScrollPosition=currentPosition-$(window).height()+bufferBottom
+}}if(newScrollPosition){$("html:not(:animated),body:not(:animated)").animate({scrollTop:newScrollPosition},"fast",null,function(){if(_.isFunction(callback)){callback(elem)
+}})
+}else{if(_.isFunction(callback)){callback(elem)
+}}}else{if(_.isFunction(callback)){callback(elem)
+}}},setStatusHover:function(){$(this.el).find(".status .tab").hover(function(){$(this).addClass("hover")
+},function(){$(this).removeClass("hover")
+})
+},statusChangeClick:function(){var dropDownOptions=App.Collections.SprintStoryStatuses.sortBy(function(s){return s.get("position")
+}).map(function(status){return('<option value="'+status.get("id")+'">'+htmlEncode(status.get("status"))+"</option>")
+}).join(""),dropDownNode=$(this.el).find(".status .drop-down"),className=$(this.el).find(".status .tab").attr("class").match(/(status-code-\w+)/)[1];
+$(this.el).find(".status .tab").hide();
+dropDownNode.find("select").empty().append($(dropDownOptions)).attr("class",className);
+dropDownNode.find("select option[value="+this.model.SprintStory().get("sprint_story_status_id")+"]").attr("selected","selected");
+dropDownNode.show().focus()
+},statusDropDownChanged:function(){var selected=$(this.el).find(".status .drop-down select option:selected"),code=App.Collections.SprintStoryStatuses.get(selected.val()).get("code"),that=this;
+$(this.el).find(".status .tab").attr("class","tab status-code-"+code).find("span").text(selected.text());
+this.model.SprintStory().set({sprint_story_status_id:selected.val()});
+this.model.SprintStory().save(false,{success:function(model){if(that.parentView){that.parentView.updateStatistics(model.get("sprint_statistics"))
+}else{that.model.SprintStory().Sprint().set(model.get("sprint_statistics"))
+}},error:function(model,response){var errorMessage="we've got a problem on our side";
+try{errorMessage=$.parseJSON(response.responseText).message
+}catch(e){if(window.console){console.log(e)
+}}var errorView=new App.Views.Error({message:"Oops, "+errorMessage+".  Please refresh your browser"})
+}});
+this.statusDropDownLostFocus()
+},statusDropDownLostFocus:function(){$(this.el).find(".status .tab").show();
+$(this.el).find(".status .drop-down").hide()
+}};
 App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{onblur:"submit",tooltip:"Click to edit",placeholder:'<span class="editable-blank">[edit]</span>',lesswidth:5,type:"text"},initialize:function(){this.model=this.options.model;
 this.parentView=this.options.parentView;
 this.beforeChangeValue={};
@@ -189,7 +225,7 @@ $("#dialog-delete").dialog({resizable:false,height:170,modal:true,buttons:{Delet
 }return(false)
 }});
 App.Views.AcceptanceCriteria={Index:Backbone.View.extend({tagName:"div",className:"acceptance-criteria",childId:function(model){return"acceptance-criteria-"+model.get("id")
-},events:{"click .actions a.new-acceptance-criterion":"createNew"},initialize:function(){this.collection=this.options.collection;
+},events:{"click li.new-acceptance-criterion div":"createNew"},initialize:function(){this.collection=this.options.collection;
 _.bindAll(this,"orderChanged","displayOrderIndexes")
 },render:function(){var parentView=this;
 $(this.el).html(JST["acceptance_criteria/index"]({collection:this.collection.models}));
@@ -201,7 +237,8 @@ var orderChangedEvent=this.orderChanged;
 this.$("ul.acceptance-criteria").sortable({start:function(event,ui){parentView.$("textarea, input").blur()
 },stop:function(event,ui){orderChangedEvent()
 },placeholder:"target-order-highlight",axis:"y",handle:".index"}).find(".index").disableSelection()
-}this.displayOrderIndexes();
+}this.hideEditIfCriteriaExist();
+this.displayOrderIndexes();
 return(this)
 },createNew:function(event){event.preventDefault();
 var lastCriterion=this.$("li.criterion:last");
@@ -209,13 +246,16 @@ var model=new AcceptanceCriterion();
 var this_view=this;
 this.collection.add(model);
 var newElem=new App.Views.AcceptanceCriteria.Show({model:model,parentView:this}).render().el;
+this.hideEditIfCriteriaExist(true);
 if((lastCriterion.find(".data textarea").length)&&(lastCriterion.find(".data textarea").val()==="")){_.delay(function(){this_view.$("ul li:last").before(newElem);
 this_view.displayOrderIndexes();
-$(newElem).find(".data").click()
+$(newElem).find(".data").click();
+App.Views.Helpers.scrollIntoBacklogView($(newElem).find(".data"))
 },250)
 }else{this.$("ul li:last").before(newElem);
 this.displayOrderIndexes();
-this.$("ul li.criterion:last").css("display","none").slideDown(100,function(){$(newElem).find(".data").click()
+this.$("ul li.criterion:last").css("display","none").slideDown(100,function(){$(newElem).find(".data").click();
+App.Views.Helpers.scrollIntoBacklogView($(newElem).find(".data"))
 })
 }},orderChanged:function(){var orderIndexesWithIds={};
 this.$("li.criterion").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
@@ -226,7 +266,10 @@ if(window.console){console.log("Order changed and saving - "+JSON.stringify(orde
 this.displayOrderIndexes()
 },displayOrderIndexes:function(){this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html((index+1)+".")
 })
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"criterion",events:{},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
+},hideEditIfCriteriaExist:function(force){if(this.collection.length||force){this.$("li.new-acceptance-criterion").hide()
+}else{this.$("li.new-acceptance-criterion").show()
+}}}),Show:App.Views.BaseView.extend({tagName:"li",className:"criterion",events:{},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+this.parentView=options.parentView;
 _.bindAll(this,"navigateEvent")
 },render:function(){$(this.el).html(JST["acceptance_criteria/show"]({model:this.model}));
 if(this.model.IsEditable()){this.makeFieldsEditable();
@@ -236,14 +279,15 @@ this.$(".data input, .data textarea").live("keydown",this.navigateEvent)
 }},makeFieldsEditable:function(){var ac_view=this;
 var contentUpdatedFunc=function(){var newVal=arguments[0];
 var model_collection=ac_view.model.collection;
-if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){$(ac_view.el).remove();
-if(ac_view.model.isNew()){model_collection.remove(ac_view.model)
-}else{ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...  Please refresh.";
+if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...  Please refresh.";
 try{errorMessage=$.parseJSON(response.responseText).message
 }catch(e){if(window.console){console.log(e)
 }}var errorView=new App.Views.Error({message:errorMessage})
-}})
-}ac_view.parentView.displayOrderIndexes()
+}});
+$(ac_view.el).remove();
+model_collection.remove(ac_view.model);
+ac_view.parentView.hideEditIfCriteriaExist();
+ac_view.parentView.displayOrderIndexes()
 })
 }else{return ac_view.contentUpdated(newVal,arguments[1],this)
 }};
@@ -254,43 +298,55 @@ $(this.el).find(">div.data").editable(contentUpdatedFunc,defaultOptions)
 },navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)&&(!event.ctrlKey)){$(event.target).blur();
 try{event.preventDefault()
 }catch(e){}var liElem=$(event.target).parents(".data").parent();
-if(!event.shiftKey){if(_.first(liElem)!=_.last(liElem.parent("ul").find("li.criterion"))){liElem.next().find(".data").click()
-}else{if($.trim(this.$("textarea").val())===""){$(this.el).parents("li.story").find("div.comments .data").click()
+if(!event.shiftKey){if(_.first(liElem)!=_.last(liElem.parent("ul").find("li.criterion"))){App.Views.Helpers.scrollIntoBacklogView(liElem.next().find(".data"),function(elem){elem.click()
+})
+}else{if($.trim(this.$("textarea").val())===""){App.Views.Helpers.scrollIntoBacklogView($(this.el).parents("li.story").find("div.comments .data"),function(elem){elem.click()
+})
 }else{this.parentView.createNew(event)
-}}}else{if(_.first(liElem)==_.first(liElem.parent("ul").find("li.criterion"))){$(this.el).parents("li.story").find("div.so-i-can .data").click()
-}else{liElem.prev().find(".data").click()
+}}}else{if(_.first(liElem)==_.first(liElem.parent("ul").find("li.criterion"))){App.Views.Helpers.scrollIntoBacklogView($(this.el).parents("li.story").find("div.so-i-can .data"),function(elem){elem.click()
+})
+}else{App.Views.Helpers.scrollIntoBacklogView(liElem.prev().find(".data"),function(elem){elem.click()
+})
 }}}}})};
 App.Views.Backlogs={Show:App.Views.BaseView.extend({dataArea:$("#backlog-data-area"),initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
 this.sprintTabsView=options.sprintTabsView;
-_.bindAll(this,"navigateEvent","print","newSnapshot","jumpToSnapshot","compareSnapshot","activated")
+_.bindAll(this,"activated")
 },render:function(){var use5090estimates=$("#backlog-container #themes-header .columns .score-50").length?true:false;
 var view=new App.Views.Themes.Index({collection:this.model.Themes(),use5090estimates:use5090estimates});
 this.$("#themes-container").html(view.render().el);
 var show_view=this;
 this.updateStatistics();
-$("#backlog-data-area .actions #print").click(this.print);
-$("#backlog-data-area #new-snapshot").click(this.newSnapshot);
-$("#backlog-data-area #compare-snapshot").click(this.compareSnapshot);
-$("#backlog-data-area select#snapshot-selector").change(this.jumpToSnapshot);
 if(this.model.IsEditable()){var firstEditableElem=$("ul.themes li.theme:first .theme-data .name .data");
 if(firstEditableElem.length){firstEditableElem.click()
 }else{$("ul.themes li.actions a.new-theme").focus()
-}}else{$("#backlog-data-area").addClass("not-editable");
-$("#backlog-container").addClass("not-editable")
-}return(this)
+}}return(this)
 },updateStatistics:function(){$("#backlog-data-area .backlog-stats").html(JST["backlogs/stats"]({model:this.model}));
 this.sprintTabsView.adjustTabConstraints(true)
 },activated:function(){this.updateStatistics();
-this.$("ul.stories>li.story").each(function(index,elem){$(elem).data("populate-html-from-template")()
+this.$("ul.stories>li.story").each(function(index,elem){$(elem).data("update-model-data")()
 })
-},navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){$(event.target).blur();
-try{event.preventDefault()
-}catch(e){}if(!event.shiftKey){var firstTheme=$("#themes-container ul.themes li.theme:first>.theme-data .name .data");
-if(firstTheme.length){firstTheme.click()
-}else{$("#themes-container ul.themes li.actions a.new-theme").focus()
-}}else{if(!$(event.target).parents("h2.name").is("h2")){$("#backlog-data-area h2.name>div.data").click()
-}else{$("li:last a:last").focus()
-}}}},print:function(event){var view=this;
+}})};
+App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot")
+},render:function(){$("#new-snapshot").click(this.newSnapshot);
+$("#compare-snapshot").click(this.compareSnapshot);
+$("select.snapshot-selector").change(this.jumpToSnapshot);
+this.enableSnapshotsMenu();
+if(!this.model.IsEditable()){$(this.el).addClass("not-editable");
+$("#backlog-container").addClass("not-editable");
+$("#add-sprint").hide()
+}return this
+},enableSnapshotsMenu:function(){var overEitherNode=false,hideMenu=function(){overEitherNode=false;
+setTimeout(function(){if(overEitherNode===false){$("#backlog-data-area .snapshot").removeClass("hover");
+$("section.for-backlog .snapshot-menu-container").hide()
+}},50)
+},showMenu=function(){$("#backlog-data-area .snapshot").addClass("hover");
+$("section.for-backlog .snapshot-menu-container").show().position({of:$("#backlog-data-area .snapshot"),my:"right top",at:"right bottom",offset:"0 -5"});
+overEitherNode=true
+};
+$("#backlog-data-area .snapshot").mouseover(showMenu).click(showMenu).mouseout(hideMenu);
+$("section.for-backlog .snapshot-menu-container").mouseover(function(){overEitherNode=true
+}).mouseout(hideMenu)
+},print:function(event){var view=this;
 event.preventDefault();
 $("#dialog-print").remove();
 $("body").append(JST["backlogs/print-dialog"]({backlog:this.model}));
@@ -314,7 +370,7 @@ var newSnapshotLink=$(event.target);
 event.preventDefault();
 $("#dialog-create-snapshot").remove();
 $("body").append(JST["backlogs/create-snapshot-dialog"]({backlog:this.model}));
-$("#dialog-create-snapshot").dialog({resizable:false,height:210,width:350,modal:true,buttons:{"Create Snapshot":function(){var name=$(this).find("input[type=text]").val();
+$("#dialog-create-snapshot").dialog({resizable:false,height:230,width:350,modal:true,buttons:{"Create Snapshot":function(){var name=$(this).find("input[type=text]").val();
 if($.trim(name)===""){$(this).find("div.progress-area label").text("You must name your snapshot to continue.");
 $(this).find("div.progress-area").addClass("field_with_errors").find("input[type=text]").focus()
 }else{var href=newSnapshotLink.attr("href"),csrf_token=$("meta[name=csrf-token]").attr("content"),csrf_param=$("meta[name=csrf-param]").attr("content"),form=$('<form method="post" action="'+href+'"></form>');
@@ -328,18 +384,18 @@ $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove()
 }}})
 },jumpToSnapshot:function(event){event.preventDefault();
 var val=$(event.target).val();
-var baseUrl=document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/\d+/i)[0];
+var baseUrl=document.location.href.match(/^.*\/accounts\/\d+\/backlogs\/\d+/i)[0];
 if(val.match(/^\d+$/)){baseUrl+="/snapshots/"+val
 }$("#loading-new-snapshot").show();
-document.location.pathname=baseUrl
+document.location.href=baseUrl
 },compareSnapshot:function(event){var view=this;
 var newSnapshotLink=$(event.target);
 event.preventDefault();
 $("#dialog-compare-snapshot").remove();
-$("body").append(JST["backlogs/compare-snapshot-dialog"]({snapshot_options:$("#backlog-data-area select#snapshot-selector").html()}));
+$("body").append(JST["backlogs/compare-snapshot-dialog"]({snapshot_options:$("select.snapshot-selector").html()}));
 var currentSnapshot=document.location.pathname.match(/^\/accounts\/\d+\/backlogs\/\d+\/snapshots\/(\d+)/i);
 if(currentSnapshot){$("#dialog-compare-snapshot select#target-snapshot").val($("#dialog-compare-snapshot select#target-snapshot option:first-child").val())
-}$("#dialog-compare-snapshot").dialog({resizable:false,height:320,width:400,modal:true,buttons:{"Compare":function(){var base=$(this).find("select#base-snapshot").val();
+}$("#dialog-compare-snapshot").dialog({resizable:false,height:310,width:400,modal:true,buttons:{"Compare":function(){var base=$(this).find("select#base-snapshot").val();
 var target=$(this).find("select#target-snapshot").val();
 if(base==target){$(this).find("div.error-message").html('<p><span class="error-alert ui-icon ui-icon-alert"></span>'+"You cannot compare the same snapshots.  Please make another selection.</p>")
 }else{var baseUrl=document.location.pathname.match(/^\/accounts\/\d+\/backlogs/i)[0];
@@ -372,7 +428,7 @@ return this
 App.Views.Error=App.Views.Notice.extend({className:"error",defaultMessage:"Uh oh! Something went wrong. Please try again."});
 App.Views.Warning=App.Views.Notice.extend({className:"warning",defaultMessage:"Unfortunately we could not perform that action."});
 App.Views.Sprints={Show:App.Views.BaseView.extend({childId:function(model){return"sprint-story-"+model.get("id")
-},events:{"click .stories-divider .change-size":"toggleUnassignedStoriesSize"},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+},persistOrderActions:0,events:{"click .stories-divider .change-size":"toggleUnassignedStoriesSize"},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
 this.sprintTabsView=options.sprintTabsView;
 _.bindAll(this,"toggleMore","persistSprintStories","positionStoriesContainerOnScroll","updateStatistics")
 },render:function(){var that=this,storiesAssignedToSprints={},sortFn;
@@ -391,7 +447,7 @@ _(this.model.Backlog().Themes().sortBy(sortFn)).each(function(theme){_(theme.Sto
 $(that.el).find(".unassigned-stories-container").append(view.render().el)
 }})
 });
-this.$(".stories-container .cards, .unassigned-stories-container").sortable({connectWith:".story-droppable",stop:that.persistSprintStories,placeholder:"story-card-place-holder"}).disableSelection();
+this.$(".stories-container .cards, .unassigned-stories-container").sortable({connectWith:".story-droppable",stop:that.persistSprintStories,placeholder:"story-card-place-holder",cancel:".locked"}).disableSelection();
 $(window).bind("scroll.sprints",this.positionStoriesContainerOnScroll).bind("resize.sprints",this.positionStoriesContainerOnScroll);
 if(!App.Views.MouseTracker){App.Views.MouseTracker=new MouseTracker(jQuery)
 }return this
@@ -420,10 +476,11 @@ this.$(".stories-divider").css("left",(newStoryContainerSize+dividerOffset)+"%")
 this.$(".unassigned-stories-heading").css("left",(newStoryContainerSize+headingOffset)+"%").css("width",(100-0.5-(newStoryContainerSize+headingOffset))+"%");
 this.$(".story-card").each(function(index,elem){$(elem).data("reset-toggle")()
 })
-}},persistSprintStories:function(){var that=this,persistActions=0,persistOrder;
-persistOrder=function(){persistActions-=1;
-if(persistActions<=0){var updateParams={};
-this.$(".stories-container .story-card").each(function(index,storyNode){var storyId=Number($(storyNode).attr("id").replace("sprint-story-",""));
+}},persistSprintStories:function(){var that=this,persistOrder;
+persistOrder=function(){that.persistOrderActions-=1;
+if(that.persistOrderActions<=0){that.persistOrderActions=0;
+var updateParams={};
+that.$(".stories-container .story-card").each(function(index,storyNode){var storyId=Number($(storyNode).attr("id").replace("sprint-story-",""));
 var sprintStory=that.model.SprintStories().getByStoryId(storyId);
 if(sprintStory.get("position")!==index+1){updateParams[sprintStory.get("id")]=index+1
 }});
@@ -432,22 +489,25 @@ if(Object.keys(updateParams).length){that.model.SprintStories().batchUpdatePosit
 }}};
 this.model.SprintStories().each(function(story){if(!that.$(".stories-container #"+that.childId(story.Story())).length){var storyNode=$(".unassigned-stories-container #"+that.childId(story.Story()));
 storyNode.data("reset-toggle")();
-persistActions+=1;
-story.destroy({success:function(model,response){that.updateStatistics(response.sprint_statistics);
+if(!story.beingDestroyed){that.persistOrderActions+=1;
+story.beingDestroyed=true;
+story.destroy({success:function(model,response){story.beingDestroyed=false;
+that.updateStatistics(response.sprint_statistics);
 that.model.set(response.sprint_statistics);
 persistOrder();
 storyNode.data("update-sprint-story-status")()
-},error:function(model,response){var errorMessage="Oops, we've been unable to remove that story from this sprint.  Please refresh your browser.";
+},error:function(model,response){story.beingDestroyed=false;
+var errorMessage="Oops, we've been unable to remove that story from this sprint.  Please refresh your browser.";
 try{errorMessage=$.parseJSON(response.responseText).message
 }catch(e){if(window.console){console.log(e)
 }}var errorView=new App.Views.Error({message:errorMessage})
 }})
-}});
+}}});
 this.$(".stories-container .story-card").each(function(index,storyNode){var storyId=Number($(storyNode).attr("id").replace("sprint-story-",""));
 if(!that.model.SprintStories().getByStoryId(storyId)){$(storyNode).data("reset-toggle")();
 var newSprintStory=new SprintStory({story_id:$(storyNode).data("story_id"),sprint_id:that.model.get("id")});
 that.model.SprintStories().add(newSprintStory);
-persistActions+=1;
+that.persistOrderActions+=1;
 newSprintStory.save(false,{success:function(model,response){that.updateStatistics(model.get("sprint_statistics"));
 that.model.set(model.get("sprint_statistics"));
 persistOrder();
@@ -458,7 +518,7 @@ try{errorMessage=$.parseJSON(response.responseText).message
 }}var errorView=new App.Views.Error({message:"Oops, "+errorMessage+".  Please refresh your browser"})
 }})
 }});
-if(persistActions===0){persistOrder()
+if(that.persistOrderActions===0){persistOrder()
 }this.positionStoriesContainerOnScroll();
 $(".story-card").each(function(index,story){if(App.Views.MouseTracker.isOver(story)){$(story).trigger("mouseenter")
 }})
@@ -493,18 +553,23 @@ $(this.el).hover(function(){$(this).addClass("hover")
 });
 $(this.el).data("story_id",this.model.get("id"));
 $(this.el).data("update-sprint-story-status",this.updateSprintStoryStatus);
+this.setEditableState();
 return this
 },resetToggle:function(){$(this.el).css("height","auto");
 if($(this.el).height()>this.contractedHeight+this.heightBuffer){$(this.el).data("original-height",$(this.el).height());
 this.toggleMore(0)
 }else{$(this.el).find(".more").css("display","none")
 }},updateSprintStoryStatus:function(){$(this.el).find(".status").html($(JST["sprints/sprint-story"]({model:this.model})).find(".status"));
-this.setStatusHover()
-},setStatusHover:function(){App.Views.Sprints.Shared.setStatusHover.apply(this,arguments)
-},statusChangeClick:function(){App.Views.Sprints.Shared.statusChangeClick.apply(this,arguments)
-},statusDropDownChanged:function(){App.Views.Sprints.Shared.statusDropDownChanged.apply(this,arguments)
-},statusDropDownLostFocus:function(){App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this,arguments)
-},toggleMore:function(speed){var delay=isNaN(parseInt(speed))?"fast":speed,that=this;
+this.setStatusHover();
+this.setEditableState()
+},setStatusHover:function(){App.Views.Helpers.setStatusHover.apply(this,arguments)
+},statusChangeClick:function(){App.Views.Helpers.statusChangeClick.apply(this,arguments)
+},statusDropDownChanged:function(){App.Views.Helpers.statusDropDownChanged.apply(this,arguments);
+this.setEditableState()
+},statusDropDownLostFocus:function(){App.Views.Helpers.statusDropDownLostFocus.apply(this,arguments)
+},setEditableState:function(){if(this.model.IsEditable()){$(this.el).removeClass("locked")
+}else{$(this.el).addClass("locked")
+}},toggleMore:function(speed){var delay=isNaN(parseInt(speed))?"fast":speed,that=this;
 $(this.el).find(".more").css("display","block");
 if($(this.el).css("height")===this.contractedHeight+"px"){$(this.el).animate({height:$(this.el).data("original-height")},delay,null,that.parentView.positionStoriesContainerOnScroll);
 $(this.el).find(".more").addClass("less").find(".tab").text("less")
@@ -514,45 +579,23 @@ $(this.el).find(".more").removeClass("less").find(".tab").text("more")
 var target=$(this.el).parents(".stories-container .cards").length==0?this.parentView.$(".stories-container .cards"):this.parentView.$(".unassigned-stories-container");
 target.append(this.el);
 this.parentView.persistSprintStories()
-}}),Shared:{setStatusHover:function(){$(this.el).find(".status .tab").hover(function(){$(this).addClass("hover")
-},function(){$(this).removeClass("hover")
-})
-},statusChangeClick:function(){var dropDownOptions=App.Collections.SprintStoryStatuses.sortBy(function(s){return s.get("position")
-}).map(function(status){return('<option value="'+status.get("id")+'">'+htmlEncode(status.get("status"))+"</option>")
-}).join(""),dropDownNode=$(this.el).find(".status .drop-down"),className=$(this.el).find(".status .tab").attr("class").match(/(status-code-\w+)/)[1];
-$(this.el).find(".status .tab").hide();
-dropDownNode.find("select").empty().append($(dropDownOptions)).attr("class",className);
-dropDownNode.find("select option[value="+this.model.SprintStory().get("sprint_story_status_id")+"]").attr("selected","selected");
-dropDownNode.show().focus()
-},statusDropDownChanged:function(){var selected=$(this.el).find(".status .drop-down select option:selected"),code=App.Collections.SprintStoryStatuses.get(selected.val()).get("code"),that=this;
-$(this.el).find(".status .tab").text(selected.text()).attr("class","tab status-code-"+code);
-this.model.SprintStory().set({sprint_story_status_id:selected.val()});
-this.model.SprintStory().save(false,{success:function(model){if(that.parentView){that.parentView.updateStatistics(model.get("sprint_statistics"))
-}else{that.model.SprintStory().Sprint().set(model.get("sprint_statistics"))
-}},error:function(model,response){var errorMessage="we've got a problem on our side";
-try{errorMessage=$.parseJSON(response.responseText).message
-}catch(e){if(window.console){console.log(e)
-}}var errorView=new App.Views.Error({message:"Oops, "+errorMessage+".  Please refresh your browser"})
-}});
-this.statusDropDownLostFocus()
-},statusDropDownLostFocus:function(){$(this.el).find(".status .tab").show();
-$(this.el).find(".status .drop-down").hide()
-}}};
+}})};
 App.Views.SprintTabs={Index:App.Views.BaseView.extend({childId:function(model){return"tab-sprint-"+model.get("id")
 },isSettingsPage:false,models:{},events:{"click #add-sprint>a":"createNew"},initialize:function(){this.collection=this.options.collection;
 this.router=this.options.router;
 _.bindAll(this,"showNew","getModelFromIteration","restoreTab")
 },render:function(){var view=this;
 this.isSettingsPage=$("#backlog-data-area").length==0;
+this.isSnapshot=$(".not-editable-backlog-notice");
 var addTabView=function(model){var tabView=new App.Views.SprintTabs.Show({model:model,id:view.childId(model),router:view.router});
 view.$("ul.infinite-tabs").append(tabView.render().el);
 view.models[model.get("iteration")]=model
 };
 var pinnedTabs=[{get:function(){return"Backlog"
 },active:true,locked:true}];
-if(!this.isSettingsPage){pinnedTabs.push({get:function(){return"Stats"
+if(!this.isSettingsPage&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Stats"
 },locked:true})
-}if(!this.isSettingsPage&&!this.collection.length){pinnedTabs.push({get:function(){return"Sprints"
+}if(!this.isSettingsPage&&!this.collection.length&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Sprints"
 }})
 }_(pinnedTabs).each(addTabView);
 _(this.collection.sortBy(function(model){return -model.get("id")
@@ -649,7 +692,7 @@ if(this.model.active){$(this.el).addClass("active")
 },activate:function(){this.router.navigate(String(this.model.get("iteration")),true)
 }})};
 App.Views.Stories={Index:Backbone.View.extend({tagName:"div",className:"stories",childId:function(model){return"story-"+model.get("id")
-},events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"storyKeyPress"},initialize:function(){this.collection=this.options.collection;
+},events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"addStoryKeyPress"},initialize:function(){this.collection=this.options.collection;
 this.use5090estimates=this.options.use5090estimates;
 _.bindAll(this,"orderChanged","displayOrderIndexes")
 },render:function(){var view=this;
@@ -675,7 +718,6 @@ view.$(".move-story").addClass("vtip")
 this.$(".color-picker-icon a").click(function(event){$("#vtip").remove();
 $(event.target).mouseleave()
 })
-}else{this.$(".story-actions").remove()
 }return(this)
 },createNew:function(event){event.preventDefault();
 var model=new Story();
@@ -684,24 +726,33 @@ this.$("ul.stories li:last").before(new App.Views.Stories.Show({model:model,use5
 var this_view=this;
 this.$("ul.stories li.story:last").css("display","none").slideDown("fast",function(){this_view.$("ul.stories li.story:last > .user-story > .as-a > .data").click()
 })
-},storyKeyPress:function(event){if(9==event.keyCode){if(event.shiftKey){event.preventDefault();
-var thisTheme=$(this.el).parents("li.theme");
-if(thisTheme.has("li.story:last .score-90 .data").length){thisTheme.find("li.story:last .score-90 .data").click()
-}else{thisTheme.find(".theme-data .name .data").click()
-}}else{var nextTheme=$(this.el).parents("li.theme").next();
-if(nextTheme.length){nextTheme.find(".theme-data .name .data").click()
-}}}else{if(13==event.keyCode){this.createNew(event)
+},addStoryKeyPress:function(event){var thisTheme,nextTheme,lastStory;
+if(9==event.keyCode){event.preventDefault();
+if(event.shiftKey){event.preventDefault();
+thisTheme=$(this.el).parents("li.theme");
+lastStory=thisTheme.find("li.story:not(.locked):last .score-90 .data, li.story:not(.locked):last .score .data");
+if(lastStory.length){App.Views.Helpers.scrollIntoBacklogView(lastStory,function(){lastStory.click()
+})
+}else{App.Views.Helpers.scrollIntoBacklogView(thisTheme.find(".theme-data .name .data"),function(elem){elem.click()
+})
+}}else{nextTheme=$(this.el).parents("li.theme").next();
+if(nextTheme.hasClass("theme")){App.Views.Helpers.scrollIntoBacklogView(nextTheme.find(".theme-data .name .data"),function(elem){elem.click()
+})
+}else{App.Views.Helpers.scrollIntoBacklogView(nextTheme.find("a.new-theme"),function(elem){elem.focus()
+})
+}}}else{if(13===event.keyCode){event.preventDefault();
+this.createNew(event)
 }}},orderChanged:function(){var orderIndexesWithIds={};
 this.$("li.story").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
 if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate","click .status .tab":"statusChangeClick","blur .status .drop-down select":"statusDropDownLostFocus","change .status .drop-down select":"statusDropDownChanged",},initialize:function(){this.use5090estimates=this.options.use5090estimates;
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",isEditable:false,events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate","click .status .tab":"statusChangeClick","blur .status .drop-down select":"statusDropDownLostFocus","change .status .drop-down select":"statusDropDownChanged",},initialize:function(){this.use5090estimates=this.options.use5090estimates;
 App.Views.BaseView.prototype.initialize.call(this);
-_.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor","populateHtmlFromTemplate")
-},render:function(){this.populateHtmlFromTemplate();
-$(this.el).data("populate-html-from-template",this.populateHtmlFromTemplate);
+_.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor","modelDataHasChanged")
+},render:function(){this.modelDataHasChanged();
+$(this.el).data("update-model-data",this.modelDataHasChanged);
 var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()});
 this.$(".acceptance-criteria").html(view.render().el);
 if(this.model.IsEditable()){this.makeFieldsEditable();
@@ -717,20 +768,23 @@ this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){sh
 },colorsPerLine:4,colors:["#ffffff","#dddddd","#bbbbbb","#999999","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#6666ff","#9900ff","#ff00ff","#f4cccc","#d9ead3","#cfe2f3","#ead1dc","#ffe599","#b6d7a8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d"]})
 }if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
 }return this
-},populateHtmlFromTemplate:function(){if(this.populatedHtml){$(this.el).find(".sprint-story-info").html($(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates})).find(".sprint-story-info"))
-}else{this.populatedHtml=true;
+},modelDataHasChanged:function(onlyIfEditableStatusHasChanged){if(this.populatedHtml){if(this.isEditable===this.model.IsEditable()){if(!onlyIfEditableStatusHasChanged){$(this.el).find(".sprint-story-info").html($(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates})).find(".sprint-story-info"))
+}}else{var newView=new App.Views.Stories.Show({model:this.model,id:$(this.el).attr("id"),use5090estimates:this.use5090estimates});
+$(this.el).replaceWith(newView.render().el)
+}}else{this.populatedHtml=true;
 $(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
+}if(this.model.IsEditable()){$(this.el).removeClass("locked")
+}else{$(this.el).addClass("locked")
 }this.setStatusHover()
-},setStatusHover:function(){App.Views.Sprints.Shared.setStatusHover.apply(this,arguments)
-},statusChangeClick:function(){App.Views.Sprints.Shared.statusChangeClick.apply(this,arguments)
-},statusDropDownLostFocus:function(){App.Views.Sprints.Shared.statusDropDownLostFocus.apply(this,arguments)
-},statusDropDownChanged:function(){App.Views.Sprints.Shared.statusDropDownChanged.apply(this,arguments)
-},makeFieldsEditable:function(){var show_view=this;
-var contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(value,settings,this)
-};
-var beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
-};
-var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
+},setStatusHover:function(){App.Views.Helpers.setStatusHover.apply(this,arguments)
+},statusChangeClick:function(){App.Views.Helpers.statusChangeClick.apply(this,arguments)
+},statusDropDownLostFocus:function(){App.Views.Helpers.statusDropDownLostFocus.apply(this,arguments)
+},statusDropDownChanged:function(){App.Views.Helpers.statusDropDownChanged.apply(this,arguments);
+this.modelDataHasChanged(true)
+},makeFieldsEditable:function(){var show_view=this,contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(value,settings,this)
+},beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
+},defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
+this.isEditable=true;
 var uniqueIdContentUpdatedFunc=function(value,settings){return(show_view.model.Theme().get("code")+contentUpdatedFunc.call(this,value,settings))
 };
 var uniqueIdBeforeChangeFunc=function(value,settings){return beforeChangeFunc.call(this,value.substring(3),settings)
@@ -749,29 +803,34 @@ var options=_.extend(_.clone(defaultOptions),{type:(elem=="as-a"?"text":"textare
 show_view.$(">div.user-story ."+elem+" .data").editable(contentUpdatedFunc,options)
 })
 })
-},navigateEvent:function(event){var isInput=$(event.target).is("input");
-if(_.include([9,13,27],event.keyCode)&&(!event.ctrlKey||isInput)){$(event.target).blur();
+},navigateEvent:function(event){var isInput=$(event.target).is("input"),viewElements,dataClass,dataElem,sibling,previousSelector,lastCriterion,previousUnlocked;
+if(_.include([9,13,27],event.keyCode)&&(isInput||!event.ctrlKey)){$(event.target).blur();
 try{event.preventDefault()
-}catch(e){}var viewElements=["unique-id .data","as-a .data","i-want-to .data","so-i-can .data","acceptance-criteria ul.acceptance-criteria li:first-child>*","comments .data"];
+}catch(e){}viewElements=["unique-id .data","as-a .data","i-want-to .data","so-i-can .data","acceptance-criteria ul.acceptance-criteria li:first-child>*","comments .data"];
 if(this.use5090estimates){viewElements.push("score-50 .data");
 viewElements.push("score-90 .data")
 }else{viewElements.push("score .data")
-}var dataClass=$(event.target);
+}dataClass=$(event.target);
 if(!dataClass.hasClass("data")){dataClass=dataClass.parents(".data")
-}dataClass=dataClass.parent().attr("class");
-var dataElem=_.detect(viewElements,function(id){return(_.first(id.split(" "))==dataClass)
+}dataClass=dataClass.parent();
+dataElem=_.detect(viewElements,function(id){return dataClass.hasClass(_.first(id.split(" ")))
 });
 if(dataElem){if(!event.shiftKey){if(dataElem!=_.last(viewElements)){this.$("."+viewElements[_.indexOf(viewElements,dataElem)+1]).click()
-}else{var sibling=$(this.el).next();
-if(sibling.find("a.new-story").length){sibling.find("a.new-story").focus()
-}else{sibling.find("."+_.first(viewElements)).click()
+}else{var sibling=$(this.el).nextAll("li:not(.locked):first");
+if(sibling.find("a.new-story").length){App.Views.Helpers.scrollIntoBacklogView(sibling.find("a.new-story"),function(elem){elem.focus()
+})
+}else{App.Views.Helpers.scrollIntoBacklogView(sibling.find("."+_.first(viewElements)),function(elem){elem.click()
+})
 }}}else{if(dataElem!=_.first(viewElements)){var previousSelector=viewElements[_.indexOf(viewElements,dataElem)-1];
-if(previousSelector.indexOf("acceptance-criteria")===0){var lastCriterion=this.$(".acceptance-criteria ul.acceptance-criteria li.criterion:last>*");
-if(lastCriterion.length){lastCriterion.click()
-}else{this.$(".acceptance-criteria ul.acceptance-criteria li:last a").click()
-}}else{this.$("."+previousSelector).click()
-}}else{if($(this.el).prev().length){$(this.el).prev().find(".score-90 .data, .score .data").click()
-}else{$(this.el).parents("li.theme").find(".theme-data >.name .data").click()
+if(previousSelector.indexOf("acceptance-criteria")===0){var lastCriterion=this.$(".acceptance-criteria ul.acceptance-criteria li:visible:last>*");
+App.Views.Helpers.scrollIntoBacklogView(lastCriterion,function(elem){elem.click()
+})
+}else{this.$("."+previousSelector).click()
+}}else{previousUnlocked=$(this.el).prevAll("li:not(.locked):first");
+if(previousUnlocked.length){App.Views.Helpers.scrollIntoBacklogView(previousUnlocked.find(".score-90 .data, .score .data"),function(elem){elem.click()
+})
+}else{App.Views.Helpers.scrollIntoBacklogView($(this.el).parents("li.theme").find(".theme-data >.name .data"),function(elem){elem.click()
+})
 }}}}}},changeEvent:function(eventName,model){var newValue;
 if((eventName.substring(0,7)==="change:")&&(eventName!=="change:acceptance_criteria")){var fieldChanged=eventName.substring(7);
 newValue=this.model.get(fieldChanged);
@@ -881,8 +940,7 @@ if(!event.shiftKey){if(target.is("a.new-theme")){this.$("a.reorder-themes").focu
 }}}else{if(target.is("a.new-theme")){if(this.$("li.theme").length>0){var lastTheme=$("li.theme:last");
 if(lastTheme.has("li.actions a.new-story").length){lastTheme.find("li.actions a.new-story").focus()
 }else{lastTheme.find(".theme-data .name .data").click()
-}}else{$("#backlog-data-area h2.name .data").click()
-}}else{if(target.is("a.reorder-themes")){this.$("a.new-theme").focus()
+}}else{}}else{if(target.is("a.reorder-themes")){this.$("a.new-theme").focus()
 }}}}else{if(13==event.keyCode){if(target.is("a.new-theme")){this.createNew(event)
 }else{if(target.is("a.reorder-themes")){this.startReorder(event)
 }}}}},orderChanged:function(){var orderIndexesWithIds={};
@@ -901,8 +959,7 @@ this.updateStatistics();
 if(this.model.IsEditable()){this.makeFieldsEditable();
 var self=this;
 _.each([".name",".code"],function(elem){self.$(".theme-data "+elem+">.data input").live("keydown",self.navigateEvent)
-});
-this.$("ul.stories li.actions a.new-story").live("keydown",this.navigateEvent)
+})
 }else{this.$("ul.stories>li.actions").remove();
 this.$(".re-number-stories a").remove();
 this.$(".delete-theme>a").remove()
@@ -919,29 +976,30 @@ var beforeChangeFunc=function(value,settings){return show_view.beforeChange(valu
 var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
 this.$(".theme-data .name div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:100}));
 this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{lesswidth:-10,maxLength:3}))
-},navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)){try{event.preventDefault()
-}catch(e){}if(!$(event.target).hasClass("new-story")){if(!event.shiftKey){$(event.target).blur();
-var storyElem=$(this.el).find("li.story:first-child");
-if(storyElem.length){storyElem.find(".unique-id .data").click()
+},navigateEvent:function(event){var storyElem,thisThemeAddStory,target,dataField,prev;
+if(_.include([9,13,27],event.keyCode)){try{event.preventDefault()
+}catch(e){}if(!event.shiftKey){$(event.target).blur();
+storyElem=$(this.el).find("li.story:not(.locked):first");
+if(storyElem.length){App.Views.Helpers.scrollIntoBacklogView(storyElem.find(".unique-id .data"),function(elem){elem.click()
+})
 }else{$(this.el).next().find("a.new-theme").focus();
-$(this.el).find("ul.stories li a.new-story").focus()
-}}else{var dataClass=$(event.target).parents(".data").parent().attr("class");
-if(dataClass=="name"){var prev=$(this.el).prev();
-if(prev.length){if(prev.find("ul.stories li.actions a.new-story")){$(event.target).blur();
-prev.find("ul.stories li.actions a.new-story").focus()
+thisThemeAddStory=$(this.el).find("ul.stories li a.new-story");
+if(thisThemeAddStory.length){App.Views.Helpers.scrollIntoBacklogView(thisThemeAddStory,function(elem){elem.focus()
+})
+}else{App.Views.Helpers.scrollIntoBacklogView($(this.el).next().find(".theme-data > .name .data"),function(elem){elem.click()
+})
+}}}else{dataField=$(event.target).parents(".data");
+if(dataField.parent().hasClass("name")){prev=$(this.el).prev();
+if(prev.length){target=prev.find("ul.stories li.actions a.new-story");
+if(target.length){$(event.target).blur();
+App.Views.Helpers.scrollIntoBacklogView(target,function(elem){elem.focus()
+})
 }else{$(event.target).blur();
-prev.find(".theme-data >.name .data").click()
+App.Views.Helpers.scrollIntoBacklogView(prev.find(".theme-data >.name .data"),function(elem){elem.click()
+})
 }}else{}}else{$(event.target).blur();
 this.$(".theme-data >.name .data").click()
-}}}else{$(event.target).blur();
-if(!event.shiftKey){var nextThemeLi=$(event.target).parents("li.theme").next();
-if(nextThemeLi.hasClass("theme")){nextThemeLi.find(">.name .data").click()
-}else{nextThemeLi.find("a.new-theme").focus()
-}}else{var previous_story_matcher="ul.stories li.story:last .score-90 .data, ul.stories li.story:last .score .data";
-var previous_story=$(this.el).find(previous_story_matcher);
-if(previous_story.length){previous_story.click()
-}else{$(this.el).find(">.name .data").click()
-}}}}},changeEvent:function(eventName,model){if(eventName.substring(0,7)=="change:"){var fieldChanged=eventName.substring(7);
+}}}},changeEvent:function(eventName,model){if(eventName.substring(0,7)=="change:"){var fieldChanged=eventName.substring(7);
 this.$(">.theme-data>."+fieldChanged.replace(/_/gi,"-")+">div.data").text(this.model.get(fieldChanged));
 this.updateStatistics();
 App.Controllers.Statistics.updateStatistics(this.model.get("score_statistics"))
