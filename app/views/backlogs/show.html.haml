@@ -11,37 +11,32 @@
 - if @backlog.is_snapshot?
   .not-editable-backlog-notice
     .message
-      = "You are viewing snapshot “#{truncate(@backlog.name, :length => 30)}”."
+      = "You are viewing a snapshot"
       = link_to '← Back', account_backlog_path(@backlog.account, @backlog.snapshot_master)
 - elsif @backlog.archived?
   .not-editable-backlog-notice
     .message
       You are viewing a non-editable archive
 
+-# Snapshot container appears when user clicks on Snapshots
+.snapshot-menu-container
+  .selector
+    .title
+      =label_tag 'menu_snapshot_select', 'Select a snapshot to view:'
+    != render :partial => 'snapshot_select', :locals => { :truncate_at => 35, :select_id=> 'menu_snapshot_select' }
+  .button-holder
+    %a#new-snapshot.button{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)} Create new snapshot
+  .description
+    Creates an exact copy of the current backlog for later reference
+  .button-holder
+    %a#compare-snapshot.button{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)} Compare snapshots
+  .description
+    View changes between the current version and any historical snapshots
+
 #backlog-data-area
   .actions
     .snapshot
-      .title
-        =label_tag 'snapshot-selector', 'Snapshot:'
-      .selector
-        =form_tag :url => '#' do
-          %select#snapshot-selector
-            %option
-              Working version (current)
-            %optgroup{ :label => "Snapshots..." }
-              - if @backlog.snapshot_master.blank?
-                - @backlog.snapshots.each do |snapshot|
-                  %option{:value => snapshot.id}= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
-              - else
-                - @backlog.snapshot_master.snapshots.each do |snapshot|
-                  %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{truncate(snapshot.name, :length => 30)}, #{backlog_date snapshot}"
-      - if @backlog.editable?
-        .new.vtip{ :title => 'Create new snapshot' }
-          %a#new-snapshot.ui-icon.ui-icon-plusthick{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
-            New
-      .compare.vtip{ :title => 'Compare snapshots' }
-        %a#compare-snapshot.ui-icon.ui-icon-transferthick-e-w{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)}
-          New
+      %a#snapshot-menu Snapshots
     .divider
     - if @backlog.snapshot_master.blank?
       = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download Backlog in Excel format', :class => 'vtip'
@@ -76,6 +71,13 @@
   #protect-beneath-tabs
   %ul.infinite-tabs
 
+- if @backlog.snapshot_master.present?
+  #viewing-snapshot-container
+    .title
+      =label_tag 'popup_snapshot_select', 'Viewing snapshot:'
+    .selector
+      != render :partial => 'snapshot_select', :locals => { :truncate_at => 45, :select_id => 'popup_snapshot_select' }
+
 #backlog-container
   = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
 #sprints-container.contracted-unassigned-stories
@@ -101,6 +103,8 @@
     var thisBacklog = new Backlog(#{embedded_json_safe backlog_json(@backlog)});
     App.Collections.Backlogs.add(thisBacklog);
 
+    var backlogData = new App.Views.BacklogDataArea.Show({ model: thisBacklog, router: router, el: $('#backlog-data-area') });
+    backlogData.render();
     var sprintTabs = new App.Views.SprintTabs.Index({ collection: thisBacklog.Sprints(), el: $('#backlog-tabs'), router: router });
     sprintTabs.render();
 

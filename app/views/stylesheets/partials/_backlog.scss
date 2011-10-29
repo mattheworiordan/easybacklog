@@ -72,8 +72,8 @@ section.for-backlog {
 
 section.content .not-editable-backlog-notice {
   position: fixed;
-  width: 500px;
-  margin-left: -250px;
+  width: 350px;
+  margin-left: -150px;
   left: 50%;
   background-color: #BBB;
   color: black;
@@ -91,6 +91,67 @@ section.content .not-editable-backlog-notice {
   a {
     float: right;
     color: #000;
+  }
+}
+
+.for-backlog {
+  /* snapshot roll over menu */
+  .snapshot-menu-container {
+    position: absolute;
+    background-color: #000;
+    display: none;
+    overflow: hidden;
+    padding: 10px;
+    z-index: 10;
+    width: 410px;
+    .title {
+      color: #FFF;
+      font-weight: bold;
+    }
+    select.snapshot-selector {
+      background-color: $title-area-color;
+      border: 1px solid darken($title-area-color, 60%);
+      font-size: 13px;
+      font-family: $base-pretty-font;
+      color: lighten($light-text-on-title-area-color, 20%);
+    }
+    .button-holder {
+      margin-top: 15px;
+      float: left;
+      clear: left;
+      width: 160px;
+    }
+    .description {
+      margin-top: 8px;
+      float: left;
+      width: 235px;
+      color: #999;
+      font-size: 11px;
+      margin-left: 10px;
+    }
+  }
+  /* when viewing a snapshot, user is given a drop down to change snapshots without having to use the menu */
+  #viewing-snapshot-container {
+    position: fixed;
+    top: 63px;
+    left: 120px;
+    overflow: hidden;
+    z-index: 5;
+    .title {
+      color: lighten($light-text-on-title-area-color, 20%);
+      float: left;
+    }
+    .selector {
+      margin-top: -2px;
+      float: left;
+      select {
+        background-color: $title-area-color;
+        border: 1px solid darken($title-area-color, 60%);
+        font-size: 12px;
+        font-family: $base-pretty-font;
+        color: lighten($light-text-on-title-area-color, 20%);
+      }
+    }
   }
 }
 
@@ -156,34 +217,17 @@ section.content .not-editable-backlog-notice {
       padding-left: 0.5em;
     }
   }
+  /* snap shot menu item on top righ */
   .snapshot {
-    /* use white icons */
-    .ui-icon { background-image: url(/stylesheets/ui-lightness/images/ui-icons_ffffff_256x240.png); }
+    padding: 6px 6px 6px 12px;
+    margin: -6px;
+    position: relative;
     float: left;
-    label {
-      margin-right: 5px;
-    }
-    .title {
-      color: $light-text-on-title-area-color;
-      float: left;
-    }
-    .selector {
-      float: left;
-      margin-top: -2px;
-      select {
-        background-color: $title-area-color;
-        border: 1px solid darken($title-area-color, 60%);
-        font-size: 12px;
-        font-family: $base-pretty-font;
-        color: lighten($light-text-on-title-area-color, 20%);
+    &.hover {
+      background-color: #000;
+      a {
+        text-decoration: none;
       }
-    }
-    .new, .compare {
-      float: left;
-      width: 16px;
-      height: 16px;
-      margin: 1px -4px 0 4px;
-      cursor: pointer;
     }
   }
   #backlog-settings {

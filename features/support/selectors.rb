@@ -44,17 +44,23 @@ module HtmlSelectorHelpers
     when /^backlog totals$/
       '#backlog-data-area .backlog-stats .output'
 
-    when /^add snapshot button$/
-      '#backlog-data-area .snapshot .new a'
+    when /^snapshots menu$/
+      '#backlog-data-area a#snapshot-menu'
 
-    when /^compare snapshot button$/
-      '#backlog-data-area .snapshot .compare a'
+    when /^create new snapshot button$/
+      'a#new-snapshot'
 
-    when /^snapshot icon$/
+    when /^compare snapshots button$/
+      'a#compare-snapshot'
+
+    when /^snapshot icons?$/
       'h2.locked'
 
-    when /^snapshot drop down$/
-      '#backlog-data-area #snapshot-selector'
+    when /^snapshot drop down appearing in snapshot mode near tabs$/
+      '#viewing-snapshot-container select.snapshot-selector'
+
+    when /^snapshot drop down within snapshots menu$/
+      '.snapshot-menu-container select.snapshot-selector'
 
     ##
     # Backlog themes

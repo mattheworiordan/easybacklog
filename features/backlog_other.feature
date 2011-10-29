@@ -57,21 +57,33 @@ Feature: Backlog Other Functionality
 
   @javascript
   Scenario: Check that create, view and delete snapshots works
-    When I click on the "add snapshot button"
+    When I click on the "snapshots menu"
+      And I click on the "create new snapshot button"
       And I fill in "Please name your snapshot:" with "Snapshot 1"
       And I press "Create Snapshot" within "the dialog"
       And I wait for 2 seconds
     Then I should see the notice "New snapshot created"
-    Then "Working version (current)" should be selected for "snapshot drop down"
-    When I select "Snapshot 1" from "Snapshot:"
+    When I click on the "snapshots menu"
+    Then "Working version (current)" should be selected for "snapshot drop down within snapshots menu"
+    When I select "Snapshot 1" from "Select a snapshot to view:"
       And I wait 1 second
-    Then "Snapshot 1" should be selected for "snapshot drop down"
+      And click on the "snapshots menu"
+    Then "Snapshot 1" should be selected for "snapshot drop down appearing in snapshot mode near tabs"
+      And "Snapshot 1" should be selected for "snapshot drop down within snapshots menu"
       And there should be 1 "snapshot icon"
       And there should be 0 "add theme buttons"
       And there should be 0 "add story buttons"
       And there should be 0 "delete theme buttons"
     When I click on the "first theme's name"
     Then there should be 0 "editable text fields"
+    # now make sure the new snapshot selector which only appears in snapshot mode works
+    When I select "Working version (current)" from "Viewing snapshot:"
+      And I wait 1 second
+      Then there should be 0 "snapshot icons"
+    When I click on the "snapshots menu"
+      And I select "Snapshot 1" from "Select a snapshot to view:"
+      And I wait 1 second
+    Then "Snapshot 1" should be selected for "snapshot drop down appearing in snapshot mode near tabs"
     When I follow "Settings"
     Then I should see "Snapshot name" within a "label"
       And the "text input fields" should be disabled
@@ -79,7 +91,8 @@ Feature: Backlog Other Functionality
     When I follow "Yes, I understand — delete this snapshot"
       And I press "Delete" within "a dialog"
     Then I should see the notice "Snapshot was successfully deleted"
-      And there should be 0 "drop down options with the text Snapshot 1"
+    When I click on the "snapshots menu"
+    Then there should be 0 "drop down options with the text Snapshot 1"
 
 
   @javascript
@@ -88,7 +101,8 @@ Feature: Backlog Other Functionality
       And I change the editable text "[edit]" within the "first story's 90 score within the first theme" to "13"
       And I change the editable text "Find stuff" within the "first story's so I can field within the first theme" to "base value"
       And I tab forwards and wait for AJAX
-      And I click on the "add snapshot button"
+      When I click on the "snapshots menu"
+      And I click on the "create new snapshot button"
       And I fill in "Please name your snapshot:" with "Snapshot 1"
       And I press "Create Snapshot" within "the dialog"
     Then I should see the notice "New snapshot created"
@@ -102,7 +116,8 @@ Feature: Backlog Other Functionality
       And I wait for 0.5 seconds
       And I change the current editable text to "new story"
       And I tab forwards and wait for AJAX
-    When I click on the "compare snapshot button"
+    When I click on the "snapshots menu"
+      And I click on the "compare snapshots button"
       And I select "Snapshot 1" from "Which snapshot is your base (typically the older version)?"
       And I press "Compare" within "the dialog"
       And I wait 3 seconds

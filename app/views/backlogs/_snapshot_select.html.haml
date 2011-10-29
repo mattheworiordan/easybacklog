@@ -1,0 +1,14 @@
+- truncate_at ||= 35
+- select_id ||= 'snapshot-selector'
+
+=form_tag :url => '#' do
+  %select.snapshot-selector{:id => select_id}
+    %option
+      Working version (current)
+    %optgroup{ :label => "Snapshots..." }
+      - if @backlog.snapshot_master.blank?
+        - @backlog.snapshots.each do |snapshot|
+          %option{:value => snapshot.id}= "#{truncate(snapshot.name, :length => truncate_at)}, #{backlog_date snapshot}"
+      - else
+        - @backlog.snapshot_master.snapshots.each do |snapshot|
+          %option{:value => snapshot.id, :selected => (snapshot == @backlog ? true : false) }= "#{truncate(snapshot.name, :length => truncate_at)}, #{backlog_date snapshot}"
