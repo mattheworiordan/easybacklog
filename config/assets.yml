@@ -61,3 +61,5 @@ stylesheets:
   beta_signup:
     - public/stylesheets/jquery.lightbox-0.5.css
     - tmp/stylesheets/beta_signup.css
+  admin:
+    - tmp/stylesheets/admin.css

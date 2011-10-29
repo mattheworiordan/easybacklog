@@ -1,0 +1,33 @@
+- title 'Admin bunker'
+- content_for :head do
+  = include_stylesheets :admin
+- content_for :title do
+  %h1 View Data: Admin bunker
+%p
+  .back= link_to "« Back", admin_path
+  %h2= @title
+
+  - if @data.length == 0
+    No data
+  - else
+    %table.admin-data
+      %tr
+        - @processed_data[0].keys.each do |col|
+          %th
+            - if col.kind_of?(Symbol)
+              = col.to_s.titleize
+            - elsif col.kind_of?(String)
+              = col.gsub(/^.*?(\w+\.\w+)$/, '\1').titleize
+            - else
+              = col.keys.join(', ').titleize
+      - @processed_data.each do |row|
+        %tr
+          - row.each do |col_name, col_val|
+            %td
+              - if col_name == :action && col_val =~ /^emulate:(\d+)$/
+                = link_to "Emulate »", admin_emulate_user_path($1)
+              - else
+                = col_val.kind_of?(Time) ? col_val.strftime('%d/%m/%y') : col_val
+
+    = will_paginate @data
+

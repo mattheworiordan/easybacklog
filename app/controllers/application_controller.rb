@@ -62,6 +62,10 @@ class ApplicationController < ActionController::Base
   end
   helper_method :is_account_admin?
 
+  def is_admin?
+    user_signed_in? && current_user.admin_rights?
+  end
+
   private
     def log_last_page_viewed
       session[:last_url] = request.path

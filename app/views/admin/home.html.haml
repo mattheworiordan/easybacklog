@@ -1,0 +1,13 @@
+- title 'Admin bunker'
+- content_for :title do
+  %h1 Admin bunker
+%p
+  %h2 Stats
+  %ul
+    %li= link_to "Users: #{@stats[:user_count]}", admin_data_path('user')
+    %li= link_to "Users signed up within last 14 days: #{@stats[:user_count_within_14_days]}", admin_data_path('user')
+    %li= link_to "Accounts: #{@stats[:account_count]}", admin_data_path('account')
+    %li= link_to "Backlogs: #{@stats[:backlog_count]}", admin_data_path('backlog')
+    %li= link_to "Stories: #{@stats[:story_count]}", admin_data_path('story')
+    %li= link_to "Pending invites: #{@stats[:pending_invites]}", admin_data_path('invited_user')
+    %li= link_to "Beta Signups: #{@stats[:beta_signups]}", admin_data_path('beta_signup')

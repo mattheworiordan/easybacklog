@@ -77,5 +77,9 @@ Ibacklog::Application.routes.draw do
 
   get '/dashboard' => 'pages#home', :as => 'dashboard'
 
+  get '/bunker' => 'admin#home', :as => 'admin'
+  get '/bunker/data/:table' => 'admin#data', :as => 'admin_data'
+  get '/bunker/emulate/:user_id' => 'admin#emulate_user', :as => 'admin_emulate_user'
+
   root :to => 'beta_signups#index'
 end
