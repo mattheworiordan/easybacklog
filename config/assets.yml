@@ -23,6 +23,7 @@ javascripts:
     - public/javascripts/views/acceptance_criteria_view.js
     - public/javascripts/views/backlogs_view.js
     - public/javascripts/views/backlog_data_area_view.js
+    - public/javascripts/views/backlog_presence_view.js
     - public/javascripts/views/backlog_stats_view.js
     - public/javascripts/views/notice_view.js
     - public/javascripts/views/sprints_view.js

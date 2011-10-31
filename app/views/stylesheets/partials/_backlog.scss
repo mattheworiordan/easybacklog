@@ -155,6 +155,48 @@ section.content .not-editable-backlog-notice {
   }
 }
 
+#presence-notifier {
+  display: none;
+  position: fixed;
+  background-color: darken(#FFB300, 5%);
+  border: 1px solid darken(#FFB300, 20%);
+  border-bottom: none;
+  bottom: 0;
+  left: 20px;
+  z-index: 15;
+  padding: 6px;
+  color: #FFF;
+  @include border-radius(10px 10px 0 0);
+  .header {
+    overflow: hidden;
+  }
+  .icon {
+    float: left;
+    width: 16px;
+    margin-top: 2px;
+  }
+  .title {
+    float: left;
+    padding-left: 10px;
+    font-weight: bold;
+  }
+  .ui-icon { background-image: url(/stylesheets/ui-lightness/images/ui-icons_ffffff_256x240.png); }
+  .people {
+    display: none;
+    border-top: 1px solid darken(#FFB300, 20%);
+    padding-top: 10px;
+    margin-top: 10px;
+    ul {
+      margin-bottom: 0;
+    }
+  }
+  &:hover {
+    .people {
+      display: block;
+    }
+  }
+}
+
 #backlog-data-area {
   position: fixed;
   top: $ninesixty-vertical * 2;

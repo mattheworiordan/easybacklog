@@ -78,6 +78,7 @@
     .selector
       != render :partial => 'snapshot_select', :locals => { :truncate_at => 45, :select_id => 'popup_snapshot_select' }
 
+#presence-notifier
 #backlog-container
   = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
 #sprints-container.contracted-unassigned-stories
@@ -107,6 +108,8 @@
     backlogData.render();
     var sprintTabs = new App.Views.SprintTabs.Index({ collection: thisBacklog.Sprints(), el: $('#backlog-tabs'), router: router });
     sprintTabs.render();
+    var presence = new App.Views.BacklogPresence.Show({ model: thisBacklog, name: '#{escape_javascript current_user.name}', el: $('#presence-notifier') });
+    presence.render();
 
     router.setTabsReference(sprintTabs);
     Backbone.history.start();

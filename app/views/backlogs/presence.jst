@@ -1,0 +1,16 @@
+<div class="header">
+  <div class="icon">
+    <span class="ui-icon ui-icon-alert"></span>
+  </div>
+  <div class="title">
+    <%= people.length %> other <% if (people.length === 1) { %>person is<% } else { %>people are<% } %> simultaneously editing this backlog
+  </div>
+</div>
+<div class="people">
+  The following <% if (people.length === 1) { %>person is<% } else { %>people are<% } %> currently editing this backlog:
+  <ul>
+    <% _(people).each(function(person) { %>
+      <li><%= htmlEncode(person.name) %></li>
+    <% }); %>
+  </ul>
+</div>
