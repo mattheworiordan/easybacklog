@@ -407,6 +407,25 @@ if(App.environment==="test"){document.location.href=url
 }},Cancel:function(){$(this).dialog("close")
 }}})
 }})};
+App.Views.BacklogPresence={Show:App.Views.BaseView.extend({initialize:function(options){this.userId=options.userId;
+this.name=options.name
+},render:function(){var that=this;
+setTimeout(function(){that.startPolling()
+},1500);
+return(this)
+},startPolling:function(){var that=this;
+if(!this.clientId){this.clientId=Math.floor(Math.random()*1000000000).toString(36)
+}var _poll=function(){$.ajax({url:"https://easybacklog-async.herokuapp.com/poll",data:{id:that.clientId,name:that.name,channel:that.model.get("id")},type:"POST",dataType:"json",crossDomain:true,success:function(response){if(response){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.clientId
+});
+$(that.el).html(JST["backlogs/presence"]({people:people}));
+$(that.el).show()
+}else{if($(that.el).is(":visible")){$(that.el).hide()
+}}}_poll()
+},error:function(){setTimeout(_poll,5000)
+}})
+};
+_poll()
+}})};
 App.Views.BacklogStats={Show:App.Views.BaseView.extend({events:{},initialize:function(){App.Views.BaseView.prototype.initialize.call(this)
 },render:function(){$(this.el).html(JST["backlogs/sprint-progress-stats"]({model:this.model}));
 return this
