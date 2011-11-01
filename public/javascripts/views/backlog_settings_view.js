@@ -6,16 +6,10 @@ App.Views.BacklogSettings = {
     className: 'content',
     stateHtml: false, // keeps state of HTML so we can determine if user has made changes and can ask to keep changes
 
-    events: {
-      "click a.delete-sprint": "deleteSprint",
-      "click a#sprint_submit": "updateSprint",
-      "click a#sprint_cancel": "cancel"
-    },
-
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
       this.sprintTabsView = this.options.sprintTabsView;
-      _.bindAll(this, 'storeBacklogSettings', 'retrieveBacklogSettings', 'deleteSprint', 'storeState', 'stateChanged', 'restoreState');
+      _.bindAll(this, 'storeBacklogSettings', 'retrieveBacklogSettings', 'deleteSprint', 'storeState', 'stateChanged', 'restoreState', 'updateSprint', 'cancel');
     },
 
     render: function() {
@@ -31,6 +25,10 @@ App.Views.BacklogSettings = {
         $('section.side-panel a.delete-sprint').click(this.deleteSprint); // outside of the view DOM element
         this.el = $('section.content .backlog-settings-body').html(JST['sprints/edit-sprint']({ model: this.model }));
         this.$('#start-on').datepicker().datepicker("setDate", parseRubyDate(this.model.get('start_on')));
+        this.$('a#sprint_submit').click(this.updateSprint);
+        this.$('a#sprint_cancel').click(this.cancel);
+
+        this.disableFieldsIfComplete();
 
         this.$('form').validate({
           rules: {
@@ -149,30 +147,66 @@ App.Views.BacklogSettings = {
       if (!this.$('form').valid()) {
         view.$('#form-errors').addClass('form_errors').html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly.  Please correct the fields marked in red to continue.").hide().slideDown();
       } else {
-        this.model.set({
-          start_on: $.datepicker.formatDate('yy-mm-dd', this.$('#start-on').datepicker('getDate')),
-          duration_days: this.$('#duration-days').val(),
-          number_team_members: this.$('#number-team-members').val()
-        });
-        this.model.save(false, {
-          success: function() {
+        if (this.model.isComplete()) {
+          if (this.$('#sprint_status_completed').is(':checked')) {
+            new App.Views.Warning({ message: 'Nothing has changed so nothing has been updated'});
+          } else {
+            // set as incomplete
+            this.model.set({ completed: 'false' });
+            this.saveSprintFields();
+          }
+        } else {
+          this.model.set({
+            start_on: $.datepicker.formatDate('yy-mm-dd', this.$('#start-on').datepicker('getDate')),
+            duration_days: this.$('#duration-days').val(),
+            number_team_members: this.$('#number-team-members').val()
+          });
+
+          if (this.$('#sprint_status_completed').is(':checked')) {
+            this.saveSprintFields(function() {
+              // need to save and then mark as complete as cannot save fields when completed
+              view.model.set({ completed: 'true' });
+              view.saveSprintFields();
+            })
+          } else {
+            // just save the form changes
+            this.saveSprintFields();
+          }
+        }
+      }
+    },
+
+    // Save the fields (not the status) to the database and update the view accordingly
+    saveSprintFields: function(callbackOnSuccess) {
+      var view = this;
+
+      this.model.save(false, {
+        success: function() {
+          if (_.isFunction(callbackOnSuccess)) {
+            callbackOnSuccess();
+          } else {
             new App.Views.Notice({ message: 'Sprint number ' + view.model.get('iteration') + ' has been updated'});
             view.$('#form-errors').removeClass('form_errors');
             view.storeState(); // so dialog does not appear asking if we want to save changes as already saved
-          },
-          error: function(model, error) {
-            if (window.console) { console.log(JSON.stringify(error)); }
-            if (JSON.parse(error.responseText).message) {
-              view.$('#form-errors').addClass('form_errors').html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly:<br/>" +
-                JSON.parse(error.responseText).message).hide().slideDown();
-              var errorView = new App.Views.Warning({ message: 'Sprint was not updated.  Please address problems and try again'});
-            } else {
-              // dialog has since been closed, show an error in usual notice area
-              var errorView = new App.Views.Error({ message: 'An internal error occured and the sprint was not updated.  Please refresh your browser'});
-            }
+            view.disableFieldsIfComplete();
           }
-        });
-      }
+        },
+        error: function(model, error) {
+          if (window.console) { console.log(JSON.stringify(error)); }
+          if (JSON.parse(error.responseText).message) {
+            view.$('#form-errors').addClass('form_errors').html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly:<br/>" +
+              JSON.parse(error.responseText).message.replace('Validation failed: Completed at ', '')).hide().slideDown();
+            var errorView = new App.Views.Warning({ message: 'Sprint was not updated.  Please address problems and try again'});
+          } else {
+            // dialog has since been closed, show an error in usual notice area
+            var errorView = new App.Views.Error({ message: 'An internal error occured and the sprint was not updated.  Please refresh your browser'});
+          }
+        }
+      });
+    },
+
+    disableFieldsIfComplete: function() {
+      this.$('#number-team-members, #start-on, #duration-days').attr('disabled', this.model.isComplete());
     },
 
     cancel: function(event) {
