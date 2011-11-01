@@ -2,37 +2,37 @@
 
 App.Views.BacklogPresence = {
   Show: App.Views.BaseView.extend({
+    presenceServerUrl: 'https://easybacklog-async.herokuapp.com/',
+
     initialize: function(options) {
-      this.userId = options.userId;
+      this.userId = Math.floor(Math.random()*1000000000).toString(36);
       this.name = options.name;
-      // _.bindAll(this, 'activated');
     },
 
     render: function() {
       var that = this;
 
-      // start polling, but let things settle first
-      setTimeout(function() {
+      if (App.environment !== 'test') {
         that.startPolling();
-      }, 1500);
+        that.closeConnectionOnUnload();
+      }
 
       return (this);
     },
 
     startPolling: function() {
       var that = this;
-      if (!this.clientId) { this.clientId = Math.floor(Math.random()*1000000000).toString(36); }
       var _poll = function() {
         $.ajax({
-          url: 'https://easybacklog-async.herokuapp.com/poll',
-          data: { id: that.clientId, name: that.name, channel: that.model.get('id') },
+          url: that.presenceServerUrl + '/poll',
+          data: { id: that.userId, name: that.name, channel: that.model.get('id') },
           type: 'POST',
           dataType: 'json',
           crossDomain: true,
           success: function(response) {
             if (response) {
               if (response.length > 1) {
-                var people = _(response).reject(function(elem) { return elem.id === that.clientId; });
+                var people = _(response).reject(function(elem) { return elem.id === that.userId; });
                 $(that.el).html(JST['backlogs/presence']({ people: people }));
                 $(that.el).show();
               } else {
@@ -43,13 +43,37 @@ App.Views.BacklogPresence = {
             }
             _poll();
           },
-          error: function() {
-            // try again in 5 seconds
-            setTimeout(_poll, 5000);
+          error: function(jqXHR) {
+            if (jqXHR.status === 410) {
+              if (window.console) { console.log("Connection closed upon request"); }
+            } else {
+              // try again in 5 seconds
+              setTimeout(_poll, 5000);
+            }
           }
         });
       }
       _poll();
+    },
+
+    closeConnectionOnUnload: function() {
+      var that = this;
+      window.onbeforeunload = function() {
+        $.ajax({
+          url: that.presenceServerUrl + '/close',
+          data: { id: that.userId, channel: that.model.get('id') },
+          type: 'POST',
+          crossDomain: true,
+          async: false,
+          success: function(response) {
+            if (window.console) { console.log("Connection close request received"); }
+          },
+          error: function() {
+            if (window.console) { console.log("Connection close request failed"); }
+          }
+        });
+        return null;
+      }
     }
   })
 };
