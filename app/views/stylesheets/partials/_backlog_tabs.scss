@@ -113,6 +113,7 @@ section.showing-sprints {
         cursor: pointer;
         &:after {
           content: " ⇉";
+          display: inline;
           font-family: sans-serif;
         }
         &:before {
@@ -360,7 +361,7 @@ section.showing-sprints {
           border-width: 1px 0 1px 1px;
           @include border-radius(5px 0 0 5px);
           &:before {
-            display: block;
+            display: inline;
           }
           &:after {
             display: none;
