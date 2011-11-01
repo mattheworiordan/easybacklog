@@ -11,5 +11,9 @@ var Sprint = Backbone.Model.extend({
       this.unset('sprint_stories'); // clear from object as it will be sent back to the server adding to the payload
     }
     return (this._sprint_stories);
+  },
+
+  isComplete: function() {
+    return this.get('completed?');
   }
 });

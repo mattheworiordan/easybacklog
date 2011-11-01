@@ -173,6 +173,9 @@ section.content {
     &.button {
       @include button-style;
     }
+    &.greyed {
+      @include grey-button-override-style;
+    }
   }
   input[type=submit] {
     @include button-style;

@@ -6,7 +6,9 @@ App.Views.Sprints = {
     persistOrderActions: 0, // stop duplicate order actions from running, so keep track of queue and only execute when queue is empty
 
     events: {
-      "click .stories-divider .change-size": "toggleUnassignedStoriesSize"
+      "click .stories-divider .change-size": "toggleUnassignedStoriesSize",
+      "click a.mark-sprint-as-incomplete": "markSprintAsIncomplete",
+      "click a.mark-sprint-as-complete": "markSprintAsComplete"
     },
 
     initialize: function(options) {
@@ -284,6 +286,61 @@ App.Views.Sprints = {
 
     cleanUp: function() {
       $(window).unbind('.sprints');
+    },
+
+    markSprintAsComplete: function(event) {
+      var that = this;
+      event.preventDefault();
+
+      var incompleteStories = this.model.SprintStories().reject(function(story) { return story.Status().isDone(); }),
+          previousIncompleteSprints = _(this.model.Backlog().Sprints().select(function(sprint) {
+            return (sprint.get('iteration') < that.model.get('iteration')) && !sprint.isComplete();
+          })).sortBy(function(sprint) { return sprint.get('iteration'); });
+
+      if (incompleteStories.length) {
+        new App.Views.Warning({ message: 'All stories must be marked as Done before marking this sprint as complete' });
+      } else if (previousIncompleteSprints.length) {
+        new App.Views.Warning({ message: 'Sprint ' + _(previousIncompleteSprints).last().get('iteration') + ' is not complete. Please mark as complete first' });
+      } else {
+        this.model.set({ 'completed': 'true' });
+        this.updatedSprintCompletedStatus();
+      }
+    },
+
+    markSprintAsIncomplete: function(event) {
+      var that = this;
+      event.preventDefault();
+
+      var successiveCompleteSprints = _(this.model.Backlog().Sprints().select(function(sprint) {
+            return (sprint.get('iteration') > that.model.get('iteration')) && sprint.isComplete();
+          })).sortBy(function(sprint) { return sprint.get('iteration'); });
+
+      if (successiveCompleteSprints.length) {
+        new App.Views.Warning({ message: 'Sprint ' + _(successiveCompleteSprints).first().get('iteration') + ' is complete. Please mark as incomplete first' });
+      } else {
+        this.model.set({ 'completed': 'false' });
+        this.updatedSprintCompletedStatus();
+      }
+    },
+
+    updatedSprintCompletedStatus: function() {
+      var that = this;
+
+      this.model.save(false, {
+        success: function(model, response) {
+          var completeView = $('<div>' + JST['sprints/show']({ model: that.model }) + '</div>');
+          that.$('h2').replaceWith(completeView.find('h2'));
+          that.$('.complete-status').replaceWith(completeView.find('.complete-status'));
+          new App.Views.Notice({ message: 'Sprint status updated'});
+        },
+        error: function(model, response) {
+          var errorMessage = 'Oops, we\'ve been unable to update the sprint, please try again';
+          try {
+            errorMessage = $.parseJSON(response.responseText).message;
+          } catch (e) { if (window.console) { console.log(e); } }
+          var errorView = new App.Views.Error({ message: errorMessage});
+        }
+      });
     }
   }),
 

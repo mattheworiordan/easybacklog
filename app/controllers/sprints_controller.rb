@@ -28,11 +28,24 @@ class SprintsController < ApplicationController
 
   def update
     @sprint = @backlog.sprints.find(params[:id])
-    @sprint.update_attributes params
-    if @sprint.save
-      render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+
+    if (%w(true false).include? params[:completed])
+      begin
+      # special params set by front end to mark as compelted or incomplete which can throw an erro
+        @sprint.mark_as_complete if params[:completed] == 'true'
+        @sprint.mark_as_incomplete if params[:completed] == 'false'
+      rescue Exception => e
+        send_json_error e.message
+      else
+        render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+      end
     else
-      send_json_error @sprint.errors.full_messages.join(', ')
+      @sprint.update_attributes params
+      if @sprint.save
+        render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+      else
+        send_json_error @sprint.errors.full_messages.join(', ')
+      end
     end
   end
 

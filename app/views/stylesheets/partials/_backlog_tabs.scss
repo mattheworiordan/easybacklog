@@ -69,6 +69,9 @@ section.showing-sprints {
         color: red;
       }
     }
+    .complete-status {
+      margin-top: 15px;
+    }
   }
   .stories-container .cards {
     min-height: 100px; /* for increased drop target when empty */

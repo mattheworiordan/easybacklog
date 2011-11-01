@@ -1,9 +1,21 @@
-<h2 class="divider">Sprint <%= model.get('iteration') %> stories</h2>
+<h2 class="divider">
+  Sprint <%= model.get('iteration') %> stories
+  <% if (model.isComplete()) { %>
+    (completed)
+  <% } %>
+</h2>
 
 <div class="all-stories">
   <div class="stories-container">
     <div class="cards story-droppable"></div>
     <div class="totals"></div>
+    <div class="complete-status">
+      <% if (model.isComplete()) { %>
+        <a href="#incomplete" class="mark-sprint-as-incomplete button greyed">Mark sprint as incomplete</a>
+      <% } else { %>
+        <a href="#complete" class="mark-sprint-as-complete button">Mark sprint as complete</a>
+      <% } %>
+    </div>
   </div>
   <div class="unassigned-stories-heading">Unassigned stories</div>
   <div class="stories-divider">
