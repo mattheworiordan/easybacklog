@@ -407,24 +407,30 @@ if(App.environment==="test"){document.location.href=url
 }},Cancel:function(){$(this).dialog("close")
 }}})
 }})};
-App.Views.BacklogPresence={Show:App.Views.BaseView.extend({initialize:function(options){this.userId=options.userId;
+App.Views.BacklogPresence={Show:App.Views.BaseView.extend({presenceServerUrl:"https://easybacklog-async.herokuapp.com/",initialize:function(options){this.userId=Math.floor(Math.random()*1000000000).toString(36);
 this.name=options.name
 },render:function(){var that=this;
-setTimeout(function(){that.startPolling()
-},1500);
-return(this)
+if(App.environment!=="test"){that.startPolling();
+that.closeConnectionOnUnload()
+}return(this)
 },startPolling:function(){var that=this;
-if(!this.clientId){this.clientId=Math.floor(Math.random()*1000000000).toString(36)
-}var _poll=function(){$.ajax({url:"https://easybacklog-async.herokuapp.com/poll",data:{id:that.clientId,name:that.name,channel:that.model.get("id")},type:"POST",dataType:"json",crossDomain:true,success:function(response){if(response){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.clientId
+var _poll=function(){$.ajax({url:that.presenceServerUrl+"/poll",data:{id:that.userId,name:that.name,channel:that.model.get("id")},type:"POST",dataType:"json",crossDomain:true,success:function(response){if(response){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.userId
 });
 $(that.el).html(JST["backlogs/presence"]({people:people}));
 $(that.el).show()
 }else{if($(that.el).is(":visible")){$(that.el).hide()
 }}}_poll()
-},error:function(){setTimeout(_poll,5000)
-}})
+},error:function(jqXHR){if(jqXHR.status===410){if(window.console){console.log("Connection closed upon request")
+}}else{setTimeout(_poll,5000)
+}}})
 };
 _poll()
+},closeConnectionOnUnload:function(){var that=this;
+window.onbeforeunload=function(){$.ajax({url:that.presenceServerUrl+"/close",data:{id:that.userId,channel:that.model.get("id")},type:"POST",crossDomain:true,async:false,success:function(response){if(window.console){console.log("Connection close request received")
+}},error:function(){if(window.console){console.log("Connection close request failed")
+}}});
+return null
+}
 }})};
 App.Views.BacklogStats={Show:App.Views.BaseView.extend({events:{},initialize:function(){App.Views.BaseView.prototype.initialize.call(this)
 },render:function(){$(this.el).html(JST["backlogs/sprint-progress-stats"]({model:this.model}));
