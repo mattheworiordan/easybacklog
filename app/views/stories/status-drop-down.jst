@@ -1,0 +1,9 @@
+<div id="sprint-story-status-dropdown">
+  <ul>
+    <% App.Collections.SprintStoryStatuses.each(function(status) { %>
+      <% if (status.get('code') !== model.SprintStory().Status().get('code')) { %>
+        <li id="status-id-<%= status.get('id')%>" class="status-code-<%= status.get('code')%>"><%= status.get('status')%></li>
+      <% } %>
+    <% }); %>
+  </ul>
+</div>

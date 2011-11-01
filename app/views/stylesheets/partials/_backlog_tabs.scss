@@ -45,7 +45,7 @@ section.showing-sprints {
       border-width: 1px 0 1px 0;
       overflow: hidden;
       &.notice {
-        padding: 0 20px 0 20px;
+        padding: 0 20px 50px 20px;
         text-align: center;
         color: #666;
         border: none;
@@ -79,6 +79,10 @@ section.showing-sprints {
   .unassigned-stories-container {
     min-height: 100px; /* for increased drop target when empty */
     padding-bottom: 15px;
+    .notice {
+      text-align: center;
+      color: #555;
+    }
   }
   .stories-container {
     width: 70%;

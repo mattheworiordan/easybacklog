@@ -52,35 +52,79 @@ App.Views.Helpers = {
     );
   },
 
-  statusChangeClick: function() {
-    var dropDownOptions = App.Collections.SprintStoryStatuses.sortBy(function(s) { return s.get('position'); }).map(function(status) {
-      return ('<option value="' + status.get('id') + '">' + htmlEncode(status.get('status')) + '</option>');
-    }).join(''),
-        dropDownNode = $(this.el).find('.status .drop-down'),
-        className = $(this.el).find('.status .tab').attr('class').match(/(status-code-\w+)/)[1];
+  statusChangeClick: function(event) {
+    var that = this,
+        dropDown = $(JST['stories/status-drop-down']({ model: this.model }));
 
-    $(this.el).find('.status .tab').hide();
-    dropDownNode.find('select').empty().append($(dropDownOptions)).attr('class', className);
-    dropDownNode.find('select option[value=' + this.model.SprintStory().get('sprint_story_status_id') + ']').attr("selected", "selected");
-    dropDownNode.show().focus();
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (this.model.SprintStory().Sprint().isComplete()) {
+      new App.Views.Warning({ message: 'You cannot change the status of this story as it\'s assigned to a completed sprint'});
+    } else {
+      $('body').find('#sprint-story-status-dropdown').remove();
+      $('body').append(dropDown);
+
+      // manually add hover state as had problems with CSS hover when elems moved away from the cursor
+      dropDown.find('li').hover(function() {
+        $(this).addClass('hover');
+      }, function() {
+        $(this).removeClass('hover');
+      });
+
+      // make tabs similar width so they don't look odd when smaller than the selected tab
+      if (dropDown.width() < $(this.el).find('.status .tab').outerWidth()) {
+        dropDown.css('width', $(this.el).find('.status .tab').outerWidth() + 'px')
+      }
+
+      dropDown.css('position','absolute').position({
+        of: $(this.el).find('.status .tab'),
+        my: 'center top',
+        at: 'center bottom',
+        offset: "0 0"
+      });
+
+      $('html').bind('click.status-drop-down', function() {
+        $('body').find('#sprint-story-status-dropdown').remove();
+        $('html').unbind('click.status-drop-down');
+      });
+
+      dropDown.find('li').click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        var id = $(this).attr('id').replace('status-id-',''),
+            code = $(this).attr('class').match(/status-code-(\w+)/)[1],
+            name = $(this).text();
+
+        $('body').find('#sprint-story-status-dropdown').remove();
+        $('html').unbind('click.status-drop-down');
+
+        App.Views.Helpers.statusDropDownChanged.call(that, id, code, name);
+      });
+    }
   },
 
-  statusDropDownChanged: function() {
-    var selected = $(this.el).find('.status .drop-down select option:selected'),
-        code = App.Collections.SprintStoryStatuses.get(selected.val()).get('code'),
-        that = this;
+  statusDropDownChanged: function(id, code, name) {
+    var that = this;
 
-    $(this.el).find('.status .tab').attr('class', 'tab status-code-' + code).find('span').text(selected.text());
-    this.model.SprintStory().set({ sprint_story_status_id: selected.val() });
+    // update the status tab
+    $(this.el).find('.status .tab').attr('class', 'tab status-code-' + code).removeClass('hover').find('span').text(name);
+    // now update whether the story is locked for moving or not
+    if (code === this.model.SprintStory().Status().DoneCode) {
+      $(this.el).addClass('locked');
+    } else {
+      $(this.el).removeClass('locked');
+    }
+
+    this.model.SprintStory().set({ sprint_story_status_id: id });
     this.model.SprintStory().save(false, {
       success: function(model) {
-        // update the stats as completed count may change
-        // If parentView exists, let it handle this,
-        // else update the sprint model as no realtime update is needed
+        // Store updated statistics in sprint model
+        // If parentView exists, let it handle updating the view
+        that.model.SprintStory().Sprint().set(model.get('sprint_statistics'));
         if (that.parentView) {
           that.parentView.updateStatistics(model.get('sprint_statistics'));
-        } else {
-          that.model.SprintStory().Sprint().set(model.get('sprint_statistics'));
         }
       },
       error: function(model, response) {
@@ -90,12 +134,6 @@ App.Views.Helpers = {
         } catch (e) { if (window.console) { console.log(e); } }
         var errorView = new App.Views.Error({ message: 'Oops, ' + errorMessage + '.  Please refresh your browser' });
       }
-    })
-    this.statusDropDownLostFocus();
-  },
-
-  statusDropDownLostFocus: function() {
-    $(this.el).find('.status .tab').show();
-    $(this.el).find('.status .drop-down').hide();
+    });
   }
 }

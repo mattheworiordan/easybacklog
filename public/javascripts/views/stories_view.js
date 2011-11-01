@@ -142,9 +142,7 @@ App.Views.Stories = {
     events: {
       "click .delete-story>a": "remove",
       "click .duplicate-story>a": "duplicate",
-      "click .status .tab": 'statusChangeClick',
-      "blur .status .drop-down select": 'statusDropDownLostFocus',
-      "change .status .drop-down select": 'statusDropDownChanged',
+      "click .status .tab": 'statusChangeClick'
     },
 
     initialize: function() {
@@ -228,17 +226,8 @@ App.Views.Stories = {
       App.Views.Helpers.setStatusHover.apply(this, arguments);
     },
 
-    statusChangeClick: function() {
+    statusChangeClick: function(event) {
       App.Views.Helpers.statusChangeClick.apply(this, arguments);
-    },
-
-    statusDropDownLostFocus: function() {
-      App.Views.Helpers.statusDropDownLostFocus.apply(this, arguments);
-    },
-
-    statusDropDownChanged: function() {
-      App.Views.Helpers.statusDropDownChanged.apply(this, arguments);
-      this.modelDataHasChanged(true); // check to see if we need to update the UI
     },
 
     makeFieldsEditable: function() {

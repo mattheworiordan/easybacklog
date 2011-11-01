@@ -21,5 +21,11 @@
   <div class="stories-divider">
     <div class="handle"><div class="change-size">expand</div></div>
   </div>
-  <div class="unassigned-stories-container story-droppable"></div>
+  <div class="unassigned-stories-container story-droppable">
+    <% if (model.isComplete()) { %>
+      <div class="notice locked">
+        You cannot move any stories into a completed sprint
+      </div>
+    <% } %>
+  </div>
 </div>

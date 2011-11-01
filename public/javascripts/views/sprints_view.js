@@ -54,6 +54,11 @@ App.Views.Sprints = {
         });
       });
 
+      // if sprint is complete, all unassigned stories are locked
+      if (this.model.isComplete()) {
+        this.$('.unassigned-stories-container .story-card').addClass('locked');
+      }
+
       // allow drag & drop of stories
       this.$('.stories-container .cards, .unassigned-stories-container').sortable({
         connectWith: ".story-droppable",
@@ -331,6 +336,14 @@ App.Views.Sprints = {
           var completeView = $('<div>' + JST['sprints/show']({ model: that.model }) + '</div>');
           that.$('h2').replaceWith(completeView.find('h2'));
           that.$('.complete-status').replaceWith(completeView.find('.complete-status'));
+          // show notice about stories being locked if appropriate, and lock stories
+          that.$('.unassigned-stories-container .notice').remove();
+          if (model.isComplete()) {
+            that.$('.unassigned-stories-container').prepend(completeView.find('.unassigned-stories-container .notice'));
+            that.$('.unassigned-stories-container .story-card').addClass('locked');
+          } else {
+            that.$('.unassigned-stories-container .story-card').removeClass('locked');
+          }
           new App.Views.Notice({ message: 'Sprint status updated'});
         },
         error: function(model, response) {
@@ -379,9 +392,7 @@ App.Views.Sprints = {
     events: {
       "click .more .tab": "toggleMore",
       "click .move": 'moveStory',
-      "click .status .tab": 'statusChangeClick',
-      "blur .status .drop-down select": 'statusDropDownLostFocus',
-      "change .status .drop-down select": 'statusDropDownChanged',
+      "click .status .tab": 'statusChangeClick'
     },
 
     initialize: function(options) {
@@ -444,15 +455,6 @@ App.Views.Sprints = {
 
     statusChangeClick: function() {
       App.Views.Helpers.statusChangeClick.apply(this, arguments);
-    },
-
-    statusDropDownChanged: function() {
-      App.Views.Helpers.statusDropDownChanged.apply(this, arguments);
-      this.setEditableState(); // model isEditable state is updated synchronously so this call works
-    },
-
-    statusDropDownLostFocus: function() {
-      App.Views.Helpers.statusDropDownLostFocus.apply(this, arguments);
     },
 
     setEditableState: function() {

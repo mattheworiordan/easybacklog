@@ -21,7 +21,6 @@
     <% if (model.SprintStory()) { %>
       <div class="status">
         <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><span><%= model.SprintStory().Status().get('status') %></span></div>
-        <div class="drop-down"><select id="sprint-story-status"></select></div>
       </div>
     <% } %>
     <% if (model.SprintStory()) { %>

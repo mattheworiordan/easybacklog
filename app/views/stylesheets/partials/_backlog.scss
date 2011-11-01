@@ -683,17 +683,6 @@ ul.themes {
               padding: 5px 0 0 5px;
               position: relative;
               min-height: 16px;
-              .drop-down {
-                display: none;
-                position: absolute;
-                select {
-                  font-size: 10px;
-                  height: 20px;
-                  margin: 0;
-                  padding: 0;
-                  @include status-code-colors(false);
-                }
-              }
               .tab {
                 cursor: pointer;
                 background-color: lighten($title-area-color, 15%);
@@ -792,11 +781,39 @@ ul.themes {
     }
   }
 }
+
 /* when viewing a snapshot don't make these fields look editable */
 #backlog-container.not-editable ul.themes {
   li.theme .theme-data .code .data:hover {
     background:transparent;
     color: inherit;
+  }
+}
+
+/* status drop down for stories */
+#sprint-story-status-dropdown {
+  z-index: 30;
+  position: absolute;
+  font-size: 12px;
+  font-family: sans-serif;
+  background-color: #CCC;
+  border: 3px solid #CCC;
+  border-width: 0 5px 5px 5px;
+  @include border-radius(10px);
+  ul {
+    list-style: none;
+    margin: 0;
+  }
+  li {
+    cursor: pointer;
+    text-align: center;
+    margin: 0;
+    padding: 0px 8px;
+    @include status-code-colors(yes);
+    @include border-radius(10px);
+    &.status-code-D {
+      background-image: none;
+    }
   }
 }
 
