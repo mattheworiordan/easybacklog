@@ -10,7 +10,8 @@ class Sprint < ActiveRecord::Base
 
   attr_accessible :number_team_members, :duration_days, :start_on, :completed_at
 
-  before_validation :restrict_iteration_changes, :assign_iteration, :check_date_overlaps_and_successive, :restrict_changes_if_completed, :ensure_all_stories_are_done
+  before_validation :restrict_iteration_changes, :assign_iteration, :check_date_overlaps_and_successive, :ensure_all_stories_are_done
+  before_validation :restrict_changes_if_completed, :manage_completeness_amongst_other_sprints
   before_destroy :ensure_sprint_allows_delete
 
   def end_on
@@ -134,5 +135,22 @@ class Sprint < ActiveRecord::Base
     # do not allow stories to be added or removed to this sprint if this sprint is completed
     def check_editable_before_stories_changed(story)
       raise ActiveRecord::RecordNotSaved, 'Stories cannot be added/removed from this sprint as the sprint is complete' unless editable?
+    end
+
+    def manage_completeness_amongst_other_sprints
+      if completed_at_changed?
+        if completed_at.present? and iteration > 1
+          # check that previous sprint is complete as this one has been marked as completed
+          unless backlog.sprints.find_by_iteration(iteration-1).completed?
+            errors.add :completed_at, "Sprint cannot be marked as complete unless sprint #{iteration-1} is marked as complete"
+          end
+        elsif completed_at.blank?
+          # check that the successive sprint is not marked as completed as we can't mark this as incomplete and leave successive sprint as complete
+          next_sprint_complete = backlog.sprints.find_by_iteration(iteration+1).completed? rescue false
+          if next_sprint_complete
+            errors.add :completed_at, "Sprint cannot be marked as incomplete unless sprint #{iteration+1} is marked as incomplete"
+          end
+        end
+      end
     end
 end

@@ -171,4 +171,33 @@ describe Sprint do
       :total_allocated_points => 5 + 1 + 2 + Math.sqrt(2**2 + 1**2)
     }
   end
+
+  context 'when there are multiple completed sprints' do
+    before do
+      @sprint_first = Factory.create(:sprint, :completed_at => Time.now)
+      @sprint_second = Factory.create(:sprint, :backlog => @sprint_first.backlog, :completed_at => Time.now)
+      @sprint_third = Factory.create(:sprint, :backlog => @sprint_first.backlog, :completed_at => Time.now)
+    end
+
+    it 'should not allow you to mark an earlier sprint as incomplete' do
+      expect { @sprint_first.mark_as_incomplete }.to raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as incomplete unless sprint 2 is marked as incomplete/
+      expect { @sprint_second.mark_as_incomplete }.to raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as incomplete unless sprint 3 is marked as incomplete/
+      expect { @sprint_third.mark_as_incomplete }.to_not raise_error
+    end
+  end
+
+  context 'when there are multiple incomplete sprints' do
+    before do
+      @sprint_first = Factory.create(:sprint)
+      @sprint_second = Factory.create(:sprint, :backlog => @sprint_first.backlog)
+      @sprint_third = Factory.create(:sprint, :backlog => @sprint_first.backlog)
+    end
+
+    it 'should not allow you to mark an earlier sprint as complete' do
+      expect { @sprint_second.mark_as_complete }.to raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete unless sprint 1 is marked as complete/
+      expect { @sprint_third.mark_as_complete }.to raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete unless sprint 2 is marked as complete/
+      expect { @sprint_first.mark_as_complete }.to_not raise_error
+    end
+  end
+
 end

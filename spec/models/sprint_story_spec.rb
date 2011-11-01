@@ -25,29 +25,35 @@ describe SprintStory do
     expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /Sprint score 90 when assigned is not editable/
   end
 
-  it 'should not be allowed to be reassigned to from a complete sprint or to a complete sprint' do
-    sprint2 = Factory.create(:sprint, :backlog_id => @story.theme.backlog.id, :completed_at => Time.now)
+  it 'should not be allowed to be reassigned to a complete sprint' do
+    sprint1 = @sprint
+    sprint1.stories.delete @story
+    sprint2 = Factory.create(:sprint, :backlog_id => @story.theme.backlog.id)
+    sprint2.stories << @story
+    sprint1.mark_as_complete
 
-    # cannot assign to sprint2 as it is complete
+    # cannot assign to sprint1 as it is complete
+    @story.sprint_story.sprint = sprint1
+    expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
+
+    sprint1.mark_as_incomplete
+    @story.reload
+    @story.sprint_story.sprint = sprint1
+    expect { @story.sprint_story.save! }.should_not raise_error
+  end
+
+  it 'should not be allowed to be reassigned from a complete sprint' do
+    debugger
+    sprint1 = @sprint
+    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id # must mark as done to assign so that sprint can be marked as completed
+    sprint1.mark_as_complete
+    sprint2 = Factory.create(:sprint, :backlog_id => @story.theme.backlog.id)
+
+    # cannot assign to sprint2 as it's assigned to sprint1 which is complete
     @story.sprint_story.sprint = sprint2
     expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
 
-    sprint2.mark_as_incomplete
-    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id # must mark as done to assign so that @sprint can be marked as completed
-    @story.sprint_story.sprint = @sprint
-    @story.sprint_story.save!
-    @sprint.reload
-    @sprint.mark_as_complete
-
-    # cannot assign to sprint2 as sprint (current assignment) is complete
-    @story.reload
-    @story.sprint_story.sprint = sprint2
-    expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
-
-    # now mark @sprint as complete and just assign to sprint 2, it should work
-    @sprint.mark_as_incomplete
-    @story.reload
-    @story.sprint_story.sprint = sprint2
+    sprint1.mark_as_incomplete
     expect { @story.sprint_story.save! }.should_not raise_error
   end
 
