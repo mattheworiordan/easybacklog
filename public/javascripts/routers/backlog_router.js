@@ -56,7 +56,8 @@ App.Routers.Backlog = Backbone.Router.extend({
     this.cleanUpOldView();
 
     if (!model) {
-      var err = new App.Views.Error({ message: 'Internal error, could not display sprint correctly.  Please refresh your browser' });
+      var err = new App.Views.Warning({ message: 'Sprint ' + iteration + ' was not found' });
+      this.navigate('Backlog', true);
     } else {
       this.oldView = new App.Views.Sprints.Show({ model: model, el: this.replaceWithNew('#sprints-container'), sprintTabsView: this.sprintTabsView });
       this.showContainer('#sprints-container');
