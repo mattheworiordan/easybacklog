@@ -1,3 +1,4 @@
+require 'shared_helper'
 # require 'spork'
 
 # Spork.prefork do

@@ -200,4 +200,50 @@ describe Sprint do
     end
   end
 
+  it 'should ensure when a sprint is destroyed all related snapshots are deleted' do
+    backlog = Factory.create(:backlog, :name => 'Parent')
+    sprint = Factory.create(:sprint, :backlog => backlog)
+    sprint.create_snapshot_if_missing
+    sprint.reload
+
+    sprint.snapshot.should be_present
+    sprint_snapshot_id = sprint.snapshot.id
+
+    sprint.destroy
+
+    # check that snapshot has been deleted with the sprint
+    Backlog.where("id in (#{sprint_snapshot_id})").count.should eql(0)
+  end
+
+  it 'should create a snapshot when marked as complete' do
+    # if we've not yet created a snapshot for this sprint because date is in the future, create a snapshot immediately
+    # so we get the best possible picture of the sprint at the time
+    sprint = Factory.create(:sprint)
+    sprint.snapshot.should be_blank
+
+    sprint.mark_as_complete
+    sprint.reload
+    sprint.snapshot.should be_present
+  end
+
+  it 'should delete the snapshot when start date is set in the future' do
+    # if a sprint start date is shifted into the future, then if we have a snapshot
+    # for this sprint it will be incorrect as it's not a snapshat when the sprint started
+    sprint = Factory.create(:sprint)
+    sprint.create_snapshot_if_missing
+    sprint.reload
+    sprint.snapshot.should be_present
+
+    sprint.update_attributes :start_on => Time.now + 2.days
+    sprint.reload
+    sprint.snapshot.should_not be_present
+  end
+
+  it 'should return a list of sprints needing snapshots' do
+    eligible_sprint = Factory.create(:sprint, :start_on => Time.now - 1.day)
+    ineligible_sprint = Factory.create(:sprint, :backlog => eligible_sprint.backlog, :start_on => Time.now + 1.day)
+
+    Sprint.in_need_of_snapshot.all.should include eligible_sprint
+    Sprint.in_need_of_snapshot.all.should_not include ineligible_sprint
+  end
 end

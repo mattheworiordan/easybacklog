@@ -13,6 +13,12 @@ class Sprint < ActiveRecord::Base
   before_validation :restrict_iteration_changes, :assign_iteration, :check_date_overlaps_and_successive, :ensure_all_stories_are_done
   before_validation :restrict_changes_if_completed, :manage_completeness_amongst_other_sprints
   before_destroy :ensure_sprint_allows_delete
+  after_save :manage_sprint_snapshot
+
+  scope :in_need_of_snapshot, includes([:backlog]).
+    where('sprints.id not in (select snapshot_for_sprint_id from backlogs ' +
+      'where snapshot_for_sprint_id IS NOT NULL and archived = ? and deleted = ?)', false, false).
+    where('sprints.start_on < ?', Time.now)
 
   def end_on
     start_on + duration_days.days - 1
@@ -57,6 +63,29 @@ class Sprint < ActiveRecord::Base
 
   def total_completed_points
     ScoreCalculator.total_points stories.select { |s| s.done? }
+  end
+
+  # snapshot is a non-editable copy of a backlog in time
+  # we create one when a sprint is started so we can keep track of what the backlog looked like at that point
+  def create_snapshot_if_missing
+    if snapshot.blank?
+      new_backlog = backlog.account.backlogs.new(backlog.attributes.merge({ :name => "Sprint #{iteration}", :created_at => Time.now, :updated_at => Time.now }))
+      # these 2 attributes are protected
+      new_backlog.author = backlog.author
+      new_backlog.last_modified_user = backlog.last_modified_user
+      new_backlog.save!
+
+      # copy the children
+      backlog.copy_children_to_backlog new_backlog
+
+      # now lock the record and assign the snapshot master to self
+      new_backlog.snapshot_for_sprint = self
+      new_backlog.save!
+
+      new_backlog
+    else
+      snapshot
+    end
   end
 
   private
@@ -139,7 +168,7 @@ class Sprint < ActiveRecord::Base
 
     def manage_completeness_amongst_other_sprints
       if completed_at_changed?
-        if completed_at.present? and iteration > 1
+        if completed_at.present? && iteration > 1
           # check that previous sprint is complete as this one has been marked as completed
           unless backlog.sprints.find_by_iteration(iteration-1).completed?
             errors.add :completed_at, "Sprint cannot be marked as complete unless sprint #{iteration-1} is marked as complete"
@@ -151,6 +180,16 @@ class Sprint < ActiveRecord::Base
             errors.add :completed_at, "Sprint cannot be marked as incomplete unless sprint #{iteration+1} is marked as incomplete"
           end
         end
+      end
+    end
+
+    # create a snapshot if this sprint is marked as complete, regardless of start date
+    # remove snapshot if this sprint is not complete and start date is set in the future
+    def manage_sprint_snapshot
+      if completed_at.present?
+        create_snapshot_if_missing
+      elsif snapshot.present? && start_on.to_time > Time.now
+        snapshot.delete
       end
     end
 end

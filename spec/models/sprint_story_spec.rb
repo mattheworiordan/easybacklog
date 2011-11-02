@@ -43,7 +43,6 @@ describe SprintStory do
   end
 
   it 'should not be allowed to be reassigned from a complete sprint' do
-    debugger
     sprint1 = @sprint
     @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id # must mark as done to assign so that sprint can be marked as completed
     sprint1.mark_as_complete

@@ -87,7 +87,7 @@ class Backlog < ActiveRecord::Base
   # editable if this not a snapshot i.e. a snapshot master exists
   #  or if deleted or archived
   def editable?
-    self.snapshot_master.blank? && !self.archived? && !self.deleted?
+    snapshot_master.blank? && snapshot_for_sprint.blank? && !self.archived? && !self.deleted?
   end
   alias_method :is_editable, :editable?
 
@@ -133,11 +133,15 @@ class Backlog < ActiveRecord::Base
     !company.blank?
   end
 
+  def sprint_snapshots
+    sprints.sort_by(&:iteration).reverse.map(&:snapshot).reject { |s| s.blank? }
+  end
+
   private
     # only allow save on working copy i.e. not snapshot
-    #  but do allow editing if snapshot_master, archived or deleted has changed
+    #  but do allow editing if snapshot_master, snapshot_for_sprint, archived or deleted has changed
     #  snapshot_master is needed so that the snapshot can be created without an error blocking editing being thrown
     def check_can_modify
-      editable? || self.snapshot_master_id_changed? || self.archived_changed? || self.deleted_changed?
+      editable? || snapshot_master_id_changed? || archived_changed? || deleted_changed? || snapshot_for_sprint_id_changed?
     end
 end

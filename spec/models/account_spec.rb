@@ -26,4 +26,21 @@ describe Account do
     new_company.should == same_company
     Company.all.count.should == 1
   end
+
+  it 'should return a list of backlogs, not snapshots or sprint snapshots' do
+    company = Factory.create(:company)
+    account = company.account
+    backlog = Factory.create(:backlog, :company => company, :account => account)
+    sprint = Factory.create(:sprint, :backlog => backlog)
+
+    sprint.backlog.create_snapshot 'Test'
+    sprint.create_snapshot
+
+    account.reload
+    company.reload
+
+    # sprint snapshots and backlog snapshots should not be returned in the associations
+    account.backlogs.count.should == 1
+    company.backlogs.count.should == 1
+  end
 end

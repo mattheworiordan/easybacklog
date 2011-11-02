@@ -3,18 +3,6 @@
 require 'spec_helper'
 
 describe Backlog do
-  def confirm_duplicates(backlog1, backlog2)
-    backlog1.object_id.should_not eql(backlog2.object_id) # make sure we're not comparing two identical objects
-    backlog1.themes.count.should be > 0
-    backlog1.themes.map { |t| [t.name, t.code] }.first.should eql(backlog2.themes.map { |t| [t.name, t.code] }.first)
-
-    new_story, story = backlog1.themes.first.stories.first, backlog2.themes.first.stories.first
-    [new_story.unique_id, new_story.as_a, new_story.score_90].should eql([story.unique_id, story.as_a, story.score_90])
-
-    new_acceptance, acceptance = new_story.acceptance_criteria.first, story.acceptance_criteria.first
-    [new_acceptance.criterion].should eql([acceptance.criterion])
-  end
-
   it 'should duplicate backlog along with all related records' do
     # get a backlog set up with at least one story
     acceptance_criterion = Factory.create(:acceptance_criterion)
@@ -27,7 +15,7 @@ describe Backlog do
     @backlog.reload
     @new_backlog.reload
 
-    confirm_duplicates @new_backlog, @backlog
+    confirm_duplicate_backlogs @new_backlog, @backlog
   end
 
   it 'should ensure days and costs are accurate based on the themes' do
@@ -107,11 +95,11 @@ describe Backlog do
     # create two snapshots in the future and check they are proper duplicates
     Timecop.freeze(Time.now + 1.day) do
       @old_snapshot = @backlog.create_snapshot('First snapshot')
-      confirm_duplicates @old_snapshot, @backlog.reload
+      confirm_duplicate_backlogs @old_snapshot, @backlog.reload
     end
     Timecop.freeze(Time.now + 2.day) do
       @newer_snapshot = @backlog.create_snapshot('Second snapshot')
-      confirm_duplicates @newer_snapshot, @backlog.reload
+      confirm_duplicate_backlogs @newer_snapshot, @backlog.reload
     end
 
     # check that backlogs account scope is working
@@ -132,14 +120,7 @@ describe Backlog do
 
     # check that snapshots are not editable
     @newer_snapshot.reload
-    expect { @newer_snapshot.themes.first.stories.first.acceptance_criteria.first.criterion = 'Changed'; @newer_snapshot.save! }.to raise_error
-    expect { @newer_snapshot.themes.first.stories.first.acceptance_criteria.first.destroy }.to raise_error
-    expect { @newer_snapshot.themes.first.stories.first.as_a = 'Changed'; @newer_snapshot.save! }.to raise_error
-    expect { @newer_snapshot.themes.first.stories.first.destroy }.to raise_error
-    expect { @newer_snapshot.themes.first.name = 'Changed'; @newer_snapshot.save! }.to raise_error
-    expect { @newer_snapshot.themes.first.destroy }.to raise_error
-    @newer_snapshot.themes.reload.count.should eql(1)
-    expect { @newer_snapshot.name = 'Changed'; @newer_snapshot.save! }.to raise_error
+    assert_backlog_not_editable @newer_snapshot
 
     # check that both snapshots still reference the original correctly
     @old_snapshot.snapshot_master.should eql(@backlog)
@@ -268,5 +249,26 @@ describe Backlog do
     criteria[3].should be_new
     criteria[3].target.should eql(criterion_top) # there are 2 new criterion, index 3 & 4, but criterion_new was moved to the top
     criteria[4].target.should eql(criterion_bottom) # there are 2 new criterion, index 3 & 4, criterion should be at the bottom as criterion_new has moved up
+  end
+
+  it 'should not be editable if a sprint backlog' do
+    criterion = Factory.create(:acceptance_criterion)
+    backlog = criterion.story.theme.backlog
+    sprint = Factory.create(:sprint, :backlog => backlog)
+    sprint_snapshot = sprint.create_snapshot_if_missing
+
+    assert_backlog_not_editable sprint_snapshot
+  end
+
+  it 'should return a list of sprint snapshots in descending order' do
+    backlog = Factory.create(:backlog)
+    sprints = (1..3).map { |d| Factory.create(:sprint, :backlog => backlog) }
+    sprints.first.create_snapshot_if_missing
+    sprints.second.create_snapshot_if_missing
+    backlog.reload
+
+    # all snapshots should be returned in decsending order, sprint 3 should not be returned as no snapshot created
+    backlog.sprint_snapshots.first.name.should == 'Sprint 2'
+    backlog.sprint_snapshots.second.name.should == 'Sprint 1'
   end
 end
