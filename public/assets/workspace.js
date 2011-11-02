@@ -2808,27 +2808,6 @@ return jQuery.isNaN(ret)?orig:ret
 });
 window.jQuery=window.$=jQuery
 })(window);
-(function($){$.fn.autoResize=function(options){var settings=$.extend({onResize:function(){},animate:true,animateDuration:150,animateCallback:function(){},extraSpace:20,limit:1000},options);
-this.filter("textarea").each(function(){var textarea=$(this).css({resize:"none","overflow-y":"hidden"}),origHeight=textarea.height(),clone=(function(){var props=["height","width","lineHeight","textDecoration","letterSpacing"],propOb={};
-$.each(props,function(i,prop){propOb[prop]=textarea.css(prop)
-});
-return textarea.clone().removeAttr("id").removeAttr("name").css({position:"absolute",top:0,left:-9999}).css(propOb).attr("tabIndex","-1").insertAfter("body")
-})(),lastScrollTop=null,updateSize=function(){clone.height(0).val($(this).val()).scrollTop(10000);
-var scrollTop=Math.max(clone.scrollTop(),(settings.origHeight?settings.origHeight:origHeight))+settings.extraSpace,toChange=$(this).add(clone);
-if(lastScrollTop===scrollTop){return
-}lastScrollTop=scrollTop;
-if(scrollTop>=settings.limit){$(this).css("overflow-y","");
-return
-}settings.onResize.call(this);
-settings.animate&&textarea.css("display")==="block"?toChange.stop().animate({height:scrollTop},settings.animateDuration,settings.animateCallback):toChange.height(scrollTop)
-};
-remove=function(){clone.remove()
-};
-textarea.unbind(".dynSiz").bind("keyup.dynSiz",updateSize).bind("keydown.dynSiz",updateSize).bind("change.dynSiz",updateSize).bind("blur",remove)
-});
-return this
-}
-})(jQuery);
 (function(){var root=this;
 var previousBackbone=root.Backbone;
 var Backbone;
@@ -5409,6 +5388,108 @@ if(cookie.substring(0,name.length+1)==(name+"=")){cookieValue=decodeURIComponent
 break
 }}}return cookieValue
 }};
+(function($){var initialize,elementCurrentStyle,htmlEncode,multiLineHtmlEncode,multiLineHtmlDecode,elementCurrentStyle;
+$.fn.editable=function(command,options){var opts;
+if((typeof command==="function")||!command){opts=$.extend({},$.fn.editable.defaults);
+if(typeof options==="object"){opts=$.extend(opts,options)
+}opts.changeCallback=command;
+return this.each(function(){initialize.call(this,opts)
+})
+}};
+initialize=function(options){var target=this,form,elem,targetProps={},showEditableField,editableFieldFactory,restoreTarget,saveChanges,addPlaceHolderIfEmpty,stripPlaceHolder;
+showEditableField=function(event){var getBackgroundColor,positioningSpan,offsetBy,inputText;
+stripPlaceHolder();
+$(target).data("editable-active","true");
+targetProps.style=$(target).attr("style");
+targetProps.text=multiLineHtmlDecode($(target).html());
+inputText=targetProps.text;
+if(typeof options.data==="function"){inputText=options.data.call(target,targetProps.text,target)
+}else{if(typeof options.data==="string"){inputText=options.data
+}}form=$("<form>");
+elem=editableFieldFactory(options.type);
+elem.css("font-size",elementCurrentStyle(target,"font-size"));
+elem.css("font-family",elementCurrentStyle(target,"font-family"));
+elem.css("color",elementCurrentStyle(target,"color"));
+getBackgroundColor=function(node){var backgroundColor=elementCurrentStyle(node,"background-color");
+if(!backgroundColor||backgroundColor=="transparent"||backgroundColor=="inherit"){if($(node).parent().length){getBackgroundColor($(node).parent()[0])
+}else{return backgroundColor
+}}};
+elem.css("background-color",getBackgroundColor(target));
+positioningSpan=$("<span>&nbsp;</span>");
+$(target).prepend(positioningSpan);
+form.css("position","absolute").css("margin","0").css("padding","0").css("top",options.offsetY+$(target).position().top+"px").css("left",options.offsetY+$(positioningSpan).position().left+"px").css("z-index",10000).append(elem);
+offsetBy=$(positioningSpan).position().left-$(target).position().left;
+elem.css("padding",0).css("margin",0).css("width",($(target).outerWidth()-options.assumedBorderWidth-offsetBy)+"px");
+positioningSpan.remove();
+elem.val(inputText);
+$(target).css("height",$(target).height()+"px").text("");
+$(target).append(form);
+$(elem).bind("blur.editable",function(){setTimeout(function(){if(options.acceptChangesOnBlur){saveChanges()
+}else{restoreTarget()
+}$(elem).unbind("blur.editable")
+},10)
+});
+$(elem).keydown(function(event){if(event.which===13){if((options.type==="textarea")&&(event.ctrlKey||event.altKey||event.shiftKey)){event.stopPropagation()
+}else{setTimeout(saveChanges,10)
+}}else{if(event.which===27){setTimeout(restoreTarget,10)
+}}});
+$(elem).focus()
+};
+editableFieldFactory=function(type){var elem;
+if(type==="textarea"){elem=$('<textarea name="value"></textarea>');
+if(options.autoResize){elem.TextAreaExpander(false,options.autoResizeMax)
+}}else{elem=$('<input type="text" name="value">');
+if(options.maxLength){elem.attr("maxlength",options.maxLength)
+}}return elem
+};
+restoreTarget=function(newVal){var val=multiLineHtmlEncode(typeof newVal!=="undefined"?newVal:targetProps.text);
+form.remove();
+$(target).attr("style",targetProps.style?targetProps.style:"").html(val);
+$(target).data("editable-active",false);
+if((newVal!=="undefined")&&(typeof options.noChange==="function")){options.noChange.call(target,val)
+}addPlaceHolderIfEmpty()
+};
+saveChanges=function(){var returnVal;
+if(elem.val()!==targetProps.text){returnVal=options.changeCallback.call(target,elem.val(),target);
+if(returnVal){restoreTarget(returnVal)
+}else{restoreTarget(elem.val())
+}}else{restoreTarget()
+}};
+addPlaceHolderIfEmpty=function(){if(options.placeHolder&&($(target).html().replace(/\s+/g,"")==="")){$(target).html(options.placeHolder)
+}};
+stripPlaceHolder=function(){if(options.placeHolder){$(target).html($(target).html().replace(options.placeHolder,""))
+}};
+$(this).click(function(e){if($(target).data("editable-active")!=="true"){showEditableField()
+}});
+addPlaceHolderIfEmpty()
+};
+elementCurrentStyle=function(element,styleName){if(element.currentStyle){var i=0,temp="",changeCase=false;
+for(i=0;
+i<styleName.length;
+i++){if(styleName[i]!="-"){temp+=(changeCase?styleName[i].toUpperCase():styleName[i]);
+changeCase=false
+}else{changeCase=true
+}}styleName=temp;
+return element.currentStyle[styleName]
+}else{return getComputedStyle(element,null).getPropertyValue(styleName)
+}};
+htmlEncode=function(value){if(value){return $("<span/>").text(value).html()
+}else{return""
+}};
+multiLineHtmlEncode=function(value){if(_.isString(value)){var lines=value.split(/\r\n|\r|\n/);
+for(var i=0;
+i<lines.length;
+i++){lines[i]=htmlEncode(lines[i])
+}return lines.join("<br/>")
+}else{return""
+}};
+multiLineHtmlDecode=function(html){html=html.split(/<br\s*\/?\s*>/);
+html=$.map(html,function(htmlFragment){return $("<span/>").html(htmlFragment).text()
+}).join("\n");
+return html
+};
+$.fn.editable.defaults={type:"text",offsetX:0,offsetY:0,assumedBorderWidth:4,acceptChangesOnBlur:true,data:false,maxLength:false,autoResize:false,autoResizeMax:300,noChange:false,placeHolder:false}
+}(jQuery));
 (function($){var opts,initialize,adjustToFit,addTab,removeTab,setTabContent,moveNonFixedTabsToScroller,addNav,positionNav,getLeftMostTabIndex,totalElemWidth,shiftTabOffset,shiftScroller;
 $.fn.infiniteTabs=function(command,options,secondParam){if((typeof command==="object")||!command){opts=$.extend({},$.fn.infiniteTabs.defaults,command);
 return this.each(initialize)
@@ -5536,183 +5617,6 @@ setTabContent=function(tab,newTabContent){if($(this).is("ul.infinite-tabs")){if(
 };
 $.fn.infiniteTabs.defaults={initialTabSlideOffset:10}
 }(jQuery));
-(function($){$.fn.editable=function(target,options){if("disable"==target){$(this).data("disabled.editable",true);
-return
-}if("enable"==target){$(this).data("disabled.editable",false);
-return
-}if("destroy"==target){$(this).unbind($(this).data("event.editable")).removeData("disabled.editable").removeData("event.editable");
-return
-}var settings=$.extend({},$.fn.editable.defaults,{target:target},options);
-var plugin=$.editable.types[settings.type].plugin||function(){};
-var submit=$.editable.types[settings.type].submit||function(){};
-var buttons=$.editable.types[settings.type].buttons||$.editable.types["defaults"].buttons;
-var content=$.editable.types[settings.type].content||$.editable.types["defaults"].content;
-var element=$.editable.types[settings.type].element||$.editable.types["defaults"].element;
-var reset=$.editable.types[settings.type].reset||$.editable.types["defaults"].reset;
-var callback=settings.callback||function(){};
-var onedit=settings.onedit||function(){};
-var onsubmit=settings.onsubmit||function(){};
-var onreset=settings.onreset||function(){};
-var onerror=settings.onerror||reset;
-if(settings.tooltip){$(this).attr("title",settings.tooltip)
-}settings.autowidth="auto"==settings.width;
-settings.autoheight="auto"==settings.height;
-return this.each(function(){var self=this;
-var savedwidth=$(self).width();
-var savedheight=$(self).height();
-$(this).data("event.editable",settings.event);
-if(!$.trim($(this).html())){$(this).html(settings.placeholder)
-}$(this).bind(settings.event,function(e){if(true===$(this).data("disabled.editable")){return
-}if(self.editing){return
-}if(false===onedit.apply(this,[settings,self])){return
-}e.preventDefault();
-if(settings.tooltip){$(self).removeAttr("title")
-}if(0==$(self).width()){settings.width=savedwidth;
-settings.height=savedheight
-}else{if(settings.width!="none"){settings.width=settings.autowidth?$(self).width():settings.width
-}if(settings.height!="none"){settings.height=settings.autoheight?$(self).height():settings.height
-}}if(settings.lesswidth){settings.width-=settings.lesswidth
-}if(settings.lessheight){settings.width-=settings.lessheight
-}if($(this).html().toLowerCase().replace(/(;|")/g,"")==settings.placeholder.toLowerCase().replace(/(;|")/g,"")){$(this).html("")
-}self.editing=true;
-self.revert=$(self).html();
-self.text=$(self).text();
-var spaceItem=$("<div>&nbsp;</div").css("width",$(self).width()).css("height",$(self).height());
-$(self).html("");
-var form=$("<form />");
-if(settings.cssclass){if("inherit"==settings.cssclass){form.attr("class",$(self).attr("class"))
-}else{form.attr("class",settings.cssclass)
-}}if(settings.style){if("inherit"==settings.style){form.attr("style",$(self).attr("style"));
-form.css("display",$(self).css("display"))
-}else{form.attr("style",settings.style)
-}}var input=element.apply(form,[settings,self]);
-var input_content;
-if(settings.loadurl){var t=setTimeout(function(){input.disabled=true;
-content.apply(form,[settings.loadtext,settings,self])
-},100);
-var loaddata={};
-loaddata[settings.id]=self.id;
-if($.isFunction(settings.loaddata)){$.extend(loaddata,settings.loaddata.apply(self,[self.text,settings]))
-}else{$.extend(loaddata,settings.loaddata)
-}$.ajax({type:settings.loadtype,url:settings.loadurl,data:loaddata,async:false,success:function(result){window.clearTimeout(t);
-input_content=result;
-input.disabled=false
-}})
-}else{if(settings.data){input_content=settings.data;
-if($.isFunction(settings.data)){input_content=settings.data.apply(self,[self.text,settings])
-}}else{input_content=self.text
-}}content.apply(form,[input_content,settings,self]);
-input.attr("name",settings.name);
-buttons.apply(form,[settings,self]);
-$(self).append(form);
-$(self).append(spaceItem);
-plugin.apply(form,[settings,self]);
-$(":input:visible:enabled:first",form).focus();
-if(settings.select){input.select()
-}input.keydown(function(e){if(e.keyCode==27){e.preventDefault();
-reset.apply(form,[settings,self]);
-$(self).trigger(event)
-}});
-var t;
-if("cancel"==settings.onblur){input.blur(function(e){t=setTimeout(function(){reset.apply(form,[settings,self])
-},200)
-})
-}else{if("submit"==settings.onblur){input.blur(function(e){t=setTimeout(function(){form.submit()
-},200)
-})
-}else{if($.isFunction(settings.onblur)){input.blur(function(e){settings.onblur.apply(self,[input.val(),settings])
-})
-}else{input.blur(function(e){})
-}}}form.submit(function(e){if(t){clearTimeout(t)
-}e.preventDefault();
-if(false!==onsubmit.apply(form,[settings,self])){if(false!==submit.apply(form,[settings,self])){if($.isFunction(settings.target)){var str=settings.target.apply(self,[input.val(),settings]);
-$(self).html(multiLineHtmlEncode(str));
-self.editing=false;
-callback.apply(self,[self.innerHTML,settings]);
-if(!$.trim($(self).html())){$(self).html(settings.placeholder)
-}}else{var submitdata={};
-submitdata[settings.name]=input.val();
-submitdata[settings.id]=self.id;
-if($.isFunction(settings.submitdata)){$.extend(submitdata,settings.submitdata.apply(self,[self.revert,settings]))
-}else{$.extend(submitdata,settings.submitdata)
-}if("PUT"==settings.method){submitdata["_method"]="put"
-}$(self).html(settings.indicator);
-var ajaxoptions={type:"POST",data:submitdata,dataType:"html",url:settings.target,success:function(result,status){if(ajaxoptions.dataType=="html"){$(self).html(multiLineHtmlEncode(result))
-}self.editing=false;
-callback.apply(self,[result,settings]);
-if(!$.trim($(self).html())){$(self).html(settings.placeholder)
-}},error:function(xhr,status,error){onerror.apply(form,[settings,self,xhr])
-}};
-$.extend(ajaxoptions,settings.ajaxoptions);
-$.ajax(ajaxoptions)
-}}}$(self).attr("title",settings.tooltip);
-return false
-})
-});
-this.reset=function(form){if(this.editing){if(false!==onreset.apply(form,[settings,self])){$(self).html(self.revert);
-self.editing=false;
-if(!$.trim($(self).html())){$(self).html(settings.placeholder)
-}if(settings.tooltip){$(self).attr("title",settings.tooltip)
-}}}}
-})
-};
-$.editable={types:{defaults:{element:function(settings,original){var input=$('<input type="hidden"></input>');
-$(this).append(input);
-return(input)
-},content:function(string,settings,original){$(":input:first",this).val(string)
-},reset:function(settings,original){original.reset(this)
-},buttons:function(settings,original){var form=this;
-if(settings.submit){if(settings.submit.match(/>$/)){var submit=$(settings.submit).click(function(){if(submit.attr("type")!="submit"){form.submit()
-}})
-}else{var submit=$('<button type="submit" />');
-submit.html(settings.submit)
-}$(this).append(submit)
-}if(settings.cancel){if(settings.cancel.match(/>$/)){var cancel=$(settings.cancel)
-}else{var cancel=$('<button type="cancel" />');
-cancel.html(settings.cancel)
-}$(this).append(cancel);
-$(cancel).click(function(event){if($.isFunction($.editable.types[settings.type].reset)){var reset=$.editable.types[settings.type].reset
-}else{var reset=$.editable.types["defaults"].reset
-}reset.apply(form,[settings,original]);
-return false
-})
-}}},text:{element:function(settings,original){var input=$("<input />");
-if(settings.width!="none"){input.width(settings.width)
-}if(settings.height!="none"){input.height(settings.height)
-}if(settings.maxLength){input.attr("maxlength",settings.maxLength)
-}input.attr("autocomplete","off");
-if(settings.autoComplete){input.autocomplete({source:($.isArray(settings.autoComplete)?settings.autoComplete:settings.autoComplete()),minLength:0,delay:0})
-}$(this).append(input);
-return(input)
-}},textarea:{element:function(settings,original){var textarea=$("<textarea />");
-if(settings.rows){textarea.attr("rows",settings.rows)
-}else{if(settings.height!="none"){textarea.height(settings.height)
-}}if(settings.cols){textarea.attr("cols",settings.cols)
-}else{if(settings.width!="none"){textarea.width(settings.width)
-}}if(settings.saveonenterkeypress){textarea.keypress(function(event){if((event.charCode==13)&&!event.ctrlKey){textarea.blur()
-}})
-}if(settings.autoResize){textarea.css("dispay","block");
-textarea.autoResize({limit:150,extraSpace:10,origHeight:20})
-}if(settings.maxLength){$.each(["keyup","paste","blue"],function(i,eventName){textarea.bind("keyup",function(){$(this).val($(this).val().slice(0,settings.maxLength))
-})
-})
-}$(this).append(textarea);
-return(textarea)
-}},select:{element:function(settings,original){var select=$("<select />");
-$(this).append(select);
-return(select)
-},content:function(data,settings,original){if(String==data.constructor){eval("var json = "+data)
-}else{var json=data
-}for(var key in json){if(!json.hasOwnProperty(key)){continue
-}if("selected"==key){continue
-}var option=$("<option />").val(key).append(json[key]);
-$("select",this).append(option)
-}$("select",this).children().each(function(){if($(this).val()==json["selected"]||$(this).text()==$.trim(original.revert)){$(this).attr("selected","selected")
-}})
-}}},addInputType:function(name,input){$.editable.types[name]=input
-}};
-$.fn.editable.defaults={name:"value",id:"id",type:"text",width:"auto",height:"auto",event:"click.editable",onblur:"cancel",loadtype:"GET",loadtext:"Loading...",placeholder:"Click to edit",loaddata:{},submitdata:{},ajaxoptions:{}}
-})(jQuery);
 $.fn.simpleColorPicker=function(options){var defaults={colorsPerLine:8,colors:["#000000","#444444","#666666","#999999","#cccccc","#eeeeee","#f3f3f3","#ffffff","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#0000ff","#9900ff","#ff00ff","#f4cccc","#fce5cd","#fff2cc","#d9ead3","#d0e0e3","#cfe2f3","#d9d2e9","#ead1dc","#ea9999","#f9cb9c","#ffe599","#b6d7a8","#a2c4c9","#9fc5e8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d","#76a5af","#6fa8dc","#8e7cc3","#c27ba0","#cc0000","#e69138","#f1c232","#6aa84f","#45818e","#3d85c6","#674ea7","#a64d79","#990000","#b45f06","#bf9000","#38761d","#134f5c","#0b5394","#351c75","#741b47","#660000","#783f04","#7f6000","#274e13","#0c343d","#073763","#20124d","#4C1130"],showEffect:"",hideEffect:"",onChangeColor:false};
 var opts=$.extend(defaults,options);
 return this.each(function(){var txt=$(this);
@@ -5757,6 +5661,28 @@ function hideBox(box){if(opts.hideEffect=="fade"){box.fadeOut()
 }else{box.show()
 }}}})
 };
+(function($){$.fn.TextAreaExpander=function(minHeight,maxHeight){var hCheck=!($.browser.msie||$.browser.opera);
+function ResizeTextarea(e){e=e.target||e;
+var vlen=e.value.length,ewidth=e.offsetWidth;
+if(vlen!=e.valLength||ewidth!=e.boxWidth){if(hCheck&&(vlen<e.valLength||ewidth!=e.boxWidth)){e.style.height="0px"
+}var h=Math.max(e.expandMin,Math.min(e.scrollHeight,e.expandMax));
+e.style.overflow=(e.scrollHeight>h?"auto":"hidden");
+e.style.height=h+"px";
+e.valLength=vlen;
+e.boxWidth=ewidth
+}return true
+}this.each(function(){if(this.nodeName.toLowerCase()!="textarea"){return
+}var p=this.className.match(/expand(\d+)\-*(\d+)*/i);
+this.expandMin=minHeight||(p?parseInt("0"+p[1],10):0);
+this.expandMax=maxHeight||(p?parseInt("0"+p[2],10):99999);
+ResizeTextarea(this);
+if(!this.Initialized){this.Initialized=true;
+$(this).css("padding-top",0).css("padding-bottom",0);
+$(this).bind("keyup",ResizeTextarea).bind("focus",ResizeTextarea)
+}});
+return this
+}
+})(jQuery);
 (function($){function CSRFProtection(xhr){var token=$('meta[name="csrf-token"]').attr("content");
 if(token){xhr.setRequestHeader("X-CSRF-Token",token)
 }}if("ajaxPrefilter" in $){$.ajaxPrefilter(function(options,originalOptions,xhr){CSRFProtection(xhr)
@@ -5971,7 +5897,7 @@ window.JST["sprints/empty"]=_.template('<div class="notice">\n  Drag an unassign
 window.JST["sprints/help-pod"]=_.template('<section class="side-panel">\n  <div class="button-container">\n    <a href="#" class="add-new-sprint button">Create new sprint</a>\n    <div class="button-help">\n      For future sprints, the Sprints tab above will no longer appear, so you must use the <b>+</b> icon next to the Backlog tab to add further sprints.\n    </div>\n  </div>\n</section>');
 window.JST["sprints/help"]=_.template('<h2 class="divider">Sprints</h2>\n\n<p>\n  Once you are ready to start working on your backlog, you can create sprints and assign stories to those sprints.\n<p>\n\n\n<h3>First time using sprints?</h3>\n<p>\n  We\'d recommend you take a quick look at this one minute demo of how to use sprints.\n</p>\n<p>\n  [VIDEO HERE]\n</p>');
 window.JST["sprints/new-dialog"]=_.template('<div id="dialog-new-sprint" title="Create a new sprint">\n  <form>\n    <p class="intro">\n      Each sprint must have a start date, a set duration and a pre-determined number of team members for that sprint.  Enter the details below to create a new sprint.\n    </p>\n    <p>\n      <div>\n        <p>\n          <label for="number-team-members">Number of team members working on completing stories</label>\n        </p>\n        <p>\n          <input id="number-team-members" name="number_team_members" type="text" value="">\n        </p>\n        <p>\n          <label for="start-on">Sprint start date</label>\n        </p>\n        <p>\n          <input id="start-on" name="start_on" type="text" value="">\n        </p>\n        <p>\n          <label for="duration-days">Duration of sprint in days (typically working days)</label>\n        </p>\n        <p>\n          <input id="duration-days" name="duration_days" type="text" value="">\n        </p>\n      </div>\n    </p>\n    <p class="progress-placeholder"></p>\n  </form>\n</div>');
-window.JST["sprints/show"]=_.template('<h2 class="divider">\n  Sprint <%= model.get(\'iteration\') %> stories\n  <% if (model.isComplete()) { %>\n    (completed)\n  <% } %>\n</h2>\n\n<div class="all-stories">\n  <div class="stories-container">\n    <div class="cards story-droppable"></div>\n    <div class="totals"></div>\n    <div class="complete-status">\n      <% if (model.isComplete()) { %>\n        <a href="#incomplete" class="mark-sprint-as-incomplete button greyed">Mark sprint as incomplete</a>\n      <% } else { %>\n        <a href="#complete" class="mark-sprint-as-complete button">Mark sprint as complete</a>\n      <% } %>\n    </div>\n  </div>\n  <div class="unassigned-stories-heading">Unassigned stories</div>\n  <div class="stories-divider">\n    <div class="handle"><div class="change-size">expand</div></div>\n  </div>\n  <div class="unassigned-stories-container story-droppable">\n    <% if (model.isComplete()) { %>\n      <div class="notice locked">\n        You cannot move any stories into a completed sprint\n      </div>\n    <% } %>\n  </div>\n</div>');
+window.JST["sprints/show"]=_.template('<h2 class="divider<% if (model.isComplete()) { %> completed<% } %>">\n  Sprint <%= model.get(\'iteration\') %> stories\n</h2>\n\n<div class="all-stories">\n  <div class="stories-container">\n    <div class="cards story-droppable"></div>\n    <div class="totals"></div>\n    <div class="complete-status">\n      <% if (model.isComplete()) { %>\n        <a href="#incomplete" class="mark-sprint-as-incomplete button greyed">Mark sprint as incomplete</a>\n      <% } else { %>\n        <a href="#complete" class="mark-sprint-as-complete button">Mark sprint as complete</a>\n      <% } %>\n    </div>\n  </div>\n  <div class="unassigned-stories-heading">Unassigned stories</div>\n  <div class="stories-divider">\n    <div class="handle"><div class="change-size">expand</div></div>\n  </div>\n  <div class="unassigned-stories-container story-droppable">\n    <% if (model.isComplete()) { %>\n      <div class="notice locked">\n        You cannot move any stories into a completed sprint\n      </div>\n    <% } %>\n  </div>\n</div>');
 window.JST["sprints/sprint-delete-panel"]=_.template('<div class="backlog-tool-panel">\n  <h2>Delete sprint</h2>\n  <% if (model.get(\'completed?\')) { %>\n    This sprint is no longer editable as it is marked as complete.  If you need to delete this sprint, mark this sprint as incomplete.\n  <% } else if (!model.get(\'deletable?\')) { %>\n    This sprint cannot be deleted as it is not the last sprint.  You must delete all successive sprints before you can delete this sprint.\n  <% } else { %>\n    Deleting a sprint immediately will remove all stories from this sprint and this sprint will be <b>permanently deleted</b>.\n    <b>There is no undo</b> so make sure you absolutely sure you want to delete this sprint.\n    <div class="button-container">\n      <a href="#delete-sprint" class="delete-sprint">Yes, I understand — delete this sprint</a>\n    </div>\n  <% } %>\n</div>');
 window.JST["sprints/sprint-story"]=_.template('<div class="fields">\n  <div class="code">\n    <div class="heading">ID:</div>\n    <div class="data"><%= model.Theme().get(\'code\')%><%= model.get(\'unique_id\')%></div>\n  </div>\n  <div class="points">\n    <div class="heading">Points:</div>\n    <div class="data"><% if (model.get(\'score_50\') === model.get(\'score_90\')) { %>\n        <%= !model.get(\'score_50\') ? \'0\' : model.get(\'score_50\') %>\n      <% } else {\n           if (!model.get(\'score_50\') && !model.get(\'score_90\')) { %>\n             0\n        <% } else { %>\n          <%= !model.get(\'score_50\') ? 0 : model.get(\'score_50\') %>/<%= !model.get(\'score_90\') ? 0 : model.get(\'score_90\')%>\n        <% } %>\n      <% } %>\n    </div>\n  </div>\n  <div class="status">\n    <% if (model.SprintStory()) { %>\n      <div class="tab status-code-<%= model.SprintStory().Status().get(\'code\') %>"><span><%= model.SprintStory().Status().get(\'status\') %></span></div>\n    <% } %>\n  </div>\n</div>\n\n<div class="story">\n  <div class="theme"><div class="heading">Theme:</div><div class="data"><%= htmlEncode(model.Theme().get(\'name\')) %></div></div>\n  <div class="as-a"><div class="heading">As </div><div class="data"><%= htmlEncode(model.get(\'as_a\')) %></div></div>\n  <div class="i-want-to"><div class="heading">I want to </div><div class="data"><%= multiLineHtmlEncode(model.get(\'i_want_to\')) %></div></div>\n  <div class="so-i-can"><div class="heading">So I can </div><div class="data"><%= multiLineHtmlEncode(model.get(\'so_i_can\')) %></div></div>\n</div>\n\n<div class="acceptance-criteria">\n  <ol>\n    <% model.AcceptanceCriteria().each(function(criterion) { %>\n      <li><%= multiLineHtmlEncode(criterion.get(\'criterion\')) %></li>\n    <% }); %>\n  </ol>\n</div>\n\n<div class="more"><div class="tab"></div></div>\n\n<div class="move">move</div>');
 window.JST["sprints/stats"]=_.template('<div class="title">\n  Sprint total\n</div>\n<div class="divider"></div>\n<div class="output<% if (Number(attributes.total_allocated_points) > Number(attributes.total_expected_points)) { %> highlight<% } %>">\n  <%= addCommas((Number(attributes.total_allocated_points) || 0).toFixed(1)) %> pts allocated\n</div>\n<div class="divider"></div>\n<div class="output">\n  <%= addCommas((Number(attributes.total_expected_points) || 0).toFixed(1)) %> pts expected\n</div>\n<div class="divider"></div>\n<div class="output">\n  <%= addCommas((Number(attributes.total_completed_points) || 0).toFixed(1)) %> pts completed\n</div>\n');

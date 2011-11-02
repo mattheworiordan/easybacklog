@@ -27,7 +27,9 @@ this.unset("sprint_stories")
 }});
 var SprintStory=Backbone.Model.extend({initialize:function(){if(!App.Collections.SprintStoryStatuses){App.Collections.SprintStoryStatuses=new SprintStoryStatusesCollection();
 App.Collections.SprintStoryStatuses.fetch()
-}},Sprint:function(){return this.collection.sprint
+}this.bind("change",function(model){if(this.Story()){this.Story().set({sprint_story_status_id:this.get("sprint_story_status_id")})
+}})
+},Sprint:function(){return this.collection.sprint
 },Story:function(){var that=this;
 if(!this._story){var theme=this.Sprint().Backlog().Themes().get(this.get("theme_id"));
 if(!theme){this.Sprint().Backlog().Themes().each(function(theme){if(!that._story){var story=theme.Stories().get(that.get("story_id"));
@@ -133,9 +135,7 @@ if(theme){theme.set({"position":idOrderCollection[key]});
 theme.save()
 }})
 }});
-App.Controllers.Statistics={updateStatistics:function(stats){if(!_.isEmpty(stats)){if(window.console){console.log("Updating stats for themes "+_.map(stats.themes,function(theme){return theme.theme_id
-}).join(","))
-}var backlog=App.Collections.Backlogs.last();
+App.Controllers.Statistics={updateStatistics:function(stats){if(!_.isEmpty(stats)){var backlog=App.Collections.Backlogs.last();
 var statsWithoutThemes=_.clone(stats);
 delete statsWithoutThemes.themes;
 backlog.set(statsWithoutThemes);
@@ -180,7 +180,7 @@ App.Views.Helpers.statusDropDownChanged.call(that,id,code,name)
 $(this.el).find(".status .tab").attr("class","tab status-code-"+code).removeClass("hover").find("span").text(name);
 if(code===this.model.SprintStory().Status().DoneCode){$(this.el).addClass("locked")
 }else{$(this.el).removeClass("locked")
-}this.model.SprintStory().set({sprint_story_status_id:id});
+}this.model.SprintStory().set({sprint_story_status_id:Number(id)});
 this.model.SprintStory().save(false,{success:function(model){that.model.SprintStory().Sprint().set(model.get("sprint_statistics"));
 if(that.parentView){that.parentView.updateStatistics(model.get("sprint_statistics"))
 }},error:function(model,response){var errorMessage="we've got a problem on our side";
@@ -189,7 +189,7 @@ try{errorMessage=$.parseJSON(response.responseText).message
 }}var errorView=new App.Views.Error({message:"Oops, "+errorMessage+".  Please refresh your browser"})
 }})
 }};
-App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{onblur:"submit",tooltip:"Click to edit",placeholder:'<span class="editable-blank">[edit]</span>',lesswidth:5,type:"text"},initialize:function(){this.model=this.options.model;
+App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{placeHolder:'<span class="editable-blank">[edit]</span>',type:"text"},initialize:function(){this.model=this.options.model;
 this.parentView=this.options.parentView;
 this.beforeChangeValue={};
 _.bindAll(this,"beforeChange","contentUpdated");
@@ -199,10 +199,10 @@ this.model.bind("all",function(eventName){changeEvent(eventName,this)
 })
 }if(this.updateStatistics){_.bindAll(this,"updateStatistics");
 this.model.bind("statisticsUpdated",this.updateStatistics)
-}},beforeChange:function(value,settings,target){var fieldId=$(target).parent().attr("class").replace(/\-/g,"_");
+}},beforeChange:function(value,target){var fieldId=$(target).parent().attr("class").replace(/\-/g,"_");
 this.beforeChangeValue[fieldId]=value;
 return(value)
-},contentUpdated:function(value,settings,target){var fieldId=$(target).parent().attr("class").replace(/\-/g,"_");
+},contentUpdated:function(value,target){var fieldId=$(target).parent().attr("class").replace(/\-/g,"_");
 var fieldWithValue=$(target);
 var beforeChangeValue=this.beforeChangeValue[fieldId];
 var view=this;
@@ -291,8 +291,7 @@ this.$(".data input, .data textarea").live("keydown",this.navigateEvent)
 }return(this)
 },changeEvent:function(eventName,model){if(eventName=="change:id"){$(this.el).attr("id","acceptance-criteria-"+model.get("id"))
 }},makeFieldsEditable:function(){var ac_view=this;
-var contentUpdatedFunc=function(){var newVal=arguments[0];
-var model_collection=ac_view.model.collection;
+var contentUpdatedFunc=function(newVal){var model_collection=ac_view.model.collection;
 if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...  Please refresh.";
 try{errorMessage=$.parseJSON(response.responseText).message
 }catch(e){if(window.console){console.log(e)
@@ -303,11 +302,11 @@ model_collection.remove(ac_view.model);
 ac_view.parentView.hideEditIfCriteriaExist();
 ac_view.parentView.displayOrderIndexes()
 })
-}else{return ac_view.contentUpdated(newVal,arguments[1],this)
+}else{return ac_view.contentUpdated(newVal,this)
 }};
-var beforeChangeFunc=function(){return ac_view.beforeChange(arguments[0],arguments[1],this)
+var beforeChangeFunc=function(value){return ac_view.beforeChange(value,this)
 };
-var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,type:"textarea",autoResize:true});
+var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,noChange:contentUpdatedFunc,type:"textarea",autoResize:true});
 $(this.el).find(">div.data").editable(contentUpdatedFunc,defaultOptions)
 },navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)&&(!event.ctrlKey)){$(event.target).blur();
 try{event.preventDefault()
@@ -336,9 +335,7 @@ if(firstEditableElem.length){firstEditableElem.click()
 }}return(this)
 },updateStatistics:function(){$("#backlog-data-area .backlog-stats").html(JST["backlogs/stats"]({model:this.model}));
 this.sprintTabsView.adjustTabConstraints(true)
-},activated:function(){this.updateStatistics();
-this.$("ul.stories>li.story").each(function(index,elem){$(elem).data("update-model-data")()
-})
+},activated:function(){this.updateStatistics()
 }})};
 App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot","sprintsChanged");
 this.model.Sprints().bind("change:completed_at",this.sprintsChanged)
@@ -824,12 +821,16 @@ if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",isEditable:false,events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate","click .status .tab":"statusChangeClick"},initialize:function(){this.use5090estimates=this.options.use5090estimates;
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate","click .status .tab":"statusChangeClick"},initialize:function(){var that=this;
+this.use5090estimates=this.options.use5090estimates;
 App.Views.BaseView.prototype.initialize.call(this);
-_.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor","modelDataHasChanged")
-},render:function(){this.modelDataHasChanged();
-$(this.el).data("update-model-data",this.modelDataHasChanged);
-var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()});
+_.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor","updateViewWithModelData");
+this.model.bind("change",function(model){that.updateViewWithModelData(model.changedAttributes())
+})
+},render:function(){this.updateViewWithModelData("all");
+this.configureView();
+return this
+},configureView:function(){var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()});
 this.$(".acceptance-criteria").html(view.render().el);
 if(this.model.IsEditable()){this.makeFieldsEditable();
 var show_view=this;
@@ -843,24 +844,24 @@ if(!App.Views.Stories.Index.stopMoveEvent){show_view.moveToThemeDialog()
 this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){show_view.changeColor(col)
 },colorsPerLine:4,colors:["#ffffff","#dddddd","#bbbbbb","#999999","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#6666ff","#9900ff","#ff00ff","#f4cccc","#d9ead3","#cfe2f3","#ead1dc","#ffe599","#b6d7a8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d"]})
 }if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
-}return this
-},modelDataHasChanged:function(onlyIfEditableStatusHasChanged){if(this.populatedHtml){if(this.isEditable===this.model.IsEditable()){if(!onlyIfEditableStatusHasChanged){$(this.el).find(".sprint-story-info").html($(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates})).find(".sprint-story-info"))
-}}else{var newView=new App.Views.Stories.Show({model:this.model,id:$(this.el).attr("id"),use5090estimates:this.use5090estimates});
-$(this.el).replaceWith(newView.render().el)
-}}else{this.populatedHtml=true;
-$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
-}if(this.model.IsEditable()){$(this.el).removeClass("locked")
-}else{$(this.el).addClass("locked")
 }this.setStatusHover()
-},setStatusHover:function(){App.Views.Helpers.setStatusHover.apply(this,arguments)
+},updateViewWithModelData:function(attributes){var that=this;
+if(attributes==="all"){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
+}else{if(attributes&&attributes.sprint_story_status_id){viewElements=["unique-id","as-a","i-want-to","so-i-can","comments","score-50","score-90","score"];
+_(viewElements).each(function(elem){that.$(elem+" .data").editable("destroy")
+});
+$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
+this.configureView()
+}}if(this.model.IsEditable()){$(this.el).removeClass("locked")
+}else{$(this.el).addClass("locked")
+}},setStatusHover:function(){App.Views.Helpers.setStatusHover.apply(this,arguments)
 },statusChangeClick:function(event){App.Views.Helpers.statusChangeClick.apply(this,arguments)
-},makeFieldsEditable:function(){var show_view=this,contentUpdatedFunc=function(value,settings){return show_view.contentUpdated(value,settings,this)
-},beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
+},makeFieldsEditable:function(){var show_view=this,contentUpdatedFunc=function(value){return show_view.contentUpdated(value,this)
+},beforeChangeFunc=function(value){return show_view.beforeChange(value,this)
 },defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
-this.isEditable=true;
-var uniqueIdContentUpdatedFunc=function(value,settings){return(show_view.model.Theme().get("code")+contentUpdatedFunc.call(this,value,settings))
+var uniqueIdContentUpdatedFunc=function(value){return(show_view.model.Theme().get("code")+contentUpdatedFunc.call(this,value))
 };
-var uniqueIdBeforeChangeFunc=function(value,settings){return beforeChangeFunc.call(this,value.substring(3),settings)
+var uniqueIdBeforeChangeFunc=function(value){return beforeChangeFunc.call(this,value.substring(3))
 };
 var uniqueIdOptions=_.extend(_.clone(defaultOptions),{data:uniqueIdBeforeChangeFunc,maxLength:4});
 this.$(">div.unique-id .data").editable(uniqueIdContentUpdatedFunc,uniqueIdOptions);
@@ -884,7 +885,7 @@ if(this.use5090estimates){viewElements.push("score-50 .data");
 viewElements.push("score-90 .data")
 }else{viewElements.push("score .data")
 }dataClass=$(event.target);
-if(!dataClass.hasClass("data")){dataClass=dataClass.parents(".data")
+if(!dataClass.hasClass("data")){dataClass=dataClass.parents(".data:first")
 }dataClass=dataClass.parent();
 dataElem=_.detect(viewElements,function(id){return dataClass.hasClass(_.first(id.split(" ")))
 });
