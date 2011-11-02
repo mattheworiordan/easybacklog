@@ -12,7 +12,7 @@
   .not-editable-backlog-notice
     .message
       = "You are viewing a snapshot"
-      = link_to '← Back', account_backlog_path(@backlog.account, @backlog.snapshot_master)
+      = link_to '← Back', account_backlog_path(@backlog.account, @backlog.backlog_root)
 - elsif @backlog.archived?
   .not-editable-backlog-notice
     .message
@@ -23,7 +23,8 @@
   .selector
     .title
       =label_tag 'menu_snapshot_select', 'Select a snapshot to view:'
-    != render :partial => 'snapshot_select', :locals => { :truncate_at => 35, :select_id=> 'menu_snapshot_select' }
+    .select
+      != render :partial => 'snapshot_select', :locals => { :truncate_at => 35, :select_id=> 'menu_snapshot_select' }
   .button-holder
     %a#new-snapshot.button{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)} Create new snapshot
   .description
@@ -38,14 +39,18 @@
     .snapshot
       %a#snapshot-menu Snapshots
     .divider
-    - if @backlog.snapshot_master.blank?
+    - if @backlog.snapshot_master.present?
+      = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download Snapshot in Excel format', :class => 'vtip'
+      .divider
+      = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
+    - elsif @backlog.snapshot_for_sprint.present?
+      = link_to "Export", download_sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download Snapshot in Excel format', :class => 'vtip'
+      .divider
+      = link_to "Print", download_sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
+    - else
       = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download Backlog in Excel format', :class => 'vtip'
       .divider
       = link_to "Print", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
-    - else
-      = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download Snapshot in Excel format', :class => 'vtip'
-      .divider
-      = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     .divider
     - if @backlog.is_snapshot?
       = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog)
@@ -53,10 +58,10 @@
       = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog)
   .name-company-container
     %h2.name{ :class => @backlog.editable? ? '' : 'locked'}
-      - if @backlog.snapshot_master.blank?
+      - if @backlog.backlog_root.blank?
         = truncate(@backlog.name, :length => 40)
       - else
-        = truncate(@backlog.snapshot_master.name, :length => 40)
+        = truncate(@backlog.backlog_root.name, :length => 40)
     -if @backlog.company
       %h3.company= truncate(@backlog.company.name, :length => 25)
     -else
@@ -71,7 +76,7 @@
   #protect-beneath-tabs
   %ul.infinite-tabs
 
-- if @backlog.snapshot_master.present?
+- if @backlog.backlog_root.present?
   #viewing-snapshot-container
     .title
       =label_tag 'popup_snapshot_select', 'Viewing snapshot:'

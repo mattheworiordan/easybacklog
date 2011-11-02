@@ -8,18 +8,24 @@ Ibacklog::Application.routes.draw do
         get 'edit' => 'backlogs#edit', :as => 'edit'
         put 'archive' => 'backlogs#archive', :as => 'archive'
         put 'recover-from-archive' => 'backlogs#recover_from_archive', :as => 'recover_from_archive'
-        # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls or .pdf so that IE uses a helpful filename
-        get ':file_name' => 'backlogs#show', :as => 'download'
-      end
-      collection do
-        get 'compare/:base/:target' => 'snapshots#compare_snapshots', :as => 'compare_snapshots'
-      end
-      member do
+
+        # drop down partial
+        get 'snapshots-list-html' => 'backlogs#snapshots_list_html'
+
         get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot', :as => 'snapshot'
         post 'snapshots/create' => 'backlogs#create_snapshot', :as => 'create_snapshot'
         delete 'snapshots/:snapshot_id' => 'backlogs#destroy_snapshot', :as => 'delete_snapshot'
         # download for backlogs
         get 'snapshots/:snapshot_id/:file_name' => 'backlogs#show_snapshot', :as => 'download_snapshot'
+
+        get 'sprint-snapshots/:snapshot_id' => 'backlogs#show_sprint_snapshot', :as => 'sprint_snapshot'
+        get 'sprint-snapshots/:snapshot_id/:file_name' => 'backlogs#show_sprint_snapshot', :as => 'download_sprint_snapshot'
+
+        # simply allow a URL such as /backlogs/1/arbitrary-file-name.xls or .pdf so that IE uses a helpful filename
+        get ':file_name' => 'backlogs#show', :as => 'download'
+      end
+      collection do
+        get 'compare/:base/:target' => 'snapshots#compare_snapshots', :as => 'compare_snapshots'
       end
     end
     resources :users, :controller => 'account_users'

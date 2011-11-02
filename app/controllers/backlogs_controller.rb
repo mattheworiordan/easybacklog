@@ -25,6 +25,18 @@ class BacklogsController < ApplicationController
     end
   end
 
+  def show_sprint_snapshot
+    begin
+      sprint_snapshot = current_account.backlogs.available.find(params[:id]).sprint_snapshots.find { |d| d.id.to_s == params[:snapshot_id] }
+      @backlog = Backlog.find(sprint_snapshot.id, :include => BACKLOG_INCLUDES)
+    rescue ActiveRecord::RecordNotFound => exception
+      flash[:warning] = 'The snapshot you were looking for does not exist'
+      redirect_to account_path(current_account)
+    else
+      render_backlog_or_snapshot
+    end
+  end
+
   def new
     @backlog = current_account.backlogs.new
     @backlog.rate = current_account.default_rate if @backlog.rate.blank?
@@ -142,6 +154,12 @@ class BacklogsController < ApplicationController
         redirect_to account_backlog_path(current_account, @new_backlog)
       end
     end
+  end
+
+  # returns a partial to replace snapshots drop down when a sprint is marked as complete and thus a snapshot is created
+  def snapshots_list_html
+    @backlog = current_account.backlogs.available.find(params[:id])
+    render :partial => 'snapshot_select'
   end
 
   def backlog_json(backlog)

@@ -7,7 +7,8 @@ App.Views.BacklogDataArea = {
     },
 
     initialize: function(options) {
-      _.bindAll(this, 'print', 'newSnapshot', 'jumpToSnapshot', 'compareSnapshot');
+      _.bindAll(this, 'print', 'newSnapshot', 'jumpToSnapshot', 'compareSnapshot', 'sprintsChanged');
+      this.model.Sprints().bind('change:completed_at', this.sprintsChanged);
     },
 
     render: function() {
@@ -26,6 +27,16 @@ App.Views.BacklogDataArea = {
       }
 
       return this;
+    },
+
+    // sprint changed so we need to update the snapshot drop down
+    sprintsChanged: function(model) {
+      var that = this;
+      var url = document.location.pathname.replace('#.*$', '');
+      $.get(url + '/snapshots-list-html', false, function(data) {
+        $('.snapshot-menu-container .select, #viewing-snapshot-container .selector').html(data);
+        $('select.snapshot-selector').change(that.jumpToSnapshot);
+      }, 'html');
     },
 
     enableSnapshotsMenu: function() {
@@ -144,11 +155,17 @@ App.Views.BacklogDataArea = {
 
     jumpToSnapshot: function(event) {
       event.preventDefault();
-      var val = $(event.target).val();
+      var val = $(event.target).val(),
+          isSprintSnapshot = $(event.target).find(':selected').hasClass('sprint');
+
       var baseUrl = document.location.href.match(/^.*\/accounts\/\d+\/backlogs\/\d+/i)[0];
       if (val.match(/^\d+$/)) {
         // user has selected a backlog
-        baseUrl += '/snapshots/' + val;
+        if (isSprintSnapshot) {
+          baseUrl += '/sprint-snapshots/' + val;
+        } else {
+          baseUrl += '/snapshots/' + val;
+        }
       }
       $('#loading-new-snapshot').show();
       document.location.href = baseUrl;

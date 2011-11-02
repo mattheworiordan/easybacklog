@@ -91,7 +91,16 @@ class Backlog < ActiveRecord::Base
   alias_method :is_editable, :editable?
 
   def is_snapshot?
-    self.snapshot_master.present?
+    self.snapshot_master.present? || self.snapshot_for_sprint.present?
+  end
+
+  # independent backlog master link regardless of whether sprint snapshot or normal snapshot
+  def backlog_root
+    if self.snapshot_for_sprint.present?
+      self.snapshot_for_sprint.backlog
+    else
+      self.snapshot_master
+    end
   end
 
   def update_meta_data(user)

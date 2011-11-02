@@ -2,7 +2,11 @@
   %tr
     %td{:colspan => 4}
       %font{:size => '4'}
-        %b= backlog.name
+        - if backlog.backlog_root
+          %b= backlog.backlog_root.name
+          = "(Snapshot: #{backlog.name})"
+        - else
+          %b= backlog.name
     %td{:colspan => total_columns - 4, :align => 'right'}
       = "Rate: #{backlog.rate_formatted}, Velocity: #{backlog.velocity}"
   %tr
@@ -24,7 +28,7 @@
   %tr
     %td{:colspan => 4, :valign => 'top', :align => 'left', :bgcolor => '#B6F2FA'}
       %font{:size => '4'}
-        %b = "Total for backlog '#{backlog.name}'"
+        %b = "Total for backlog '#{backlog.backlog_root ? backlog.backlog_root.name : backlog.name}'"
     %td{:bgcolor => '#B6F2FA', :colspan => total_columns - 4, :align => 'right'}
       %font{:size => '4'}
         %b
