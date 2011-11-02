@@ -30,6 +30,17 @@ section.main-content-pod {
       display: none;
     }
   }
+
+  /* help to show a sprint is completed */
+  h2.divider.completed {
+    background-color: #CFC;
+    &:after {
+      content: ' (completed)';
+    }
+    &:before {
+      content: '✔ ';
+    }
+  }
 }
 
 section.showing-sprints {

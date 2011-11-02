@@ -1,8 +1,5 @@
-<h2 class="divider">
+<h2 class="divider<% if (model.isComplete()) { %> completed<% } %>">
   Sprint <%= model.get('iteration') %> stories
-  <% if (model.isComplete()) { %>
-    (completed)
-  <% } %>
 </h2>
 
 <div class="all-stories">

@@ -248,6 +248,7 @@ App.Views.Sprints = {
       });
     },
 
+    // stop this sprint's stories from disappearing off the screen as user scrolls down a long list of stories
     positionStoriesContainerOnScroll: function() {
       var storyContainer = this.$('.stories-container'),
           unassignedContainer = this.$('.unassigned-stories-container'),
