@@ -12,3 +12,14 @@ table.admin-data {
 .back {
   float: right;
 }
+
+table.people {
+  th {
+    padding: 5px;
+    font-weight: bold;
+  }
+  td {
+    padding: 5px;
+    border-top: 1px solid #CCC;
+  }
+}

@@ -1,4 +1,6 @@
 - title 'Admin bunker'
+- content_for :head do
+  = include_stylesheets :admin
 - content_for :title do
   %h1 Admin bunker
 %p
@@ -11,3 +13,47 @@
     %li= link_to "Stories: #{@stats[:story_count]}", admin_data_path('story')
     %li= link_to "Pending invites: #{@stats[:pending_invites]}", admin_data_path('invited_user')
     %li= link_to "Beta Signups: #{@stats[:beta_signups]}", admin_data_path('beta_signup')
+
+  %h2 People currently editing backlogs
+  %table.people
+    %tr.head
+      %th Name
+      %th Backlog ID
+      %th Editing time
+
+:javascript
+  var adminClientId = 'admin-' + Math.floor(Math.random()*10000).toString(36);
+  var adminPoll = function() {
+    $.ajax({
+      url: 'https://easybacklog-async.herokuapp.com/admin-monitor',
+      data: { id: adminClientId },
+      type: 'POST',
+      dataType: 'json',
+      success: function(response) {
+        if (response) {
+          var table = $('table.people');
+          table.find('tr:not(.head)').remove();
+          _(response).each(function(person) {
+            var tr = $('<tr>');
+            tr.append($('<td>').text(person.name));
+            tr.append($('<td>').text(person.channel));
+            tr.append($('<td class="time">').text(Math.round(person.since / 1000) + 's'));
+            table.append(tr);
+          });
+        }
+        adminPoll();
+      },
+      error: function() {
+        // try again in 5 seconds
+        setTimeout(adminPoll, 5000);
+      }
+    });
+  }
+  adminPoll();
+
+  setInterval(function() {
+    $('td.time').each(function(index, elem) {
+      var currentSeconds = Number($(this).text().replace('s',''));
+      $(this).text((currentSeconds+1) + 's');
+    });
+  }, 1000);
