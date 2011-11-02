@@ -232,19 +232,16 @@ App.Views.Stories = {
 
     makeFieldsEditable: function() {
       var show_view = this,
-          contentUpdatedFunc = function(value, settings) { return show_view.contentUpdated(value, settings, this); },
-          beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); },
+          contentUpdatedFunc = function(value) { return show_view.contentUpdated(value, this); },
+          beforeChangeFunc = function(value) { return show_view.beforeChange(value, this); },
           defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
-      // need to maintain state if editable status changes and we need to make editable / make non-editable
-      this.isEditable = true;
-
       // for unique ID, we need to remove the code before editing and insert back in after editing
-      var uniqueIdContentUpdatedFunc = function(value, settings) {
-        return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value, settings));
+      var uniqueIdContentUpdatedFunc = function(value) {
+        return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value));
       };
-      var uniqueIdBeforeChangeFunc = function(value, settings) {
-        return beforeChangeFunc.call(this, value.substring(3), settings);
+      var uniqueIdBeforeChangeFunc = function(value) {
+        return beforeChangeFunc.call(this, value.substring(3));
       };
       var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
@@ -308,7 +305,7 @@ App.Views.Stories = {
         }
 
         dataClass = $(event.target);
-        if (!dataClass.hasClass('data')) { dataClass = dataClass.parents('.data'); } // if event has come from esc, we're already on .data
+        if (!dataClass.hasClass('data')) { dataClass = dataClass.parents('.data:first'); } // if event has come from esc, we're already on .data
         dataClass = dataClass.parent(); // get to the parent to get the class name which indicates the field name
         dataElem = _.detect(viewElements, function(id) { return dataClass.hasClass(_.first(id.split(' '))); });
 

@@ -2,10 +2,7 @@
 
 App.Views.BaseView = Backbone.View.extend({
   defaultEditableOptions: {
-    onblur: 'submit',
-    tooltip: 'Click to edit',
-    placeholder: '<span class="editable-blank">[edit]</span>',
-    lesswidth: 5,
+    placeHolder: '<span class="editable-blank">[edit]</span>',
     type: 'text'
   },
 
@@ -29,7 +26,7 @@ App.Views.BaseView = Backbone.View.extend({
   },
 
   // keep track if field has changed as no need for server round trip if nothing has changed
-  beforeChange: function(value, settings, target)
+  beforeChange: function(value, target)
   {
     var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
     this.beforeChangeValue[fieldId] = value;
@@ -37,7 +34,7 @@ App.Views.BaseView = Backbone.View.extend({
   },
 
   // if a value has been updated, update the model and save to the server
-  contentUpdated: function(value, settings, target)
+  contentUpdated: function(value, target)
   {
     var fieldId = $(target).parent().attr('class').replace(/\-/g, '_');
     var fieldWithValue = $(target);

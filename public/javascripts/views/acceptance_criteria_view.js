@@ -135,10 +135,10 @@ App.Views.AcceptanceCriteria = {
 
     makeFieldsEditable: function() {
       var ac_view = this;
+
       // Acceptance criteria behave differently to other views as they automatically
       //  delete themselves if empty
-      var contentUpdatedFunc = function() {
-        var newVal = arguments[0];
+      var contentUpdatedFunc = function(newVal) {
         var model_collection = ac_view.model.collection;
         if (_.isEmpty(newVal)) {
           $(ac_view.el).slideUp('fast', function() {
@@ -159,11 +159,13 @@ App.Views.AcceptanceCriteria = {
             ac_view.parentView.displayOrderIndexes();
           });
         } else {
-          return ac_view.contentUpdated(newVal, arguments[1], this);
+          return ac_view.contentUpdated(newVal, this);
         }
-      };
-      var beforeChangeFunc = function() { return ac_view.beforeChange(arguments[0], arguments[1], this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, type: 'textarea', autoResize: true });
+      }
+
+      var beforeChangeFunc = function(value) { return ac_view.beforeChange(value, this); };
+
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, noChange: contentUpdatedFunc, type: 'textarea', autoResize: true });
 
       $(this.el).find('>div.data').editable(contentUpdatedFunc, defaultOptions);
     },
