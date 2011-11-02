@@ -137,7 +137,6 @@ App.Views.Stories = {
     tagName: 'li',
     className: 'story',
     deleteDialogTemplate: 'stories/delete-dialog',
-    isEditable: false,
 
     events: {
       "click .delete-story>a": "remove",
@@ -146,15 +145,27 @@ App.Views.Stories = {
     },
 
     initialize: function() {
+      var that = this;
+
       this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'modelDataHasChanged');
+      _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'updateViewWithModelData');
+
+      this.model.bind('change', function(model) {
+        // if sprint_story_status_id is set by story then we need to update the view
+        that.updateViewWithModelData(model.changedAttributes());
+      });
     },
 
     render: function() {
-      this.modelDataHasChanged();
-      $(this.el).data('update-model-data', this.modelDataHasChanged);
+      this.updateViewWithModelData('all');
 
+      this.configureView();
+
+      return this;
+    },
+
+    configureView: function() {
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
       this.$('.acceptance-criteria').html(view.render().el);
 
@@ -191,25 +202,24 @@ App.Views.Stories = {
 
       if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
 
-      return this;
+      this.setStatusHover();
     },
 
     // called whenever a change is made to the model
-    modelDataHasChanged: function(onlyIfEditableStatusHasChanged) {
-      if (this.populatedHtml) {
-        if (this.isEditable === this.model.IsEditable()) {
-          // only update the sprint status and assigned sprint as this could be changed on other tabs, rest will remain the same
-          if (!onlyIfEditableStatusHasChanged) {
-            $(this.el).find('.sprint-story-info').html( $(JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates })).find('.sprint-story-info') );
-          }
-        } else {
-          // we are now editable / not editable, so we have to generate a whole new view
-          var newView = new App.Views.Stories.Show({ model: this.model, id: $(this.el).attr('id'), use5090estimates: this.use5090estimates });
-          $(this.el).replaceWith(newView.render().el);
-        }
-      } else {
-        this.populatedHtml = true;
+    updateViewWithModelData: function(attributes) {
+      var that = this;
+
+      if (attributes === 'all') {
+        // just populate the entire element as we're initializing
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
+      } else if (attributes && attributes.sprint_story_status_id) {
+        // clear editable events as it was causing strange page reload issues unless destroyed before we recycle
+        viewElements = ['unique-id', 'as-a', 'i-want-to', 'so-i-can', 'comments', 'score-50', 'score-90', 'score'];
+        _(viewElements).each(function(elem) { that.$(elem + ' .data').editable('destroy'); });
+
+        // sprint story status has changed, lets update the entire HTML as it may or may not be locked now
+        $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
+        this.configureView();
       }
 
       // set class so that other elements (mainly for tab order) know if this class is locked or not
@@ -218,8 +228,6 @@ App.Views.Stories = {
       } else {
         $(this.el).addClass('locked');
       }
-
-      this.setStatusHover();
     },
 
     setStatusHover: function() {

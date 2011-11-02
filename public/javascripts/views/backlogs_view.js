@@ -39,9 +39,6 @@ App.Views.Backlogs = {
     // view is made active, but not necessarily re-rendered for performance reasons
     activated: function() {
       this.updateStatistics();
-      this.$('ul.stories>li.story').each(function(index, elem) {
-        $(elem).data('update-model-data')();
-      });
     }
   })
 };

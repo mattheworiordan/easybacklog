@@ -117,7 +117,7 @@ App.Views.Helpers = {
       $(this.el).removeClass('locked');
     }
 
-    this.model.SprintStory().set({ sprint_story_status_id: id });
+    this.model.SprintStory().set({ sprint_story_status_id: Number(id) });
     this.model.SprintStory().save(false, {
       success: function(model) {
         // Store updated statistics in sprint model
