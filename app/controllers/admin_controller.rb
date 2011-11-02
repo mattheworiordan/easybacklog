@@ -5,28 +5,34 @@ class AdminController < ApplicationController
 
   DATA = {
     :user => {
-      :model => User.order('created_at DESC'),
+      :model => User,
+      :name => 'Users',
       :columns => [:name, :email, { :accounts => :name }, :created_at, { :action => [:emulate] }],
 
     },
     :backlog => {
-      :model => Backlog.order('created_at DESC'),
+      :model => Backlog,
+      :name => 'Backlogs',
       :columns => [:name, { :account => :name }, :created_at]
     },
     :account => {
-      :model => Account.order('created_at DESC'),
+      :model => Account,
+      :name => 'Accounts',
       :columns => [:name, { :users => :name }, 'backlogs.count', :created_at]
     },
     :story => {
-      :model => Story.order('created_at DESC'),
+      :model => Story,
+      :name => 'Stories',
       :columns => [:as_a, :i_want_to, :so_i_can, { :theme => :name }, 'theme.backlog.name', 'theme.backlog.account.name', :created_at]
     },
     :invited_user => {
-      :model => InvitedUser.order('created_at DESC'),
+      :model => InvitedUser,
+      :name => 'Invited Users',
       :columns => [:email, 'account.name', :created_at]
     },
     :beta_signup => {
-      :model => BetaSignup.order('created_at DESC'),
+      :model => BetaSignup,
+      :name => 'Beta Signups',
       :columns => [:email, :company, :created_at]
     }
   }
@@ -49,8 +55,8 @@ class AdminController < ApplicationController
     table = params[:table]
     if DATA.has_key? table.to_sym
       data = DATA[table.to_sym]
-      @title = data[:model].class_name.titleize.pluralize
-      @data = data[:model].paginate(:page => params[:page], :per_page => 25)
+      @title = data[:name]
+      @data = data[:model].order('created_at DESC').paginate(:page => params[:page], :per_page => 25)
       @processed_data = @data.map do |row_data|
         row = {}
         data[:columns].map do |col|
