@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111029071733) do
+ActiveRecord::Schema.define(:version => 20111102152121) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -88,6 +88,15 @@ ActiveRecord::Schema.define(:version => 20111029071733) do
   end
 
   add_index "companies", ["account_id"], :name => "index_companies_on_account_id"
+
+  create_table "cron_logs", :force => true do |t|
+    t.string   "message"
+    t.text     "info"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cron_logs", ["created_at"], :name => "index_cron_logs_on_created_at"
 
   create_table "invited_users", :force => true do |t|
     t.string   "email",           :null => false

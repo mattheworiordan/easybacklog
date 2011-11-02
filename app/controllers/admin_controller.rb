@@ -41,6 +41,8 @@ class AdminController < ApplicationController
       :pending_invites => InvitedUser.all.count,
       :beta_signups => BetaSignup.all.count
     }
+
+    @recent_cron_logs = CronLog.order('created_at DESC').limit(10)
   end
 
   def data

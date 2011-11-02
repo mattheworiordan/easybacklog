@@ -1,25 +1,16 @@
-table.admin-data {
-  th {
-    padding: 5px;
-    font-weight: bold;
-  }
-  td {
-    padding: 5px;
-    border-top: 1px solid #CCC;
+table {
+  &.admin-data, &.people, &.cron-jobs {
+    th {
+      padding: 5px;
+      font-weight: bold;
+    }
+    td {
+      padding: 5px;
+      border-top: 1px solid #CCC;
+    }
   }
 }
 
 .back {
   float: right;
-}
-
-table.people {
-  th {
-    padding: 5px;
-    font-weight: bold;
-  }
-  td {
-    padding: 5px;
-    border-top: 1px solid #CCC;
-  }
 }

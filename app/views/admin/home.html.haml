@@ -21,6 +21,16 @@
       %th Backlog ID
       %th Editing time
 
+  %h2 Recent cron jobs
+  %table.cron-jobs
+    %tr.head
+      %th Message
+      %th Run at
+    - @recent_cron_logs.each do |cron|
+      %tr
+        %td{:title => cron.info}= cron.message
+        %td= cron.created_at.strftime('%H:%M %d/%m/%Y')
+
 :javascript
   var adminClientId = 'admin-' + Math.floor(Math.random()*10000).toString(36);
   var adminPoll = function() {
