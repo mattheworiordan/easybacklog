@@ -12,7 +12,6 @@ class Backlog < ActiveRecord::Base
   has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
-  validates_uniqueness_of :name, :scope => [:account_id], :message => 'has already been taken for another backlog'
   validates_presence_of :name, :rate, :velocity
   validates_numericality_of :rate, :velocity
 

@@ -12,7 +12,6 @@ Ibacklog::Application.routes.draw do
         get ':file_name' => 'backlogs#show', :as => 'download'
       end
       collection do
-        get 'name_available' => 'backlogs#name_available'
         get 'compare/:base/:target' => 'snapshots#compare_snapshots', :as => 'compare_snapshots'
       end
       member do

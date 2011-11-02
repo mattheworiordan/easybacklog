@@ -9,8 +9,7 @@ App.Views.BacklogCreateUpdateMethods = (function() {
     // standard user rules
     var rules = {
       'backlog[name]': {
-        required: true,
-        remote: '/accounts/' + $('form#new_backlog, form.edit_backlog').attr('action').match(/^\/accounts\/(\d+)/i)[1] + '/backlogs/name_available' + excludeThisBacklog
+        required: true
       },
       'backlog[rate]': {
         required: true,

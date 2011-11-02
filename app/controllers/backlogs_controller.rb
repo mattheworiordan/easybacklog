@@ -1,7 +1,6 @@
 class BacklogsController < ApplicationController
   include AccountResource
   after_filter :update_backlog_metadata, :only => [:update]
-  basic_allowed :name_available
   BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => :story } } ]
 
   def show
@@ -142,18 +141,6 @@ class BacklogsController < ApplicationController
         flash[:notice] = 'Backlog was duplicated successfully.'
         redirect_to account_backlog_path(current_account, @new_backlog)
       end
-    end
-  end
-
-  # Used by AJAX form validator
-  def name_available
-    name = (params[:backlog] || {})[:name] || ''
-    backlogs = current_account.backlogs.available
-    backlogs = backlogs.where('ID <> ?', params[:exclude]) if params[:exclude]
-    if backlogs.where('UPPER(name) like ?', name.upcase).empty?
-      render :text => 'true'
-    else
-      render :text => 'false'
     end
   end
 
