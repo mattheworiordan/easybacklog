@@ -1,6 +1,6 @@
 App.Views.BacklogCreateUpdateMethods=(function(){function initializeManageBacklog(){var excludeThisBacklog="";
 if(isEditingBacklog()){excludeThisBacklog="?exclude="+document.location.href.match(/\/backlogs\/(\d+)\//i)[1]
-}var rules={"backlog[name]":{required:true,remote:"/accounts/"+$("form#new_backlog, form.edit_backlog").attr("action").match(/^\/accounts\/(\d+)/i)[1]+"/backlogs/name_available"+excludeThisBacklog},"backlog[rate]":{required:true,number:true,min:0},"backlog[velocity]":{required:true,number:true,min:0}};
+}var rules={"backlog[name]":{required:true},"backlog[rate]":{required:true,number:true,min:0},"backlog[velocity]":{required:true,number:true,min:0}};
 $("form#new_backlog, form.edit_backlog").validate({rules:rules,messages:{"backlog[name]":{required:"You must enter a backlog name",remote:"That backlog name is already taken.  Please enter another name"}},success:function(label){label.html("&nbsp;").addClass("correct")
 }});
 storeAccountDefaults();

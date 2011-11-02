@@ -340,7 +340,8 @@ this.sprintTabsView.adjustTabConstraints(true)
 this.$("ul.stories>li.story").each(function(index,elem){$(elem).data("update-model-data")()
 })
 }})};
-App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot")
+App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot","sprintsChanged");
+this.model.Sprints().bind("change:completed_at",this.sprintsChanged)
 },render:function(){$("#new-snapshot").click(this.newSnapshot);
 $("#compare-snapshot").click(this.compareSnapshot);
 $("select.snapshot-selector").change(this.jumpToSnapshot);
@@ -349,6 +350,11 @@ if(!this.model.IsEditable()){$(this.el).addClass("not-editable");
 $("#backlog-container").addClass("not-editable");
 $("#add-sprint").hide()
 }return this
+},sprintsChanged:function(model){var that=this;
+var url=document.location.pathname.replace("#.*$","");
+$.get(url+"/snapshots-list-html",false,function(data){$(".snapshot-menu-container .select, #viewing-snapshot-container .selector").html(data);
+$("select.snapshot-selector").change(that.jumpToSnapshot)
+},"html")
 },enableSnapshotsMenu:function(){var overEitherNode=false,hideMenu=function(){overEitherNode=false;
 setTimeout(function(){if(overEitherNode===false){$("#backlog-data-area .snapshot").removeClass("hover");
 $("section.for-backlog .snapshot-menu-container").hide()
@@ -397,10 +403,11 @@ $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove()
 }},Cancel:function(){$(this).dialog("close")
 }}})
 },jumpToSnapshot:function(event){event.preventDefault();
-var val=$(event.target).val();
+var val=$(event.target).val(),isSprintSnapshot=$(event.target).find(":selected").hasClass("sprint");
 var baseUrl=document.location.href.match(/^.*\/accounts\/\d+\/backlogs\/\d+/i)[0];
-if(val.match(/^\d+$/)){baseUrl+="/snapshots/"+val
-}$("#loading-new-snapshot").show();
+if(val.match(/^\d+$/)){if(isSprintSnapshot){baseUrl+="/sprint-snapshots/"+val
+}else{baseUrl+="/snapshots/"+val
+}}$("#loading-new-snapshot").show();
 document.location.href=baseUrl
 },compareSnapshot:function(event){var view=this;
 var newSnapshotLink=$(event.target);
