@@ -27,7 +27,9 @@ this.unset("sprint_stories")
 }});
 var SprintStory=Backbone.Model.extend({initialize:function(){if(!App.Collections.SprintStoryStatuses){App.Collections.SprintStoryStatuses=new SprintStoryStatusesCollection();
 App.Collections.SprintStoryStatuses.fetch()
-}this.bind("change",function(model){if(this.Story()){this.Story().set({sprint_story_status_id:this.get("sprint_story_status_id")})
+}this.bind("change",function(model){if(this.Story()){this.Story().set({sprint_story_status_id:this.get("sprint_story_status_id"),sprint_story_id:this.get("id")})
+}});
+this.bind("remove",function(model){if(this.Story()){this.Story().set({sprint_story_status_id:-1,sprint_story_id:-1})
 }})
 },Sprint:function(){return this.collection.sprint
 },Story:function(){var that=this;
@@ -206,7 +208,7 @@ return(value)
 var fieldWithValue=$(target);
 var beforeChangeValue=this.beforeChangeValue[fieldId];
 var view=this;
-if(value!=beforeChangeValue){if(window.console){console.log("value for "+fieldId+" has changed from "+this.beforeChangeValue[fieldId]+" to "+value)
+if(value!=beforeChangeValue){if(window.console){console.log("value for "+fieldId+" has changed from: "+this.beforeChangeValue[fieldId]+" to: "+value)
 }var attributes={};
 attributes[fieldId]=value;
 this.model.set(attributes);
@@ -425,7 +427,7 @@ if(App.environment==="test"){document.location.href=url
 }},Cancel:function(){$(this).dialog("close")
 }}})
 }})};
-App.Views.BacklogPresence={Show:App.Views.BaseView.extend({presenceServerUrl:"https://easybacklog-async.herokuapp.com/",initialize:function(options){this.userId=Math.floor(Math.random()*1000000000).toString(36);
+App.Views.BacklogPresence={Show:App.Views.BaseView.extend({presenceServerUrl:"https://realtime-easybacklog.dotcloud.com",initialize:function(options){this.userId=Math.floor(Math.random()*1000000000).toString(36);
 this.name=options.name
 },render:function(){var that=this;
 if(App.environment!=="test"){that.startPolling();
@@ -478,6 +480,8 @@ _.bindAll(this,"toggleMore","persistSprintStories","positionStoriesContainerOnSc
 $(this.el).html(JST["sprints/show"]({model:this.model}));
 that.toggleUnassignedStoriesSize(true);
 this.updateStatistics(this.model.attributes);
+this.model.fetch({success:function(model){that.updateStatistics(model.attributes)
+}});
 sortFn=function(t){return t.get("position")
 };
 _(this.model.SprintStories().sortBy(sortFn)).each(function(model){var view=new App.Views.Sprints.SprintStory({model:model.Story(),parentView:that,id:that.childId(model.Story())});
@@ -612,6 +616,7 @@ _.bindAll(this,"addSprint")
 },render:function(){$(this.el).html(JST["sprints/help"]());
 this.pod=$(JST["sprints/help-pod"]());
 this.pod.find("a.add-new-sprint").click(this.addSprint);
+this.$("a.add-new-sprint").click(this.addSprint);
 $("section.main-content-pod").before(this.pod)
 },addSprint:function(event){this.sprintTabsView.createNew(event)
 },cleanUp:function(){this.pod.remove()
@@ -666,9 +671,7 @@ view.models[model.get("iteration")]=model
 };
 var pinnedTabs=[{get:function(){return"Backlog"
 },active:true,locked:true}];
-if(!this.isSettingsPage&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Stats"
-},locked:true})
-}if(!this.isSettingsPage&&!this.collection.length&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Sprints"
+if(!this.isSettingsPage&&!this.collection.length&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Sprints"
 }})
 }_(pinnedTabs).each(addTabView);
 _(this.collection.sortBy(function(model){return -model.get("id")
@@ -725,7 +728,8 @@ return false
 $(this).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Preparing...");
 $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").hide();
 var model=new Sprint({start_on:$.datepicker.formatDate("yy-mm-dd",dialog.find("#start-on").datepicker("getDate")),duration_days:dialog.find("#duration-days").val(),number_team_members:dialog.find("#number-team-members").val()});
-view.collection.add(model);
+if(view.collection.length==0){$.cookie("sprint_duration",model.get("duration_days"))
+}view.collection.add(model);
 model.save(false,{success:function(model,response){view.showNew(model);
 new App.Views.Notice({message:"Sprint number "+model.get("iteration")+" has been added"});
 $(dialog).dialog("close")
@@ -743,9 +747,9 @@ var dialog=$("#dialog-new-sprint");
 dialog.find("#start-on").datepicker();
 if(_.isFunction($.fn.validate)){dialog.find("form").validate({rules:{duration_days:{required:true,digits:true,min:1},number_team_members:{required:true,digits:true,min:1}},messages:{duration_days:{required:"Sprint duration is required",digits:"Enter a value using whole numbers only",min:"Sprint duration must be at least 1 day"},number_team_members:{required:"Number of team members is required",digits:"Enter a value using whole numbers only",min:"Team must comprise of at least one member"}}})
 }if(this.collection.length==0){dialog.find("#start-on").datepicker("setDate",new Date(new Date().getTime()+1000*60*60*24));
-dialog.find("#duration-days").val("10");
+dialog.find("#duration-days").val(!isNaN(parseInt($.cookie("sprint_duration")))?$.cookie("sprint_duration"):10);
 dialog.find("#number-team-members").val("1")
-}else{if(this.collection.length==1){var dayInMs=1000*60*60*24,lastSprint=this.collection.at(0),lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),nextDate=lastDate+((lastDuration+1)*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs);
+}else{if(this.collection.length==1){var dayInMs=1000*60*60*24,lastSprint=this.collection.at(0),lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),nextDate=lastDate+(lastDuration*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs);
 dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
 dialog.find("#duration-days").val(lastDuration);
 dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
@@ -847,7 +851,7 @@ this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){sh
 }this.setStatusHover()
 },updateViewWithModelData:function(attributes){var that=this;
 if(attributes==="all"){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
-}else{if(attributes&&attributes.sprint_story_status_id){viewElements=["unique-id","as-a","i-want-to","so-i-can","comments","score-50","score-90","score"];
+}else{if(attributes&&(attributes.sprint_story_status_id||attributes.sprint_story_id)){viewElements=["unique-id","as-a","i-want-to","so-i-can","comments","score-50","score-90","score"];
 _(viewElements).each(function(elem){that.$(elem+" .data").editable("destroy")
 });
 $(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
