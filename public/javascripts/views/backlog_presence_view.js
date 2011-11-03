@@ -2,7 +2,8 @@
 
 App.Views.BacklogPresence = {
   Show: App.Views.BaseView.extend({
-    presenceServerUrl: 'https://easybacklog-async.herokuapp.com/',
+    // presenceServerUrl: 'https://easybacklog-async.herokuapp.com/',
+    presenceServerUrl: 'https://realtime-easybacklog.dotcloud.com',
 
     initialize: function(options) {
       this.userId = Math.floor(Math.random()*1000000000).toString(36);
