@@ -20,11 +20,11 @@
   <div class="sprint-story-info">
     <% if (model.SprintStory()) { %>
       <div class="status">
-        <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><span><%= model.SprintStory().Status().get('status') %></span></div>
+        <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><span><%= model.SprintStory().Status().get('status').replace(' ', '&nbsp;') %></span></div>
       </div>
     <% } %>
     <% if (model.SprintStory()) { %>
-      <div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>">sprint <%= model.SprintStory().Sprint().get('iteration')%></a></div></div>
+      <div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>">sprint&nbsp;<%= model.SprintStory().Sprint().get('iteration')%></a></div></div>
     <% } %>
   </div>
 </div>
