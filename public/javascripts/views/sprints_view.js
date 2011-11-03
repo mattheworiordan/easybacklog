@@ -371,6 +371,7 @@ App.Views.Sprints = {
       $(this.el).html(JST['sprints/help']());
       this.pod = $(JST['sprints/help-pod']());
       this.pod.find('a.add-new-sprint').click(this.addSprint);
+      this.$('a.add-new-sprint').click(this.addSprint);
       $('section.main-content-pod').before(this.pod);
     },
 
