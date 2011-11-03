@@ -8,7 +8,7 @@ class StoryCardsReport
   # Create a PDF report of the themes passed in
   #  page_size = A4 (default) | LETTER
   #  fold_side = short | long (default)
-  def to_pdf(themes, page_size, fold_side)
+  def to_pdf(stories, page_size, fold_side)
     page_size = 'A4' unless (PAGE_SIZES.has_key?((page_size || '').to_sym))
     fold_side = 'short' unless %w(short long).include?(fold_side)
     page_dimensions = PAGE_SIZES[page_size.to_sym]
@@ -23,10 +23,8 @@ class StoryCardsReport
     pdf = Prawn::Document.new(document_options)
     @box_count = 0
 
-    themes.each do |theme|
-      theme.stories.each do |story|
-        add_story(pdf, document_options, page_size, fold_side, story)
-      end
+    stories.each do |story|
+      add_story(pdf, document_options, page_size, fold_side, story)
     end
 
     pdf.render

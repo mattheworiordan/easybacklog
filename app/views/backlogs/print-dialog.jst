@@ -12,7 +12,13 @@
         <option id="">All themes</option>
         <optgroup label="Only the following theme">
         <% backlog.Themes().each(function(theme) { %>
-          <option id="<%= theme.get('id') %>"><%= htmlEncode(theme.get('name')) %></option>
+          <option id="theme-<%= theme.get('id') %>"><%= htmlEncode(theme.get('name')) %></option>
+        <% }); %>
+        </optgroup>
+        <optgroup label="Only the following sprint">
+        <% var sprints = backlog.Sprints().sortBy(function(sprint) { sprint.get('iteration') } );
+           _(sprints.reverse()).each(function(sprint) { %>
+          <option id="sprint-<%= sprint.get('id') %>">Sprint <%= htmlEncode(sprint.get('iteration')) %></option>
         <% }); %>
         </optgroup>
       </select>

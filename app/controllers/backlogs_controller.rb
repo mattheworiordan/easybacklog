@@ -231,14 +231,18 @@ class BacklogsController < ApplicationController
         format.pdf do
           filename = "#{@backlog.name.parameterize}.pdf"
           set_download_headers filename
-          themes = if params[:print_scope].blank?
+          stories = if params[:print_scope] =~ /sprint-(\d+)/
+            # print_scope has an ID so user has selected a single sprint
+            @backlog.sprints.select { |t| t.id.to_s == $1 }
+          elsif params[:print_scope] =~ /theme-(\d+)/
+            # print_scope has an ID so user has selected a single theme
+            @backlog.themes.select { |t| t.id.to_s == $1 }
+          else
             # print_scope is blank therefore display all themes
             @backlog.themes
-          else
-            # print_scope has an ID so user has selected a single theme
-            @backlog.themes.select { |t| t.id.to_s == params[:print_scope] }
           end
-          output = StoryCardsReport.new.to_pdf(themes, params[:page_size], params[:fold_side])
+          stories = stories.map { |t| t.stories }.flatten
+          output = StoryCardsReport.new.to_pdf(stories, params[:page_size], params[:fold_side])
           send_data output, :filename => filename, :type => "application/pdf"
         end
 
