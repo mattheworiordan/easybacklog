@@ -12,6 +12,8 @@
     %br{ :style => 'mso-data-placement:same-cell;' }
 %td{:valign => 'top'}
   = story.comments
+%td{:valign => 'top'}
+  = "Sprint #{story.sprint_story.sprint.iteration}" if story.sprint_story.present?
 - if use_50_90
   %td{:valign => 'top'}
     = story.score_50
