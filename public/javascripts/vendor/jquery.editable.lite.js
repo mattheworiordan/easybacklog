@@ -58,7 +58,8 @@
      */
 
     showEditableField = function(event) {
-      var getBackgroundColor, positioningSpan, offsetBy, inputText;
+      var getBackgroundColor, positioningSpan, offsetBy, inputText,
+          eventAlreadyProcessed = false; // multiple keydown events are sometimes fired, ensure we only deal with the first valid one
 
       stripPlaceHolder();
 
@@ -129,29 +130,49 @@
       $(target).append(form); // add the form inside this element
 
       // add event handler to fire if user moves away
-      $(elem).bind('blur.editable', function() {
-        // pause before we remove the element as other events may need to access this element before it disappears
-        setTimeout(function() {
-          if (options.acceptChangesOnBlur) {
-            saveChanges();
-          } else {
-            restoreTarget();
-          }
-          $(elem).unbind('blur.editable');
-        }, 10);
+      $(elem).blur(function() {
+        if (!eventAlreadyProcessed) { // if blurring as a result of a key press, then allow this blur event to be ignored
+          eventAlreadyProcessed = true;
+          // pause before we remove the element as other events may need to access this element before it disappears
+          setTimeout(function() {
+            if (options.acceptChangesOnBlur) {
+              saveChanges();
+            } else {
+              restoreTarget();
+            }
+            $(elem).unbind('blur');
+          }, 10);
+        }
+      });
+
+      // if user clicks anywhere outside this elem then assume this is effectively a blur
+      setTimeout(function() {
+        $('html').bind('click.editable', function() {
+          $(elem).trigger('blur');
+        });
+      }, 1);
+      // if user clicks inside the element, prevent propagation and thus blurring from binding above
+      $(elem).click(function(event) {
+        event.stopPropagation();
       });
 
       // add event handler to fire if user presses any "special key"
       $(elem).keydown(function(event) {
-        if (event.which === 13) { // enter, so save and move on
-          if ( (options.type === 'textarea') && (event.ctrlKey || event.altKey || event.shiftKey) ) {
-            // allow line breaks in text areas
-            event.stopPropagation();
-          } else {
-            setTimeout(saveChanges, 10);
+        if (!eventAlreadyProcessed) {
+          if (event.which === 13) { // enter, save changes and move on
+            if ( (options.type === 'textarea') && (event.ctrlKey || event.altKey || event.shiftKey) ) {
+              // allow line breaks in text areas
+              event.stopPropagation();
+            } else {
+              eventAlreadyProcessed = true;
+              setTimeout(saveChanges, 10);
+            }
+          } else if (event.which === 27) { // escape key
+            eventAlreadyProcessed = true;
+            setTimeout(restoreTarget, 10);
+          } else if (event.which == 9) { // tab
+            $(elem).trigger('blur');
           }
-        } else if (event.which === 27) { // escape key
-          setTimeout(restoreTarget, 10);
         }
       });
 
@@ -173,15 +194,19 @@
     // set target back to it's original state
     // optionally take a parameter for new text
     restoreTarget = function(newVal) {
-      var val = multiLineHtmlEncode(typeof newVal !== 'undefined' ? newVal : targetProps.text);
+      var val = typeof newVal !== 'undefined' ? newVal : targetProps.text,
+          encodedVal = multiLineHtmlEncode(val);
       form.remove();
-      $(target).attr('style', targetProps.style ? targetProps.style : '').html(val);
+      $(target).attr('style', targetProps.style ? targetProps.style : '').html(encodedVal);
       $(target).data('editable-active', false);
 
       // if user wants a callback even if there was no change, then call this now
-      if ((newVal !== 'undefined') && (typeof options.noChange === 'function')) {
+      if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
         options.noChange.call(target, val)
       }
+
+      // remove catch all event to see if user clicked outside this elem
+      $('html').unbind('click.editable');
 
       addPlaceHolderIfEmpty();
     };
