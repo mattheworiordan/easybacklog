@@ -256,7 +256,7 @@ App.Views.SprintTabs = {
             lastSprint = this.collection.at(0),
             lastDate = parseRubyDate(lastSprint.get('start_on')).getTime(),
             lastDuration = Number(lastSprint.get('duration_days')),
-            nextDate = lastDate + ((lastDuration+1) * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs); // next sprint starts next day plus account for weekends every 5 days
+            nextDate = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs); // next sprint starts next day plus account for weekends every 5 days
         dialog.find('#start-on').datepicker("setDate", new Date(nextDate));
         dialog.find('#duration-days').val(lastDuration);
         dialog.find('#number-team-members').val(lastSprint.get('number_team_members'));
