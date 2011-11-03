@@ -30,7 +30,7 @@
 
   var opts, initialize, adjustToFit, addTab, removeTab, setTabContent,
       moveNonFixedTabsToScroller, addNav, positionNav, getLeftMostTabIndex,
-      totalElemWidth, shiftTabOffset, shiftScroller;
+      totalElemWidth, shiftTabOffset, shiftScroller, slideTabsAfterResize;
 
   $.fn.infiniteTabs = function(command, options, secondParam) {
     if ( (typeof command === 'object') || !command ) {
@@ -140,12 +140,19 @@
 
     // resize scroller area when window resizes
     $(window).resize(function(e) {
-      var resizeWidthBy = $(window).width() - windowWidth;
+      var resizeWidthBy = $(window).width() - windowWidth,
+          moveTabsBackBy;
       if (resizeWidthBy) {
         scrollerWidth += resizeWidthBy;
         windowWidth = $(window).width();
         scroller.find('div').css('width', (scrollerWidth-20) + 'px');
         positionNavFunction();
+        moveTabsBackBy = slideTabsAfterResize(scrollableTabOffset, scrollerWidth, scroller);
+        if (moveTabsBackBy) {
+          scrollableTabOffset += moveTabsBackBy;
+          if (scrollableTabOffset > 0) { scrollableTabOffset = 0; }
+          shiftScroller(scrollableTabOffset, scroller, that);
+        }
       }
     });
 
@@ -218,6 +225,7 @@
     return nav;
   };
 
+  // position the tab navigation relative to the scrolling tab area (on the right)
   positionNav = function(outerMostList, nav, scroller, scrollerWidth) {
     var currentPos, navPosition;
 
@@ -238,6 +246,20 @@
     } else {
       nav.css('display', 'none');
     }
+  };
+
+  // if the tabs are offset to the left, and the user resizes the window wider,
+  // it can result in tabs being scrolled out of view yet the navigation disappears as there is enough
+  // space for all tabs.
+  // therefore after a scroll event, shift the tabs up to the right of the scroll area
+  slideTabsAfterResize = function(scrollableTabOffset, scrollerWidth, scroller) {
+    if (scrollableTabOffset < 0) { // tabs are offset / scrolled to the left (under pinned tabs)
+      if (scrollableTabOffset + totalElemWidth(scroller.find('li')) + 50 < scrollerWidth) {
+        // shift scroll bar forwards by this amount
+        return -(scrollableTabOffset + totalElemWidth(scroller.find('li')) + 50 - scrollerWidth);
+      }
+    }
+    return false;
   };
 
   moveNonFixedTabsToScroller = function(containerList, scrollableTabs, scroller) {
