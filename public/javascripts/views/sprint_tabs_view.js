@@ -180,7 +180,14 @@ App.Views.SprintTabs = {
               start_on: $.datepicker.formatDate('yy-mm-dd', dialog.find('#start-on').datepicker('getDate')),
               duration_days: dialog.find('#duration-days').val(),
               number_team_members: dialog.find('#number-team-members').val()
-            })
+            });
+
+            if (view.collection.length == 0) {
+              // first sprint is being added, store the user's duration in days for a sprint so that
+              // we default to this next time
+              $.cookie('sprint_duration', model.get('duration_days'));
+            }
+
             view.collection.add(model);
             model.save(false, {
               success: function(model, response) {
@@ -248,7 +255,7 @@ App.Views.SprintTabs = {
       if (this.collection.length == 0) {
         // first sprint, assume some defaults
         dialog.find('#start-on').datepicker("setDate", new Date(new Date().getTime() + 1000 * 60 * 60 * 24));
-        dialog.find('#duration-days').val('10');
+        dialog.find('#duration-days').val(!isNaN(parseInt($.cookie('sprint_duration'))) ? $.cookie('sprint_duration') : 10);
         dialog.find('#number-team-members').val('1');
       } else if (this.collection.length == 1) {
         // we have one previous sprint so we can make some assumptions
