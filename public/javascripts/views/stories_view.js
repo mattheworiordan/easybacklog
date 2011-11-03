@@ -152,7 +152,7 @@ App.Views.Stories = {
       _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'updateViewWithModelData');
 
       this.model.bind('change', function(model) {
-        // if sprint_story_status_id is set by story then we need to update the view
+        // if sprint_story_status_id or sprint_story_id is set by story then we need to update the view
         that.updateViewWithModelData(model.changedAttributes());
       });
     },
@@ -212,7 +212,7 @@ App.Views.Stories = {
       if (attributes === 'all') {
         // just populate the entire element as we're initializing
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
-      } else if (attributes && attributes.sprint_story_status_id) {
+      } else if (attributes && (attributes.sprint_story_status_id || attributes.sprint_story_id)) {
         // clear editable events as it was causing strange page reload issues unless destroyed before we recycle
         viewElements = ['unique-id', 'as-a', 'i-want-to', 'so-i-can', 'comments', 'score-50', 'score-90', 'score'];
         _(viewElements).each(function(elem) { that.$(elem + ' .data').editable('destroy'); });
