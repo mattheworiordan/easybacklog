@@ -73,7 +73,7 @@ $(document).ready(function() {
     };
     $('#dialog-confirm').dialog({
       resizable: false,
-      height:140,
+      height:160,
       modal: true,
       buttons: buttons
     });
