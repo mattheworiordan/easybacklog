@@ -313,7 +313,11 @@ section.content .not-editable-backlog-notice {
       padding: 3px;
       float: left;
       &.highlight {
-        color: white;
+        color: red;
+        background-color: rgba(255,255,255,0.5);
+        margin-left: -3px;
+        margin-right: -4px;
+        padding: 3px 6px 3px 6px;
       }
     }
     div.divider {

@@ -29,6 +29,7 @@ App.Views.Sprints = {
       that.toggleUnassignedStoriesSize(true);
 
       this.updateStatistics(this.model.attributes);
+      this.model.fetch({ success: function(model) { that.updateStatistics(model.attributes); } });
 
       // show stories assigned to sprint
       sortFn = function(t) { return t.get('position'); };
@@ -84,6 +85,7 @@ App.Views.Sprints = {
     updateStatistics: function(attributes) {
       this.model.set(attributes);
       $('#backlog-data-area .backlog-stats').html( JST['sprints/stats']({ attributes: attributes }) );
+
       var totals = this.$('.stories-container .totals');
       if (this.model.SprintStories().length === 0) {
         totals.addClass('notice').html( JST['sprints/empty']() );
