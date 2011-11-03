@@ -42,7 +42,7 @@ App.Views.BaseView = Backbone.View.extend({
     var view = this;
 
     if (value != beforeChangeValue) {
-      if (window.console) { console.log('value for ' + fieldId + ' has changed from ' + this.beforeChangeValue[fieldId] + ' to ' + value); }
+      if (window.console) { console.log('value for ' + fieldId + ' has changed from: ' + this.beforeChangeValue[fieldId] + ' to: ' + value); }
       var attributes = {};
       attributes[fieldId] = value;
       this.model.set(attributes);
