@@ -33,13 +33,12 @@ App.Views.SprintTabs = {
         active: true,
         locked: true
       }];
-      /*
       if (!this.isSettingsPage && !this.isSnapshot) {
         pinnedTabs.push({
           get: function() { return 'Stats'; },
           locked: true
         });
-      }*/
+      }
       if (!this.isSettingsPage && !this.collection.length && !this.isSnapshot) {
         pinnedTabs.push({
           get: function() { return 'Sprints'; }
