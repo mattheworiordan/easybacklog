@@ -120,5 +120,5 @@
     Backbone.history.start();
 
     // validation only needed for tabs, so load after page is ready
-    $('head').append('#{escape_javascript(include_javascripts :validation)}');
+    $('head').append('#{escape_javascript(include_javascripts :validation, :charts)}');
   });

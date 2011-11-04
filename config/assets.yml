@@ -49,6 +49,8 @@ javascripts:
   beta_signup:
     - public/javascripts/vendor/conditional/jquery.lightbox-0.5.js
     - public/javascripts/sections/beta_signup.js
+  charts:
+    - public/javascripts/vendor/conditional/highcharts.src.js
 stylesheets:
   common:
     - tmp/stylesheets/global.css

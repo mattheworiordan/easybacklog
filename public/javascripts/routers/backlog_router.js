@@ -24,8 +24,8 @@ App.Routers.Backlog = Backbone.Router.extend({
     this.cleanUpOldView();
     if (!this.backlogView) {
       this.backlogView = new App.Views.Backlogs.Show({ model: App.Collections.Backlogs.at(0), el: $('#backlog-container'), sprintTabsView: this.sprintTabsView });
-      this.showContainer('#backlog-container'); // needs to be visible as render sets focus on first theme
       this.backlogView.render();
+      this.showContainer('#backlog-container'); // needs to be visible as render sets focus on first theme
     } else {
       this.backlogView.activated();
       this.showContainer('#backlog-container');
@@ -35,9 +35,14 @@ App.Routers.Backlog = Backbone.Router.extend({
 
   showStats: function() {
     this.cleanUpOldView();
-    this.oldView = new App.Views.BacklogStats.Show({ model: App.Collections.Backlogs.at(0), el: this.replaceWithNew('#stats-container') });
-    this.showContainer('#stats-container');
-    this.oldView.render();
+    if (!this.statsView) {
+      this.statsView = new App.Views.BacklogStats.Show({ model: App.Collections.Backlogs.at(0), el: this.replaceWithNew('#stats-container') });
+      this.statsView.render();
+      this.showContainer('#stats-container');
+    } else {
+      this.statsView.activated();
+      this.showContainer('#stats-container');
+    }
     this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration('Stats'));
   },
 

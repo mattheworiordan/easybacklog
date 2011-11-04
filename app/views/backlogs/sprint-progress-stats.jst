@@ -1,8 +1,38 @@
 <h2 class="divider">Statistics</h2>
 
-<p>Out of luck!  You have not completed any sprints yet, so we can't build any reports for you.  Once you have completed your first sprint we'll have some reports waiting for you.</p>
+<div class="loading">
+  <div class="icon">
+    <span class="progress-icon"></span>
+  </div>
+  <div class="notice">
+    Please wait while we load up your backlog statistics.
+  </div>
+</div>
 
-<h2>Burn down</h2>
-<h2>Burn up</h2>
-<h2>Velocity</h2>
-<h2>Velocity mean</h2>
+<div class="stats">
+  <div class="burn-down">
+    <div id="burn-down-chart" class="chart"></div>
+  </div>
+
+  <div class="burn-up">
+    <div id="burn-up-chart" class="chart"></div>
+  </div>
+
+  <div class="velocity">
+    <div id="velocity-chart" class="chart"></div>
+  </div>
+
+  <div class="average">
+    <h3>Average velocity</h3>
+    <div class="box">
+      <h4 id="stat-day"></h4>
+      <h4 id="stat-sprint"></h4>
+      <div class="notice"></div>
+    </div>
+  </div>
+</div>
+
+<div class="no-stats">
+  <p>Unfortunately you have not yet completed a sprint, so there are no statistics available yet.</p>
+  <p>Once you have marked your first sprint as complete, stats will appear in this area</p>
+</div>

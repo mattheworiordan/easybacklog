@@ -393,3 +393,47 @@ section.side-panel {
     color: #666;
   }
 }
+
+#stats-container {
+  .stats, .no-stats {
+    display: none;
+  }
+  .loading {
+    margin-top: 2em;
+    .icon {
+      float: left;
+      padding-right: 0.5em;
+    }
+  }
+  .stats>div {
+    width: 50%;
+    float: left;
+    h3 {
+      padding: 10px 20px 5px 0;
+      margin: 0;
+      text-align: center;
+      color: darken($title-area-color, 20%);
+      font-size: 15px;
+    }
+    .chart {
+      margin: 5px 20px 20px 0;
+    }
+    .box {
+      padding: 10px;
+      background-color: #EEE;
+      @include border-radius(10px);
+      margin: 5px 40px 0 40px;
+      .notice {
+        color: #666;
+        text-align: center;
+      }
+      h4 {
+        font-size: 30px;
+        text-align: center;
+        &:first-child {
+          margin-top: 20px;
+        }
+      }
+    }
+  }
+}
