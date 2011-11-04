@@ -29,6 +29,7 @@ App.Views.BacklogPresence = {
             url: that.presenceServerUrl + options.path,
             data: options.data,
             crossDomain: true,
+            async: options.async === false ? false : true,
             success: function(response) { if (options.success) { options.success(response); } },
             error: function(jqXHR) { if (options.error) { options.error(jqXHR); } }
           }
@@ -92,6 +93,7 @@ App.Views.BacklogPresence = {
         that.ajaxRequest({
           path: 'close',
           data: { id: that.userId, channel: that.model.get('id') },
+          async: false,
           success: function(response) {
             if (window.console) { console.log("Connection close request sent"); }
           },
