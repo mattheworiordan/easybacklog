@@ -41,14 +41,17 @@ App.Views.BacklogDataArea = {
 
     enableSnapshotsMenu: function() {
       var overEitherNode = false,
+          selectIsOpen = false,
           hideMenu = function() {
             overEitherNode = false;
-            setTimeout(function() {  // give user a change to move mouse onto either of the nodes, menu or menu container
-              if (overEitherNode === false) {
-                $('#backlog-data-area .snapshot').removeClass('hover');
-                $('section.for-backlog .snapshot-menu-container').hide();
-              }
-            }, 50);
+            if (!selectIsOpen) {
+              setTimeout(function() {  // give user a change to move mouse onto either of the nodes, menu or menu container
+                if (overEitherNode === false) {
+                  $('#backlog-data-area .snapshot').removeClass('hover');
+                  $('section.for-backlog .snapshot-menu-container').hide();
+                }
+              }, 50);
+            }
           },
           showMenu = function() {
             $('#backlog-data-area .snapshot').addClass('hover');
@@ -63,6 +66,22 @@ App.Views.BacklogDataArea = {
 
       // allow click to active menu for testing
       $('#backlog-data-area .snapshot').mouseover(showMenu).click(showMenu).mouseout(hideMenu);
+      $('.snapshot-menu-container .select select').click(function(event) {
+        // when user clicks on drop down, no longer hide the menu even if they move down the drop down off this area (on PC IE)
+        // until they click it again and select something
+        selectIsOpen = !selectIsOpen;
+
+        event.stopPropagation();
+        if (selectIsOpen) {
+          $('html').bind('click.snapshotmenu', function() {
+            selectIsOpen = false;
+            hideMenu();
+            $('html').unbind('click.snapshotmenu');
+          });
+        }
+      }).keydown(function() {
+        selectIsOpen = false;
+      });
       $('section.for-backlog .snapshot-menu-container').mouseover(function() {
         overEitherNode = true;
       }).mouseout(hideMenu);
