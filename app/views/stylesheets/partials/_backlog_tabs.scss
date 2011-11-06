@@ -417,6 +417,13 @@ section.side-panel {
     }
     .chart {
       margin: 5px 20px 20px 0;
+      &.has-options {
+        margin-bottom: 0px;
+      }
+    }
+    .options {
+      height: 30px;
+      text-align: center;
     }
     .box {
       padding: 10px;
@@ -427,11 +434,30 @@ section.side-panel {
         color: #666;
         text-align: center;
       }
-      h4 {
-        font-size: 30px;
-        text-align: center;
-        &:first-child {
-          margin-top: 20px;
+      table.comparison {
+        margin: 0 auto 25px auto;
+        border-collapse: collapse;
+        th {
+          border-right: 1px solid #EEE;
+          background-color: #999;
+          color: white;
+          padding: 1px 5px;
+          &.empty {
+            background-color: transparent;
+          }
+        }
+        tr:nth-child(2) {
+          border-bottom: 1px solid #CCC;
+        }
+        td {
+          font-size: 30px;
+          text-align: center;
+          border-right: 1px solid #CCC;
+          padding: 0 5px;
+          &:first-child {
+            text-align: right;
+            padding-right: 15px;
+          };
         }
       }
     }

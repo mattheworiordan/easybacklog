@@ -17,16 +17,7 @@ App.Views.Backlogs = {
 
       var show_view = this;
 
-      this.updateStatistics();
-
-      if (this.model.IsEditable()) {
-        var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
-        if (firstEditableElem.length) {
-          firstEditableElem.click();
-        } else {
-          $('ul.themes li.actions a.new-theme').focus();
-        }
-      }
+      this.activated();
 
       return (this);
     },
@@ -39,6 +30,19 @@ App.Views.Backlogs = {
     // view is made active, but not necessarily re-rendered for performance reasons
     activated: function() {
       this.updateStatistics();
+
+      if (this.model.IsEditable()) {
+        // delay before making first element focussed as sometimes editable text is rendered before page is complete
+        //  and is thus incorrectly positioned
+        setTimeout(function() {
+          var firstEditableElem = $('ul.themes li.theme:first .theme-data .name .data');
+          if (firstEditableElem.length) {
+            firstEditableElem.click();
+          } else {
+            $('ul.themes li.actions a.new-theme').focus();
+          }
+        }, 10);
+      }
     }
   })
 };

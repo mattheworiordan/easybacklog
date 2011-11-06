@@ -50,6 +50,9 @@ Ibacklog::Application.routes.draw do
       end
     end
     resources :sprints
+    member do
+      match 'backlog-stats' => 'backlog_stats#show'
+    end
   end
   resources :sprints, :only => [:show] do
     resources :sprint_stories, :path => "sprint-stories" do

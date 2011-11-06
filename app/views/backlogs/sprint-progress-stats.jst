@@ -11,11 +11,15 @@
 
 <div class="stats">
   <div class="burn-down">
-    <div id="burn-down-chart" class="chart"></div>
+    <div id="burn-down-chart" class="chart has-options"></div>
+    <div class="options">
+      <input type="checkbox" id="show-projected"><label for="show-projected">Show projected based on average velocity</label>
+    </div>
   </div>
 
   <div class="burn-up">
-    <div id="burn-up-chart" class="chart"></div>
+    <div id="burn-up-chart" class="chart has-options"></div>
+    <div class="options"></div>
   </div>
 
   <div class="velocity">
@@ -23,10 +27,26 @@
   </div>
 
   <div class="average">
-    <h3>Average velocity</h3>
+    <h3>Velocity</h3>
     <div class="box">
-      <h4 id="stat-day"></h4>
-      <h4 id="stat-sprint"></h4>
+      <table class="comparison">
+        <tr>
+          <th class="empty"></th>
+          <th>Average</th>
+          <th>Expected</th>
+        </tr>
+        <tr>
+          <td>Velocity per day</td>
+          <td id="velocity-per-day-average"></td>
+          <td id="velocity-per-day-expected"></td>
+        </tr>
+        <tr>
+          <td>Velocity per sprint</td>
+          <td id="velocity-per-sprint-average"></td>
+          <td id="velocity-per-sprint-expected"></td>
+        </tr>
+      </table>
+
       <div class="notice"></div>
     </div>
   </div>
