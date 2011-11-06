@@ -252,7 +252,7 @@ App.Views.SprintTabs = {
       }
 
       // set sensible defaults for new sprint based on previous sprints (if they exist)
-      if (this.collection.length == 0) {
+      if (this.collection.length === 0) {
         // first sprint, assume some defaults
         dialog.find('#start-on').datepicker("setDate", new Date(new Date().getTime() + 1000 * 60 * 60 * 24));
         dialog.find('#duration-days').val(!isNaN(parseInt($.cookie('sprint_duration'))) ? $.cookie('sprint_duration') : 10);
@@ -273,8 +273,12 @@ App.Views.SprintTabs = {
             sprintsDesc = this.collection.sortBy(function(sprint) { return sprint.get('iteration'); }).reverse(),
             lastSprint = sprintsDesc[0],
             previousSprint = sprintsDesc[1],
+            lastDate = parseRubyDate(lastSprint.get('start_on')).getTime(),
+            lastDuration = Number(lastSprint.get('duration_days')),
             timePassedBetweenDates = parseRubyDate(lastSprint.get('start_on')).getTime() - parseRubyDate(previousSprint.get('start_on')).getTime(),
-            nextDate = parseRubyDate(lastSprint.get('start_on')).getTime() + timePassedBetweenDates;
+            nextDateByDuration = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs), // next sprint starts next day plus account for weekends every 5 days
+            nextDateByTimeBetweenSprints = lastDate + timePassedBetweenDates,
+            nextDate = Math.max(nextDateByDuration, nextDateByTimeBetweenSprints);
         dialog.find('#start-on').datepicker("setDate", new Date(nextDate));
         dialog.find('#duration-days').val(lastSprint.get('duration_days'));
         dialog.find('#number-team-members').val(lastSprint.get('number_team_members'));
