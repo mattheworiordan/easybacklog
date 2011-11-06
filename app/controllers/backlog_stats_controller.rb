@@ -4,12 +4,16 @@ class BacklogStatsController < ApplicationController
     if @backlog.account.users.find(current_user.id).blank?
       send_json_error 'You do not have permission to view this backlog'
     else
-      render :json => {
-        :burn_down => burn_down_data,
-        :velocity_stats => velocity_stats,
-        :velocity_completed => velocity_completed,
-        :burn_up => burn_up_data
-      }
+      if @backlog.points == 0
+        render :json => { zero_points: true }
+      else
+        render :json => {
+          :burn_down => burn_down_data,
+          :velocity_stats => velocity_stats,
+          :velocity_completed => velocity_completed,
+          :burn_up => burn_up_data
+        }
+      end
     end
   end
 
@@ -67,7 +71,7 @@ class BacklogStatsController < ApplicationController
       end
 
       unless actual_points <= 0
-        projected.concat complete_trend(actual_points, last_projected, true)
+        projected.concat complete_trend(actual_points, last_projected, true) unless last_projected.total_expected_based_on_average_points == 0
       end
 
       { :trend => trend, :actual => actual, :projected => projected }

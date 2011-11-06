@@ -29,6 +29,7 @@ App.Views.BacklogStats = {
       this.$('.loading').show();
       this.$('.stats').hide();
       this.$('.no-stats').hide();
+      this.$('.no-points').hide();
       this.showCharts();
     },
 
@@ -57,24 +58,31 @@ App.Views.BacklogStats = {
         // load data and then...
         $.get('/backlogs/' + this.model.get('id') + '/backlog-stats', {}, function(data) {
           that.$('.loading').hide();
-          that.$('.stats').show();
           that.$('.no-stats').hide();
-
-          if ($.cookie('stats_show_projected') === 'no') {
-            that.$('#show-projected').removeAttr('checked')
+          if (data.zero_points) {
+            that.$('.no-points').show();
+            that.$('.stats').hide();
           } else {
-            that.$('#show-projected').attr('checked','checked')
-          }
+            that.$('.stats').show();
+            that.$('.no-points').hide();
 
-          that.displayBurnDown(data.burn_down);
-          that.displayBurnUp(data.burn_up);
-          that.displayVelocityCompleted(data.velocity_completed);
-          that.displayVelocityStats(data.velocity_stats);
+            if ($.cookie('stats_show_projected') === 'no') {
+              that.$('#show-projected').removeAttr('checked')
+            } else {
+              that.$('#show-projected').attr('checked','checked')
+            }
+
+            that.displayBurnDown(data.burn_down);
+            that.displayBurnUp(data.burn_up);
+            that.displayVelocityCompleted(data.velocity_completed);
+            that.displayVelocityStats(data.velocity_stats);
+          }
         });
       } else {
         // no sprints are completed, show placeholder
         this.$('.loading').hide();
         this.$('.stats').hide();
+        this.$('.no-points').hide();
         this.$('.no-stats').show();
       }
     },
