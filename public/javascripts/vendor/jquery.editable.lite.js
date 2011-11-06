@@ -321,6 +321,7 @@
     autoResize: false, // allows auto resize of text areas if jquery.textarea-expander.js is included
     autoResizeMax: 300, // set max height autoResize field can expand to,
     noChange: false, // callback that will be made even if no change was made to the input field, by default no call is made
-    placeHolder: false // allows HTML to be placed inside the target when empty such as [click here to edit]
+    placeHolder: false, // allows HTML to be placed inside the target when empty such as [click here to edit]
+    autoComplete: false // allows use of JQuery UI autoComplete plugin, pass in an array or function to return an array of data
   };
 }(jQuery));
