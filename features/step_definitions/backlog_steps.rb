@@ -156,14 +156,16 @@ Given /^the focus is on the "([^"]*)"$/ do |selector|
   selector = selector_to(selector)
   page.evaluate_script(%{ $('#{selector}').length }).should > 0
   page.execute_script(%{
-    $(':focus').blur();
     if ($('#{selector}').is('a,button,input,textarea,select')) {
+      $(':focus').blur();
       $('#{selector}').focus();
     } else {
       // could be editable text so we need to click for it to get focus
       if (!$('#{selector}').has('input[name=value], textarea[name=value]')) {
+        $(':focus').blur();
         $('#{selector}').click();
       } else {
+        // editable field already visible, just ensure it has focus
         $('#{selector}').find('input[name=value], textarea[name=value]').focus();
       }
     }
