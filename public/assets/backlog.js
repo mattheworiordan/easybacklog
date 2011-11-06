@@ -443,7 +443,7 @@ $.support.cors=true;
 if(App.environment!=="test"){that.startPolling();
 that.closeConnectionOnUnload()
 }return(this)
-},ajaxRequest:function(options){var that=this,ajaxOptions={url:that.presenceServerUrl+options.path,data:options.data,crossDomain:true,success:function(response){if(options.success){options.success(response)
+},ajaxRequest:function(options){var that=this,ajaxOptions={url:that.presenceServerUrl+options.path,data:options.data,crossDomain:true,async:options.async===false?false:true,success:function(response){if(options.success){options.success(response)
 }},error:function(jqXHR){if(options.error){options.error(jqXHR)
 }}};
 if($.browser.msie&&parseInt($.browser.version,10)>=8){_.extend(ajaxOptions,{type:"GET",cache:false,dataType:"jsonp"});
@@ -463,7 +463,7 @@ $(that.el).show()
 };
 _poll()
 },closeConnectionOnUnload:function(){var that=this;
-window.onbeforeunload=function(){that.ajaxRequest({path:"close",data:{id:that.userId,channel:that.model.get("id")},success:function(response){if(window.console){console.log("Connection close request sent")
+window.onbeforeunload=function(){that.ajaxRequest({path:"close",data:{id:that.userId,channel:that.model.get("id")},async:false,success:function(response){if(window.console){console.log("Connection close request sent")
 }},error:function(jqXHR){if(window.console){console.log("Connection close request FAILED")
 }}})
 }
@@ -479,6 +479,7 @@ return this
 this.$(".loading").show();
 this.$(".stats").hide();
 this.$(".no-stats").hide();
+this.$(".no-points").hide();
 this.showCharts()
 },waitUntilChartsLoaded:function(callback,counter){var nextRequestIn=250,that=this;
 if(!counter){counter=1
@@ -489,17 +490,21 @@ if(!counter){counter=1
 }},showCharts:function(){var that=this;
 if(this.model.Sprints().select(function(sprint){return sprint.isComplete()
 }).length>0){$.get("/backlogs/"+this.model.get("id")+"/backlog-stats",{},function(data){that.$(".loading").hide();
-that.$(".stats").show();
 that.$(".no-stats").hide();
+if(data.zero_points){that.$(".no-points").show();
+that.$(".stats").hide()
+}else{that.$(".stats").show();
+that.$(".no-points").hide();
 if($.cookie("stats_show_projected")==="no"){that.$("#show-projected").removeAttr("checked")
 }else{that.$("#show-projected").attr("checked","checked")
 }that.displayBurnDown(data.burn_down);
 that.displayBurnUp(data.burn_up);
 that.displayVelocityCompleted(data.velocity_completed);
 that.displayVelocityStats(data.velocity_stats)
-})
+}})
 }else{this.$(".loading").hide();
 this.$(".stats").hide();
+this.$(".no-points").hide();
 this.$(".no-stats").show()
 }},backlogSettings:function(event){event.preventDefault();
 document.location.href=$("#backlog-data-area a:last").attr("href")
@@ -565,7 +570,7 @@ sprint=_(data).find(function(elem){return that.x==="Sprint "+elem.iteration
 pluralize=function(val){return val===1?"":"s"
 },round=function(val){return Math.max(0,Math.round(val*10)/10)
 };
-html="<b>Sprint "+sprint.iteration+"</b>"+"Completed "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>Actual velocity per day: "+round(sprint.actual)+"<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)+"<br/>"+"Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on));
+html="<b>Sprint "+sprint.iteration+"</b><br />"+"Completed "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>Actual velocity per day: "+round(sprint.actual)+"<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)+"<br/>"+"Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on));
 return html
 }},series:[{name:"Total",data:_(data).map(function(d){return d.completed
 })}]})
