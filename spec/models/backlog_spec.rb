@@ -271,4 +271,29 @@ describe Backlog do
     backlog.sprint_snapshots.first.name.should == 'Sprint 2'
     backlog.sprint_snapshots.second.name.should == 'Sprint 1'
   end
+
+  it 'should return an average velocity based on completed sprints' do
+    todo = Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
+    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
+    theme = Factory.create(:theme)
+    backlog = theme.backlog
+    backlog.velocity = 4
+    backlog.save!
+
+    # until we have a complete sprint, average should just return backlog settings
+    backlog.average_velocity.should == 4
+
+    # create 3 sprints with a single story with a score of 1, 2, and 3
+    (1..3).each do |score|
+      sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 1, :number_team_members => 1)
+      story = Factory.create(:story, :score_50 => score, :score_90 => score)
+      sprint.stories << story
+      story.sprint_story.sprint_story_status = done
+      story.sprint_story.save!
+      sprint.reload
+      sprint.mark_as_complete
+    end
+
+    backlog.average_velocity.should == 2 # average of 1,2,3
+  end
 end

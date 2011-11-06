@@ -20,6 +20,8 @@ class Sprint < ActiveRecord::Base
       'where snapshot_for_sprint_id IS NOT NULL and archived = ? and deleted = ?)', false, false).
     where('sprints.start_on < ?', Time.now)
 
+  scope :completed, where('completed_at is not null')
+
   def end_on
     start_on + duration_days.days - 1
   end
@@ -63,6 +65,55 @@ class Sprint < ActiveRecord::Base
 
   def total_completed_points
     ScoreCalculator.total_points stories.select { |s| s.done? }
+  end
+
+  # calculate total expected points based on the backlog average velocity as opposed to configured velocity
+  def total_expected_based_on_average_points
+    backlog.average_velocity * number_team_members * duration_days
+  end
+
+  def actual_velocity
+    total_completed_points.to_f / number_team_members.to_f / duration_days.to_f
+  end
+
+  # calculates completed on based on day before next sprint starting
+  # or if not, calculates it based on working days
+  def completed_on
+    next_sprint = backlog.sprints.find_by_iteration(iteration + 1)
+    if next_sprint
+      completed_on_date = next_sprint.start_on - 1.days
+      completed_on_date = completed_on_date - 1.day if completed_on_date.saturday?
+      completed_on_date = completed_on_date - 2.days if completed_on_date.sunday?
+      completed_on_date
+    else
+      # completed_date is simply start_on + duration of sprint + weekends
+      assumed_completed_on
+    end
+  end
+
+  # the assumed completed on date based on the start date and duration of this sprint
+  def assumed_completed_on
+    started = if start_on.saturday?
+      start_on + 2.days
+    elsif start_on.sunday?
+      start_on + 1.day
+    else
+      start_on
+    end
+
+    # add weekends for every 5 working days that passes i.e. for 10 days, we need to add one weekend
+    weekend_days = ((duration_days.to_i / 5) - 1) * 2
+    weekend_days = 0 if weekend_days < 0
+
+    completed_date = started + (duration_days + weekend_days).days
+
+    completed_date = completed_date - 1.day # completed at date is day before next start date
+
+    # if end on a weekend, move to the next working day
+    completed_date = completed_date + 2.days if completed_date.saturday?
+    completed_date = completed_date + 1.day if completed_date.sunday?
+
+    completed_date
   end
 
   # snapshot is a non-editable copy of a backlog in time

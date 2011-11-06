@@ -50,6 +50,14 @@ class Backlog < ActiveRecord::Base
     format('%0.1f', days)
   end
 
+  def average_velocity
+    if sprints.completed.present?
+      sprints.completed.inject(0.0) { |sum, d| sum += d.actual_velocity } / sprints.completed.length.to_f
+    else
+      velocity
+    end
+  end
+
   # simply copy all themes, stories and acceptance criteria to destination backlog
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|

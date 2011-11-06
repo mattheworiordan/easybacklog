@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Sprint do
   # default sprint story status is needed when any story is assigned to a sprint
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
 
   it 'should create a new iteration automatically for each sprint created' do
     # get a backlog set up with at least one story
@@ -74,14 +75,13 @@ describe Sprint do
   end
 
   it 'should not allow you to make changes once marked as completed' do
-    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     sprint1 = Factory.create(:sprint, :start_on => Date.today)
     theme = Factory.create(:theme, :backlog_id => sprint1.backlog.id)
     story1 = Factory.create(:story, :theme_id => theme.id)
 
     sprint1.stories << story1
     story1.reload
-    story1.sprint_story_status = done
+    story1.sprint_story_status = done_sprint_story_status
 
     # now mark as completed (read-only)
     sprint1.completed_at = Time.now
@@ -100,7 +100,6 @@ describe Sprint do
   end
 
   it 'should not allow to be marked as complete if any of the stories are not done' do
-    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     sprint = Factory.create(:sprint, :start_on => Date.today)
     theme = Factory.create(:theme, :backlog_id => sprint.backlog.id)
 
@@ -112,7 +111,7 @@ describe Sprint do
     sprint.reload
     expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
 
-    sprint.stories.first.sprint_story_status = done
+    sprint.stories.first.sprint_story_status = done_sprint_story_status
     expect { sprint.mark_as_incomplete }.should_not raise_error
 
     sprint.stories << Factory.create(:story, :theme_id => theme.id)
@@ -159,8 +158,7 @@ describe Sprint do
     sprint.reload
     sprint.total_allocated_points.should == 5 + 1 + 2 + Math.sqrt(2**2 + 1**2)
 
-    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
-    story3.sprint_story_status = done
+    story3.sprint_story_status = done_sprint_story_status
     story3.save
     sprint.reload
     sprint.total_completed_points.should == 2 + Math.sqrt(1**2)
@@ -245,5 +243,90 @@ describe Sprint do
 
     Sprint.in_need_of_snapshot.all.should include eligible_sprint
     Sprint.in_need_of_snapshot.all.should_not include ineligible_sprint
+  end
+
+  it 'should return total expected points based on backlog average' do
+    backlog = Factory.create(:backlog, :velocity => 10)
+    sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 5)
+    # average for Backlog will be 10 as there are no completd sprints
+    sprint.total_expected_based_on_average_points.should == 10 * 10 * 5
+  end
+
+  it 'should return actual velocity completed for completed stories' do
+    backlog = Factory.create(:backlog, :velocity => 10)
+    sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 5)
+    story = Factory.create(:story, :score_50 => 2, :score_90 => 2)
+    sprint.stories << story
+    story.sprint_story.sprint_story_status = done_sprint_story_status
+    story.sprint_story.save!
+    sprint.reload
+    sprint.actual_velocity.should == 2.to_f / 10 / 5
+  end
+
+  it 'should return a completed on date one day before the next sprint starts accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Monday of 2012, with 10 days duration, should therefore end on last Friday of 2nd week
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => '2 Jan 2012', :duration_days => 10)
+    sprint2 = Factory.create(:sprint, :backlog => backlog, :start_on => '16 Jan 2012', :duration_days => 10)
+    sprint1.completed_on.should == Date.parse('Fri 13 Jan 2012')
+  end
+
+  it 'should return a completed on date one day before the next sprint starts accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Monday of 2012, with 3 days duration, next sprint starts on the following Monday 9th
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => '2 Jan 2012', :duration_days => 5)
+    sprint2 = Factory.create(:sprint, :backlog => backlog, :start_on => '9 Jan 2012', :duration_days => 5)
+    sprint1.completed_on.should == Date.parse('Fri 6 Jan 2012')
+  end
+
+  it 'should return a completed on date one day before the next sprint starts accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Monday of 2012, second sprint starts the day after
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => '2 Jan 2012', :duration_days => 1)
+    sprint2 = Factory.create(:sprint, :backlog => backlog, :start_on => '3 Jan 2012', :duration_days => 1)
+    sprint1.completed_on.should == Date.parse('2 Jan 2012')
+  end
+
+  it 'should return a completed on date one day before the next sprint starts accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Saturday of 2012, second sprint starts the following Sunday
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Sat 7 Jan 2012', :duration_days => 5)
+    sprint2 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Sun 15 Jan 2012', :duration_days => 5)
+    sprint1.completed_on.should == Date.parse('Fri 13 Jan 2012')
+  end
+
+  it 'should return an assumed completed on date based on sprint and accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Monday of 2012, with 10 days duration, should therefore end on last Friday of 2nd week
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => '2 Jan 2012', :duration_days => 10)
+    sprint1.assumed_completed_on.should == Date.parse('Fri 13 Jan 2012')
+  end
+
+  it 'should return an assumed completed on date based on sprint and accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Friday of 2012, with 1 days duration, should therefore end on Friday
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Fri 6 Jan 2012', :duration_days => 1)
+    sprint1.assumed_completed_on.should == Date.parse('Fri 6 Jan 2012')
+  end
+
+  it 'should return an assumed completed on date based on sprint and accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 1st Friday of 2012, with 2 days duration, should therefore end on Monday
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Fri 6 Jan 2012', :duration_days => 2)
+    sprint1.assumed_completed_on.should == Date.parse('Mon 9 Jan 2012')
+  end
+
+  it 'should return an assumed completed on date based on sprint and accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 2nd Sunday of 2012, with 5 days duration, should therefore end on following Friday
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Sun 8 Jan 2012', :duration_days => 5)
+    sprint1.assumed_completed_on.should == Date.parse('Fri 13 Jan 2012')
+  end
+
+  it 'should return an assumed completed on date based on sprint and accounting for weekends' do
+    backlog = Factory.create(:backlog)
+    # first sprint starts on 2nd Sunday of 2012, with 6 days duration, should therefore end one week on Monday
+    sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Sun 8 Jan 2012', :duration_days => 6)
+    sprint1.assumed_completed_on.should == Date.parse('Mon 16 Jan 2012')
   end
 end
