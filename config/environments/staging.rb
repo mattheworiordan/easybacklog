@@ -48,4 +48,6 @@ Ibacklog::Application.configure do
   config.active_support.deprecation = :notify
 
   config.action_mailer.default_url_options = { :host => 'easybacklog-staging.heroku.com' }
+
+  ActionController::Base.asset_host = "staging.assets.easybacklog.com"
 end

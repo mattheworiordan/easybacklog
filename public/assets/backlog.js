@@ -330,15 +330,16 @@ _.bindAll(this,"activated")
 var view=new App.Views.Themes.Index({collection:this.model.Themes(),use5090estimates:use5090estimates});
 this.$("#themes-container").html(view.render().el);
 var show_view=this;
-this.updateStatistics();
-if(this.model.IsEditable()){var firstEditableElem=$("ul.themes li.theme:first .theme-data .name .data");
-if(firstEditableElem.length){firstEditableElem.click()
-}else{$("ul.themes li.actions a.new-theme").focus()
-}}return(this)
+this.activated();
+return(this)
 },updateStatistics:function(){$("#backlog-data-area .backlog-stats").html(JST["backlogs/stats"]({model:this.model}));
 this.sprintTabsView.adjustTabConstraints(true)
-},activated:function(){this.updateStatistics()
-}})};
+},activated:function(){this.updateStatistics();
+if(this.model.IsEditable()){setTimeout(function(){var firstEditableElem=$("ul.themes li.theme:first .theme-data .name .data");
+if(firstEditableElem.length){firstEditableElem.click()
+}else{$("ul.themes li.actions a.new-theme").focus()
+}},10)
+}}})};
 App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot","sprintsChanged");
 this.model.Sprints().bind("change:completed_at",this.sprintsChanged)
 },render:function(){$("#new-snapshot").click(this.newSnapshot);
@@ -354,15 +355,23 @@ var url=document.location.pathname.replace("#.*$","");
 $.get(url+"/snapshots-list-html",false,function(data){$(".snapshot-menu-container .select, #viewing-snapshot-container .selector").html(data);
 $("select.snapshot-selector").change(that.jumpToSnapshot)
 },"html")
-},enableSnapshotsMenu:function(){var overEitherNode=false,hideMenu=function(){overEitherNode=false;
-setTimeout(function(){if(overEitherNode===false){$("#backlog-data-area .snapshot").removeClass("hover");
+},enableSnapshotsMenu:function(){var overEitherNode=false,selectIsOpen=false,hideMenu=function(){overEitherNode=false;
+if(!selectIsOpen){setTimeout(function(){if(overEitherNode===false){$("#backlog-data-area .snapshot").removeClass("hover");
 $("section.for-backlog .snapshot-menu-container").hide()
 }},50)
-},showMenu=function(){$("#backlog-data-area .snapshot").addClass("hover");
+}},showMenu=function(){$("#backlog-data-area .snapshot").addClass("hover");
 $("section.for-backlog .snapshot-menu-container").show().position({of:$("#backlog-data-area .snapshot"),my:"right top",at:"right bottom",offset:"0 -5"});
 overEitherNode=true
 };
 $("#backlog-data-area .snapshot").mouseover(showMenu).click(showMenu).mouseout(hideMenu);
+$(".snapshot-menu-container .select select").click(function(event){selectIsOpen=!selectIsOpen;
+event.stopPropagation();
+if(selectIsOpen){$("html").bind("click.snapshotmenu",function(){selectIsOpen=false;
+hideMenu();
+$("html").unbind("click.snapshotmenu")
+})
+}}).keydown(function(){selectIsOpen=false
+});
 $("section.for-backlog .snapshot-menu-container").mouseover(function(){overEitherNode=true
 }).mouseout(hideMenu)
 },print:function(event){var view=this;
@@ -427,14 +436,22 @@ if(App.environment==="test"){document.location.href=url
 }},Cancel:function(){$(this).dialog("close")
 }}})
 }})};
-App.Views.BacklogPresence={Show:App.Views.BaseView.extend({presenceServerUrl:"https://realtime-easybacklog.dotcloud.com",initialize:function(options){this.userId=Math.floor(Math.random()*1000000000).toString(36);
+App.Views.BacklogPresence={Show:App.Views.BaseView.extend({presenceServerUrl:window.location.protocol+"//realtime-easybacklog.dotcloud.com/",initialize:function(options){this.userId=Math.floor(Math.random()*1000000000).toString(36);
 this.name=options.name
 },render:function(){var that=this;
+$.support.cors=true;
 if(App.environment!=="test"){that.startPolling();
 that.closeConnectionOnUnload()
 }return(this)
-},startPolling:function(){var that=this;
-var _poll=function(){$.ajax({url:that.presenceServerUrl+"/poll",data:{id:that.userId,name:that.name,channel:that.model.get("id")},type:"POST",dataType:"json",crossDomain:true,success:function(response){if(response){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.userId
+},ajaxRequest:function(options){var that=this,ajaxOptions={url:that.presenceServerUrl+options.path,data:options.data,crossDomain:true,success:function(response){if(options.success){options.success(response)
+}},error:function(jqXHR){if(options.error){options.error(jqXHR)
+}}};
+if($.browser.msie&&parseInt($.browser.version,10)>=8){_.extend(ajaxOptions,{type:"GET",cache:false,dataType:"jsonp"});
+$.ajax(ajaxOptions)
+}else{_.extend(ajaxOptions,{type:"POST"});
+$.ajax(ajaxOptions)
+}},startPolling:function(){var that=this;
+var _poll=function(){that.ajaxRequest({path:"poll",data:{id:that.userId,name:that.name,channel:that.model.get("id")},success:function(response){if(response&&response.length){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.userId
 });
 $(that.el).html(JST["backlogs/presence"]({people:people}));
 $(that.el).show()
@@ -446,15 +463,118 @@ $(that.el).show()
 };
 _poll()
 },closeConnectionOnUnload:function(){var that=this;
-window.onbeforeunload=function(){$.ajax({url:that.presenceServerUrl+"/close",data:{id:that.userId,channel:that.model.get("id")},type:"POST",crossDomain:true,async:false,success:function(response){if(window.console){console.log("Connection close request received")
-}},error:function(){if(window.console){console.log("Connection close request failed")
-}}});
-return null
+window.onbeforeunload=function(){that.ajaxRequest({path:"close",data:{id:that.userId,channel:that.model.get("id")},success:function(response){if(window.console){console.log("Connection close request sent")
+}},error:function(jqXHR){if(window.console){console.log("Connection close request FAILED")
+}}})
 }
 }})};
-App.Views.BacklogStats={Show:App.Views.BaseView.extend({events:{},initialize:function(){App.Views.BaseView.prototype.initialize.call(this)
-},render:function(){$(this.el).html(JST["backlogs/sprint-progress-stats"]({model:this.model}));
+App.Views.BacklogStats={Show:App.Views.BaseView.extend({events:{"click a#stats-backlog-settings-change":"backlogSettings","click input#show-projected":"burnDownProjectedCheckboxClicked"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this)
+},render:function(){var that=this;
+$(this.el).html(JST["backlogs/sprint-progress-stats"]({model:this.model}));
+$("#backlog-data-area .backlog-stats").html("");
+that.waitUntilChartsLoaded(function(){that.showCharts()
+});
 return this
+},activated:function(){$("#backlog-data-area .backlog-stats").html("");
+this.$(".loading").show();
+this.$(".stats").hide();
+this.$(".no-stats").hide();
+this.showCharts()
+},waitUntilChartsLoaded:function(callback,counter){var nextRequestIn=250,that=this;
+if(!counter){counter=1
+}if(!window.Highcharts){if(counter*nextRequestIn>10000){new App.Views.Error({message:"Internal error, could not load charting libraries.  Please refresh your browser."})
+}else{setTimeout(function(){that.waitUntilChartsLoaded(callback,counter+1)
+},nextRequestIn)
+}}else{callback()
+}},showCharts:function(){var that=this;
+if(this.model.Sprints().select(function(sprint){return sprint.isComplete()
+}).length>0){$.get("/backlogs/"+this.model.get("id")+"/backlog-stats",{},function(data){that.$(".loading").hide();
+that.$(".stats").show();
+that.$(".no-stats").hide();
+if($.cookie("stats_show_projected")==="no"){that.$("#show-projected").removeAttr("checked")
+}else{that.$("#show-projected").attr("checked","checked")
+}that.displayBurnDown(data.burn_down);
+that.displayBurnUp(data.burn_up);
+that.displayVelocityCompleted(data.velocity_completed);
+that.displayVelocityStats(data.velocity_stats)
+})
+}else{this.$(".loading").hide();
+this.$(".stats").hide();
+this.$(".no-stats").show()
+}},backlogSettings:function(event){event.preventDefault();
+document.location.href=$("#backlog-data-area a:last").attr("href")
+},displayBurnDown:function(data){this.burnDownChart=new Highcharts.Chart({chart:{renderTo:"burn-down-chart",type:"line"},title:{text:"Burn down"},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"},min:0},colors:["#0000FF","#FF0000","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,completedTerminology,pluralize,seriesName=this.series.name,html;
+switch(seriesName){case"Trend":dataSeries=data.trend;
+completedTerminology="expected";
+break;
+case"Projected":dataSeries=data.projected;
+completedTerminology="projected";
+break;
+case"Actual":dataSeries=data.actual;
+completedTerminology="completed"
+}sprint=_(dataSeries).find(function(elem){return that.x===parseRubyDate(elem.completed_on).getTime()
+});
+if((dataSeries===data.projected)&&(sprint===data.projected[0])){dataSeries=data.actual;
+completedTerminology="completed";
+sprint=_(data.actual).last();
+seriesName="Actual"
+}pluralize=function(val){return val===1?"":"s"
+},round=function(val){return Math.max(0,Math.round(val*10)/10)
+};
+html="<b>"+seriesName;
+if(sprint.iteration===0){html+=" - Sprint 0</b> (Project start)<br/>"+"Project started on "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+"<br/>"+round(this.y)+" points remaining"
+}else{html+=" - Sprint "+sprint.iteration+"</b><br/>"+"Sprint "+sprint.iteration+" finished, "+completedTerminology+" "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>"+round(this.y)+" points remaining";
+if(seriesName==="Actual"){html+="<br/>Actual velocity per day: "+round(sprint.actual)
+}html+="<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)+"<br/>"+"Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on))
+}return html
+}},series:[{name:"Trend",data:_(data.trend).map(function(d){return[parseRubyDate(d.completed_on).getTime(),Number(d.points)]
+}),},{name:"Projected",data:_(data.projected).map(function(d){return[parseRubyDate(d.completed_on).getTime(),Number(d.points)]
+}),dashStyle:"LongDash"},{name:"Actual",data:_(data.actual).map(function(d){return[parseRubyDate(d.completed_on).getTime(),Number(d.points)]
+})}]});
+this.showOrHideBurnDownProjected()
+},burnDownProjectedCheckboxClicked:function(){$.cookie("stats_show_projected",this.$("#show-projected").is(":checked")?"yes":"no");
+this.showOrHideBurnDownProjected()
+},showOrHideBurnDownProjected:function(){if(this.$("#show-projected").is(":checked")){this.burnDownChart.series[1].show()
+}else{this.burnDownChart.series[1].hide()
+}},displayBurnUp:function(data){chart1=new Highcharts.Chart({chart:{renderTo:"burn-up-chart",type:"area"},title:{text:"Burn up"},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"}},colors:["#0000FF","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,pluralize,seriesName=this.series.name,html,lastSprint;
+switch(seriesName){case"Actual":dataSeries=data.actual;
+break;
+case"Total":dataSeries=data.total
+}sprint=_(dataSeries).find(function(elem){return that.x===parseRubyDate(elem.starts_on).getTime()
+});
+pluralize=function(val){return val===1?"":"s"
+},round=function(val){return Math.max(0,Math.round(val*10)/10)
+};
+html="<b>"+seriesName;
+if(sprint.iteration===0){lastSprint=_(data.actual).last();
+html+=" - end of sprint "+lastSprint.iteration+"</b><br/>"+"Sprint ended on "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(lastSprint.completed_on))+"<br/>";
+if(seriesName==="Actual"){html+="Completed "+round(sprint.total_points)+" point"+pluralize(sprint.total_points)
+}else{html+="Total points to complete: "+round(this.y)
+}}else{html+=" - Sprint "+sprint.iteration+"</b><br/>";
+if(seriesName==="Actual"){html+=round(sprint.total_points)+" point"+pluralize(sprint.total_points)+" completed at the start"+"<br/>Velocity this sprint: "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>Velocity per day: "+round(sprint.actual)+"<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}else{html+="Total points to complete: "+round(this.y)
+}html+="<br />Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on))
+}return html
+}},series:[{name:"Total",data:_(data.total).map(function(d){return[parseRubyDate(d.starts_on).getTime(),Number(d.total_points)]
+}),},{name:"Actual",data:_(data.actual).map(function(d){return[parseRubyDate(d.starts_on).getTime(),Number(d.total_points)]
+})}]})
+},displayVelocityCompleted:function(data){chart1=new Highcharts.Chart({chart:{renderTo:"velocity-chart",type:"column"},title:{text:"Velocity of completed sprints"},xAxis:{categories:_(data).map(function(d){return"Sprint "+d.iteration
+})},yAxis:{title:{text:"Points"}},colors:["#0000FF"],tooltip:{formatter:function(){var that=this,sprint,pluralize,html;
+sprint=_(data).find(function(elem){return that.x==="Sprint "+elem.iteration
+});
+pluralize=function(val){return val===1?"":"s"
+},round=function(val){return Math.max(0,Math.round(val*10)/10)
+};
+html="<b>Sprint "+sprint.iteration+"</b>"+"Completed "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>Actual velocity per day: "+round(sprint.actual)+"<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)+"<br/>"+"Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on));
+return html
+}},series:[{name:"Total",data:_(data).map(function(d){return d.completed
+})}]})
+},displayVelocityStats:function(data){var expectedDay=data.expected_day,expectedSprint=data.expected_sprint,actualDay=data.actual_day,actualSprint=data.actual_sprint;
+this.$("#velocity-per-day-average").text(Math.round(actualDay*10)/10);
+this.$("#velocity-per-day-expected").text(Math.round(expectedDay*10)/10);
+this.$("#velocity-per-sprint-average").text(Math.round(actualSprint*10)/10);
+this.$("#velocity-per-sprint-expected").text(Math.round(expectedSprint*10)/10);
+this.$(".stats .average .notice").html("Your expected backlog daily velocity is configured as "+(expectedDay==1?"1 point":expectedDay+" points")+' per day. <br/><a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog settings &raquo;</a>')
 }})};
 App.Views.Notice=Backbone.View.extend({className:"notice",displayLength:5000,defaultMessage:"",initialize:function(){_.bindAll(this,"render");
 this.message=this.options.message||this.defaultMessage;
@@ -671,7 +791,9 @@ view.models[model.get("iteration")]=model
 };
 var pinnedTabs=[{get:function(){return"Backlog"
 },active:true,locked:true}];
-if(!this.isSettingsPage&&!this.collection.length&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Sprints"
+if(!this.isSettingsPage&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Stats"
+},locked:true})
+}if(!this.isSettingsPage&&!this.collection.length&&!this.isSnapshot){pinnedTabs.push({get:function(){return"Sprints"
 }})
 }_(pinnedTabs).each(addTabView);
 _(this.collection.sortBy(function(model){return -model.get("id")
@@ -1118,16 +1240,18 @@ App.Routers.Backlog=Backbone.Router.extend({backlogView:false,oldView:false,rout
 },setTabsReference:function(tabs){this.sprintTabsView=tabs
 },showBacklog:function(){this.cleanUpOldView();
 if(!this.backlogView){this.backlogView=new App.Views.Backlogs.Show({model:App.Collections.Backlogs.at(0),el:$("#backlog-container"),sprintTabsView:this.sprintTabsView});
-this.showContainer("#backlog-container");
-this.backlogView.render()
+this.backlogView.render();
+this.showContainer("#backlog-container")
 }else{this.backlogView.activated();
 this.showContainer("#backlog-container")
 }this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Backlog"))
 },showStats:function(){this.cleanUpOldView();
-this.oldView=new App.Views.BacklogStats.Show({model:App.Collections.Backlogs.at(0),el:this.replaceWithNew("#stats-container")});
-this.showContainer("#stats-container");
-this.oldView.render();
-this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Stats"))
+if(!this.statsView){this.statsView=new App.Views.BacklogStats.Show({model:App.Collections.Backlogs.at(0),el:this.replaceWithNew("#stats-container")});
+this.statsView.render();
+this.showContainer("#stats-container")
+}else{this.statsView.activated();
+this.showContainer("#stats-container")
+}this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Stats"))
 },showSprintsHelp:function(){this.cleanUpOldView();
 this.oldView=new App.Views.Sprints.Help({sprintTabsView:this.sprintTabsView,el:this.replaceWithNew("#sprints-help-container")});
 this.showContainer("#sprints-help-container");
