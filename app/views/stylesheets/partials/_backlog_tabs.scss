@@ -405,6 +405,15 @@ section.side-panel {
       padding-right: 0.5em;
     }
   }
+  .stats-placeholder {
+    >div {
+      margin: 2em auto 0 auto;
+      border: 1px solid #DDD;
+      width: 860px;
+      height: 825px;
+      background-image: url(/images/stats-placeholder.png);
+    }
+  }
   .stats>div {
     width: 50%;
     float: left;
