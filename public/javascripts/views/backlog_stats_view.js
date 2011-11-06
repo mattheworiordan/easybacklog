@@ -314,7 +314,7 @@ App.Views.BacklogStats = {
             pluralize = function(val) { return val === 1 ? '' : 's'; },
             round = function(val) { return Math.max(0,Math.round(val * 10)/10); }
 
-            html = '<b>Sprint ' + sprint.iteration + '</b>' +
+            html = '<b>Sprint ' + sprint.iteration + '</b><br />' +
               'Completed ' + round(sprint.completed) + ' point' + pluralize(sprint.completed) +
               '<br/>Actual velocity per day: ' + round(sprint.actual) +
               '<br/>' + sprint.team + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration) + '<br/>' +
