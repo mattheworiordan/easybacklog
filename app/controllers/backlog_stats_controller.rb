@@ -64,6 +64,12 @@ class BacklogStatsController < ApplicationController
         end
       end
 
+      # first sprint was completed, and there were no further sprints, so projected would be empty
+      if projected.empty?
+        lastCompleted = sprints.completed.last
+        projected << burn_down_json(lastCompleted, actual_points, lastCompleted.total_completed_points, lastCompleted.completed_on, lastCompleted.duration_days)
+      end
+
       if trend_points > 0
         # we need to estimate the rest of this backlog, spread out over working days
         # and create pseudo sprints until the trend points are down to zero
