@@ -49,6 +49,5 @@ Ibacklog::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'easybacklog.com' }
 
-  # can't use assets.easybacklog.com as no certificate on Amazon
-  # ActionController::Base.asset_host = "d2n3m6ttt1syhb.cloudfront.net"
+  ActionController::Base.asset_host = "assets.easybacklog.netdna-cdn.com"
 end
