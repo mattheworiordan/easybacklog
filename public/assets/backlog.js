@@ -340,7 +340,7 @@ if(firstEditableElem.length){firstEditableElem.click()
 }else{$("ul.themes li.actions a.new-theme").focus()
 }},10)
 }}})};
-App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot","sprintsChanged");
+App.Views.BacklogDataArea={Show:App.Views.BaseView.extend({events:{"click #backlog-data-area .actions #print":"print","click #backlog-data-area a#backlog-settings-link":"backlogSettings"},initialize:function(options){_.bindAll(this,"print","newSnapshot","jumpToSnapshot","compareSnapshot","sprintsChanged");
 this.model.Sprints().bind("change:completed_at",this.sprintsChanged)
 },render:function(){$("#new-snapshot").click(this.newSnapshot);
 $("#compare-snapshot").click(this.compareSnapshot);
@@ -355,6 +355,9 @@ var url=document.location.pathname.replace("#.*$","");
 $.get(url+"/snapshots-list-html",false,function(data){$(".snapshot-menu-container .select, #viewing-snapshot-container .selector").html(data);
 $("select.snapshot-selector").change(that.jumpToSnapshot)
 },"html")
+},backlogSettings:function(event){var link=$(event.target).attr("href"),route=document.location.href.match(/(#[\w\d_-]+)$/);
+event.preventDefault();
+document.location.href=link+(route?route[1]:"")
 },enableSnapshotsMenu:function(){var overEitherNode=false,selectIsOpen=false,hideMenu=function(){overEitherNode=false;
 if(!selectIsOpen){setTimeout(function(){if(overEitherNode===false){$("#backlog-data-area .snapshot").removeClass("hover");
 $("section.for-backlog .snapshot-menu-container").hide()

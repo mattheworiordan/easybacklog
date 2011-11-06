@@ -73,7 +73,8 @@ App.Routers.BacklogSettings=Backbone.Router.extend({currentIteration:false,defau
 },viewSprintOrBacklog:function(iteration){var model=this.sprintTabsView.getModelFromIteration(iteration),that=this;
 if(!model){model=this.sprintTabsView.getModelFromIteration(this.defaultTab);
 if(!model){var err=new App.Views.Error({message:"Internal error, could not display default tab correctly.  Please refresh your browser"})
-}}this.confirmDiscardChanges(function(){if(that.view){that.view.restoreState()
+}}$("a#back-to-backlog").attr("href",$("a#back-to-backlog").attr("href").replace(/#[\d\w_-]*$/,"")+"#"+iteration);
+this.confirmDiscardChanges(function(){if(that.view){that.view.restoreState()
 }that.view=new App.Views.BacklogSettings.Show({model:model,sprintTabsView:that.sprintTabsView});
 that.view.render();
 that.sprintTabsView.select(model);
