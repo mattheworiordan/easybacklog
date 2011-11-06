@@ -49,5 +49,5 @@ Ibacklog::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'easybacklog-staging.heroku.com' }
 
-  ActionController::Base.asset_host = "staging.easybacklog.netdna-cdn.com"
+  ActionController::Base.asset_host = "staging-easybacklog.netdna-ssl.com"
 end
