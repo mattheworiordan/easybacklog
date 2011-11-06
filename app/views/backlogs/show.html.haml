@@ -55,7 +55,7 @@
     - if @backlog.is_snapshot?
       = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog)
     - else
-      = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog)
+      = link_to 'Settings', edit_account_backlog_path(@backlog.account, @backlog), :id => 'backlog-settings-link'
   .name-company-container
     %h2.name{ :class => @backlog.editable? ? '' : 'locked'}
       - if @backlog.backlog_root.blank?

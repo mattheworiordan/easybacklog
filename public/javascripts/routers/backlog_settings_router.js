@@ -34,6 +34,10 @@ App.Routers.BacklogSettings = Backbone.Router.extend({
       }
     }
 
+    // ensure the back to backlog link goes to the relevant part of the backlog
+    // i.e. if editing settings for sprint 4, jump to sprint 4
+    $('a#back-to-backlog').attr('href', $('a#back-to-backlog').attr('href').replace(/#[\d\w_-]*$/,'') + '#' + iteration);
+
     // check if changes have occured that are not saved
     // provide 2 callbacks for different outcomes
     this.confirmDiscardChanges(

@@ -3,7 +3,8 @@
 App.Views.BacklogDataArea = {
   Show: App.Views.BaseView.extend({
     events: {
-      "click #backlog-data-area .actions #print": "print"
+      "click #backlog-data-area .actions #print": "print",
+      "click #backlog-data-area a#backlog-settings-link": 'backlogSettings'
     },
 
     initialize: function(options) {
@@ -37,6 +38,15 @@ App.Views.BacklogDataArea = {
         $('.snapshot-menu-container .select, #viewing-snapshot-container .selector').html(data);
         $('select.snapshot-selector').change(that.jumpToSnapshot);
       }, 'html');
+    },
+
+    // user clicked backlog settings, lets try and take them to the relevant settings page i.e. if they are viewing sprint 1
+    //  then show them sprint 1 settings
+    backlogSettings: function(event) {
+      var link = $(event.target).attr('href'),
+          route = document.location.href.match(/(#[\w\d_-]+)$/);
+      event.preventDefault();
+      document.location.href = link + (route ? route[1] : '');
     },
 
     enableSnapshotsMenu: function() {
