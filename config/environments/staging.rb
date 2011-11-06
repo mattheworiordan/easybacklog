@@ -49,5 +49,6 @@ Ibacklog::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'easybacklog-staging.heroku.com' }
 
-  ActionController::Base.asset_host = "staging.assets.easybacklog.com"
+  # can't use staging.assets.easybacklog.com as no certificate on Amazon
+  ActionController::Base.asset_host = "d2bnjfukjumf2u.cloudfront.net"
 end
