@@ -187,6 +187,14 @@
       } else {
         elem = $('<input type="text" name="value">');
         if (options.maxLength) { elem.attr('maxlength', options.maxLength); }
+        if (options.autoComplete) {
+          elem.attr('autocomplete','off');
+          elem.autocomplete({
+            source: ($.isArray(options.autoComplete) ? options.autoComplete : options.autoComplete()),
+            minLength: 0,
+            delay: 0
+          });
+        }
       }
       return elem;
     };
