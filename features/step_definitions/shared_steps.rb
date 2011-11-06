@@ -102,7 +102,7 @@ end
 
 Then /^I should see the following data in column (\d+) of "([^"]+)" table:$/ do |data_column, table_path, expected_table|
   table_path = selector_to(table_path)
-  actual_table = tableish(table_path, "th:nth-child(#{data_column}),td:nth-child(#{data_column})")
+  actual_table = find(table_path).all('tr').map { |row| row.all("th:nth-child(#{data_column}),td:nth-child(#{data_column})").map { |cell| cell.text.strip } }
   # remove column heading
   actual_table.shift
   actual_table = table(actual_table)

@@ -22,5 +22,5 @@ end
 
 Then /take a snapshot(| and show me the page)/ do |show_me|
   page.driver.render Rails.root.join("tmp/capybara/#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}.png") if page.driver.respond_to?(:render)
-  Then %{show me the page} if !show_me.blank?
+  step %{show me the page} if !show_me.blank?
 end

@@ -3,10 +3,10 @@ Given /^a user named "([^\"]+)" is registered$/ do |name|
 end
 
 Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|
-  When %{I am on the home page}
-    And %{I follow "Log In"}
-    And %{I fill in "Email" with "#{user_name}@acme.com"}
-    And %{I fill in "Password" with "password"}
-    And %{I press "Log in"}
-  Then %{I should see the notice "Signed in successfully."}
+  step %{I am on the home page}
+  step %{I follow "Log In"}
+  step %{I fill in "Email" with "#{user_name}@acme.com"}
+  step %{I fill in "Password" with "password"}
+  step %{I press "Log in"}
+  step %{I should see the notice "Signed in successfully."}
 end

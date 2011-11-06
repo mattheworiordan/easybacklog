@@ -217,11 +217,11 @@ module HtmlSelectorHelpers
     when /^account user table$/
       'table.users'
 
-    when /^account user table rows$/
-      'table.users tr'
+    when /^account user table$/
+      'table.users'
 
-    when /^invite user table rows$/
-      'table.invites tr'
+    when /^invite user table$/
+      'table.invites'
 
     when /^revoke invite icon for (.+)$/
       "table.invites tr:contains(#{$1}) td:last-child a"

@@ -23,7 +23,7 @@ Feature: Invite and Sign Up
       And I fill in "emails" with "james@acme.com, michael@acme.com, jim@acme.com, jane@acme.com"
       And I press "Send invites"
     Then I should see the notice "4 people were added to your account."
-      And I should see the following data in column 1 of "invite user table rows" table:
+      And I should see the following data in column 1 of "invite user table" table:
         | james@acme.com    |
         | jane@acme.com     |
         | jim@acme.com      |
@@ -34,7 +34,7 @@ Feature: Invite and Sign Up
     # now revoke Michael's access and ensure his link becomes invalid
     When I click on the "revoke invite icon for james@acme.com"
     When I press "Delete" within "a dialog"
-    Then I should see the following data in column 1 of "invite user table rows" table:
+    Then I should see the following data in column 1 of "invite user table" table:
       | jane@acme.com     |
       | jim@acme.com      |
       | michael@acme.com  |

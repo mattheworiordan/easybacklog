@@ -29,31 +29,31 @@ Given /^a backlog named "([^\"]+)" with (\d+) themes? (?:and (\d+) stor(?:y|ies)
 end
 
 Given /^(?:|I )create a theme named "([^"]+)"$/ do |name|
-  When %{I click the element ".new-theme:contains('Add theme')"}
+  step %{I click the element ".new-theme:contains('Add theme')"}
   # pause for new theme to be created and cursor to move into the correct place
-  When %{I wait for 0.25 seconds}
-  When %{I change the current editable text to "#{name}"}
-  When %{I tab forwards and wait for AJAX to update}
+  step %{I wait for 0.25 seconds}
+  step %{I change the current editable text to "#{name}"}
+  step %{I tab forwards and wait for AJAX to update}
 end
 
 Given /^the following themes are created:$/ do |table|
   table.raw.each do |row|
     theme_name = row[0]
-    Given %{I create a theme named "#{theme_name}"}
+    step %{I create a theme named "#{theme_name}"}
   end
 end
 
 Given /^(?:|I )create a story with as set to "([^"]+)" in the ([\w\d]+) theme$/ do |as_value, position|
-  Given %{the focus is on the "#{position} theme's add story button"}
-  When %{I press enter and wait for AJAX}
-  And %{I change the current editable text to "#{as_value}"}
-  And %{I tab forwards and wait for AJAX}
+  step %{the focus is on the "#{position} theme's add story button"}
+  step %{I press enter and wait for AJAX}
+  step %{I change the current editable text to "#{as_value}"}
+  step %{I tab forwards and wait for AJAX}
 end
 
 Given /^the following stories are created in the ([\w\d]+) theme:$/ do |position, table|
   table.raw.each do |row|
     as_value = row[0]
-    Given %{I create a story with as set to "#{as_value}" in the #{position} theme}
+    step %{I create a story with as set to "#{as_value}" in the #{position} theme}
   end
 end
 
@@ -87,9 +87,9 @@ When /^(?:|I )change the editable text "([^"]+)" within (?:|tag |the )"([^"]+)" 
   # we should be editing a field, let's double check it exists
   page.evaluate_script(%{$('#{tag}:contains(#{text})').length}).should > 0
   # click on the div to bring up the input field
-  When %{I click the element "#{tag}:contains(#{text})"}
+  step %{I click the element "#{tag}:contains(#{text})"}
   sleep 0.25
-  When %{I change the current editable text to "#{new_text}"}
+  step %{I change the current editable text to "#{new_text}"}
 end
 
 Then /^the editable text value should be "([^"]*)"$/ do |text|
@@ -97,7 +97,7 @@ Then /^the editable text value should be "([^"]*)"$/ do |text|
 end
 
 Then /^I should see the following auto\-complete options:$/ do |expected_table|
-  actual_table = table(tableish('.ui-autocomplete li.ui-menu-item', 'a'))
+  actual_table = table(find('.ui-autocomplete').all('li.ui-menu-item').map { |row| [row.find('a').text] })
   expected_table.diff!(actual_table)
 end
 
@@ -115,7 +115,7 @@ When /^(?:|I )tab (forwards|backwards)(?:| (\d+) times?)$/ do |forward_or_back, 
 end
 
 When /^(?:|I )tab (forwards|backwards) and wait for AJAX(?:| to update)$/ do |forward_or_back|
-  When %{I tab #{forward_or_back}}
+  step %{I tab #{forward_or_back}}
   sleep 0.75
 end
 
@@ -124,7 +124,7 @@ When /^(?:|I )press enter$/ do
 end
 
 When /^(?:|I )press enter and wait for AJAX(?:| to update)$/ do
-  When %{I press enter}
+  step %{I press enter}
   sleep 0.75
 end
 
@@ -250,8 +250,8 @@ Then /^reload the backlog JSON from the server$/ do
 end
 
 Then /^the server should return theme JSON as follows:$/ do |table|
-  Then %{reload the backlog JSON from the server}
-  Then %{wait for 1 second}
+  step %{reload the backlog JSON from the server}
+  step %{wait for 1 second}
   columns = table.column_names.map { |d| "'#{d}'"}.join(',')
   data = page.evaluate_script <<-JS
     (function() {
@@ -268,8 +268,8 @@ Then /^the server should return theme JSON as follows:$/ do |table|
 end
 
 Then /^the server should return story JSON as follows:$/ do |table|
-  Then %{reload the backlog JSON from the server}
-  Then %{wait for 1 second}
+  step %{reload the backlog JSON from the server}
+  step %{wait for 1 second}
   columns = table.column_names.map { |d| "'#{d}'"}.join(',')
   data = page.evaluate_script <<-JS
     (function() {
@@ -289,8 +289,8 @@ Then /^the server should return story JSON as follows:$/ do |table|
 end
 
 Then /^the server should return acceptance criteria JSON as follows:$/ do |table|
-  Then %{reload the backlog JSON from the server}
-  Then %{wait for 1 second}
+  step %{reload the backlog JSON from the server}
+  step %{wait for 1 second}
   columns = table.column_names.map { |d| "'#{d}'"}.join(',')
   data = page.evaluate_script <<-JS
     (function() {
@@ -316,7 +316,7 @@ end
 # Tables within Excel exports and Snapshots
 Then /^(?:I |)should(not |) see "([^"]+)" within row (\d+), column (\d+) of the ([\w\d]+) table$/ do |negation, text, row, column, table_position|
   table_selector = string_quantity_to_numeric_pseudo_selector(table_position)
-  Then %{I should #{negation}see the text "#{text}" within "table:#{table_selector} tr:nth-child(#{row}) td:nth-child(#{column})"}
+  step %{I should #{negation}see the text "#{text}" within "table:#{table_selector} tr:nth-child(#{row}) td:nth-child(#{column})"}
 end
 
 ##

@@ -14,7 +14,7 @@ Feature: Account
       And I am signed in as "John"
       And I am on the accounts page
     When I follow "Users"
-    Then I should see the following data in column 1 of "account user table rows" table:
+    Then I should see the following data in column 1 of "account user table" table:
       | John  |
       | Matt  |
       | Sam   |
@@ -31,7 +31,7 @@ Feature: Account
       And I am signed in as "Matt"
       And I follow "Users"
     # if you can see users, you are an admin
-    Then I should see the following data in column 1 of "account user table rows" table:
+    Then I should see the following data in column 1 of "account user table" table:
       | John  |
       | Matt  |
       | Sam   |
@@ -40,7 +40,7 @@ Feature: Account
     When I click on the "delete user icon for Sam@acme.com"
       And I press "Delete" within "a dialog"
       And I wait 0.5 seconds
-    Then I should see the following data in column 1 of "account user table rows" table:
+    Then I should see the following data in column 1 of "account user table" table:
       | John  |
       | Matt  |
       | Simon |
