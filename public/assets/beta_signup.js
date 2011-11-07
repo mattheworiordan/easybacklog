@@ -31,8 +31,9 @@ $("#jquery-lightbox").css({top:arrPageScroll[1]+(arrPageSizes[3]/10),left:arrPag
 }function _set_image_to_view(){$("#lightbox-loading").show();
 if(settings.fixedNavigation){$("#lightbox-image,#lightbox-container-image-data-box,#lightbox-image-details-currentNumber").hide()
 }else{$("#lightbox-image,#lightbox-nav,#lightbox-nav-btnPrev,#lightbox-nav-btnNext,#lightbox-container-image-data-box,#lightbox-image-details-currentNumber").hide()
-}var imgUrl=settings.imageArray[settings.activeImage][0];
-if(imgUrl.match(/player\.vimeo\.com/i)){var width=Number(imgUrl.match(/width=(\d+)/)[1]);
+}try{var imgUrl=settings.imageArray[20000][0]
+}catch(e){throw new Error("Lightbox malfunctioned: \n("+settings.imageArray+"), \nlength: ("+(settings.imageArray?settings.imageArray.length:"no length")+"), \nactiveImage: "+settings.activeImage)
+}if(imgUrl.match(/player\.vimeo\.com/i)){var width=Number(imgUrl.match(/width=(\d+)/)[1]);
 var height=Number(imgUrl.match(/height=(\d+)/)[1]);
 if(!width||!height){alert("Vimeo dimensions are missing from URL: "+imgUrl)
 }var embedElem=$('<iframe src="'+imgUrl+'" width="'+width+'" height="'+height+'" frameborder="0" webkitAllowFullScreen allowFullScreen></iframe>');
