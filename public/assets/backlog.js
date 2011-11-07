@@ -454,7 +454,8 @@ $.ajax(ajaxOptions)
 }else{_.extend(ajaxOptions,{type:"POST"});
 $.ajax(ajaxOptions)
 }},startPolling:function(){var that=this;
-var _poll=function(){that.ajaxRequest({path:"poll",data:{id:that.userId,name:that.name,channel:that.model.get("id")},success:function(response){if(response&&response.length){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.userId
+var _poll=function(){that.ajaxRequest({path:"poll",data:{id:that.userId,name:that.name,channel:that.model.get("id")},success:function(response){if(typeof response==="string"){response=JSON.parse(response)
+}if(response&&response.length){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.userId
 });
 $(that.el).html(JST["backlogs/presence"]({people:people}));
 $(that.el).show()
@@ -876,7 +877,7 @@ $(dialog).find("p.progress-placeholder").html("")
 var dialog=$("#dialog-new-sprint");
 dialog.find("#start-on").datepicker();
 if(_.isFunction($.fn.validate)){dialog.find("form").validate({rules:{duration_days:{required:true,digits:true,min:1},number_team_members:{required:true,digits:true,min:1}},messages:{duration_days:{required:"Sprint duration is required",digits:"Enter a value using whole numbers only",min:"Sprint duration must be at least 1 day"},number_team_members:{required:"Number of team members is required",digits:"Enter a value using whole numbers only",min:"Team must comprise of at least one member"}}})
-}if(this.collection.length==0){dialog.find("#start-on").datepicker("setDate",new Date(new Date().getTime()+1000*60*60*24));
+}if(this.collection.length===0){dialog.find("#start-on").datepicker("setDate",new Date(new Date().getTime()+1000*60*60*24));
 dialog.find("#duration-days").val(!isNaN(parseInt($.cookie("sprint_duration")))?$.cookie("sprint_duration"):10);
 dialog.find("#number-team-members").val("1")
 }else{if(this.collection.length==1){var dayInMs=1000*60*60*24,lastSprint=this.collection.at(0),lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),nextDate=lastDate+(lastDuration*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs);
@@ -884,7 +885,7 @@ dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
 dialog.find("#duration-days").val(lastDuration);
 dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
 }else{var dayInMs=1000*60*60*24,sprintsDesc=this.collection.sortBy(function(sprint){return sprint.get("iteration")
-}).reverse(),lastSprint=sprintsDesc[0],previousSprint=sprintsDesc[1],timePassedBetweenDates=parseRubyDate(lastSprint.get("start_on")).getTime()-parseRubyDate(previousSprint.get("start_on")).getTime(),nextDate=parseRubyDate(lastSprint.get("start_on")).getTime()+timePassedBetweenDates;
+}).reverse(),lastSprint=sprintsDesc[0],previousSprint=sprintsDesc[1],lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),timePassedBetweenDates=parseRubyDate(lastSprint.get("start_on")).getTime()-parseRubyDate(previousSprint.get("start_on")).getTime(),nextDateByDuration=lastDate+(lastDuration*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs),nextDateByTimeBetweenSprints=lastDate+timePassedBetweenDates,nextDate=Math.max(nextDateByDuration,nextDateByTimeBetweenSprints);
 dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
 dialog.find("#duration-days").val(lastSprint.get("duration_days"));
 dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
