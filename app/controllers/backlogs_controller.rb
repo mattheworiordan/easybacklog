@@ -249,6 +249,8 @@ class BacklogsController < ApplicationController
         format.js do
           render :json => backlog_json(@backlog)
         end
+
+        format.xml
       end
     end
 
