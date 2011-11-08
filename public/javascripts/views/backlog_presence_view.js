@@ -61,7 +61,7 @@ App.Views.BacklogPresence = {
           path: 'poll',
           data: { id: that.userId, name: that.name, channel: that.model.get('id') },
           success: function(response) {
-            if ((typeof response === 'string') && response.replace(/\s/g,'').length)) {
+            if ((typeof response === 'string') && response.replace(/\s/g,'').length) {
               response = JSON.parse(response);
             }
             if (response && response.length) { // must be an array or else we've got an empty response
