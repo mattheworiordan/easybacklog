@@ -185,7 +185,7 @@
 				$('#lightbox-image,#lightbox-nav,#lightbox-nav-btnPrev,#lightbox-nav-btnNext,#lightbox-container-image-data-box,#lightbox-image-details-currentNumber').hide();
 			}
 			try {
-			  var imgUrl = settings.imageArray[20000][0];
+			  var imgUrl = settings.imageArray[settings.activeImage][0];
 			} catch (e) {
 			  throw new Error("Lightbox malfunctioned: \n(" + settings.imageArray + "), \nlength: (" + (settings.imageArray ? settings.imageArray.length : 'no length') + "), \nactiveImage: " + settings.activeImage);
 			}
