@@ -15,10 +15,11 @@ builder.themes do
           else
             story_attributes[:score] = story.score
           end
-          builder.story story_attributes
-          builder.criteria do
-            story.acceptance_criteria.each do |criterion|
-              builder.criterion criterion.criterion
+          builder.story story_attributes do
+            builder.criteria do
+              story.acceptance_criteria.each do |criterion|
+                builder.criterion criterion.criterion
+              end
             end
           end
         end

@@ -153,6 +153,13 @@ class Backlog < ActiveRecord::Base
     sprints.sort_by(&:iteration).reverse.map(&:snapshot).reject { |s| s.blank? }
   end
 
+  # allow search for a story using full code such as ABC001
+  def find_by_story_code_with_unique_id(code)
+    theme_code = code[0..2]
+    story_unique_id = code[3..5].to_i
+    themes.find_by_code(theme_code).stories.find_by_unique_id(story_unique_id)
+  end
+
   private
     # only allow save on working copy i.e. not snapshot
     #  but do allow editing if snapshot_master, snapshot_for_sprint, archived or deleted has changed

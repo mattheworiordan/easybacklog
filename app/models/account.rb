@@ -35,6 +35,13 @@ class Account < ActiveRecord::Base
     grouped_backlogs_by_company backlogs.archived
   end
 
+  # add an example backlog for new accounts
+  def add_example_backlog(author)
+    example_data = XMLObject.new(Rails.root.join('db/samples/new_account_backlog.xml'))
+    backlog_builder = Creators::BacklogCreator.new
+    backlog_builder.create example_data, self, author
+  end
+
   private
     def grouped_backlogs_by_company(backlog_list)
       list = backlog_list.order('LOWER(name)').group_by do |backlog|
@@ -45,5 +52,4 @@ class Account < ActiveRecord::Base
         key == name ? '0' : key
       end
     end
-
 end

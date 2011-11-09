@@ -23,6 +23,8 @@ gem 'shortly' # shorten URLs using an external service such as bit.ly
 
 gem 'will_paginate'
 
+gem 'xml-object'
+
 group :development, :test, :cucumber do
   gem 'ruby-debug-base19', '~> 0.11.26'
   gem 'ruby-debug19', :require => 'ruby-debug'

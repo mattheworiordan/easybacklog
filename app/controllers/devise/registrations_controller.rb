@@ -26,7 +26,10 @@ class Devise::RegistrationsController < ApplicationController
 
     # if valid account created or if not creating an account at all (invited users)
     if resource.save && (@account.blank? || @account.valid?)
-      @account.add_first_user resource unless @account.blank?
+      if @account.present? # new account is being setup
+        @account.add_first_user resource
+        @account.add_example_backlog resource
+      end
       flash[:notice] = 'Your new account has been created for you'
       sign_in(resource_name, resource)
       respond_with resource, :location => after_update_path_for(resource)

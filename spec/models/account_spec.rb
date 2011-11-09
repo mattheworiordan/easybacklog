@@ -43,4 +43,18 @@ describe Account do
     account.backlogs.count.should == 1
     company.backlogs.count.should == 1
   end
+
+  it 'should create an example backlog when add_example_backlog is called' do
+    Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
+    Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
+    Factory.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
+    Factory.create(:sprint_story_status, :status => 'Testing', :code => SprintStoryStatus::TESTING)
+
+    account = Factory.create(:account_with_users)
+    account.add_example_backlog account.users.first
+    account.backlogs.first.name.should match(/Example/i)
+    account.backlogs.first.themes.count.should > 1
+    account.backlogs.first.sprints.count.should > 1
+    account.backlogs.first.snapshots.count.should > 0
+  end
 end
