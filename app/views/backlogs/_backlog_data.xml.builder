@@ -1,11 +1,13 @@
 builder.themes do
   backlog.themes.each do |theme|
-    builder.theme :name => theme.name, :code => theme.code do
+    builder.theme :name => theme.name, :code => theme.code,
+      :points => theme.points, :days => theme.days_formatted, :cost => theme.cost_formatted do
       builder.stories do
         theme.stories.each do |story|
           story_attributes = {
             :unique_id => story.unique_id, :code => "#{theme.code}#{story.unique_id}", :as_a => story.as_a, :i_want_to => story.i_want_to,
-            :so_i_can => story.so_i_can, :comments => story.comments, :cost => story.cost_formatted, :days => story.days_formatted
+            :so_i_can => story.so_i_can, :comments => story.comments, :cost => story.cost_formatted, :days => story.days_formatted,
+            :color => story.color
           }
           if backlog.use_50_90
             story_attributes[:score_50] = story.score_50
