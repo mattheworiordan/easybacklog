@@ -24,6 +24,9 @@
               .name
                 = link_to truncate(backlog.name, :length => 60), account_backlog_path(backlog.account, backlog)
               .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
+              - if @recent_backlogs.length == 1 && backlogs.length == 1 && backlog.name =~ /^Example.*backlog$/
+                = render :partial => '/accounts/first_project_bubble'
+
     = link_to "View Account Dashboard", accounts_path, { :class => 'button' }
   - else
     .sign-up
