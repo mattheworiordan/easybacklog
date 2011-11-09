@@ -6,7 +6,7 @@ Feature: Sign Up
   @javascript
   Scenario: Register as a new user with a new account
     Given a user named "John" is registered
-      And the standard locales are set up
+      And the database has the necessary lookup tables
       And an account called "Acme" is set up for "John"
       And I am on the sign up page
     When I press "Sign up"
@@ -35,3 +35,6 @@ Feature: Sign Up
       And I press "Sign up"
     Then I should see the notice "Your new account has been created for you"
     And I should see "Big co" within the "primary page heading"
+
+    Then I should see the text "Example corporate website backlog"
+      And I should see the text "We've added this great example of how people are using easyBacklog"

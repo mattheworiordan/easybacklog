@@ -6,7 +6,7 @@ Feature: Invite and Sign Up
   @javascript
   Scenario: Send invites, delete one, test that invite is revoked and other works through to sign up
     Given a user named "John" is registered
-      And the standard locales are set up
+      And the database has the necessary lookup tables
       And no emails have been sent
       And I am signed in as "John"
       And an account called "Acme" is set up for "John" who should have admin rights

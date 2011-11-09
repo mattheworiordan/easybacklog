@@ -6,7 +6,7 @@ Feature: Account
   @javascript
   Scenario: Revoke and assign rights
     Given a user named "John" is registered
-      And the standard locales are set up
+      And the database has the necessary lookup tables
       And an account called "Acme" is set up for "John" who should have admin rights
       And a user named "Matt" is created and assigned to account "Acme"
       And a user named "Simon" is created and assigned to account "Acme"
@@ -60,7 +60,7 @@ Feature: Account
 
   Scenario: User who has rights to more than one account should be shown the Dashboard after logging in
     Given a user named "John" is registered
-      And the standard locales are set up
+      And the database has the necessary lookup tables
       And an account called "Acme" is set up for "John"
       And an account called "Big Co" is set up for "John"
       And I am signed in as "John"

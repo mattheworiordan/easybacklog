@@ -4,7 +4,7 @@ Feature: Authentication
   Should be able to register and login
 
   Scenario: Register
-    Given the standard locales are set up
+    Given the database has the necessary lookup tables
       And I am on the sign up page
       And I press "Sign up"
     Then I should see the following error messages:

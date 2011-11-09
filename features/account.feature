@@ -6,7 +6,7 @@ Feature: Account
   Scenario: Create a new account
     Given a user named "John" is registered
       And I am signed in as "John"
-      And the standard locales are set up
+      And the database has the necessary lookup tables
       And I am on the new account page
     Then I should see the page title "Create a new account"
     When I press "Create new account"
@@ -26,6 +26,17 @@ Feature: Account
     # check that redirect to account works if user has access to only one account
     When I am on the accounts page
     Then I should see the page title "Acme Corporation"
+
+    # now check that example backlog has been added and tooltip is showing
+    Then I should see the text "Example corporate website backlog"
+      And I should see the text "We've added this great example of how people are using easyBacklog"
+    When I follow "Create a new backlog"
+      And I fill in "Name the backlog" with "My first backlog"
+      And I press "Create new backlog"
+    Then I should see the notice "Backlog was successfully created"
+    When I follow "← Back to dashboard"
+    # tool tip should be gone as we only show this when we have one backlog
+      Then I should not see the text "We've added this great example of how people are using easyBacklog"
 
     When I am on the new account page
     When I fill in "Name" with "Acme Corporation"

@@ -8,7 +8,7 @@ Feature: Company
   Scenario: Manage Company
     Given a user named "John" is registered
       And I am signed in as "John"
-      And the standard locales are set up
+      And the database has the necessary lookup tables
       And an account called "Acme" is set up for "John"
       And a backlog named "Backlog 1" assigned to company "Microsoft" for account "Acme" is set up
       And I am on the accounts page

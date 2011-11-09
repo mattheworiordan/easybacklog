@@ -4,7 +4,7 @@ Feature: Backlog Other Functionality
   Should be able to rely on some necessary functionality
 
   Background:
-    Given the standard locales are set up
+    Given the database has the necessary lookup tables
       And a user named "John" is registered
       And I am signed in as "John"
       And an account called "Acme" is set up for "John"
