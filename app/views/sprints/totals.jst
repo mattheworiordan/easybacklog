@@ -1,5 +1,5 @@
 <div class="title">
-  Sprint totals
+  <span class="sprint-start-title">Sprint start:</span> <%= $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.get('start_on'))) %>
 </div>
 
 <div class="amount<% if (Number(attributes.total_allocated_points) > Number(attributes.total_expected_points)) { %> highlight<% } %>">

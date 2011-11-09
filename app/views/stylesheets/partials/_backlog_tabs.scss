@@ -63,6 +63,9 @@ section.showing-sprints {
       }
       .title {
         float: left;
+        .sprint-start-title {
+          color: #666;
+        }
       }
       .output {
         color: #666;

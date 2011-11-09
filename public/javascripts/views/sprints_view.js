@@ -90,7 +90,7 @@ App.Views.Sprints = {
       if (this.model.SprintStories().length === 0) {
         totals.addClass('notice').html( JST['sprints/empty']() );
       } else {
-        totals.removeClass('notice').html( JST['sprints/totals']({ attributes: attributes, storyCount: this.model.SprintStories().length }) );
+        totals.removeClass('notice').html( JST['sprints/totals']({ attributes: attributes, storyCount: this.model.SprintStories().length, sprint: this.model }) );
       }
       this.sprintTabsView.adjustTabConstraints(true);
     },
