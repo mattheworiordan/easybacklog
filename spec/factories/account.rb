@@ -7,7 +7,7 @@ FactoryGirl.define do
     association :locale, :factory => :locale
   end
 
-  factory :account_with_users, :class => 'account' do
+  factory :account_with_users, :parent => 'account' do
     after_create { |c| Factory(:account_user, :account => c) }
   end
 end
