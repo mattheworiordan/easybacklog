@@ -1,7 +1,8 @@
 xml.instruct!
 xml.backlog :name => @backlog.name, :account => @backlog.account.name, :company => @company.blank? ? 'none' : @company.name,
   :created_at => @backlog.created_at, :updated_at => @backlog.updated_at, :velocity => @backlog.velocity, :rate => @backlog.rate,
-  :points => @backlog.points, :days => @backlog.days_formatted, :cost => @backlog.cost_formatted, :use_50_90 => @backlog.use_50_90 do
+  :points => @backlog.points, :days => @backlog.days_formatted, :cost => @backlog.cost_formatted, :use_50_90 => @backlog.use_50_90,
+  :scoring_rule => @backlog.scoring_rule.title do
 
   # themes and stories
   render :partial => 'backlog_data', :locals => { :builder => xml, :backlog => @backlog }

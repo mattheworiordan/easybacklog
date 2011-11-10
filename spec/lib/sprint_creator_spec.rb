@@ -11,6 +11,7 @@ describe Creators::SprintCreator do
   let(:story_2) { Factory.create(:story, :theme => theme_2) }
 
   let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   let(:sprint_data) do
     data = double('Sprint')

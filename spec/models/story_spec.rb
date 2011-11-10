@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Story do
   # default sprint story status is needed when any story is assigned to a sprint
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   it 'should create a unique ID sequentially and fill up gaps' do
     # create 2 stories without IDs, so should be 1,2
@@ -51,14 +52,45 @@ describe Story do
     story2_themeB.unique_id.should eql(2)
   end
 
-  it 'should enforce Fibonacci sequence' do
+  it 'should enforce Modified Fibonacci sequence' do
+    # uses modified fibonacci by default
     story = Factory.create(:story)
-    story.should validate_format_of(:score_50).with('1').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
-    story.should validate_format_of(:score_50).with('21').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
-    story.should validate_format_of(:score_50).not_with('12').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
-    story.should validate_format_of(:score_50).not_with('34').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+    story.should validate_format_of(:score_50).with('0.5').with_message(/is not valid according to the modified Fibonacci sequence/)
+    story.should validate_format_of(:score_50).with('1').with_message(/is not valid according to the modified Fibonacci sequence/)
+    story.should validate_format_of(:score_50).with('21').with_message(/is not valid according to the modified Fibonacci sequence/)
+    story.should validate_format_of(:score_50).with('40').with_message(/is not valid according to the modified Fibonacci sequence/)
+    story.should validate_format_of(:score_50).with('100').with_message(/is not valid according to the modified Fibonacci sequence/)
+    story.should validate_format_of(:score_50).not_with('12').with_message(/is not valid according to the modified Fibonacci sequence/)
+    story.should validate_format_of(:score_50).not_with('34').with_message(/is not valid according to the modified Fibonacci sequence/)
     story.should validate_format_of(:score_50).not_with('aa').with_message(/is not a number/)
-    story.should validate_format_of(:score_50).with('').with_message(/must be in the Fibonacci sequence and less than or equal to 21/)
+    story.should validate_format_of(:score_50).with('').with_message(/is not a valid number/) # allow null
+  end
+
+  it 'should enforce Strict Fibonacci sequence' do
+    backlog = Factory.create(:backlog, :scoring_rule_id => Factory.create(:scoring_rule_fib).id)
+    theme = Factory.create(:theme, :backlog => backlog)
+    story = Factory.create(:story, :theme => theme)
+
+    story.should validate_format_of(:score_90).with('21').with_message(/is not valid according to the Fibonacci sequence/)
+    story.should validate_format_of(:score_90).with('13').with_message(/is not valid according to the Fibonacci sequence/)
+    story.should validate_format_of(:score_90).not_with('40').with_message(/is not valid according to the Fibonacci sequence/)
+    story.should validate_format_of(:score_90).not_with('100').with_message(/is not valid according to the Fibonacci sequence/)
+    story.should validate_format_of(:score_90).not_with('12').with_message(/is not valid according to the Fibonacci sequence/)
+    story.should validate_format_of(:score_90).not_with('35').with_message(/is not valid according to the Fibonacci sequence/)
+  end
+
+  it 'should enforce any number sequence' do
+    backlog = Factory.create(:backlog, :scoring_rule_id => Factory.create(:scoring_rule_any).id)
+    theme = Factory.create(:theme, :backlog => backlog)
+    story = Factory.create(:story, :theme => theme)
+
+    story.should validate_format_of(:score_50).with('21').with_message(/needs to be greater than or equal to zero/)
+    story.should validate_format_of(:score_50).with('13.34').with_message(/needs to be greater than or equal to zero/)
+    story.should validate_format_of(:score_50).with('0').with_message(/needs to be greater than or equal to zero/)
+    story.should validate_format_of(:score_50).not_with('-0.5').with_message(/needs to be greater than or equal to zero/)
+    story.should validate_format_of(:score_50).not_with('-10').with_message(/needs to be greater than or equal to zero/)
+    story.should validate_format_of(:score_50).not_with('bb').with_message(/is not a number/)
+    story.should validate_format_of(:score_50).with('').with_message(/is not a number/) # allow null
   end
 
   it 'should ensure score 50 is greater than score 90' do

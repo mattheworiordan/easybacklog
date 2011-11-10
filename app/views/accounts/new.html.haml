@@ -13,7 +13,7 @@
         - @account.errors.full_messages.each do |error|
           %li
             = error
-  != render :partial => 'form', :locals => { :f => f }
+  != render :partial => 'form', :locals => { :f => f, :account => @account }
 
   %br/
   %br/

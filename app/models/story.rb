@@ -10,12 +10,11 @@ class Story < ActiveRecord::Base
   validates_uniqueness_of :unique_id, :scope => [:theme_id], :message => 'ID has already been taken'
   validates_numericality_of :score_50, :score_90, :allow_nil => true
   validates_numericality_of :unique_id, :greater_than => 0, :allow_nil => true, :message => 'ID must be a number greater than or equal to one'
-  validates_format_of :score_50, :score_90, :with => /^(0|1|2|3|5|8|13|21)$/, :message => 'must be in the Fibonacci sequence and less than or equal to 21', :allow_nil => true
   validate :score_90_greater_than_50
 
   before_save :assign_unique_id
   before_save :check_can_modify # Snapshot method
-  before_validation :prevent_changes_when_done
+  before_validation :prevent_changes_when_done, :validate_scores_with_score_rule
 
   attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :score, :position, :color
 
@@ -120,6 +119,23 @@ class Story < ActiveRecord::Base
 
     def prevent_changes_when_done
       errors.add :base, 'Changes to a completed story are not allowed' if changed? && done? && (changed != ['position']) # allow position changes only
+    end
+
+    # check that score 50 and score 90 adhere to scoring rule
+    def validate_scores_with_score_rule
+      validate_score_with_score_rule :score_50 if score_50_changed?
+      validate_score_with_score_rule :score_90 if score_90_changed?
+    end
+
+    def validate_score_with_score_rule(score_col)
+      scoring_rule = theme.backlog.scoring_rule
+      # don't validate if not a number as that is checked through validates_numericality
+      if self.send(score_col).to_s =~ /^\-?\d+(?:\.\d+)?$/
+        score_valid = scoring_rule.is_score_valid?(self.send score_col)
+        if score_valid != true
+          errors.add score_col, score_valid
+        end
+      end
     end
 end
 

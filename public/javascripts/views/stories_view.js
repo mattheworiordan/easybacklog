@@ -213,10 +213,6 @@ App.Views.Stories = {
         // just populate the entire element as we're initializing
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
       } else if (attributes && (attributes.sprint_story_status_id || attributes.sprint_story_id)) {
-        // clear editable events as it was causing strange page reload issues unless destroyed before we recycle
-        viewElements = ['unique-id', 'as-a', 'i-want-to', 'so-i-can', 'comments', 'score-50', 'score-90', 'score'];
-        _(viewElements).each(function(elem) { that.$(elem + ' .data').editable('destroy'); });
-
         // sprint story status has changed, lets update the entire HTML as it may or may not be locked now
         $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
         this.configureView();
@@ -246,15 +242,18 @@ App.Views.Stories = {
 
       // for unique ID, we need to remove the code before editing and insert back in after editing
       var uniqueIdContentUpdatedFunc = function(value) {
-        return (show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value));
-      };
-      var uniqueIdBeforeChangeFunc = function(value) {
-        return beforeChangeFunc.call(this, value.substring(3));
-      };
+            return show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value);
+          },
+        uniqueIdBeforeChangeFunc = function(value) {
+            return beforeChangeFunc.call(this, value.substring(3));
+          },
+        scoreContentUpdatedFunc = function(value) {
+            return contentUpdatedFunc.call(this, niceNum(value));
+          }
       var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
-      this.$('>div.score-50 .data, >div.score-90 .data, >div.score .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 2 }) );
+      this.$('>div.score-50 .data, >div.score-90 .data, >div.score .data').editable(scoreContentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 4 }) );
       this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), {
         type: 'textarea', saveonenterkeypress: true, autoResize: true
       } ) );
@@ -387,8 +386,12 @@ App.Views.Stories = {
             // unique_id is being edited, so just update the ID as no code is shown when editing unique_id
             this.$('>div.' + fieldChanged.replace(/_/gi, '-') + '>div.data input').val(newValue);
           }
-        } else if (_.isString(newValue)){
-          newValue = multiLineHtmlEncode(newValue);
+        } else if (_.isString(newValue)) {
+          if (fieldChanged.match(/^score/)) {
+            newValue = niceNum(newValue);
+          } else {
+            newValue = multiLineHtmlEncode(newValue);
+          }
           if (newValue === '') { newValue = this.defaultEditableOptions.placeholder; } // if empty, put editable placeholder back in field
           this.$('div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(newValue);
         }

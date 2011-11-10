@@ -5,20 +5,28 @@
 = f.label :locale_id, "What is your preferred language setting?", :class => 'spacer'
 .input-row
   = select(:account, "locale_id", [[ 'Select a locale...', nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
-.form-hint
-  We use this to ensure currency amounts and formatting is accurate to your locality.
+  .form-hint.inline
+    We use this to ensure currency amounts and formatting is accurate to your locality
 
 = f.label :default_rate, "Default day rate", :class => 'spacer'
 .input-row
   = f.text_field :default_rate
-.form-hint
-  The rate per day you charge (do not use a currency symbol i.e. enter 800 for $800 per day)
+  .form-hint.inline
+    The rate per day you charge (do not use a currency symbol i.e. enter 800 for $800 per day)
 
 = f.label :default_velocity, "Default velocity achieved per day", :class => 'spacer'
 .input-row
   = f.text_field :default_velocity
-.form-hint
-  The velocity is the average number of points you complete in a day
+  .form-hint.inline
+    The velocity is the average number of points you complete in a day
+
+= f.label :scoring_rule, "Default scoring rule for stories", :class => 'spacer vtip', :title => 'The scoring rule is used to ensure you enter valid scores when scoring your backlog stories.  You can change this at any point in the future'
+- ScoringRule.all.each do |rule|
+  .input-row
+    = f.radio_button :scoring_rule_id, rule.id, account.scoring_rule_id.blank? ? (rule == ScoringRule.default ? { :checked => 'checked' } : {}) : {}
+    = f.label "scoring_rule_id_#{rule.id}", rule.title, :class => 'light'
+    .form-hint.inline
+      = "(#{rule.description})"
 
 .input-row.for-check-box
   = f.check_box :default_use_50_90

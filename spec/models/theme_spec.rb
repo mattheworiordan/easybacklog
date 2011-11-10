@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Theme do
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+
   it 'should create a unique code based on the name' do
     # take 1st of letter of each word
     Factory.create(:theme, :name => 'Use first three').code.should eql('UFT')

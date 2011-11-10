@@ -10,7 +10,9 @@
 
   #sign-up
     - unless @account.blank?
-      %h2.divider Account details
+      %h2.divider
+        Account details
+        %span.hint (step 1 of 2)
       - unless @account.errors.empty?
         .form_errors
           The account details were not completed correctly.  Please correct the following fields to register:
@@ -22,9 +24,12 @@
         = hidden_field_tag :show_account_setup, 'true'
 
         = fields_for @account do |f|
-          != render :partial => '/accounts/form', :locals => { :f => f }
+          != render :partial => '/accounts/form', :locals => { :f => f, :account => @account }
 
-    %h2.divider Your details
+    %br
+    %h2.divider
+      Your details
+      %span.hint (step 2 of 2)
     .data-area.no-padding
       != render :partial => 'form', :locals => { :f => f }
 

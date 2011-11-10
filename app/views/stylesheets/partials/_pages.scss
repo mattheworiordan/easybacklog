@@ -294,3 +294,12 @@ table.supported_browsers {
     color: #FF0000;
   }
 }
+
+form.new_account, form.edit_account, form.user_new {
+  label {
+    font-weight: bold;
+    &.light {
+      font-weight: normal;
+    }
+  }
+}

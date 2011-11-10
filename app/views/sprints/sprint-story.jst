@@ -6,12 +6,12 @@
   <div class="points">
     <div class="heading">Points:</div>
     <div class="data"><% if (model.get('score_50') === model.get('score_90')) { %>
-        <%= !model.get('score_50') ? '0' : model.get('score_50') %>
+        <%= !model.get('score_50') ? '0' : niceNum(model.get('score_50')) %>
       <% } else {
            if (!model.get('score_50') && !model.get('score_90')) { %>
              0
         <% } else { %>
-          <%= !model.get('score_50') ? 0 : model.get('score_50') %>/<%= !model.get('score_90') ? 0 : model.get('score_90')%>
+          <%= !model.get('score_50') ? 0 : niceNum(model.get('score_50')) %>/<%= !model.get('score_90') ? 0 : niceNum(model.get('score_90')) %>
         <% } %>
       <% } %>
     </div>

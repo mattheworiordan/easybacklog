@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Backlog do
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+
   it 'should duplicate backlog along with all related records' do
     # get a backlog set up with at least one story
     acceptance_criterion = Factory.create(:acceptance_criterion)
@@ -318,22 +320,20 @@ describe Backlog do
   end
 
   it 'should have a default scoring system even when no scoring system has been selected' do
-    scoring_rule_default = Factory.create(:scoring_rule_default)
     backlog = Factory.create(:backlog)
 
     # check backlog does not actually have a scoring rule set
     backlog.scoring_rule_id.should be_blank
-    backlog.scoring_rule.should == scoring_rule_default
+    backlog.scoring_rule.should == default_scoring_rule
   end
 
   it 'should inherit the scoring rule from the account if no scoring rule for this backlog exists' do
-    scoring_rule_default = Factory.create(:scoring_rule_default)
     scoring_rule_fib = Factory.create(:scoring_rule_fib)
 
     backlog = Factory.create(:backlog)
     account = backlog.account
 
-    backlog.scoring_rule.should == scoring_rule_default
+    backlog.scoring_rule.should == default_scoring_rule
 
     account.update_attributes :scoring_rule_id => scoring_rule_fib.id
 

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Account do
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+
   it 'should create a company with inherited settings' do
     account = Factory.create(:account, :name => "Acme")
     new_company = account.create_company("Microsoft")
@@ -60,11 +62,10 @@ describe Account do
 
 
   it 'should have a default scoring system even when no scoring system has been selected' do
-    scoring_rule_default = Factory.create(:scoring_rule_default)
     account = Factory.create(:account)
 
     # check account does not actually have a scoring rule set
     account.scoring_rule_id.should be_blank
-    account.scoring_rule.should == scoring_rule_default
+    account.scoring_rule.should == default_scoring_rule
   end
 end

@@ -6,6 +6,7 @@ describe Sprint do
   # default sprint story status is needed when any story is assigned to a sprint
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
   let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   it 'should create a new iteration automatically for each sprint created' do
     # get a backlog set up with at least one story

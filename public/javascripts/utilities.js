@@ -36,6 +36,15 @@ function multiLineHtmlEncode(value) {
   }
 }
 
+// lose the trailing .0
+function niceNum(value) {
+  if (value) {
+    return String(value).replace(/\.0+$/, '');
+  } else {
+    return value;
+  }
+}
+
 function parseRubyDate(value) {
   var dateParts = String(value).split('-'); // yyyy-mm-dd
   return new Date(dateParts[0], Number(dateParts[1])-1, dateParts[2]);

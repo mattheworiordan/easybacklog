@@ -225,6 +225,11 @@ section.main-content-pod {
     margin: $standard-body-margin;
     padding: 7px $ninesixty-gutter-width 0 $ninesixty-gutter-width;
     height: $ninesixty-vertical * 3 - 7px;
+    .hint {
+      font-size: 80%;
+      color: rgba(0,0,0,0.5);
+      margin-left: 0.5em;
+    }
   }
 }
 
@@ -362,7 +367,10 @@ footer {
   font-style: italic;
   color: #9A9A9A;
   padding-left: 3px;
-  font-size: 90%
+  font-size: 90%;
+  &.inline {
+    display: inline;
+  }
 }
 
 .label-hint {

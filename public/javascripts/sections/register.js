@@ -38,6 +38,7 @@ $(document).ready(function() {
       minlength: 6
     },
     'user[password_confirmation]': {
+      required: true,
       equalTo: "#user_password"
     }
   });

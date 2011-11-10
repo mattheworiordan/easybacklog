@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111110102618) do
+ActiveRecord::Schema.define(:version => 20111110124939) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -127,11 +127,11 @@ ActiveRecord::Schema.define(:version => 20111110102618) do
   add_index "scoring_rules", ["code"], :name => "index_scoring_rules_on_code"
 
   create_table "sprint_stories", :force => true do |t|
-    t.integer  "sprint_id",                     :null => false
-    t.integer  "story_id",                      :null => false
+    t.integer  "sprint_id",                                                   :null => false
+    t.integer  "story_id",                                                    :null => false
     t.integer  "position"
-    t.integer  "sprint_score_50_when_assigned"
-    t.integer  "sprint_score_90_when_assigned"
+    t.decimal  "sprint_score_50_when_assigned", :precision => 5, :scale => 1
+    t.decimal  "sprint_score_90_when_assigned", :precision => 5, :scale => 1
     t.integer  "sprint_story_status_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -163,14 +163,14 @@ ActiveRecord::Schema.define(:version => 20111110102618) do
   add_index "sprints", ["backlog_id"], :name => "index_sprints_on_backlog_id"
 
   create_table "stories", :force => true do |t|
-    t.integer  "theme_id",   :null => false
-    t.integer  "unique_id",  :null => false
+    t.integer  "theme_id",                                 :null => false
+    t.integer  "unique_id",                                :null => false
     t.string   "as_a"
     t.string   "i_want_to"
     t.string   "so_i_can"
     t.text     "comments"
-    t.integer  "score_50"
-    t.integer  "score_90"
+    t.decimal  "score_50",   :precision => 5, :scale => 1
+    t.decimal  "score_90",   :precision => 5, :scale => 1
     t.integer  "position"
     t.datetime "created_at"
     t.datetime "updated_at"

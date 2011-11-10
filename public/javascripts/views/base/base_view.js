@@ -56,6 +56,9 @@ App.Views.BaseView = Backbone.View.extend({
             var errorMessage = 'Unable to save changes...';
             try {
               errorMessage = $.parseJSON(response.responseText).message;
+              if (errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)) {
+                errorMessage = 'Score ' + errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)[1];
+              }
             } catch (e) { if(window.console) { console.log(e); } }
             var errorView = new App.Views.Error({ message: errorMessage});
             // exception to deal with unique-id showing code from parent model in value

@@ -10,7 +10,7 @@ module Creators
       arr(sprint_data, :stories).each do |sprint_story_data|
         sprint_story = @sprint.sprint_stories.build
         sprint_story.sprint_story_status = SprintStoryStatus.find_by_code(sprint_story_data.status_code)
-        sprint_story.story = target_backlog.find_by_story_code_with_unique_id(sprint_story_data.code)
+        sprint_story.story = target_backlog.find_story_by_code_and_unique_id(sprint_story_data.code)
         sprint_story.save!
         # score_*_when_assigned is not writeable, use update_attribute to avoid validation
         sprint_story.update_attribute :sprint_score_50_when_assigned, sprint_story_data.score_50_when_assigned

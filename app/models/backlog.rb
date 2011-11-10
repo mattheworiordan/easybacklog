@@ -155,7 +155,7 @@ class Backlog < ActiveRecord::Base
   end
 
   # allow search for a story using full code such as ABC001
-  def find_by_story_code_with_unique_id(code)
+  def find_story_by_code_and_unique_id(code)
     theme_code = code[0..2]
     story_unique_id = code[3..5].to_i
     themes.find_by_code(theme_code).stories.find_by_unique_id(story_unique_id)

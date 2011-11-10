@@ -6,6 +6,8 @@ describe Creators::ThemeCreator do
   let(:backlog_50_90) { Factory.create(:backlog, :use_50_90 => true) }
   let(:backlog_single_score) { Factory.create(:backlog, :use_50_90 => false) }
 
+  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+
   let(:theme_data) do
     theme = double('Theme')
     theme.stub(:name) { 'Alpha Beta Crud' }

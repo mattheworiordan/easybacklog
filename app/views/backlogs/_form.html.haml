@@ -56,6 +56,14 @@
 .input-row
   = f.text_field :velocity
 
+= f.label :scoring_rule, "Scoring rule for stories", :class => 'spacer vtip', :title => 'The scoring rule is used to ensure you enter valid scores when scoring your backlog stories.  You can change this at any point in the future'
+- ScoringRule.all.each do |rule|
+  .input-row
+    = f.radio_button :scoring_rule_id, rule.id, @backlog.scoring_rule_id.blank? ? (rule == ScoringRule.default ? { :checked => 'checked' } : {}) : {}
+    = f.label "scoring_rule_id_#{rule.id}", rule.title, :class => 'light'
+    .form-hint.inline
+      = "(#{rule.description})"
+
 .input-row.for-check-box
   = f.check_box :use_50_90
   = f.label :use_50_90, "Use the 50/90 estimation method"
