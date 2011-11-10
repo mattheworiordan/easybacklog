@@ -1,4 +1,4 @@
-- title 'View backlog'
+- title "#{@backlog.name} – #{@backlog.company.present? ? @backlog.company.name : @backlog.account.name}"
 - content_for :head do
   = include_javascripts :backlog
 
