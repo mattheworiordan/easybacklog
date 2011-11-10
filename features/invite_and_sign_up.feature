@@ -58,6 +58,7 @@ Feature: Invite and Sign Up
     When I fill in "Full name" with "Michael"
       And I fill in "Sign Up Email" using Javascript with "John@acme.com"
       And I fill in "Password" with "password"
+      And I fill in "Password confirmation" with "not a match"
       And I press "Register"
     Then I should see "Someone is already registered with that email address." within the "sign up form"
       And I should see "The password confirmation is not the same"

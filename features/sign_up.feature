@@ -11,7 +11,7 @@ Feature: Sign Up
       And I am on the sign up page
     When I press "Sign up"
     Then I should see "You must enter an account name"
-      And there should be 5 "this field is required messages"
+      And there should be 6 "this field is required messages"
       And I should see "Please enter your full name"
     When I fill in "Sign Up Account Name" using Javascript with "Acme"
       And I press "Sign up"
@@ -29,6 +29,7 @@ Feature: Sign Up
       And I should see "Please enter at least 6 characters"
     When I fill in "Email" with "james@acme.com"
       And I fill in "Password" with "password"
+      And I fill in "Password confirmation" with "not a match"
       And I press "Sign up"
     Then I should see "The password confirmation is not the same"
     When I fill in "Password confirmation" with "password"

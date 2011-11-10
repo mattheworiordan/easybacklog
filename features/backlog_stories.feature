@@ -69,7 +69,7 @@ Feature: Backlog Stories
     Then the focussed element should have the text "Add story"
       And the server should return story JSON as follows:
         | unique_id | as_a      | i_want_to   | so_i_can  | comments    | score_50  | score_90  |
-        | 1         | as        | I want to   | so I can  | comments    | 1         | 3         |
+        | 1         | as        | I want to   | so I can  | comments    | 1.0       | 3.0       |
         | 2         | as 2nd    |             |           |             |           |           |
 
   @javascript
@@ -116,12 +116,12 @@ Feature: Backlog Stories
     When I click on the "first story's 50 score"
       And I change the current editable text to "4"
       And I tab forwards and wait for AJAX
-    Then I should see the error "Score 50 must be in the Fibonacci sequence"
+    Then I should see the error "Score 50 is not valid according to the modified Fibonacci sequence"
       And I should not see "4" within the "first story's 50 score"
     When I click on the "first story's 90 score"
       And I change the current editable text to "4"
       And I tab forwards and wait for AJAX
-    Then I should see the error "Score 90 must be in the Fibonacci sequence"
+    Then I should see the error "Score 90 is not valid according to the modified Fibonacci sequence"
       And I should not see "4" within the "first story's 90 score"
     When I click on the "first story's 90 score"
       And I change the current editable text to "3"

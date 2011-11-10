@@ -128,7 +128,7 @@ Feature: Backlog
       And the "Use the 50/90 estimation method" checkbox should be checked
 
     # now check that companies are showing in the dashboard and backlog list
-    When I follow "← Back to Backlog"
+    When I follow "← Back to backlog"
     When I follow "← Back to dashboard"
     # check that backlog dashboard page is in order of date desc, and company headings are showing
     Then I should see the text "New company" within the "first company heading in a dashboard list"
