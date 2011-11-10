@@ -11,6 +11,9 @@
         <a href="#incomplete" class="mark-sprint-as-incomplete button greyed">Mark sprint as incomplete</a>
       <% } else { %>
         <a href="#complete" class="mark-sprint-as-complete button">Mark sprint as complete</a>
+        <% if (model.SprintStories().incompleteStories().length) { %>
+        <a href="#move-stories" class="bulk-move-stories">move all incomplete stories</a>
+        <% } %>
       <% } %>
     </div>
   </div>

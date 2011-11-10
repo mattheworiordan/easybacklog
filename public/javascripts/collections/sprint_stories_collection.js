@@ -47,5 +47,9 @@ var SprintStoriesCollection = Backbone.Collection.extend({
       dataType: 'json',
       type: 'PUT'
     })
+  },
+
+  incompleteStories: function() {
+    return this.filter(function(sprintStory) { return sprintStory.Story().IsEditable(); });
   }
 });

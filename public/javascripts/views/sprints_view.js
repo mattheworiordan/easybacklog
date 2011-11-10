@@ -8,7 +8,8 @@ App.Views.Sprints = {
     events: {
       "click .stories-divider .change-size": "toggleUnassignedStoriesSize",
       "click a.mark-sprint-as-incomplete": "markSprintAsIncomplete",
-      "click a.mark-sprint-as-complete": "markSprintAsComplete"
+      "click a.mark-sprint-as-complete": "markSprintAsComplete",
+      "click a.bulk-move-stories": "bulkMoveStories"
     },
 
     initialize: function(options) {
@@ -93,6 +94,7 @@ App.Views.Sprints = {
         totals.removeClass('notice').html( JST['sprints/totals']({ attributes: attributes, storyCount: this.model.SprintStories().length, sprint: this.model }) );
       }
       this.sprintTabsView.adjustTabConstraints(true);
+      this.updateSprintButtonsView();
     },
 
     // allow unassigned stories area to be minimised / expanded
@@ -336,17 +338,7 @@ App.Views.Sprints = {
 
       this.model.save(false, {
         success: function(model, response) {
-          var completeView = $('<div>' + JST['sprints/show']({ model: that.model }) + '</div>');
-          that.$('h2').replaceWith(completeView.find('h2'));
-          that.$('.complete-status').replaceWith(completeView.find('.complete-status'));
-          // show notice about stories being locked if appropriate, and lock stories
-          that.$('.unassigned-stories-container .notice').remove();
-          if (model.isComplete()) {
-            that.$('.unassigned-stories-container').prepend(completeView.find('.unassigned-stories-container .notice'));
-            that.$('.unassigned-stories-container .story-card').addClass('locked');
-          } else {
-            that.$('.unassigned-stories-container .story-card').removeClass('locked');
-          }
+          that.updateSprintButtonsView();
           new App.Views.Notice({ message: 'Sprint status updated'});
         },
         error: function(model, response) {
@@ -355,6 +347,78 @@ App.Views.Sprints = {
             errorMessage = $.parseJSON(response.responseText).message;
           } catch (e) { if (window.console) { console.log(e); } }
           var errorView = new App.Views.Error({ message: errorMessage});
+        }
+      });
+    },
+
+    updateSprintButtonsView: function() {
+      var that = this;
+      var completeView = $('<div>' + JST['sprints/show']({ model: that.model }) + '</div>');
+      that.$('h2').replaceWith(completeView.find('h2'));
+      that.$('.complete-status').replaceWith(completeView.find('.complete-status'));
+      // show notice about stories being locked if appropriate, and lock stories
+      that.$('.unassigned-stories-container .notice').remove();
+      if (that.model.isComplete()) {
+        that.$('.unassigned-stories-container').prepend(completeView.find('.unassigned-stories-container .notice'));
+        that.$('.unassigned-stories-container .story-card').addClass('locked');
+      } else {
+        that.$('.unassigned-stories-container .story-card').removeClass('locked');
+      }
+    },
+
+    bulkMoveStories: function(event) {
+      var that = this,
+          eligibleSprints = this.model.Backlog().Sprints().filter(function(sprint) { return sprint.get('iteration') > that.model.get('iteration'); });
+
+      event.preventDefault();
+      $('#dialog-move-sprint-stories').remove(); // ensure old dialog HTML is not still in the DOM
+      $('body').append(JST['sprints/move-dialog']({ sprints: eligibleSprints }));
+      $('#dialog-move-sprint-stories').dialog({
+        resizable: false,
+        height:200,
+        width: 280,
+        modal: true,
+        buttons: {
+          'Move': function() {
+            // create snapshot on server by posting a request
+            var target = $(this).find('select').val(),
+                sprintStories = that.model.SprintStories().incompleteStories();
+            if (target === '') {
+              $(this).find('div.error-message').html('<p>You must select a destination first.</p>');
+            } else {
+              $(this).find('.progress-placeholder').html('<p>Please wait while we move the incomplete stories...</p>');
+              $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
+              $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').hide();
+              _(sprintStories).each(function(sprintStory) {
+                var story = sprintStory.Story(),
+                    storyNode = that.$('#' + that.childId(story));
+                if (target === 'backlog') {
+                  storyNode.data('move-story')();
+                } else {
+                  storyNode.slideUp();
+                  // set attribute move_to_sprint_id as sprint_id param is set as part of the URL in Rails so cannot be overwritten
+                  sprintStory.save({ 'move_to_sprint_id': target }, {
+                    success: function(model, response) {
+                      that.model.SprintStories().remove(model);
+                      that.model.collection.get(target).SprintStories().add(model);
+                    },
+                    error: function(model, response) {
+                      var errorMessage = 'There was an error moving the stories...  Please refresh your browser.';
+                      try {
+                        errorMessage = $.parseJSON(response.responseText).message;
+                      } catch (e) { if (window.console) { console.log(e); } }
+                      var errorView = new App.Views.Error({ message: errorMessage});
+                    }
+                  });
+                }
+              });
+              $(this).dialog("close");
+            }
+          },
+
+          Cancel: function() {
+            $(this).dialog("close");
+          }
         }
       });
     }
@@ -415,6 +479,9 @@ App.Views.Sprints = {
         that.resetToggle();
       }, 1);
       $(this.el).data('reset-toggle', this.resetToggle);
+
+      // allow move to be called for the move all incomplete stories dialog box
+      $(this.el).data('move-story', function() { that.moveStory(); });
 
       // resolve hover issue with IE, see http://stackoverflow.com/questions/7891761/
       $(this.el).hover(function() {
@@ -484,8 +551,13 @@ App.Views.Sprints = {
 
     moveStory: function() {
       $(this.el).removeClass('hover'); // see IE issue http://stackoverflow.com/questions/7891761/
-      var target = $(this.el).parents('.stories-container .cards').length == 0 ? this.parentView.$('.stories-container .cards') : this.parentView.$('.unassigned-stories-container');
-      target.append(this.el);
+      if ($(this.el).parents('.stories-container .cards').length == 0) {
+        // moving to bottom of sprint
+        this.parentView.$('.stories-container .cards').append(this.el);
+      } else {
+        // moving back to top of backlog
+        this.parentView.$('.unassigned-stories-container').prepend(this.el);
+      }
       this.parentView.persistSprintStories();
     }
   })

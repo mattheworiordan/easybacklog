@@ -28,6 +28,8 @@ class SprintStoriesController < ApplicationController
   def update
     @sprint_story = @sprint.sprint_stories.find(params[:id])
     @sprint_story.update_attributes params
+    @sprint_story.sprint_id = params[:move_to_sprint_id] if params.has_key?(:move_to_sprint_id)
+
     if @sprint_story.save
       render :json => @sprint_story.to_json(:methods => METHODS)
     else

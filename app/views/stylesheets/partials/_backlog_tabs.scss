@@ -85,6 +85,18 @@ section.showing-sprints {
     }
     .complete-status {
       margin-top: 15px;
+      a.bulk-move-stories {
+        padding: 5px;
+        color: #009;
+        margin-left: 15px;
+        &:hover {
+          background-color: #FF9;
+          text-decoration: none;
+        };
+        &:hover:after {
+          content: " »";
+        }
+      }
     }
   }
   .stories-container .cards {
@@ -473,5 +485,16 @@ section.side-panel {
         }
       }
     }
+  }
+}
+
+#dialog-move-sprint-stories {
+  .progress-placeholder {
+    font-weight: bold;
+    font-style: italic;
+  }
+  .error-message {
+    font-weight: bold;
+    color: red;
   }
 }

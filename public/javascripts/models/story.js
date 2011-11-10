@@ -12,7 +12,11 @@ var Story = Backbone.Model.extend({
     } else {
       var sprintStory = this.SprintStory();
       if (sprintStory) {
-        return !sprintStory.Status().isDone();
+        if (sprintStory.Status()) {
+          return !sprintStory.Status().isDone();
+        } else {
+          return false;
+        }
       }
       return true;
     }

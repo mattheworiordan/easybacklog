@@ -1,0 +1,18 @@
+<div id="dialog-move-sprint-stories" title="Move sprint stories">
+  <form>
+    <div class="error-message"></div>
+    <p class="intro">
+      Where would you like to move all incomplete stories?
+    </p>
+    <p>
+      <select id="stories-target">
+        <option value="">Please choose a destination...</option>
+        <option value="backlog">Back to the backlog »</option>
+        <% _(sprints).each(function(sprint) { %>
+          <option value="<%=sprint.get('id')%>">« Sprint <%=sprint.get('iteration')%></option>
+        <% }); %>
+      </select>
+    </p>
+    <p class="progress-placeholder"></p>
+  </form>
+</div>
