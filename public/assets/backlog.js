@@ -217,8 +217,9 @@ attributes[fieldId]=value;
 this.model.set(attributes);
 var this_model=this.model;
 var saveModelFunc=function(){this_model.save({},{error:function(model,response){var errorMessage="Unable to save changes...";
-try{errorMessage=$.parseJSON(response.responseText).message
-}catch(e){if(window.console){console.log(e)
+try{errorMessage=$.parseJSON(response.responseText).message;
+if(errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)){errorMessage="Score "+errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)[1]
+}}catch(e){if(window.console){console.log(e)
 }}var errorView=new App.Views.Error({message:errorMessage});
 fieldWithValue.text(_.isEmpty(beforeChangeValue)?"[edit]":beforeChangeValue);
 var valBack={};
@@ -1014,10 +1015,7 @@ this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){sh
 }this.setStatusHover()
 },updateViewWithModelData:function(attributes){var that=this;
 if(attributes==="all"){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
-}else{if(attributes&&(attributes.sprint_story_status_id||attributes.sprint_story_id)){viewElements=["unique-id","as-a","i-want-to","so-i-can","comments","score-50","score-90","score"];
-_(viewElements).each(function(elem){that.$(elem+" .data").editable("destroy")
-});
-$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
+}else{if(attributes&&(attributes.sprint_story_status_id||attributes.sprint_story_id)){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
 this.configureView()
 }}if(this.model.IsEditable()){$(this.el).removeClass("locked")
 }else{$(this.el).addClass("locked")
@@ -1026,13 +1024,13 @@ this.configureView()
 },makeFieldsEditable:function(){var show_view=this,contentUpdatedFunc=function(value){return show_view.contentUpdated(value,this)
 },beforeChangeFunc=function(value){return show_view.beforeChange(value,this)
 },defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
-var uniqueIdContentUpdatedFunc=function(value){return(show_view.model.Theme().get("code")+contentUpdatedFunc.call(this,value))
-};
-var uniqueIdBeforeChangeFunc=function(value){return beforeChangeFunc.call(this,value.substring(3))
+var uniqueIdContentUpdatedFunc=function(value){return show_view.model.Theme().get("code")+contentUpdatedFunc.call(this,value)
+},uniqueIdBeforeChangeFunc=function(value){return beforeChangeFunc.call(this,value.substring(3))
+},scoreContentUpdatedFunc=function(value){return contentUpdatedFunc.call(this,niceNum(value))
 };
 var uniqueIdOptions=_.extend(_.clone(defaultOptions),{data:uniqueIdBeforeChangeFunc,maxLength:4});
 this.$(">div.unique-id .data").editable(uniqueIdContentUpdatedFunc,uniqueIdOptions);
-this.$(">div.score-50 .data, >div.score-90 .data, >div.score .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:2}));
+this.$(">div.score-50 .data, >div.score-90 .data, >div.score .data").editable(scoreContentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:4}));
 this.$(">div.comments .data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{type:"textarea",saveonenterkeypress:true,autoResize:true}));
 var autoCompleteData=function(){var asAValues=[];
 show_view.model.Theme().collection.each(function(theme){asAValues=asAValues.concat(theme.Stories().pluck("as_a"))
@@ -1078,8 +1076,9 @@ newValue=this.model.get(fieldChanged);
 if(fieldChanged==="unique_id"){if(this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data input").length===0){newValue=this.model.Theme().get("code")+newValue;
 this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data").text(newValue)
 }else{this.$(">div."+fieldChanged.replace(/_/gi,"-")+">div.data input").val(newValue)
-}}else{if(_.isString(newValue)){newValue=multiLineHtmlEncode(newValue);
-if(newValue===""){newValue=this.defaultEditableOptions.placeholder
+}}else{if(_.isString(newValue)){if(fieldChanged.match(/^score/)){newValue=niceNum(newValue)
+}else{newValue=multiLineHtmlEncode(newValue)
+}if(newValue===""){newValue=this.defaultEditableOptions.placeholder
 }this.$("div."+fieldChanged.replace(/_/gi,"-")+">div.data").html(newValue)
 }}if(eventName=="change:id"){$(this.el).attr("id","story-"+model.get("id"))
 }App.Controllers.Statistics.updateStatistics(this.model.get("score_statistics"))
