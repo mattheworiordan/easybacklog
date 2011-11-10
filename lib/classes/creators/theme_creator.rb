@@ -1,6 +1,7 @@
 module Creators
   class ThemeCreator
     include XmlObjectImprover
+    include Sql
 
     def create(theme_data, target_backlog)
       @theme = target_backlog.themes.build
@@ -15,10 +16,25 @@ module Creators
       @theme
     end
 
-    def set_theme_properties(theme)
-      @theme.name = theme.name
-      @theme.code = theme.code
-      @theme.save!
+    # for performance reasons a theme can be generated entirely from a single SQL statement
+    def create_sql(theme_data, position, target_backlog)
+      sql = insert_sql('themes', :backlog_id => target_backlog.id,
+       :name => theme_data.name, :code => theme_data.code, :position => position)
+
+      # build stories
+      creator = StoryCreator.new
+      arr(theme_data, :stories).each_with_index do |story, index|
+        sql << creator.create_sql(story, index+1, target_backlog.use_50_90)
+      end
+
+      sql
     end
+
+    private
+      def set_theme_properties(theme)
+        @theme.name = theme.name
+        @theme.code = theme.code
+        @theme.save!
+      end
   end
 end

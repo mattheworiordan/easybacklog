@@ -51,11 +51,21 @@ module Creators
     end
 
     private
-      def add_themes(source_backlog)
+      # old method to add themes using active record objects instead of a big SQL statement
+      def add_themes_with_active_record(source_backlog)
         arr(source_backlog, :themes).each do |theme|
           creator = ThemeCreator.new
           creator.create theme, @backlog
         end
+      end
+
+      def add_themes(source_backlog)
+        sql = ""
+        creator = ThemeCreator.new
+        arr(source_backlog, :themes).each_with_index do |theme, index|
+          sql << creator.create_sql(theme, index+1, @backlog)
+        end
+        @backlog.connection.execute sql
       end
 
       def add_manual_snapshots(source_backlog)

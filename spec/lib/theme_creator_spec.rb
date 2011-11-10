@@ -37,9 +37,7 @@ describe Creators::ThemeCreator do
     theme
   end
 
-  it 'should create themes and stories using 50/90 scoring from sprint data' do
-    theme = subject.create theme_data, backlog_50_90
-
+  def check_valid_for_50_90(backlog_50_90)
     backlog_50_90.themes.count.should == 1
     stories = backlog_50_90.themes.first.stories
 
@@ -60,14 +58,38 @@ describe Creators::ThemeCreator do
     criteria.last.criterion.should == 'content 2'
   end
 
-  it 'should create themes and stories using single scoring from sprint data' do
-    theme = subject.create theme_data, backlog_single_score
-
+  def check_valid_single_score(backlog_single_score)
     backlog_single_score.themes.count.should == 1
     stories = backlog_single_score.themes.first.stories
 
-    stories.first.score_50.should == 5
-    stories.last.score_90.should == 5
-    stories.last.score.should == 5
+    stories.first.score_50.should == 5.0
+    stories.last.score_90.should == 5.0
+    stories.last.score.should == 5.0
+  end
+
+  it 'should create themes and stories using 50/90 scoring from sprint data' do
+    theme = subject.create theme_data, backlog_50_90
+    check_valid_for_50_90 backlog_50_90
+  end
+
+  it 'should create themes and stories using single scoring from sprint data' do
+    theme = subject.create theme_data, backlog_single_score
+    check_valid_single_score backlog_single_score
+  end
+
+  # SQL methods are for performance, generates a single SQL statement
+  it 'using SQL methods it should create themes and stories using 50/90 scoring from sprint data' do
+    sql = subject.create_sql theme_data, 1, backlog_50_90
+    backlog_50_90.connection.execute sql
+    backlog_50_90.reload
+    check_valid_for_50_90 backlog_50_90
+  end
+
+  # SQL methods are for performance, generates a single SQL statement
+  it 'using SQL methods should create themes and stories using single scoring from sprint data' do
+    sql = subject.create_sql theme_data, 1, backlog_single_score
+    backlog_single_score.connection.execute sql
+    backlog_single_score.reload
+    check_valid_single_score backlog_single_score
   end
 end
