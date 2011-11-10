@@ -5397,7 +5397,7 @@ return this.each(function(){initialize.call(this,opts)
 })
 }};
 initialize=function(options){var target=this,form,elem,targetProps={},showEditableField,editableFieldFactory,restoreTarget,saveChanges,addPlaceHolderIfEmpty,stripPlaceHolder;
-showEditableField=function(event){var getBackgroundColor,positioningSpan,offsetBy,inputText,eventAlreadyProcessed=false;
+showEditableField=function(evt){var getBackgroundColor,positioningSpan,offsetBy,inputText,eventAlreadyProcessed=false;
 stripPlaceHolder();
 $(target).data("editable-active","true");
 targetProps.style=$(target).attr("style");
@@ -5425,10 +5425,9 @@ elem.val(inputText);
 $(target).css("height",$(target).height()+"px").text("");
 $(target).append(form);
 $(elem).blur(function(){if(!eventAlreadyProcessed){eventAlreadyProcessed=true;
-setTimeout(function(){if(options.acceptChangesOnBlur){saveChanges()
+if(options.acceptChangesOnBlur){saveChanges()
 }else{restoreTarget()
 }$(elem).unbind("blur")
-},10)
 }});
 setTimeout(function(){$("html").bind("click.editable",function(){$(elem).trigger("blur")
 })
@@ -5437,10 +5436,11 @@ $(elem).click(function(event){event.stopPropagation()
 });
 $(elem).keydown(function(event){if(!eventAlreadyProcessed){if(event.which===13){if((options.type==="textarea")&&(event.ctrlKey||event.altKey||event.shiftKey)){event.stopPropagation()
 }else{eventAlreadyProcessed=true;
-setTimeout(saveChanges,10)
+saveChanges()
 }}else{if(event.which===27){eventAlreadyProcessed=true;
-setTimeout(restoreTarget,10)
-}else{if(event.which==9){$(elem).trigger("blur")
+restoreTarget()
+}else{if(event.which===9){eventAlreadyProcessed=true;
+saveChanges()
 }}}}});
 $(elem).focus()
 };
@@ -5454,9 +5454,10 @@ elem.autocomplete({source:($.isArray(options.autoComplete)?options.autoComplete:
 }}return elem
 };
 restoreTarget=function(newVal){var val=typeof newVal!=="undefined"?newVal:targetProps.text,encodedVal=multiLineHtmlEncode(val);
-form.remove();
-$(target).attr("style",targetProps.style?targetProps.style:"").html(encodedVal);
+$(target).attr("style",targetProps.style?targetProps.style:"").html(encodedVal).append(form);
 $(target).data("editable-active",false);
+setTimeout(function(){form.remove()
+},10);
 if((typeof newVal==="undefined")&&(typeof options.noChange==="function")){options.noChange.call(target,val)
 }$("html").unbind("click.editable");
 addPlaceHolderIfEmpty()
