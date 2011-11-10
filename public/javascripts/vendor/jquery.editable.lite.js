@@ -57,7 +57,7 @@
      * Functions
      */
 
-    showEditableField = function(event) {
+    showEditableField = function(evt) {
       var getBackgroundColor, positioningSpan, offsetBy, inputText,
           eventAlreadyProcessed = false; // multiple keydown events are sometimes fired, ensure we only deal with the first valid one
 
@@ -133,15 +133,12 @@
       $(elem).blur(function() {
         if (!eventAlreadyProcessed) { // if blurring as a result of a key press, then allow this blur event to be ignored
           eventAlreadyProcessed = true;
-          // pause before we remove the element as other events may need to access this element before it disappears
-          setTimeout(function() {
-            if (options.acceptChangesOnBlur) {
-              saveChanges();
-            } else {
-              restoreTarget();
-            }
-            $(elem).unbind('blur');
-          }, 10);
+          if (options.acceptChangesOnBlur) {
+            saveChanges();
+          } else {
+            restoreTarget();
+          }
+          $(elem).unbind('blur');
         }
       });
 
@@ -151,6 +148,7 @@
           $(elem).trigger('blur');
         });
       }, 1);
+
       // if user clicks inside the element, prevent propagation and thus blurring from binding above
       $(elem).click(function(event) {
         event.stopPropagation();
@@ -165,13 +163,14 @@
               event.stopPropagation();
             } else {
               eventAlreadyProcessed = true;
-              setTimeout(saveChanges, 10);
+              saveChanges();
             }
           } else if (event.which === 27) { // escape key
             eventAlreadyProcessed = true;
-            setTimeout(restoreTarget, 10);
-          } else if (event.which == 9) { // tab
-            $(elem).trigger('blur');
+            restoreTarget();
+          } else if (event.which === 9) { // tab
+            eventAlreadyProcessed = true;
+            saveChanges();
           }
         }
       });
@@ -204,9 +203,15 @@
     restoreTarget = function(newVal) {
       var val = typeof newVal !== 'undefined' ? newVal : targetProps.text,
           encodedVal = multiLineHtmlEncode(val);
-      form.remove();
-      $(target).attr('style', targetProps.style ? targetProps.style : '').html(encodedVal);
+
+      // save value to target HTML element, but keep form visible so append to the HTML
+      $(target).attr('style', targetProps.style ? targetProps.style : '').html(encodedVal).append(form);
       $(target).data('editable-active', false);
+
+      // pause before we remove the element as other events may need to access this element before it disappears
+      setTimeout(function() {
+        form.remove();
+      }, 10);
 
       // if user wants a callback even if there was no change, then call this now
       if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
