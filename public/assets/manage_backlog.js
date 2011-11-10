@@ -22,7 +22,7 @@ getCompanyDefaults();
 $("select#backlog_company_id").focus()
 });
 $("select#backlog_company_id").change(getCompanyDefaults);
-if($(".not-editable-notice").length){$("input[type=text],input[type=checkbox],select").attr("disabled",true);
+if($(".not-editable-notice").length){$('input[type=text],input[type=checkbox],input[name="backlog[scoring_rule_id]"],select').attr("disabled",true);
 $("#backlog_has_company_false, #backlog_has_company_true").attr("disabled",true);
 $(".client-select .new-company").hide()
 }}function setCompanyVisibility(){if($("input#backlog_has_company_false").is(":checked")){$(".client-select, .client-select .existing, .client-select .new").hide();
