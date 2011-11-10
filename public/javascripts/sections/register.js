@@ -71,7 +71,9 @@ $(document).ready(function() {
 
   $('form#user_new').submit(function() {
     if ($("form#user_new").valid()) {
-      $('input#user_submit').addClass('greyed').attr('disabled','true').val('Preparing your account, please wait a minute...');
+      $(window).scrollTop(1000000); // ensure we're at the bottom so user can see the notice
+      $('input#user_submit').addClass('greyed').attr('disabled','true').val('Preparing your account...');
+      $('.waiting').slideDown();
     }
   })
 });

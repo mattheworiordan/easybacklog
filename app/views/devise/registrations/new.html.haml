@@ -33,5 +33,13 @@
     .data-area.no-padding
       != render :partial => 'form', :locals => { :f => f }
 
-    %p= f.submit "Sign up"
+    %p
+      = f.submit "Sign up"
+      .waiting
+        %div.icon
+          %span.progress-icon
+        %div
+          Please wait a few seconds whilst we prepare your account, we're busy at work.
+
+
 = render :partial => "devise/shared/links"

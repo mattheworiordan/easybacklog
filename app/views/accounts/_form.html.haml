@@ -18,7 +18,7 @@
 .input-row
   = f.text_field :default_velocity
   .form-hint.inline
-    The velocity is the average number of points you complete in a day
+    The velocity is the average number of points a single team member completes in a day
 
 = f.label :scoring_rule, "Default scoring rule for stories", :class => 'spacer vtip', :title => 'The scoring rule is used to ensure you enter valid scores when scoring your backlog stories.  You can change this at any point in the future'
 - ScoringRule.all.each do |rule|

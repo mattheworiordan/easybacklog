@@ -302,4 +302,17 @@ form.new_account, form.edit_account, form.user_new {
       font-weight: normal;
     }
   }
+  .waiting {
+    display: none;
+    overflow: hidden;
+    >div.icon {
+      width: 20px;
+      float: left;
+      margin: 0 5px 0 10px;
+    }
+    >div {
+      float: left;
+      font-weight: bold;
+    }
+  }
 }
