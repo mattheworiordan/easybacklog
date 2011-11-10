@@ -6,6 +6,7 @@
       = (yield(:page_title).length > 0 ? yield(:page_title) : 'Makes agencies agile') + ' : easyBacklog'
 
     %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
+    %link{ :rel=>'icon', :type=>'image/png', :href=>image_path('/favicon.png') }
 
     = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
     = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.development?
