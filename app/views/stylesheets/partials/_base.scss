@@ -180,6 +180,9 @@ section.content {
   input[type=submit] {
     @include button-style;
     font-size: 100%;
+    &.greyed {
+      @include grey-button-override-style;
+    }
   }
   input[type=text], input[type=password] {
     font-size: 15px;

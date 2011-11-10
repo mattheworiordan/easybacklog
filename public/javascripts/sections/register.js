@@ -67,4 +67,10 @@ $(document).ready(function() {
       label.html("&nbsp;").addClass("correct");
     }
   });
+
+  $('form#user_new').submit(function() {
+    if ($("form#user_new").valid()) {
+      $('input#user_submit').addClass('greyed').attr('disabled','true').val('Preparing your account, please wait a minute...');
+    }
+  })
 });
