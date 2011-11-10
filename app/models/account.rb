@@ -10,7 +10,7 @@ class Account < ActiveRecord::Base
   validates_presence_of :name, :default_rate, :default_velocity, :locale
   validates_numericality_of :default_rate, :default_velocity, :greater_than_or_equal_to => 0
 
-  attr_accessible :name, :default_rate, :default_velocity, :locale_id, :default_use_50_90
+  attr_accessible :name, :default_rate, :default_velocity, :locale_id, :default_use_50_90, :scoring_rule_id
 
   def add_first_user(user)
     self.account_users.create!(:user => user, :admin => true)
@@ -40,6 +40,15 @@ class Account < ActiveRecord::Base
     example_data = XMLObject.new(Rails.root.join('db/samples/new_account_backlog.xml'))
     backlog_builder = Creators::BacklogCreator.new
     backlog_builder.create example_data, self, author
+  end
+
+  # if no scoring rule exists, use default
+  def scoring_rule
+    if scoring_rule_id.blank?
+      ScoringRule.default
+    else
+      ScoringRule.find scoring_rule_id
+    end
   end
 
   private

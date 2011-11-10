@@ -15,9 +15,10 @@ class Backlog < ActiveRecord::Base
   validates_presence_of :name, :rate, :velocity
   validates_numericality_of :rate, :velocity
 
-  attr_accessible :account, :name, :rate, :velocity, :use_50_90
+  attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id
 
   before_save :check_can_modify
+  after_save :update_account_scoring_rule_if_empty
 
   scope :available, where(:deleted => false)
   scope :active, where(:archived => false).where(:deleted => false)
@@ -160,11 +161,26 @@ class Backlog < ActiveRecord::Base
     themes.find_by_code(theme_code).stories.find_by_unique_id(story_unique_id)
   end
 
+  # if no scoring rule exists, check account for a rule
+  def scoring_rule
+    if scoring_rule_id.blank?
+      account.scoring_rule
+    else
+      ScoringRule.find scoring_rule_id
+    end
+  end
+
   private
     # only allow save on working copy i.e. not snapshot
     #  but do allow editing if snapshot_master, snapshot_for_sprint, archived or deleted has changed
     #  snapshot_master is needed so that the snapshot can be created without an error blocking editing being thrown
     def check_can_modify
       editable? || snapshot_master_id_changed? || archived_changed? || deleted_changed? || snapshot_for_sprint_id_changed?
+    end
+
+    def update_account_scoring_rule_if_empty
+      unless scoring_rule_id.blank?
+        account.update_attributes :scoring_rule_id => scoring_rule_id if account.scoring_rule_id.blank?
+      end
     end
 end

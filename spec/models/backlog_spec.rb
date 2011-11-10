@@ -296,4 +296,47 @@ describe Backlog do
 
     backlog.average_velocity.should == 2 # average of 1,2,3
   end
+
+  it 'should update the account scoring rule if one is not set' do
+    backlog = Factory.create(:backlog)
+    account = backlog.account
+    scoring_rule_fib = Factory.create(:scoring_rule_fib)
+    scoring_rule_any = Factory.create(:scoring_rule_any)
+
+    backlog.scoring_rule_id.should be_blank
+    account.scoring_rule_id.should be_blank
+
+    backlog.update_attributes :scoring_rule_id => scoring_rule_fib.id
+
+    backlog.scoring_rule.should == scoring_rule_fib
+    account.scoring_rule.should == scoring_rule_fib
+
+    # now when we update, account should not be updated as it already has a default
+    backlog.update_attributes :scoring_rule_id => scoring_rule_any.id
+    backlog.scoring_rule.should == scoring_rule_any
+    account.scoring_rule.should == scoring_rule_fib
+  end
+
+  it 'should have a default scoring system even when no scoring system has been selected' do
+    scoring_rule_default = Factory.create(:scoring_rule_default)
+    backlog = Factory.create(:backlog)
+
+    # check backlog does not actually have a scoring rule set
+    backlog.scoring_rule_id.should be_blank
+    backlog.scoring_rule.should == scoring_rule_default
+  end
+
+  it 'should inherit the scoring rule from the account if no scoring rule for this backlog exists' do
+    scoring_rule_default = Factory.create(:scoring_rule_default)
+    scoring_rule_fib = Factory.create(:scoring_rule_fib)
+
+    backlog = Factory.create(:backlog)
+    account = backlog.account
+
+    backlog.scoring_rule.should == scoring_rule_default
+
+    account.update_attributes :scoring_rule_id => scoring_rule_fib.id
+
+    backlog.scoring_rule.should == scoring_rule_fib
+  end
 end

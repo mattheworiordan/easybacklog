@@ -57,4 +57,14 @@ describe Account do
     account.backlogs.first.sprints.count.should > 1
     account.backlogs.first.snapshots.count.should > 0
   end
+
+
+  it 'should have a default scoring system even when no scoring system has been selected' do
+    scoring_rule_default = Factory.create(:scoring_rule_default)
+    account = Factory.create(:account)
+
+    # check account does not actually have a scoring rule set
+    account.scoring_rule_id.should be_blank
+    account.scoring_rule.should == scoring_rule_default
+  end
 end

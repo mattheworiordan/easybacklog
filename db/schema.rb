@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111102152121) do
+ActiveRecord::Schema.define(:version => 20111110102618) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(:version => 20111102152121) do
     t.integer  "default_rate"
     t.integer  "locale_id"
     t.boolean  "default_use_50_90"
+    t.integer  "scoring_rule_id"
   end
 
   create_table "backlogs", :force => true do |t|
@@ -56,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20111102152121) do
     t.boolean  "use_50_90"
     t.integer  "company_id"
     t.integer  "snapshot_for_sprint_id"
+    t.integer  "scoring_rule_id"
   end
 
   add_index "backlogs", ["account_id"], :name => "index_backlogs_on_account_id"
@@ -114,6 +116,15 @@ ActiveRecord::Schema.define(:version => 20111102152121) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "scoring_rules", :force => true do |t|
+    t.string  "code"
+    t.string  "title"
+    t.string  "description"
+    t.integer "position"
+  end
+
+  add_index "scoring_rules", ["code"], :name => "index_scoring_rules_on_code"
 
   create_table "sprint_stories", :force => true do |t|
     t.integer  "sprint_id",                     :null => false

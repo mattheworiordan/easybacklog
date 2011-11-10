@@ -5,6 +5,9 @@ Given /^the database has the necessary lookup tables$/ do
   Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
   Factory.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
   Factory.create(:sprint_story_status, :status => 'Testing', :code => SprintStoryStatus::TESTING)
+  Factory.create(:scoring_rule_fib)
+  Factory.create(:scoring_rule_modified_fib)
+  Factory.create(:scoring_rule_any)
 end
 
 Then /^(?:|I )should see the page title "([^\"]+)"$/ do |title|
