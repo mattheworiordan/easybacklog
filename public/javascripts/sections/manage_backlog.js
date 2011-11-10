@@ -70,7 +70,7 @@ App.Views.BacklogCreateUpdateMethods = (function() {
 
     // if this page is in a non-editable state, then trim the page down and disable all input elements
     if ($('.not-editable-notice').length) {
-      $('input[type=text],input[type=checkbox],select').attr('disabled', true);
+      $('input[type=text],input[type=checkbox],input[name="backlog[scoring_rule_id]"],select').attr('disabled', true);
       $('#backlog_has_company_false, #backlog_has_company_true').attr('disabled', true);
       $('.client-select .new-company').hide();
     }
