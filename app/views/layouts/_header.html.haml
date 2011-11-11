@@ -24,9 +24,14 @@
     %div= link_to 'Sign out', destroy_user_session_path
     .divider
     %div= link_to 'My info', edit_user_registration_path
+    .divider
     - if is_account_admin?
+      %div= link_to 'Account Users', account_users_path(current_account)
       .divider
-      %div= link_to 'Users', account_users_path(current_account)
+    %div= link_to 'Support', contact_path
+    .divider
+    %div= link_to 'Our Blog', 'http://blog.easybacklog.com/'
+    .divider
   - else
     -# %div= link_to 'Sign up', new_user_registration_url(:protocol => link_protocol)
     %div= link_to 'Log in', new_user_session_url(:protocol => link_protocol)
