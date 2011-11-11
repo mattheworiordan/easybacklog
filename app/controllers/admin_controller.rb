@@ -33,7 +33,7 @@ class AdminController < ApplicationController
     :beta_signup => {
       :model => BetaSignup,
       :name => 'Beta Signups',
-      :columns => [:email, :company, :created_at]
+      :columns => [:email, :company, :clicks, :unique_code, :created_at]
     }
   }
 
