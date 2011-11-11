@@ -1,4 +1,4 @@
-desc "This task is called by the Heroku cron add-on"
+desc "Check to see if any sprints need snapshots and snapshot (called by Heroku scheduler)"
 
 task :cron => :environment do
   puts "Checking for sprints that need snapshot..."
@@ -16,8 +16,4 @@ task :cron => :environment do
   rescue Exception => e
     CronLog.create!(:message => "!! Error snapshotting sprints", :info => e.message)
   end
-
-  # if Time.now.hour == 0 # run at midnight
-  #   User.send_reminders
-  # end
 end

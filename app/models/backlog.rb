@@ -95,7 +95,8 @@ class Backlog < ActiveRecord::Base
   # editable if this not a snapshot i.e. a snapshot master exists
   #  or if deleted or archived
   def editable?
-    snapshot_master.blank? && snapshot_for_sprint.blank? && !self.archived? && !self.deleted?
+    # allow an archived and deleted backlog to be editable so that it can be destroyed, else editable? blocks all destroy
+    snapshot_master.blank? && snapshot_for_sprint.blank? && ((!self.archived? && !self.deleted?) || (self.archived? && self.deleted?))
   end
   alias_method :is_editable, :editable?
 
@@ -168,6 +169,35 @@ class Backlog < ActiveRecord::Base
     else
       ScoringRule.find scoring_rule_id
     end
+  end
+
+  # it's impossible to destroy a backlog's snapshots as they are not editable and Snapshot module prevents deletion
+  # so we mark all snapshots as deleted and no longer as snapshots, and then delete them
+  # and then we do the same to this backlog
+  #
+  def destroy_including_snapshots
+    # go through sprints and delete snapshots
+    sprints.each do |sprint|
+      if sprint.snapshot.present?
+        # mark snapshot as deleted and no longer a snapshot as snapshots cannot be deleted
+        sprint.snapshot.update_attribute :deleted, true # ensure it does not appear whilst we are deleting this item
+        sprint.snapshot.update_attribute :archived, true # archived & deleted backlogs are editable (special workaround)
+        sprint.snapshot.update_attribute :snapshot_for_sprint_id, nil
+        sprint.snapshot.destroy
+      end
+    end
+
+    snapshots.each do |snapshot|
+      # mark snapshot as deleted and no longer a snapshot as snapshots cannot be deleted
+      snapshot.update_attribute :deleted, true # ensure it does not appear whilst we are deleting this item
+      snapshot.update_attribute :archived, true # archived & deleted backlogs are editable (special workaround)
+      snapshot.update_attribute :snapshot_master_id, nil
+      snapshot.destroy
+    end
+
+    update_attribute :deleted, true
+    update_attribute :archived, true # archived & deleted backlogs are editable (special workaround)
+    destroy
   end
 
   private
