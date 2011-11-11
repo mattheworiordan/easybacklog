@@ -5388,7 +5388,7 @@ if(cookie.substring(0,name.length+1)==(name+"=")){cookieValue=decodeURIComponent
 break
 }}}return cookieValue
 }};
-(function($){var initialize,elementCurrentStyle,htmlEncode,multiLineHtmlEncode,multiLineHtmlDecode,elementCurrentStyle;
+(function($){var initialize,elementCurrentStyle,htmlEncode,multiLineHtmlEncode,multiLineHtmlDecode;
 $.fn.editable=function(command,options){var opts;
 if((typeof command==="function")||!command){opts=$.extend({},$.fn.editable.defaults);
 if(typeof options==="object"){opts=$.extend(opts,options)
@@ -5406,12 +5406,12 @@ inputText=targetProps.text;
 if(typeof options.data==="function"){inputText=options.data.call(target,targetProps.text,target)
 }else{if(typeof options.data==="string"){inputText=options.data
 }}form=$("<form>");
-elem=editableFieldFactory(options.type);
+elem=editableFieldFactory(options.type,target);
 elem.css("font-size",elementCurrentStyle(target,"font-size"));
 elem.css("font-family",elementCurrentStyle(target,"font-family"));
 elem.css("color",elementCurrentStyle(target,"color"));
 getBackgroundColor=function(node){var backgroundColor=elementCurrentStyle(node,"background-color");
-if(!backgroundColor||backgroundColor=="transparent"||backgroundColor=="inherit"){if($(node).parent().length){getBackgroundColor($(node).parent()[0])
+if(!backgroundColor||backgroundColor==="transparent"||backgroundColor==="inherit"){if($(node).parent().length){getBackgroundColor($(node).parent()[0])
 }else{return backgroundColor
 }}};
 elem.css("background-color",getBackgroundColor(target));
@@ -5444,9 +5444,10 @@ saveChanges()
 }}}}});
 $(elem).focus()
 };
-editableFieldFactory=function(type){var elem;
+editableFieldFactory=function(type,target){var elem;
 if(type==="textarea"){elem=$('<textarea name="value"></textarea>');
 if(options.autoResize){elem.TextAreaExpander(false,options.autoResizeMax)
+}else{elem.css("height",$(target).height()+"px")
 }}else{elem=$('<input type="text" name="value">');
 if(options.maxLength){elem.attr("maxlength",options.maxLength)
 }if(options.autoComplete){elem.attr("autocomplete","off");
@@ -5454,7 +5455,7 @@ elem.autocomplete({source:($.isArray(options.autoComplete)?options.autoComplete:
 }}return elem
 };
 restoreTarget=function(newVal){var val=typeof newVal!=="undefined"?newVal:targetProps.text,encodedVal=multiLineHtmlEncode(val);
-$(target).attr("style",targetProps.style?targetProps.style:"").html(encodedVal).append(form);
+$(target).attr("style",targetProps.style||"").html(encodedVal).append(form);
 $(target).data("editable-active",false);
 setTimeout(function(){form.remove()
 },10);
@@ -5479,7 +5480,7 @@ addPlaceHolderIfEmpty()
 elementCurrentStyle=function(element,styleName){if(element.currentStyle){var i=0,temp="",changeCase=false;
 for(i=0;
 i<styleName.length;
-i++){if(styleName[i]!="-"){temp+=(changeCase?styleName[i].toUpperCase():styleName[i]);
+i=i+1){if(styleName[i]!=="-"){temp+=(changeCase?styleName[i].toUpperCase():styleName[i]);
 changeCase=false
 }else{changeCase=true
 }}styleName=temp;
@@ -5489,10 +5490,11 @@ return element.currentStyle[styleName]
 htmlEncode=function(value){if(value){return $("<span/>").text(value).html()
 }else{return""
 }};
-multiLineHtmlEncode=function(value){if(_.isString(value)){var lines=value.split(/\r\n|\r|\n/);
-for(var i=0;
+multiLineHtmlEncode=function(value){var lines,i;
+if(typeof value==="string"){lines=value.split(/\r\n|\r|\n/);
+for(i=0;
 i<lines.length;
-i++){lines[i]=htmlEncode(lines[i])
+i=i+1){lines[i]=htmlEncode(lines[i])
 }return lines.join("<br/>")
 }else{return""
 }};
