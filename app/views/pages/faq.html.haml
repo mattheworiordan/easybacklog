@@ -19,6 +19,8 @@
     %li
       %a{:href => '#security'} How secure is easyBacklog and my data?
     %li
+      %a{:href => '#browsers'} Why don't you support my browser?
+    %li
       %a{:href => '#suggestions'} I have some suggestions for your product, who should I speak to?
     %li
       %a{:href => '#problem'} I have a problem, who can I speak to?
@@ -122,6 +124,21 @@
     Backups of the database are made daily, so your data is secure even if our servers go offline.
   %p
     We use SSL for all connections to easyBacklog, so all communication with our servers is over a secure channel and cannot be intercepted by hackers.
+
+  %h3
+    %a{:name => 'browsers'}
+    Why don't you support my browser?
+  %p
+    Sorry, but in order to ensure easyBacklog provides the best experience for most of our users, we made the decision to only support modern browsers.
+  %p
+    If you are using an older browser such as Internet Explorer 7, then please remember that you're using a
+    = Date.today.year - 2006
+    year old browser and it really is time to upgrade.  If you're not able to upgrade your Internet Explorer version, then we recommend you try one of the other many free browsers such as
+    = link_to 'Chrome', 'http://www.google.com/chrome'
+    or
+    = link_to 'Firefox', 'http://www.mozilla.org/firefox'
+  %p
+    = link_to 'Here is a complete list of browsers supported by easyBacklog', browser_support_path
 
   %h3
     %a{:name => 'suggestions'}
