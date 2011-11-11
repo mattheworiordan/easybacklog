@@ -316,3 +316,20 @@ form.new_account, form.edit_account, form.user_new {
     }
   }
 }
+
+.faq {
+  h3 {
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  p, li {
+    color: #666;
+  }
+  .url {
+    background-color: #E9E9E9;
+    padding: 3px;
+    font-family: courier;
+  }
+}

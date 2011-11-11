@@ -9,6 +9,7 @@
         %sup BETA
       .quick-links
         =link_to 'Our Blog', 'http://blog.easybacklog.com/'
+        = link_to 'FAQ', faq_path
         =link_to 'Support', contact_path
         =link_to 'Log In', new_session_path(User)
       .notes
@@ -208,6 +209,7 @@
         = Time.now.strftime('%Y')
       = link_to 'Our Blog', 'http://blog.easybacklog.com/'
       = link_to 'Support', contact_path
+      = link_to 'FAQ', faq_path
       = link_to 'Contact Us', contact_path
       = link_to 'Request Invitation', '#apply', :id => 'request-invitation-footer'
       = link_to 'Log In', new_session_path(User)

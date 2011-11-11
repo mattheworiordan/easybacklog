@@ -78,6 +78,7 @@ Ibacklog::Application.routes.draw do
 
   get '/users/email_available' => 'devise/users#email_available'
   get '/contact' => 'pages#contact', :as => 'contact'
+  get '/faq' => 'pages#faq', :as => 'faq'
   get '/browser-support' => 'pages#browser_support', :as => 'browser_support'
   get '/raise-error' => 'pages#raise_error'
 

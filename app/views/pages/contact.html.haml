@@ -1,9 +1,18 @@
 - content_for :title do
   %h1 Contact Us
 
+%h2 Support and Knowledgebase
 %p
   If you have any suggestions, feedback or are experiencing any problems,
-  %a{ :onmouseover => 'UE.Popin.preload();', :href => '#', :onclick => 'UE.Popin.show(); return false;' }
-    please let us know on our support forum.
+  %a{ :href => 'http://easybacklog.userecho.com/' }
+    please let us know on our support forum and knowledgebase.
+
+%h2 Frequently Asked Questions
+%p
+  The questions that keep getting asked of us have been collated in our FAQs.
+  %br
+  =link_to 'View our frequently asked questions.', faq_path
+
+%h2 Getting in touch
 %p
   If you would like to get in touch with us about anything else, do drop us a line on #{link_to 'support@easybacklog.com', 'mailto:support@easybacklog.com'}.

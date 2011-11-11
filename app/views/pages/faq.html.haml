@@ -1,0 +1,142 @@
+- content_for :title do
+  %h1 Frequently Asked Questions
+
+.faq
+  %h2 Questions
+  %ol
+    %li
+      %a{:href => '#sign-up'} How do I sign up for easyBacklog?
+    %li
+      %a{:href => '#team'} Will easyBacklog help me manage my team or remove the need for the physical aspects of scrum?
+    %li
+      %a{:href => '#why'} Why should I use easyBacklog?
+    %li
+      %a{:href => '#how-much'} How much do you charge to use easyBacklog?
+    %li
+      %a{:href => '#charging'} Will you start charging, and what will happen if you do?
+    %li
+      %a{:href => '#data-portability'} Who owns the data, and how portable is it?
+    %li
+      %a{:href => '#security'} How secure is easyBacklog and my data?
+    %li
+      %a{:href => '#suggestions'} I have some suggestions for your product, who should I speak to?
+    %li
+      %a{:href => '#problem'} I have a problem, who can I speak to?
+
+
+  %h2 Answers
+
+  %h3
+    %a{:name => 'sign-up'}
+    How do I sign up for easyBacklog?
+  %p
+    easyBacklog is currently running in beta phase with limited access at this stage.
+    As such, we cannot guarantee that everyone will get access until we officially launch the product.
+  %p
+    However, we do already have a very eager group of beta testers who are using the product in their production environments, and we're looking for more businesses and people who can use easyBacklog in their day to day environment to help us improve the product and ensure it's ready when it's launched.
+  %p
+    If you feel like you are a good candidate to join our beta tester group, then please do
+    %a{:href => '/#apply'} apply for early access here »
+
+  %h3
+    %a{:name => 'team'}
+    Will easyBacklog help me manage my team or remove the need for the physical aspects of scrum?
+  %p
+    Well yes and no.  easyBacklog is opinionated software designed to address the following requirements:
+    %ul
+      %li Rapidly set up and manage an ever changing backlog
+      %li Powerful version control to ensure you can compare backlogs at any point in time.  This is one of the killer features which helps provide the elusive "fixed cost agile" solution for agencies and in-house teams with a fixed budget or fixed set of resources and stakeholders to answer to
+      %li Sprint planning and management
+      %li Provide aids to streamline the agile process such as printing, exporting, reporting
+      %li Useful as both an estimation and production tool in that it's quick to build estimates, but easy to evolve these estimates into a complete backlog which can then serve as a project spec
+
+  %p
+    What easyBacklog is
+    %b not
+    designed to do is:
+    %ul
+      %li Replace any core agile processes such as scrums, retrospectives, stand ups or planning poker
+      %li Replace the sprint scrum board, we advocate that you still you use physical story cards on an information radiator (a board in simple speak).  We'll help you print those cards on double sided paper though, so we'll save you a load of time.
+      %li easyBacklog is not a collaboration and communication tool for your team.  We're very focussed on building the best backlog management tool out there, and to achieve that we need to keep the interfaces clean and functionality relevant.
+
+  %p
+    So the answer is yes in that we help to reduce the burdens associated with managing backlogs, sprints and change, and the answer is also no because easyBacklog is not a communication tool between teams intentionally.
+
+  %h3
+    %a{:name => 'why'}
+    Why should I use easyBacklog?
+  %p
+    Best explained in a few succinct points:
+    %ul
+      %li Excellent fluid and fast backlog management with complete keyboard control for speed
+      %li Because of the incredible snapshot system, easyBacklog allows you to work with a fixed budget or deadline yet allow for agile change throughout
+      %li Purpose built for managing backlogs and sprints, so we do that better than anyone else
+      %li We streamline the agile process, we don't get in it's way
+
+  %h3
+    %a{:name => 'how-much'}
+    How much do you charge to use easyBacklog?
+  %p
+    As easyBacklog is currently running in beta, we are not charging anyone for access to easyBacklog.  Beta testers have access to all features and no restrictions on the number of backlogs they can created.
+
+  %h3
+    %a{:name => 'charging'}
+    Will you start charging, and what will happen if you do?
+  %p
+    When we are ready to officially launch, we will be launching with paid plans.
+    However, it is very likely we will be operating a freemium model whereby light users will have free access to easyBacklog, and premium users will join a plan based on their usage and number of users.
+  %p
+    At this stage, we have not decided what we will be charging as we will be looking to consult with our beta testers and the market to ensure we are competitively and fairly priced.
+  %p
+    %b Please note:
+    Whilst we will start charging, all beta testers will continue to have access to easyBacklog and any backlogs they have set up indefinitely.  There is zero risk that you will find yourself in a difficult situation where you are being forced to sign up when we launch
+    If you're a beta tester, you will continue to have access to your backlogs forever.
+
+  %h3
+    %a{:name => 'data-portability'}
+    Who owns the data, and how portable is it?
+  %p
+    You own your data completely.  We obviously have the right to hold onto your data for as long as you need it, however if you wish to delete your account and stop using easyBacklog, please
+    = link_to 'get in touch with us', contact_path
+    and we will delete all of your data upon request.
+  %p
+    All of your data is extremely portable as well.  We are big supporters of an open data policy, so all backlog data along with sprint and snapshot information is available to everyone by simply suffixing a backlog URL with .xml
+  %p
+    For example, if you view a backlog and the URL in your browser URL bar is:
+    %br
+    %span.url https://easybacklog.com/account/1/backlog/1
+    %br
+    then simply suffix the URL with .xml to download all of your data in a portable XML format, for example:
+    %br
+    %span.url https://easybacklog.com/account/1/backlog/1.xml
+
+  %h3
+    %a{:name => 'security'}
+    How secure is easyBacklog and my data?
+  %p
+    easyBacklog is hosted on scalable Amazon Web Services within a secured network.
+    We have chosen Amazon Web Services because of their proven ability to scale when demand increases, proven robustness, and vast array of services we can leverage off.
+  %p
+    Don't worry, some of the most forward thinking companies in the world such as Ericsson, The Guardian, Foursqure and Sega rely on Amazon for their infrastructure, so we're confident we've chosen the best solution.
+  %p
+    Backups of the database are made daily, so your data is secure even if our servers go offline.
+  %p
+    We use SSL for all connections to easyBacklog, so all communication with our servers is over a secure channel and cannot be intercepted by hackers.
+
+  %h3
+    %a{:name => 'suggestions'}
+    I have some suggestions for your product, who should I speak to?
+  %p
+    We're always open to suggestions, and we love to hear from users of easyBacklog to hear about how you use the product and what you need from it moving forwards.
+  %p
+    We have a very active
+    =link_to 'support forum and knowledgebase', 'http://easybacklog.userecho.com/'
+    where we'd love to hear your suggestions.
+
+  %h3
+    %a{:name => 'problem'}
+    I have a problem, who can I speak to?
+  %p
+    You can get in touch with us via email or via our support forum, and we'll get back to you quickly.
+  %p
+    =link_to 'Please visit our support page for more information.', contact_path
