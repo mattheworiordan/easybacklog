@@ -1,4 +1,4 @@
-/*global window:false, setTimeout:false, jQuery:false */ // JSLint
+/*global window:false, setTimeout:false, jQuery:false, getComputedStyle:false */ // JSLint
 /*jslint unparam: true, white: true, maxerr: 50, indent: 2 */
 
 /*
@@ -9,25 +9,37 @@
  * Inspired by JQuery JEditable http://www.appelsiini.net/projects/jeditable
  *
  * Overview:
- * I found JEditable to be way too heavy so I created a nearly compatible API version
+ * I found JEditable to be way too heavy so I created a near compatible API version
  * of JEditable, yet this version is tiny
  *
  * Dependencies:
- * - jquery.textarea-expander.js by Craig Buckler, Optimalworks.net
+ * - Optional: jquery.textarea-expander.js by Craig Buckler, Optimalworks.net
  *  ( this is only required if you use the autoResize option )
  *  ( jquery.textarea-expender.js is included in this source )
  *
  * options are:
- * - XXX: XXXX
+ * - type: 'text', // text or textarea
+ * - maxLength: false, // set maxlength of an input text field
+ * - acceptChangesOnBlur: true, // if this is false, changes are discarded when input loses focus
+ * - autoResize: false, // allows auto resize of text areas if jquery.textarea-expander.js is included (in vendor/js folder)
+ * - autoResizeMax: 300, // set max height autoResize field can expand to,
+ * - noChange: false, // callback that will be made even if no change was made to the input field, by default no call is made
+ * - placeHolder: false, // allows HTML to be placed inside the target when empty such as [click here to edit]
+ * - autoComplete: false // allows use of JQuery UI autoComplete plugin, pass in an array or function to return an array of data
+ * - data: false, // callback allowing data to be passed to this plugin on edit instead of using the content from the target
+ * - offsetX: 0, // move textarea X pixels from calculated position
+ * - offsetY: 0, // move textarea Y pixels from calculated position
+ * - assumedBorderWidth: 4, // border width of input field allowed for in width calculations
  *
  * Command usage example:
- *   $('div').editable( valueChangedCallback );
+ *   $('div').editable(valueChangedCallback);
+ *   $('div').editable(valueChangedCallback, options); // option is a Javascript object such as { autoComplete: true }
  */
 
 (function ($) {
   "use strict";
 
-  var initialize, elementCurrentStyle, htmlEncode, multiLineHtmlEncode, multiLineHtmlDecode, elementCurrentStyle;
+  var initialize, elementCurrentStyle, htmlEncode, multiLineHtmlEncode, multiLineHtmlDecode;
 
   $.fn.editable = function(command, options) {
     var opts;
@@ -79,7 +91,7 @@
       }
 
       form = $('<form>');
-      elem = editableFieldFactory(options.type); // get the text type field based on the options passed in
+      elem = editableFieldFactory(options.type, target); // get the text type field based on the options passed in
 
       // now set font characteristics
       elem.css('font-size', elementCurrentStyle(target, 'font-size'));
@@ -89,14 +101,14 @@
       // determine background color from target or any of its parents
       getBackgroundColor = function(node) {
         var backgroundColor = elementCurrentStyle(node, 'background-color');
-        if (!backgroundColor || backgroundColor == 'transparent' || backgroundColor == 'inherit') {
+        if (!backgroundColor || backgroundColor === 'transparent' || backgroundColor === 'inherit') {
           if ($(node).parent().length) {
             getBackgroundColor($(node).parent()[0]);
           } else {
             return backgroundColor;
           }
         }
-      }
+      };
       elem.css('background-color', getBackgroundColor(target));
 
       // insert a span into the actual element to see where the text starts
@@ -178,11 +190,15 @@
       $(elem).focus();
     };
 
-    editableFieldFactory = function(type) {
+    editableFieldFactory = function(type, target) {
       var elem;
       if (type === 'textarea') {
         elem = $('<textarea name="value"></textarea>');
-        if (options.autoResize) { elem.TextAreaExpander(false, options.autoResizeMax); }
+        if (options.autoResize) {
+          elem.TextAreaExpander(false, options.autoResizeMax);
+        } else {
+          elem.css('height', $(target).height() + "px");
+        }
       } else {
         elem = $('<input type="text" name="value">');
         if (options.maxLength) { elem.attr('maxlength', options.maxLength); }
@@ -205,7 +221,7 @@
           encodedVal = multiLineHtmlEncode(val);
 
       // save value to target HTML element, but keep form visible so append to the HTML
-      $(target).attr('style', targetProps.style ? targetProps.style : '').html(encodedVal).append(form);
+      $(target).attr('style', targetProps.style || '').html(encodedVal).append(form);
       $(target).data('editable-active', false);
 
       // pause before we remove the element as other events may need to access this element before it disappears
@@ -215,7 +231,7 @@
 
       // if user wants a callback even if there was no change, then call this now
       if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
-        options.noChange.call(target, val)
+        options.noChange.call(target, val);
       }
 
       // remove catch all event to see if user clicked outside this elem
@@ -273,13 +289,14 @@
   elementCurrentStyle = function(element, styleName){
     if (element.currentStyle){
       var i = 0, temp = "", changeCase = false;
-      for (i = 0; i < styleName.length; i++)
-          if (styleName[i] != '-'){
-              temp += (changeCase ? styleName[i].toUpperCase() : styleName[i]);
-              changeCase = false;
-          } else {
-              changeCase = true;
-          }
+      for (i = 0; i < styleName.length; i = i + 1) {
+        if (styleName[i] !== '-'){
+            temp += (changeCase ? styleName[i].toUpperCase() : styleName[i]);
+            changeCase = false;
+        } else {
+            changeCase = true;
+        }
+      }
       styleName = temp;
       return element.currentStyle[styleName];
     } else {
@@ -293,12 +310,13 @@
     } else {
       return '';
     }
-  }
+  };
 
   multiLineHtmlEncode = function(value) {
-    if (_.isString(value)) {
-      var lines = value.split(/\r\n|\r|\n/);
-      for (var i = 0; i < lines.length; i++) {
+    var lines, i;
+    if (typeof value === 'string') {
+      lines = value.split(/\r\n|\r|\n/);
+      for (i = 0; i < lines.length; i = i+1) {
         lines[i] = htmlEncode(lines[i]);
       }
       return lines.join('<br/>');
