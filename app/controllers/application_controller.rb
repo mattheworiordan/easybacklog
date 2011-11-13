@@ -83,4 +83,11 @@ class ApplicationController < ActionController::Base
     def test_env_mail_config
       ActionMailer::Base.default_url_options[:host] = request.host_with_port
     end
+
+    def ensure_admin
+      unless is_admin?
+        flash[:error] = 'You do not have permission to access the bunker'
+        redirect_to root_path
+      end
+    end
 end

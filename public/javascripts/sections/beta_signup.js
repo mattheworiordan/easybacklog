@@ -133,6 +133,15 @@ $(document).ready(function () {
   $('a.light-box-group, .screen-shots a').lightBox($.extend(lightBoxOptions, {fixedNavigation:true}));
 });
 
+// for split a/b testing, we try showing intro video automatically to some users
+// we only do this on first visit though
+function showIntroVideo() {
+  if ($.cookie('seen_intro_video') !== 'true') {
+    $.cookie('seen_intro_video', 'true', { expires: 365 });
+    $('a.light-box.video-demo').click();
+  }
+}
+
 jQuery.fn.inputLabelize = function () {
   this.focus(function () {
     var firstClick = false, faded, offset, that;

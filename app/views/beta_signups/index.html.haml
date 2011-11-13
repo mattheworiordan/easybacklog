@@ -142,8 +142,8 @@
               %li Cloud servers to meet demand
               %li Quick to load and use
     .demos
-      .title video demo
-      %a.light-box.video-demo{ :href => 'http://player.vimeo.com/video/29092538?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1&amp;width=854&amp;height=480', :id => 'video-demo' }
+      .title intro video
+      %a.light-box.video-demo{ :href => 'http://player.vimeo.com/video/29092538?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1&amp;width=854&amp;height=480', :id => 'video-demo', :title => 'Introduction to easyBacklog' }
       .title screenshots
       %a.light-box-group.screenshot-demo{ :href => '/images/beta_signup/screen_shots/complete-backlog-with-calculations.png', :title => "Complete backlog management with automatic points, costs and days calculated", :id => 'screenshot-demo' }
       .screen-shots
@@ -214,3 +214,9 @@
       = link_to 'Request Invitation', '#apply', :id => 'request-invitation-footer'
       = link_to 'Log In', new_session_path(User)
   %a.feedback-button{ :href => '#feedback' }
+
+- if !Rails.env.test? && ab_test(:beta_intro_video)
+  :javascript
+    $(function() {
+      showIntroVideo();
+    });
