@@ -224,7 +224,8 @@ if($.browser.mozilla){if($.browser.versionInt>=5){offset="0 -2"
 });
 if((!this.firstClick)&&($(this).data("original-value")!==$(this).val())){faded.hide()
 }else{$(this).val("")
-}$("section.content").append(faded);
+}setTimeout(function(){$("section.content").append(faded)
+},0);
 $(this).addClass("enabled")
 }).keyup(function(){if($(this).val()===""){$(".faded-request-access").show()
 }else{$(".faded-request-access").hide()
