@@ -1,8 +1,9 @@
 # encoding: utf-8
-!= render :partial => '/layouts/head'
-
-!= render :partial => '/layouts/browser_support'
-
-!= render :partial => '/layouts/alert_space'
-
-= yield
+!!!
+!= render :partial => '/layouts/ascii'
+%html{:xmlns => 'http://www.w3.org/1999/xhtml'}
+  != render :partial => '/layouts/head'
+  %body
+    != render :partial => '/layouts/browser_support'
+    != render :partial => '/layouts/alert_space'
+    = yield

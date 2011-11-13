@@ -1,49 +1,45 @@
-!!!
-!= render :partial => '/layouts/ascii'
-%html{:xmlns => 'http://www.w3.org/1999/xhtml'}
-  %head
-    %title
-      = (yield(:page_title).length > 0 ? yield(:page_title) : 'Makes agencies agile') + ' : easyBacklog'
+%head
+  %title
+    = (yield(:page_title).length > 0 ? yield(:page_title) : 'Makes agencies agile') + ' : easyBacklog'
 
-    %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
-    %link{ :rel=>'icon', :type=>'image/png', :href=>image_path('/favicon.png') }
+  %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
+  %link{ :rel=>'icon', :type=>'image/png', :href=>image_path('/favicon.png') }
 
-    = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
-    = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.development?
+  = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
+  = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.development?
 
-    = include_stylesheets :common, :media => 'all' if use_base_css?
-    /[if lt IE 9]
-      - if Rails.env.development? || Rails.env.test?
-        = include_stylesheets :ie_compatibility, :media => 'all'
-        = include_javascripts :ie_compatibility
-      - else
-        - # link directly to the files as Jammit gets confused as this is within another conditional IE comment
-        - # https://easybacklog.basecamphq.com/C133653389
-        /if (!IE)|(gte IE 8)
-        = stylesheet_link_tag '/assets/ie_compatibility-datauri.css'
-        /if (let IE 7)
-        = stylesheet_link_tag '/assets/ie_compatibility-mhtml.css'
-        = javascript_include_tag '/assets/ie_compatibility.js'
-    = include_javascripts :workspace
+  = include_stylesheets :common, :media => 'all' if use_base_css?
+  /[if lt IE 9]
+    - if Rails.env.development? || Rails.env.test?
+      = include_stylesheets :ie_compatibility, :media => 'all'
+      = include_javascripts :ie_compatibility
+    - else
+      - # link directly to the files as Jammit gets confused as this is within another conditional IE comment
+      - # https://easybacklog.basecamphq.com/C133653389
+      /if (!IE)|(gte IE 8)
+      = stylesheet_link_tag '/assets/ie_compatibility-datauri.css'
+      /if (let IE 7)
+      = stylesheet_link_tag '/assets/ie_compatibility-mhtml.css'
+      = javascript_include_tag '/assets/ie_compatibility.js'
+  = include_javascripts :workspace
 
-    = yield(:head)
+  = yield(:head)
 
-    = hoptoad_javascript_notifier unless Rails.env.test?
+  = hoptoad_javascript_notifier unless Rails.env.test?
 
-    - # Javascript library to simulate drag & drop re-ordering of lists
-    = javascript_include_tag 'test/jquery.simulate.js', 'test/jquery.simulate.drag-sortable.js', 'test/jquery.helpers.js' if Rails.env.test? || Rails.env.development?
-    = javascript_include_tag 'test/test-env.js' if Rails.env.test?
+  - # Javascript library to simulate drag & drop re-ordering of lists
+  = javascript_include_tag 'test/jquery.simulate.js', 'test/jquery.simulate.drag-sortable.js', 'test/jquery.helpers.js' if Rails.env.test? || Rails.env.development?
+  = javascript_include_tag 'test/test-env.js' if Rails.env.test?
 
-    = csrf_meta_tag
-    %link{ :rel=>'author', :href=>'/humans.txt' }
-    - unless Rails.env.test?
-      :javascript
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-11771751-3']);
-        _gaq.push(['_trackPageview']);
-        (function() {
-          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-  %body
+  = csrf_meta_tag
+  %link{ :rel=>'author', :href=>'/humans.txt' }
+  - unless Rails.env.test?
+    :javascript
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-11771751-3']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
