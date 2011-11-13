@@ -107,11 +107,4 @@ class AdminController < ApplicationController
           new_object
         end
       end
-
-      def ensure_admin
-        unless is_admin?
-          flash[:error] = 'You do not have permission to access the bunker'
-          redirect_to root_path
-        end
-      end
 end

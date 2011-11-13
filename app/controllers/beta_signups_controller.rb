@@ -27,6 +27,7 @@ class BetaSignupsController < ApplicationController
       @short_url = get_short_url
       BetaSignupsNotifier.receipt_of_application(@beta_signup.email, @short_url).deliver
       BetaSignupsNotifier.notify_admin_of_new_signup(@beta_signup.email, @beta_signup.company, @short_url).deliver
+      track! :apply_beta_access
     end
     respond_to do |format|
       format.html { render 'index' }
