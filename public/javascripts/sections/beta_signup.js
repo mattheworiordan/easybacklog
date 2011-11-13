@@ -169,7 +169,9 @@ jQuery.fn.inputLabelize = function () {
     } else {
       $(this).val('');
     }
-    $('section.content').append(faded);
+    setTimeout(function() {
+      $('section.content').append(faded);
+    }, 0);
     $(this).addClass('enabled');
   }).keyup(function () {
     if ($(this).val() === '') {
