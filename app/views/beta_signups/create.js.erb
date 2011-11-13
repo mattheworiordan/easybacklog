@@ -1,5 +1,6 @@
 <%
   partial = @show_thank_you == true ? 'thank_you' : 'apply'
+  google_event_action = @show_thank_you == true ? 'complete' : 'attempt'
 %>
 if ($.browser.msie && $.browser.versionInt <= 8) {
   // strange browser issue in old IE versions, so keep it simple
@@ -9,3 +10,7 @@ if ($.browser.msie && $.browser.versionInt <= 8) {
     $('.request-access .ajax-target').html('<div class="ajax-target"><%= escape_javascript(render(:partial => partial)) %></div>').hide().slideDown();
   });
 }
+<% unless Rails.env.test? %>
+  _gaq.push(['_trackEvent', 'beta_signup', '<%=google_event_action%>']);
+  _gaq.push(['_trackPageview', '/beta_signup/<%=google_event_action%>']);
+<% end %>
