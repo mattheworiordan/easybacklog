@@ -75,7 +75,7 @@ Given /^a new example backlog is set up for the account "([^"]*)"$/ do |account_
   account = Account.find_by_name(account_name)
   raise "Account #{account_name} does not exist." if account.blank?
   user = account.users.first
-  example_data = XMLObject.new(Rails.root.join('features/data/example_backlog_with_sprints.xml'))
+  example_data = XMLObject.new(Rails.root.join('db/samples/cucumber_example_backlog_with_sprints.xml'))
   backlog_builder = Creators::BacklogCreator.new
   backlog_builder.create example_data, account, user
 end
