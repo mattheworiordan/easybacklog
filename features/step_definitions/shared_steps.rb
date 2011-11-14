@@ -62,6 +62,11 @@ Then /^"([^"]*)"(?: within "([^"]+)")? should be selected for (?:the )?"([^"]+)"
   end
 end
 
+Then /^"([^"]*)" should be an option for (?:the )?"([^"]+)"$/ do |value, field|
+  field = selector_to(field)
+  page.evaluate_script("$('#{field} option:contains(#{value})').length").should > 0
+end
+
 # not the same as press, as press relies on there being a button
 When /^(?:|I )click (?:|the element |on |on the )"([^"]+)"(?: within (?:|the )"([^"]+)")?$/ do |selector, scope|
   selector = selector_to(selector)

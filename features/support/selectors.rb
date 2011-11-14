@@ -222,6 +222,14 @@ module HtmlSelectorHelpers
       '.existing select#backlog_company_id'
 
     ##
+    # Backlog print
+    when /^print story cards dialog$/
+      ".ui-dialog #dialog-print"
+
+    when /^print story card dialog scope drop down$/
+      '.ui-dialog #dialog-print select#print-scope'
+
+    ##
     # Beta sign up launch page
     when /^visible story card$/
       '.dual-cards .card.visible'
@@ -291,6 +299,9 @@ module HtmlSelectorHelpers
 
     when /^checkboxes$/
       'input[type=checkbox]'
+
+    when /^radio buttons$/
+      'input[type=radio]'
 
     when /^(un)checked checkboxes$/
       "input[type=checkbox]:#{$1 == 'un' ? ':not(:checked)' : ':checked'}"

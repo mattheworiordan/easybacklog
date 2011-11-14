@@ -88,12 +88,12 @@ Feature: Backlog Other Functionality
     Then I should see "Snapshot name" within a "label"
       And the "text input fields" should be disabled
       And the "checkboxes" should be disabled
+      And the "radio buttons" should be disabled
     When I follow "Yes, I understand — delete this snapshot"
       And I press "Delete" within "a dialog"
     Then I should see the notice "Snapshot was successfully deleted"
     When I click on the "snapshots menu"
     Then there should be 0 "drop down options with the text Snapshot 1"
-
 
   @javascript
   Scenario: Check that compare snapshots works
@@ -148,3 +148,28 @@ Feature: Backlog Other Functionality
       And I should see "AsStory 2"
       And I should see "Backlog: Backlog 1"
       And I should see "Theme: Theme 1"
+
+  @javascript
+  Scenario: Print shows sprints and themes
+    Given a new example backlog is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I follow "Print"
+    Then the "print story cards dialog" should be visible
+      And "Sprint 1" should be an option for the "print story card dialog scope drop down"
+      And "Sprint 2" should be an option for the "print story card dialog scope drop down"
+      And "Theme 1" should be an option for the "print story card dialog scope drop down"
+
+  @javascript
+  Scenario: Snapshot settings for sprints must work and should not be editable
+    Given a new example backlog is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I click on the "snapshots menu"
+      And I select "Sprint 1" from "Select a snapshot to view:"
+      And I wait 1 second
+    Then "Sprint 1" should be selected for "snapshot drop down appearing in snapshot mode near tabs"
+    When I follow "Settings"
+    Then the "Snapshot name" field should contain "Sprint 1"
+      And the "text input fields" should be disabled
+      And the "checkboxes" should be disabled
+      And the "radio buttons" should be disabled
+      And I should see the text "You cannot delete a sprint snapshot"
