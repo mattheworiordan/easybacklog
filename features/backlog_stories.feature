@@ -215,3 +215,54 @@ Feature: Backlog Stories
       And I tab forwards and wait for AJAX
     Then I should see "£1,177" within the "first story's cost"
       And I should see "1.5" within the "first story's days"
+
+  @javascript
+  Scenario: Supports multiple scoring rules
+    Given I create a story with as set to "first" in the first theme
+    When I change the scoring rule for this backlog to "Modified Fibonacci"
+    Then the "first story's 50 score" should allow the values "0,0.5,1,2,3,5,40,60,100"
+      And the "first story's 90 score" should not allow the values "6,-5,7,101,5.5"
+    When I change the scoring rule for this backlog to "Strict Fibonacci"
+    Then the "first story's 50 score" should allow the values "0,1,2,3,5,8,13,21,34"
+      And the "first story's 90 score" should not allow the values "0.5,20,40,100,-1"
+    When I change the scoring rule for this backlog to "Anything"
+    Then the "first story's 50 score" should allow the values "0,0.3,5,27.6"
+      And the "first story's 90 score" should not allow the values "-1,-0.5"
+
+  @javascript
+  Scenario: Check that single score configuration works (not using 50/90 rules, so only one score field)
+    When I follow "Settings"
+      And I uncheck "Use the 50/90 estimation method"
+      And I press "Update backlog settings"
+    Then the focus is on the "first theme's name"
+    When I tab forwards
+    Then the focussed element should have the text "Add story"
+    When I press enter and wait for AJAX
+    Then the focussed element should be an editable text field
+    # at this point the story is not actually created, the view is empty
+    # set as
+    When I change the current editable text to "as"
+      And I tab forwards and wait for AJAX
+    # the story should have been persisted to the database now
+    Then I should see "0" within the "first story's days"
+    # skip straight to single score field
+    When I tab forwards 4 times
+      And I change the current editable text to "3"
+      And I tab forwards and wait for AJAX
+    Then I should see "1.0" within the "first story's days"
+      And the focussed element should have the text "Add story"
+    When I press enter and wait for AJAX
+      And I change the current editable text to "as 2nd"
+      And I tab forwards 5 times
+      And I change the current editable text to "21"
+      And I tab forwards and wait for AJAX
+    Then I should see "7.0" within the "second story's days"
+      And the focussed element should have the text "Add story"
+    When I tab backwards 8 times
+    Then the focussed element should be a "story score"
+    When I tab forwards 7 times
+    Then the focussed element should be a "story score"
+      And the server should return story JSON as follows:
+        | unique_id | as_a      | i_want_to   | so_i_can  | comments    | score  |
+        | 1         | as        |             |           |             | 3.0    |
+        | 2         | as 2nd    |             |           |             | 21.0   |

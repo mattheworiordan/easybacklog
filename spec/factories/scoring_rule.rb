@@ -6,7 +6,7 @@ FactoryGirl.define do
   end
 
   factory :scoring_rule_fib, :parent => 'scoring_rule' do
-    title 'Fibonacci'
+    title 'Strict Fibonacci'
     description '0,1,2,3,5,8,13,21'
     code ScoringRule::FIBONACCI
   end
@@ -19,7 +19,7 @@ FactoryGirl.define do
   factory :scoring_rule_default, :parent => 'scoring_rule_modified_fib'
 
   factory :scoring_rule_any, :parent => 'scoring_rule' do
-    title 'Any number'
+    title 'Anything'
     description 'Score with any arbitrary number'
     code ScoringRule::ANY
   end

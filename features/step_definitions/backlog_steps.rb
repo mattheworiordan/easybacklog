@@ -182,6 +182,22 @@ Given /^the focus is on the "([^"]*)"$/ do |selector|
   sleep 0.1 # allow for editable text to appear if appropriate
 end
 
+## Story validation
+#
+Then /^the "([^"]+)" should (not )?allow the values "([^"]+)"$/ do |field, negation, values|
+  values.split(',').each do |val|
+    step %{I click on the "#{field}"}
+    step %{I change the current editable text to "#{val}"}
+    step %{I tab forwards and wait for AJAX}
+    if negation.present?
+      step %{I should see the error "Score"}
+      step %{I should not see "#{val}" within the "#{field}"}
+    else
+      step %{I should see "#{val}" within the "#{field}"}
+    end
+  end
+end
+
 ##
 # Drag and drop
 #
@@ -370,4 +386,10 @@ Then /^the "([^"]+)" should be disabled$/ do |field_selector|
     })();
   JS
   all_disabled.should == true
+end
+
+When /^I change the scoring rule for this backlog to "([^"]+)"$/ do |scoring_rule|
+  step %{I follow "Settings"}
+  step %{I choose "#{scoring_rule}"}
+  step %{I press "Update backlog settings"}
 end

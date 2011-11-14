@@ -146,6 +146,9 @@ module HtmlSelectorHelpers
     when /^story code$/
       'li.story .unique-id'
 
+    when /^story score$/
+      'li.story .score'
+
     when /^story$/
       'ul.stories li.story'
 
