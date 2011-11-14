@@ -71,6 +71,15 @@ Given /^a backlog named "([^"]*)" assigned to company "([^"]*)" for account "([^
   backlog = Factory.create(:backlog, :account => account, :name => backlog_name, :company => company)
 end
 
+Given /^a new example backlog is set up for the account "([^"]*)"$/ do |account_name|
+  account = Account.find_by_name(account_name)
+  raise "Account #{account_name} does not exist." if account.blank?
+  user = account.users.first
+  example_data = XMLObject.new(Rails.root.join('features/data/example_backlog_with_sprints.xml'))
+  backlog_builder = Creators::BacklogCreator.new
+  backlog_builder.create example_data, account, user
+end
+
 ##
 # Editable text
 #
@@ -312,6 +321,23 @@ Then /^the server should return acceptance criteria JSON as follows:$/ do |table
     })();
   JS
   table.diff!(data)
+end
+
+Then /^the actual completed velocity in the stats JSON for backlog "([^"]+)" should be (\d+) for sprint (\d+)$/ do |backlog_name, points, sprint|
+  backlog = Backlog.find_by_name(backlog_name)
+  data = page.evaluate_script <<-JS
+    (function() {
+      var json;
+      $.ajaxSetup({async:false});
+      $.get('/backlogs/#{backlog.id}/backlog-stats', {}, function(data) {
+        json = data;
+      });
+      return json;
+    })();
+  JS
+  data['burn_down']['actual'][sprint.to_i]['completed'].should == points.to_i
+  data['burn_up']['actual'][sprint.to_i-1]['completed'].should == points.to_i
+  data['velocity_completed'][sprint.to_i-1]['completed'].should == points.to_i
 end
 
 ##

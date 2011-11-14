@@ -186,6 +186,33 @@ module HtmlSelectorHelpers
         'tr[bgcolor=#FFFFFF]'
       end
 
+    ## Backlog tabs
+    #
+    when /^(.*) backlog tab$/
+      "#backlog-tabs li:contains(#{$1}) a"
+
+    ## Backlog stats
+    #
+    when /^stats tab area$/
+      "#stats-container"
+
+    when /^stats placeholder image$/
+      "#stats-container .no-stats .stats-placeholder"
+
+    when /^(average|expected) velocity per (day|sprint)$/
+      "table.comparison #velocity-per-#{$2}-#{$1}"
+
+    when /^(burn down|burn up|velocity) chart$/
+      chart = case $1
+        when 'burn down'
+          'burn-down-chart'
+        when 'burn up'
+          'burn-up-chart'
+        when 'velocity'
+          'velocity-chart'
+      end
+      ".stats ##{chart} .highcharts-container"
+
     ##
     # Backlog settings
     when /^non editable notice$/
