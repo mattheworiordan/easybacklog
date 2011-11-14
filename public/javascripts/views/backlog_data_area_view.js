@@ -185,7 +185,8 @@ App.Views.BacklogDataArea = {
     jumpToSnapshot: function(event) {
       event.preventDefault();
       var val = $(event.target).val(),
-          isSprintSnapshot = $(event.target).find(':selected').hasClass('sprint');
+          // When running integration tests the option is returned, in a browser the select is returned
+          isSprintSnapshot = $(event.target).hasClass('sprint') || $(event.target).find(':selected').hasClass('sprint');
 
       var baseUrl = document.location.href.match(/^.*\/accounts\/\d+\/backlogs\/\d+/i)[0];
       if (val.match(/^\d+$/)) {
