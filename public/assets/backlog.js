@@ -418,7 +418,7 @@ $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove()
 }},Cancel:function(){$(this).dialog("close")
 }}})
 },jumpToSnapshot:function(event){event.preventDefault();
-var val=$(event.target).val(),isSprintSnapshot=$(event.target).find(":selected").hasClass("sprint");
+var val=$(event.target).val(),isSprintSnapshot=$(event.target).hasClass("sprint")||$(event.target).find(":selected").hasClass("sprint");
 var baseUrl=document.location.href.match(/^.*\/accounts\/\d+\/backlogs\/\d+/i)[0];
 if(val.match(/^\d+$/)){if(isSprintSnapshot){baseUrl+="/sprint-snapshots/"+val
 }else{baseUrl+="/snapshots/"+val

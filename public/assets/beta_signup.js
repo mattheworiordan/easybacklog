@@ -207,7 +207,9 @@ $(".content-mix a.light-box").lightBox(lightBoxOptions);
 $(".features a.light-box").lightBox(lightBoxOptions);
 $("a.light-box-group, .screen-shots a").lightBox($.extend(lightBoxOptions,{fixedNavigation:true}))
 });
-jQuery.fn.inputLabelize=function(){this.focus(function(){var firstClick=false,faded,offset,that;
+function showIntroVideo(){if($.cookie("seen_intro_video")!=="true"){$.cookie("seen_intro_video","true",{expires:365});
+$("a.light-box.video-demo").click()
+}}jQuery.fn.inputLabelize=function(){this.focus(function(){var firstClick=false,faded,offset,that;
 if(!$(this).data("original-value")){firstClick=true;
 $(this).data("original-value",$(this).val())
 }faded=$('<div id="'+$(this).attr("id")+'_faded" class="faded-request-access">');
