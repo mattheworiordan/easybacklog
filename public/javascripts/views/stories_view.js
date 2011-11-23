@@ -167,6 +167,7 @@ App.Views.Stories = {
 
     configureView: function() {
       var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
+
       this.$('.acceptance-criteria').html(view.render().el);
 
       if (this.model.IsEditable()) {
@@ -201,6 +202,9 @@ App.Views.Stories = {
       }
 
       if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
+
+      // activate roll over links for comments and acceptance criteria
+      App.Views.Helpers.activateUrlify(this.el);
 
       this.setStatusHover();
     },
@@ -249,13 +253,24 @@ App.Views.Stories = {
           },
         scoreContentUpdatedFunc = function(value) {
             return contentUpdatedFunc.call(this, niceNum(value));
-          }
+          },
+        commentsContentUpdatedFunc = function(value) {
+          var that = this;
+          setTimeout(function() {
+            $(that).html(urlify($(that).html(), 35));
+          }, 100);
+          return contentUpdatedFunc.call(this, value);
+        },
+        commentsBeforeChangeFunc = function(value) {
+          unUrlify(this);
+          return beforeChangeFunc.call(this, $(this).text());
+        }
       var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
       this.$('>div.score-50 .data, >div.score-90 .data, >div.score .data').editable(scoreContentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 4 }) );
-      this.$('>div.comments .data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), {
-        type: 'textarea', saveonenterkeypress: true, autoResize: true
+      this.$('>div.comments .data').editable(commentsContentUpdatedFunc, _.extend(_.clone(defaultOptions), {
+        type: 'textarea', saveonenterkeypress: true, autoResize: true, data: commentsBeforeChangeFunc, noChange: commentsContentUpdatedFunc
       } ) );
 
       // callback to get a list of all as_a values for autocomplete

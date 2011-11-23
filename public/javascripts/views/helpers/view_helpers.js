@@ -135,5 +135,55 @@ App.Views.Helpers = {
         var errorView = new App.Views.Error({ message: 'Oops, ' + errorMessage + '.  Please refresh your browser' });
       }
     });
+  },
+
+  // links that have been converted to <a href> will be shown as links with a roll over to visit the link
+  // this is common functionality shared across views
+  activateUrlify: function(target) {
+    var that = this;
+    $(target).find('a.urlified').live('mouseover', function(event) {
+      // new roll over so clear any old helper and any clear events
+      if (that.linkHelper) { that.linkHelper.remove(); }
+      if (that.linkRolloutTimeout) { clearTimeout(that.linkRolloutTimeout); }
+
+      var href = $(this).attr('href');
+      if (href.match(/^[-;&=\+\$,\w]+@/)) {
+        href = 'mailto:' + href;
+      }
+      var anchor = $('<a>').attr('href', href).text($(this).attr('href'));
+      if (!href.match(/^mailto:/i)) {
+         anchor.attr('target','_blank');
+      }
+
+      that.linkHelper = $('<div class="link-helper">').text('Go to link: ').append(anchor);
+      $('body').append(that.linkHelper);
+      that.linkHelper.position({
+        of: $(this),
+        my: 'right top',
+        at: 'right bottom',
+        offset: "0 0"
+      });
+      $(that.linkHelper).children().andSelf().mouseover(function() {
+        if (that.linkRolloutTimeout) {
+          clearTimeout(that.linkRolloutTimeout);
+          that.linkRolloutTimeout = false;
+        }
+      }).mouseout(function() {
+        if (that.linkRolloutTimeout) {
+          clearTimeout(that.linkRolloutTimeout);
+        }
+        that.linkRolloutTimeout = setTimeout(function() {
+          that.linkHelper.remove();
+        }, 100);
+      });
+    }).live('mouseout', function(event) {
+      that.linkRolloutTimeout = setTimeout(function() {
+        that.linkHelper.remove();
+      }, 150);
+    }).live('click', function(event) {
+      event.preventDefault();
+      if (that.linkRolloutTimeout) { clearTimeout(that.linkRolloutTimeout); }
+      if (that.linkHelper) { that.linkHelper.remove(); }
+    });
   }
 }

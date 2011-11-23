@@ -36,7 +36,7 @@
 <div class="acceptance-criteria">
 </div>
 <div class="comments">
-  <div class="data"><%= multiLineHtmlEncode(model.get('comments')) %></div>
+  <div class="data"><%= urlify(multiLineHtmlEncode(model.get('comments')), 35) %></div>
 </div>
 <% if (use5090estimates) { %>
 <div class="score-50">

@@ -124,6 +124,7 @@ App.Views.AcceptanceCriteria = {
         this.makeFieldsEditable();
         this.$('.data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
       }
+
       return (this);
     },
 
@@ -139,7 +140,8 @@ App.Views.AcceptanceCriteria = {
       // Acceptance criteria behave differently to other views as they automatically
       //  delete themselves if empty
       var contentUpdatedFunc = function(newVal) {
-        var model_collection = ac_view.model.collection;
+        var that = this,
+            model_collection = ac_view.model.collection;
         if (_.isEmpty(newVal)) {
           $(ac_view.el).slideUp('fast', function() {
             ac_view.model.destroy({
@@ -159,11 +161,17 @@ App.Views.AcceptanceCriteria = {
             ac_view.parentView.displayOrderIndexes();
           });
         } else {
+          setTimeout(function() {
+            $(that).html(urlify($(that).html(), 35));
+          }, 25);
           return ac_view.contentUpdated(newVal, this);
         }
       }
 
-      var beforeChangeFunc = function(value) { return ac_view.beforeChange(value, this); };
+      var beforeChangeFunc = function(value) {
+        unUrlify(this);
+        return ac_view.beforeChange($(this).text(), this);
+      };
 
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, noChange: contentUpdatedFunc, type: 'textarea', autoResize: true });
 

@@ -780,9 +780,29 @@ ul.themes {
               height: 1.5em;
             }
           }
+          a.urlified {
+            color: #00D;
+            cursor: text;
+            &:hover {
+              text-decoration: none;
+            }
+          }
         }
       }
     }
+  }
+}
+/* link helper that is displayed when rolling over links inside a backlog */
+.link-helper {
+  position: absolute;
+  background-color: #B2D0EF;
+  border: 1px solid darken(#B2D0EF, 10%);
+  @include border-radius(2px);
+  font-size: 11px;
+  padding: 3px;
+  cursor: pointer;
+  a {
+    color: #00D;
   }
 }
 

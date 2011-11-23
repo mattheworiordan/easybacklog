@@ -36,6 +36,25 @@ function multiLineHtmlEncode(value) {
   }
 }
 
+function urlify(value, maxLength) {
+  var urlRegEx = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g;
+  return value.replace(urlRegEx, function(match) {
+    var url = $('<div>').html(match).text(); // HTML decode the encoded URL
+    if (maxLength && (url.length > maxLength)) {
+      url = url.substring(0,maxLength) + '…'
+    }
+    var link = $('<a class="urlified">').attr('href', match).text(url);
+    return $('<div>').append(link).html();
+  })
+}
+
+function unUrlify(target) {
+  $(target).find('a.urlified').each(function(index, node) {
+    var href = $('<div>').html($(node).attr('href')).text(); // HTML decode the HREF
+    $(node).replaceWith($('<span>').text(href));
+  });
+}
+
 // lose the trailing .0
 function niceNum(value) {
   if (value) {
