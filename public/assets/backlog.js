@@ -198,6 +198,7 @@ $(target).find("a.urlified").live("mouseover",function(event){if(that.linkHelper
 }if(that.linkRolloutTimeout){clearTimeout(that.linkRolloutTimeout)
 }var href=$(this).attr("href");
 if(href.match(/^[-;&=\+\$,\w]+@/)){href="mailto:"+href
+}if(href.match(/^www\./)){href="http://"+href
 }var anchor=$("<a>").attr("href",href).text($(this).attr("href"));
 if(!href.match(/^mailto:/i)){anchor.attr("target","_blank")
 }that.linkHelper=$('<div class="link-helper">').text("Go to link: ").append(anchor);
