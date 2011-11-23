@@ -150,6 +150,9 @@ App.Views.Helpers = {
       if (href.match(/^[-;&=\+\$,\w]+@/)) {
         href = 'mailto:' + href;
       }
+      if (href.match(/^www\./)) {
+        href = 'http://' + href;
+      }
       var anchor = $('<a>').attr('href', href).text($(this).attr('href'));
       if (!href.match(/^mailto:/i)) {
          anchor.attr('target','_blank');
