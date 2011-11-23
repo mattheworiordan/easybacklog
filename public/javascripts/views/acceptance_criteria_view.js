@@ -173,7 +173,7 @@ App.Views.AcceptanceCriteria = {
         return ac_view.beforeChange($(this).text(), this);
       };
 
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, noChange: contentUpdatedFunc, type: 'textarea', autoResize: true });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, noChange: contentUpdatedFunc, type: 'textarea', autoResize: true, displayDelay: 40 });
 
       $(this.el).find('>div.data').editable(contentUpdatedFunc, defaultOptions);
     },

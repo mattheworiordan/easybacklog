@@ -30,6 +30,7 @@
  * - offsetX: 0, // move textarea X pixels from calculated position
  * - offsetY: 0, // move textarea Y pixels from calculated position
  * - assumedBorderWidth: 4, // border width of input field allowed for in width calculations
+ * - displayDelay: 50 // optional delay before displaying the text field, sometimes useful if GUI is changing just as user clicks on editable field
  *
  * Command usage example:
  *   $('div').editable(valueChangedCallback);
@@ -274,7 +275,13 @@
     // assign event handler
     $(this).click(function(e) {
       if ($(target).data('editable-active') !== 'true') {
-        showEditableField();
+        if (options.displayDelay) {
+          setTimeout(function() {
+            showEditableField();
+          }, options.displayDelay);
+        } else {
+          showEditableField();
+        }
       }
     });
 
