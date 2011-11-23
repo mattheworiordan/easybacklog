@@ -146,14 +146,15 @@ App.Views.Helpers = {
       if (that.linkHelper) { that.linkHelper.remove(); }
       if (that.linkRolloutTimeout) { clearTimeout(that.linkRolloutTimeout); }
 
-      var href = $(this).attr('href');
+      var originalHref = $('<div>').html($(this).attr('href')).text(),
+          href = originalHref;
       if (href.match(/^[-;&=\+\$,\w]+@/)) {
         href = 'mailto:' + href;
       }
       if (href.match(/^www\./)) {
         href = 'http://' + href;
       }
-      var anchor = $('<a>').attr('href', href).text($(this).attr('href'));
+      var anchor = $('<a>').attr('href', href).text(originalHref);
       if (!href.match(/^mailto:/i)) {
          anchor.attr('target','_blank');
       }
