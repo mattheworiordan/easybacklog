@@ -31,6 +31,7 @@
  * - offsetY: 0, // move textarea Y pixels from calculated position
  * - assumedBorderWidth: 4, // border width of input field allowed for in width calculations
  * - displayDelay: 50 // optional delay before displaying the text field, sometimes useful if GUI is changing just as user clicks on editable field
+ * - zIndex: 10000 // zIndex for the input, defaults to a ridiculously high number
  *
  * Command usage example:
  *   $('div').editable(valueChangedCallback);
@@ -119,7 +120,7 @@
         .css('margin', '0').css('padding', '0')
         .css('top', options.offsetY + $(target).position().top + 'px')
         .css('left', options.offsetY + $(positioningSpan).position().left + 'px')
-        .css('z-index', 10000)
+        .css('z-index', options.zIndex)
         .append(elem);
 
       // calculate offset of positionSpan to left hand side of node so we can reduce the width of the editable text field
@@ -351,6 +352,7 @@
     autoResizeMax: 300, // set max height autoResize field can expand to,
     noChange: false, // callback that will be made even if no change was made to the input field, by default no call is made
     placeHolder: false, // allows HTML to be placed inside the target when empty such as [click here to edit]
-    autoComplete: false // allows use of JQuery UI autoComplete plugin, pass in an array or function to return an array of data
+    autoComplete: false, // allows use of JQuery UI autoComplete plugin, pass in an array or function to return an array of data
+    zIndex: 10000 // zIndex for the input, defaults to a ridiculously high number
   };
 }(jQuery));

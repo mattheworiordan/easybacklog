@@ -3,7 +3,8 @@
 App.Views.BaseView = Backbone.View.extend({
   defaultEditableOptions: {
     placeHolder: '<span class="editable-blank">[edit]</span>',
-    type: 'text'
+    type: 'text',
+    zIndex: 3 /* header is 5+, content is 1 */
   },
 
   initialize: function() {

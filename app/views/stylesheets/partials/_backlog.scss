@@ -38,7 +38,7 @@ header.for-backlog {
   top: 0px;
   width: 100%;
   overflow: hidden;
-  z-index: 1;
+  z-index: 5;
   .padded-container {
     margin-right: $ninesixty-gutter-width * 2;
   }
@@ -78,7 +78,7 @@ section.content .not-editable-backlog-notice {
   background-color: #BBB;
   color: black;
   top: 4px;
-  z-index: 3;
+  z-index: 10; /* appears on a header of z-index 5 */
   padding: 1px 10px 1px 10px;
   text-align: center;
   -moz-border-radius: 6px;
@@ -102,7 +102,7 @@ section.content .not-editable-backlog-notice {
     display: none;
     overflow: hidden;
     padding: 10px;
-    z-index: 10;
+    z-index: 10; /* appears on a header of z-index 5 */
     width: 410px;
     .title {
       color: #FFF;
@@ -136,7 +136,7 @@ section.content .not-editable-backlog-notice {
     top: 63px;
     left: 120px;
     overflow: hidden;
-    z-index: 5;
+    z-index: 10; /* must appear over header */
     .title {
       color: lighten($light-text-on-title-area-color, 20%);
       float: left;
@@ -205,7 +205,7 @@ section.content .not-editable-backlog-notice {
   height: 56px;
   width: 100%;
   background-color: $title-area-color;
-  z-index: 1;
+  z-index: 6; /* sits over header of 5 */
   .actions {
     float: right;
     overflow: hidden;
@@ -335,6 +335,7 @@ section.content .not-editable-backlog-notice {
   position: fixed;
   top: 63px;
   left: 5px;
+  z-index: 7; /* sits over #backlog-data-area of 6 */
   #add-sprint {
     .ui-icon { background-image: url(/stylesheets/ui-lightness/images/ui-icons_ffffff_256x240.png); }
     position: absolute;
@@ -390,7 +391,7 @@ section.content .not-editable-backlog-notice {
 
 #themes-header {
   position: fixed;
-  z-index: 1;
+  z-index: 5;
   top: 86px;
   left: 0;
   width: 100%;
@@ -459,17 +460,6 @@ ul.themes {
   list-style: none;
   margin: 0;
   padding-bottom: 5px;
-
-  /* ensure data elements don't jump when editing */
-  .data {
-    input, textarea {
-      position: absolute;
-      margin-top: -3px;
-      font-family: Sans-Serif;
-      font-size: 100%;
-      z-index: 2;
-    }
-  }
 
   /* styling for an empty editable field with edit text in it */
   .editable-blank {
@@ -796,6 +786,7 @@ ul.themes {
 .link-helper {
   position: absolute;
   background-color: #B2D0EF;
+  z-index: 20000; /* jquery editable is 10,000 */
   border: 1px solid darken(#B2D0EF, 10%);
   @include border-radius(2px);
   font-size: 11px;
