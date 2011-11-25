@@ -251,6 +251,7 @@ App.Views.Themes = {
               }
             } else {
               // no previous theme, do nothing, leave field focussed
+              _.delay(function() { dataField.click(); }, 200);
             }
           } else {
             // focus was on code field, just go back to name field
