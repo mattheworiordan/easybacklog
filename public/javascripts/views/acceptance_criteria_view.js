@@ -58,21 +58,24 @@ App.Views.AcceptanceCriteria = {
       // hide the edit criterion placeholder
       this.hideEditIfCriteriaExist(true); // force hide
 
+      // add a new criterion field before the last li, which is the new-acceptance-criteria place holder
       if ( (lastCriterion.find('.data textarea').length) && (lastCriterion.find('.data textarea').val() === '') ) {
         // we have to delay this because we have to wait for the empty item which has lost focus to dissapear
         _.delay(function() {
           this_view.$('ul li:last').before(newElem);
           this_view.displayOrderIndexes();
-          $(newElem).find('.data').click();
-          App.Views.Helpers.scrollIntoBacklogView($(newElem).find('.data'));
-        }, 250);
+          App.Views.Helpers.scrollIntoBacklogView($(newElem).find('.data'), function() {
+            $(newElem).find('.data').click();
+          });
+        }, 150);
       } else {
         this.$('ul li:last').before(newElem);
         this.displayOrderIndexes();
 
         this.$('ul li.criterion:last').css('display','none').slideDown(100, function() {
-          $(newElem).find('.data').click(); // put focus onto new added element
-          App.Views.Helpers.scrollIntoBacklogView($(newElem).find('.data'));
+          App.Views.Helpers.scrollIntoBacklogView($(newElem).find('.data'), function() {
+            $(newElem).find('.data').click(); // put focus onto new added element
+          });
         });
       }
     },

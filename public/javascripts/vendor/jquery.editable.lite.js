@@ -76,9 +76,6 @@
 
       stripPlaceHolder();
 
-      // record a flag to see we're editing, no need to try and recreate this
-      $(target).data('editable-active', 'true');
-
       // store attributes from target before we modify it
       targetProps.style = $(target).attr('style');
       targetProps.text = multiLineHtmlDecode($(target).html()); // convert HTML br tags to line breaks
@@ -274,6 +271,9 @@
     // assign event handler
     $(this).click(function(e) {
       if ($(target).data('editable-active') !== 'true') {
+        // record a flag to see we're editing, no need to try and recreate this
+        $(target).data('editable-active', 'true');
+
         if (options.displayDelay) {
           setTimeout(function() {
             showEditableField();
