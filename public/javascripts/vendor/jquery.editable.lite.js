@@ -228,6 +228,7 @@
       // pause before we remove the element as other events may need to access this element before it disappears
       setTimeout(function() {
         form.remove();
+        addPlaceHolderIfEmpty();
       }, 10);
 
       // if user wants a callback even if there was no change, then call this now
@@ -237,8 +238,6 @@
 
       // remove catch all event to see if user clicked outside this elem
       $('html').unbind('click.editable');
-
-      addPlaceHolderIfEmpty();
     };
 
     saveChanges = function() {
@@ -263,8 +262,8 @@
     };
 
     stripPlaceHolder = function() {
-      if (options.placeHolder) {
-        $(target).html($(target).html().replace(options.placeHolder, ''));
+      if (options.placeHolder && ($(target).html() === options.placeHolder) ) {
+        $(target).html('');
       }
     };
 
