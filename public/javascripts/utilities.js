@@ -37,7 +37,7 @@ function multiLineHtmlEncode(value) {
 }
 
 function urlify(value, maxLength) {
-  var urlRegEx = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g;
+  var urlRegEx = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
   return value.replace(urlRegEx, function(match) {
     var url = $('<div>').html(match).text(); // HTML decode the encoded URL
     if (maxLength && (url.length > maxLength)) {
