@@ -5416,7 +5416,7 @@ if(!backgroundColor||backgroundColor==="transparent"||backgroundColor==="inherit
 elem.css("background-color",getBackgroundColor(target));
 positioningSpan=$("<span>&nbsp;</span>");
 $(target).prepend(positioningSpan);
-form.css("position","absolute").css("margin","0").css("padding","0").css("top",options.offsetY+$(target).position().top+"px").css("left",options.offsetY+$(positioningSpan).position().left+"px").css("z-index",10000).append(elem);
+form.css("position","absolute").css("margin","0").css("padding","0").css("top",options.offsetY+$(target).position().top+"px").css("left",options.offsetY+$(positioningSpan).position().left+"px").css("z-index",options.zIndex).append(elem);
 offsetBy=$(positioningSpan).position().left-$(target).position().left;
 elem.css("padding",0).css("margin",0).css("width",($(target).outerWidth()-options.assumedBorderWidth-offsetBy)+"px");
 positioningSpan.remove();
@@ -5505,7 +5505,7 @@ html=$.map(html,function(htmlFragment){return $("<span/>").html(htmlFragment).te
 }).join("\n");
 return html
 };
-$.fn.editable.defaults={type:"text",offsetX:0,offsetY:0,assumedBorderWidth:4,acceptChangesOnBlur:true,data:false,maxLength:false,autoResize:false,autoResizeMax:300,noChange:false,placeHolder:false,autoComplete:false}
+$.fn.editable.defaults={type:"text",offsetX:0,offsetY:0,assumedBorderWidth:4,acceptChangesOnBlur:true,data:false,maxLength:false,autoResize:false,autoResizeMax:300,noChange:false,placeHolder:false,autoComplete:false,zIndex:10000}
 }(jQuery));
 (function($){var opts,initialize,adjustToFit,addTab,removeTab,setTabContent,moveNonFixedTabsToScroller,addNav,positionNav,getLeftMostTabIndex,totalElemWidth,shiftTabOffset,shiftScroller,slideTabsAfterResize;
 $.fn.infiniteTabs=function(command,options,secondParam){if((typeof command==="object")||!command){opts=$.extend({},$.fn.infiniteTabs.defaults,command);

@@ -217,7 +217,7 @@ if(that.linkRolloutTimeout){clearTimeout(that.linkRolloutTimeout)
 }if(that.linkHelper){that.linkHelper.remove()
 }})
 }};
-App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{placeHolder:'<span class="editable-blank">[edit]</span>',type:"text"},initialize:function(){this.model=this.options.model;
+App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{placeHolder:'<span class="editable-blank">[edit]</span>',type:"text",zIndex:3},initialize:function(){this.model=this.options.model;
 this.parentView=this.options.parentView;
 this.beforeChangeValue={};
 _.bindAll(this,"beforeChange","contentUpdated");
@@ -1271,7 +1271,9 @@ App.Views.Helpers.scrollIntoBacklogView(target,function(elem){elem.focus()
 }else{$(event.target).blur();
 App.Views.Helpers.scrollIntoBacklogView(prev.find(".theme-data >.name .data"),function(elem){elem.click()
 })
-}}else{}}else{$(event.target).blur();
+}}else{_.delay(function(){dataField.click()
+},200)
+}}else{$(event.target).blur();
 this.$(".theme-data >.name .data").click()
 }}}},changeEvent:function(eventName,model){if(eventName.substring(0,7)=="change:"){var fieldChanged=eventName.substring(7);
 this.$(">.theme-data>."+fieldChanged.replace(/_/gi,"-")+">div.data").text(this.model.get(fieldChanged));
