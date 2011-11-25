@@ -5399,7 +5399,6 @@ return this.each(function(){initialize.call(this,opts)
 initialize=function(options){var target=this,form,elem,targetProps={},showEditableField,editableFieldFactory,restoreTarget,saveChanges,addPlaceHolderIfEmpty,stripPlaceHolder;
 showEditableField=function(evt){var getBackgroundColor,positioningSpan,offsetBy,inputText,eventAlreadyProcessed=false;
 stripPlaceHolder();
-$(target).data("editable-active","true");
 targetProps.style=$(target).attr("style");
 targetProps.text=multiLineHtmlDecode($(target).html());
 inputText=targetProps.text;
@@ -5457,11 +5456,11 @@ elem.autocomplete({source:($.isArray(options.autoComplete)?options.autoComplete:
 restoreTarget=function(newVal){var val=typeof newVal!=="undefined"?newVal:targetProps.text,encodedVal=multiLineHtmlEncode(val);
 $(target).attr("style",targetProps.style||"").html(encodedVal).append(form);
 $(target).data("editable-active",false);
-setTimeout(function(){form.remove()
+setTimeout(function(){form.remove();
+addPlaceHolderIfEmpty()
 },10);
 if((typeof newVal==="undefined")&&(typeof options.noChange==="function")){options.noChange.call(target,val)
-}$("html").unbind("click.editable");
-addPlaceHolderIfEmpty()
+}$("html").unbind("click.editable")
 };
 saveChanges=function(){var returnVal;
 if(elem.val()!==targetProps.text){returnVal=options.changeCallback.call(target,elem.val(),target);
@@ -5471,9 +5470,10 @@ if(returnVal){restoreTarget(returnVal)
 }};
 addPlaceHolderIfEmpty=function(){if(options.placeHolder&&($(target).html().replace(/\s+/g,"")==="")){$(target).html(options.placeHolder)
 }};
-stripPlaceHolder=function(){if(options.placeHolder){$(target).html($(target).html().replace(options.placeHolder,""))
+stripPlaceHolder=function(){if(options.placeHolder&&($(target).html()===options.placeHolder)){$(target).html("")
 }};
-$(this).click(function(e){if($(target).data("editable-active")!=="true"){if(options.displayDelay){setTimeout(function(){showEditableField()
+$(this).click(function(e){if($(target).data("editable-active")!=="true"){$(target).data("editable-active","true");
+if(options.displayDelay){setTimeout(function(){showEditableField()
 },options.displayDelay)
 }else{showEditableField()
 }}});
@@ -5819,7 +5819,7 @@ i<lines.length;
 i++){lines[i]=htmlEncode(lines[i])
 }return lines.join("<br/>")
 }else{return""
-}}function urlify(value,maxLength){var urlRegEx=/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g;
+}}function urlify(value,maxLength){var urlRegEx=/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
 return value.replace(urlRegEx,function(match){var url=$("<div>").html(match).text();
 if(maxLength&&(url.length>maxLength)){url=url.substring(0,maxLength)+"…"
 }var link=$('<a class="urlified">').attr("href",match).text(url);

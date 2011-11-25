@@ -292,13 +292,13 @@ var newElem=new App.Views.AcceptanceCriteria.Show({model:model,parentView:this})
 this.hideEditIfCriteriaExist(true);
 if((lastCriterion.find(".data textarea").length)&&(lastCriterion.find(".data textarea").val()==="")){_.delay(function(){this_view.$("ul li:last").before(newElem);
 this_view.displayOrderIndexes();
-$(newElem).find(".data").click();
-App.Views.Helpers.scrollIntoBacklogView($(newElem).find(".data"))
-},250)
+App.Views.Helpers.scrollIntoBacklogView($(newElem).find(".data"),function(){$(newElem).find(".data").click()
+})
+},150)
 }else{this.$("ul li:last").before(newElem);
 this.displayOrderIndexes();
-this.$("ul li.criterion:last").css("display","none").slideDown(100,function(){$(newElem).find(".data").click();
-App.Views.Helpers.scrollIntoBacklogView($(newElem).find(".data"))
+this.$("ul li.criterion:last").css("display","none").slideDown(100,function(){App.Views.Helpers.scrollIntoBacklogView($(newElem).find(".data"),function(){$(newElem).find(".data").click()
+})
 })
 }},orderChanged:function(){var orderIndexesWithIds={};
 this.$("li.criterion").each(function(index,elem){var elemId=_.last($(elem).attr("id").split("-"));
