@@ -3,6 +3,11 @@
   <themes>
     <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
       <stories>
+        <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
+          <criteria>
+            <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
+          </criteria>
+        </story>
         <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
           <criteria>
             <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
@@ -21,11 +26,6 @@
             <criterion>Short about text to be displayed</criterion>
             <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
             <criterion>Products will deep link to the products section of the website</criterion>
-          </criteria>
-        </story>
-        <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
-          <criteria>
-            <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
           </criteria>
         </story>
       </stories>
