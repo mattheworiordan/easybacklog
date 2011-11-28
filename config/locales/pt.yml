@@ -15,20 +15,20 @@ pt:
     i_want_to: Eu quero
     so_i_can: Para que
     rate: Taxa
-    velocity: Velocidade
+    velocity: Velocity
     sprint: Sprint
     sprint_lower: sprint
     code: Código
     totals:
-      backlog_total: 'Backlog total'
-      backlog: "Total de backlog '%{name}'"
-      sprint_total: 'Sprint total'
-      theme: "Total para tema '%{name}'"
+      backlog_total: 'Total do Backlog'
+      backlog: "Total do Backlog '%{name}'"
+      sprint_total: 'Total do Sprint'
+      theme: "Total do tema '%{name}'"
       points: pontos
       days: dias
       point: ponto
       day: dia
-      pts_allocated: pts allocated
-      pts_expected: pts expected
-      pts_completed: pts completed
-  loading: Carregamento
+      pts_allocated: pts alocados
+      pts_expected: pts projetados
+      pts_completed: pts alcançados
+  loading: Carregando
