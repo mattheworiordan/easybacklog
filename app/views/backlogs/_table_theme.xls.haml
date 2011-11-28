@@ -13,11 +13,9 @@
         = render :partial => 'table_story', :locals => { :story => story, :use_50_90 => use_50_90 }
 %tr
   %td{:colspan => 3, :valign => 'top', :align => 'left', :bgcolor => '#DDDDDD'}
-    = "Total for theme '#{theme.name}'"
+    = t 'backlog.totals.theme', :default => "Total for theme '#{theme.name}'", :name => theme.name
   %td{:bgcolor => '#DDDDDD', :colspan => total_columns - 4, :align => 'right' }
     %b
-      = "#{format('%0.1f', theme.points)} points"
-      = "/ #{theme.cost_formatted}"
-      = "/ #{theme.days_formatted} days"
+      = export_totals(theme.points, theme.cost_formatted, theme.days_formatted)
 %tr
   %td{:colspan => total_columns, :height => 5}

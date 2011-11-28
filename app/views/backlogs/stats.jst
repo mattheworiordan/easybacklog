@@ -1,4 +1,6 @@
-<div class="title">Backlog total:</div>
+<div class="title"><%= I18n.t ('backlog_total') %>:</div>
 <div class="output">
-  <%= addCommas((model.get('points') || 0).toFixed(1)) %> points / <%= model.get('cost_formatted')%> / <strong><%= addCommas((model.get('days') || 0).toFixed(1)) %> days</strong>
+  <%= addCommas((model.get('points') || 0).toFixed(1)) %> <%= model.get('points') == 1 ? I18n.t ('point') : I18n.t ('points') %>
+  / <%= model.get('cost_formatted')%>
+  / <strong><%= addCommas((model.get('days') || 0).toFixed(1)) %> <%= model.get('days') == 1 ? I18n.t ('day') : I18n.t ('days') %></strong>
 </div>

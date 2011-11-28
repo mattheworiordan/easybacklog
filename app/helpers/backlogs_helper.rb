@@ -11,4 +11,10 @@ module BacklogsHelper
   def sprint_story_statuses_json
     SprintStoryStatus.all.to_json
   end
+
+  def export_totals(points, cost, days)
+    "#{format('%0.1f', points)} #{t (points == 1 ? 'backlog.totals.point' : 'backlog.totals.points'), :default => 'points'}" +
+    " / #{cost}" +
+    " / #{days} #{t (days.to_f == 1 ? 'backlog.totals.day' : 'backlog.totals.days'), :default => 'days'}"
+  end
 end

@@ -1,15 +1,15 @@
 <div class="title">
-  Sprint total
+  <%= I18n.t('sprint_total','Sprint total') %>
 </div>
 <div class="divider"></div>
 <div class="output<% if (Number(attributes.total_allocated_points) > Number(attributes.total_expected_points)) { %> highlight<% } %>">
-  <%= addCommas((Number(attributes.total_allocated_points) || 0).toFixed(1)) %> pts allocated
+  <%= addCommas((Number(attributes.total_allocated_points) || 0).toFixed(1)) %> <%= I18n.t('pts_allocated','pts allocated') %>
 </div>
 <div class="divider"></div>
 <div class="output">
-  <%= addCommas((Number(attributes.total_expected_points) || 0).toFixed(1)) %> pts expected
+  <%= addCommas((Number(attributes.total_expected_points) || 0).toFixed(1)) %> <%= I18n.t('pts_expected','pts expected') %>
 </div>
 <div class="divider"></div>
 <div class="output">
-  <%= addCommas((Number(attributes.total_completed_points) || 0).toFixed(1)) %> pts completed
+  <%= addCommas((Number(attributes.total_completed_points) || 0).toFixed(1)) %> <%= I18n.t('pts_completed','pts completed') %>
 </div>

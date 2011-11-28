@@ -1,10 +1,12 @@
 <div class="container">
   <% if (model.get('name') && model.get('name').length) { %>
     <div class="title">
-      Total for theme '<%= htmlEncode(model.get('name')) %>'
+      <%= I18n.t('theme_total', "Total for theme '%{name}'").replace('%{name}', htmlEncode(model.get('name'))) %>
     </div>
   <% } %>
   <div class="metrics">
-    <%= addCommas((model.get('points') || 0).toFixed(1)) %> points / <%= model.get('cost_formatted')%> / <strong><%= addCommas((model.get('days') || 0).toFixed(1)) %> days</strong>
+    <%= addCommas((model.get('points') || 0).toFixed(1)) %> <%= model.get('points') == 1 ? I18n.t ('point') : I18n.t ('points') %>
+    / <%= model.get('cost_formatted')%>
+    / <strong><%= addCommas((model.get('days') || 0).toFixed(1)) %> <%= model.get('days') == 1 ? I18n.t ('day') : I18n.t ('days') %></strong>
   </div>
 </div>

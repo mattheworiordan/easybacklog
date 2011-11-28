@@ -122,3 +122,4 @@
     // validation only needed for tabs, so load after page is ready
     $('head').append('#{escape_javascript(include_javascripts :validation, :charts)}');
   });
+  #{render :partial => 'i18n.js.erb'}

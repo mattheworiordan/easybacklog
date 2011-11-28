@@ -6,6 +6,7 @@ class BacklogsController < ApplicationController
   def show
     begin
       @backlog = current_account.backlogs.available.find(params[:id], :include => BACKLOG_INCLUDES)
+      set_locale
     rescue ActiveRecord::RecordNotFound => exception
       flash[:warning] = 'The backlog you were looking for does not exist'
       redirect_to account_path(current_account)
@@ -17,6 +18,7 @@ class BacklogsController < ApplicationController
   def show_snapshot
     begin
       @backlog = current_account.backlogs.available.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
+      set_locale
     rescue ActiveRecord::RecordNotFound => exception
       flash[:warning] = 'The snapshot you were looking for does not exist'
       redirect_to account_path(current_account)
@@ -29,6 +31,7 @@ class BacklogsController < ApplicationController
     begin
       sprint_snapshot = current_account.backlogs.available.find(params[:id]).sprint_snapshots.find { |d| d.id.to_s == params[:snapshot_id] }
       @backlog = Backlog.find(sprint_snapshot.id, :include => BACKLOG_INCLUDES)
+      set_locale
     rescue ActiveRecord::RecordNotFound => exception
       flash[:warning] = 'The snapshot you were looking for does not exist'
       redirect_to account_path(current_account)
@@ -270,5 +273,10 @@ class BacklogsController < ApplicationController
       else
         @backlog.company = nil
       end
+    end
+
+    def set_locale
+      # only localise to the language, ignore the country
+      I18n.locale = @backlog.account.locale.code.split('-').first.to_sym
     end
 end

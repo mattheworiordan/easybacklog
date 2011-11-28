@@ -1,29 +1,29 @@
 #themes-header
   .columns
     .theme
-      %div Theme
+      %div= t 'backlog.theme', :default => 'Theme'
     .unique-id
-      %div ID
+      %div= t 'backlog.id', :default => 'ID'
     .user-story
-      %div User Story
+      %div= t 'backlog.user_story', :default => 'User Story'
     .acceptance-criteria
-      %div Acceptance Criteria
+      %div= t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria'
     .comments
-      %div Comments
+      %div= t 'backlog.comments', :default => 'Comments'
     - if use_50_90
       .score-50
-        %div 50
+        %div= t 'backlog.points_50', :default => '50'
       .score-90
-        %div 90
+        %div= t 'backlog.points_90', :default => '90'
     - else
       .score
-        %div Score
+        %div= t 'backlog.points', :default => 'Points'
     .cost-formatted
-      %div Cost
+      %div= t 'backlog.cost', :default => 'Cost'
     .days-formatted
-      %div Days
+      %div= t 'backlog.days', :default => 'Days'
 #themes-container
   %div.loading
     %span.progress-icon
     %p
-      Loading...
+      = "#{t 'backlog.loading', :default => 'Loading'}..."

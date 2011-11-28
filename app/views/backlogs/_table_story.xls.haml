@@ -1,11 +1,11 @@
 %td{:valign => 'top'}
   = "#{story.theme.code}#{story.unique_id}"
 %td{:valign => 'top'}
-  = "As #{story.as_a}"
+  = "#{t 'backlog.as_a', :default => 'As a'} #{story.as_a}"
   %br{ :style => 'mso-data-placement:same-cell;' }
-  = "I want to #{story.i_want_to}"
+  = "#{t 'backlog.i_want_to', :default => 'I want to'} #{story.i_want_to}"
   %br{ :style => 'mso-data-placement:same-cell;' }
-  = "So I can #{story.so_i_can}"
+  = "#{t 'backlog.so_i_can', :default => 'So I can'} #{story.so_i_can}"
 %td{:valign => 'top'}
   - story.acceptance_criteria.each_with_index do |criterion, index|
     = "#{index+1}. #{criterion.criterion}"
@@ -13,7 +13,7 @@
 %td{:valign => 'top'}
   = story.comments
 %td{:valign => 'top'}
-  = "Sprint #{story.sprint_story.sprint.iteration}" if story.sprint_story.present?
+  = "#{t 'backlog.sprint', :default => 'Sprint'} #{story.sprint_story.sprint.iteration}" if story.sprint_story.present?
 - if use_50_90
   %td{:valign => 'top'}
     = story.score_50

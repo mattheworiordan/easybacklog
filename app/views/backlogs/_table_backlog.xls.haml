@@ -8,31 +8,30 @@
         - else
           %b= backlog.name
     %td{:colspan => total_columns - 4, :align => 'right'}
-      = "Rate: #{backlog.rate_formatted}, Velocity: #{backlog.velocity}"
+      = "#{t 'backlog.rate', :default => 'Rate'}: #{backlog.rate_formatted}, #{t 'backlog.velocity', :default => 'Velocity'}: #{backlog.velocity}"
   %tr
-    %th{:bgcolor => '#B6F2FA'} Theme
-    %th{:bgcolor => '#B6F2FA'} ID
-    %th{:bgcolor => '#B6F2FA'} User Story
-    %th{:bgcolor => '#B6F2FA'} Acceptance Criteria
-    %th{:bgcolor => '#B6F2FA'} Comments
-    %th{:bgcolor => '#B6F2FA'} Sprint
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.theme', :default => 'Theme'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.id', :default => 'ID'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.user_story', :default => 'User Story'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.comments', :default => 'Comments'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.sprint', :default => 'Sprint'
     - if backlog.use_50_90?
-      %th{:bgcolor => '#B6F2FA'} 50
-      %th{:bgcolor => '#B6F2FA'} 90
+      %th{:bgcolor => '#B6F2FA'}= t 'backlog.points_50', :default => '50'
+      %th{:bgcolor => '#B6F2FA'}= t 'backlog.points_90', :default => '90'
     - else
-      %th{:bgcolor => '#B6F2FA'} Score
-    %th{:bgcolor => '#B6F2FA'} Cost
-    %th{:bgcolor => '#B6F2FA'} Days
+      %th{:bgcolor => '#B6F2FA'}= t 'backlog.points', :default => 'Points'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.cost', :default => 'Cost'
+    %th{:bgcolor => '#B6F2FA'}= t 'backlog.days', :default => 'Days'
   = render :partial => 'table_theme', :collection => backlog.themes, :as => :theme, :locals => { :use_50_90 => backlog.use_50_90?, :total_columns => total_columns }
   %tr
     %td{:colspan => total_columns, :height => 5}
   %tr
     %td{:colspan => 4, :valign => 'top', :align => 'left', :bgcolor => '#B6F2FA'}
       %font{:size => '4'}
-        %b = "Total for backlog '#{backlog.backlog_root ? backlog.backlog_root.name : backlog.name}'"
+        - backlog_name = backlog.backlog_root ? backlog.backlog_root.name : backlog.name
+        %b= t 'backlog.totals.backlog', :default => "Total for backlog '#{backlog_name}'", :name => backlog_name
     %td{:bgcolor => '#B6F2FA', :colspan => total_columns - 4, :align => 'right'}
       %font{:size => '4'}
         %b
-          = "#{format('%0.1f', backlog.points)} points"
-          = "/ #{backlog.cost_formatted}"
-          = "/ #{backlog.days_formatted} days"
+          = export_totals(backlog.points, backlog.cost_formatted, backlog.days_formatted)

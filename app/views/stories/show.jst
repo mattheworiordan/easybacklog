@@ -24,14 +24,14 @@
       </div>
     <% } %>
     <% if (model.SprintStory()) { %>
-      <div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>">sprint&nbsp;<%= model.SprintStory().Sprint().get('iteration')%></a></div></div>
+      <div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>"><%= I18n.t('sprint_lower','sprint')%>&nbsp;<%= model.SprintStory().Sprint().get('iteration')%></a></div></div>
     <% } %>
   </div>
 </div>
 <div class="user-story">
-  <div class="as-a"><div class="heading">As </div><div class="data"><%= htmlEncode(model.get('as_a')) %></div></div>
-  <div class="i-want-to"><div class="heading">I want to </div><div class="data"><%= multiLineHtmlEncode(model.get('i_want_to')) %></div></div>
-  <div class="so-i-can"><div class="heading">So I can </div><div class="data"><%= multiLineHtmlEncode(model.get('so_i_can')) %></div></div>
+  <div class="as-a"><div class="heading"><%= I18n.t('as_a', 'As')%> </div><div class="data"><%= htmlEncode(model.get('as_a')) %></div></div>
+  <div class="i-want-to"><div class="heading"><%= I18n.t('i_want_to', 'I want to')%> </div><div class="data"><%= multiLineHtmlEncode(model.get('i_want_to')) %></div></div>
+  <div class="so-i-can"><div class="heading"><%= I18n.t('so_i_can', 'So I can')%> </div><div class="data"><%= multiLineHtmlEncode(model.get('so_i_can')) %></div></div>
 </div>
 <div class="acceptance-criteria">
 </div>

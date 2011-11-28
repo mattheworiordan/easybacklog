@@ -109,3 +109,18 @@ function MouseTracker($) {
     }
   }
 }
+
+var I18n = (function() {
+  return {
+    t: function(value, defaultValue) {
+      if (this[value]) {
+        return this[value];
+      } else {
+        return defaultValue;
+      }
+    },
+    add: function(localizations) {
+      _(this).extend(localizations);
+    }
+  }
+})();

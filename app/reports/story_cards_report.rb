@@ -47,20 +47,20 @@ class StoryCardsReport
 
       offset = box_offset(0.05, 0.95, @box_count, page_size)
       standard_box_fields(story, pdf, offset, card_width*0.9, card_height*0.9) do
-        pdf.text_box "Backlog: #{story.theme.backlog.name}",
+        pdf.text_box "#{I18n.t 'backlog.backlog', :default => 'Backlog'}: #{story.theme.backlog.name}",
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.93],
           :width => pdf.bounds.width * 0.65,
           :height => pdf.bounds.height * 0.1,
           :size => 14
-        pdf.text_box "Theme: #{story.theme.name}",
+        pdf.text_box "#{I18n.t 'backlog.theme', :default => 'Theme'}: #{story.theme.name}",
           :size => 15,
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.83],
           :width => pdf.bounds.width,
           :height => pdf.bounds.height * 0.1
         pdf.formatted_text_box [
-            {:text => "As ", :color => '666666'}, {:text => "#{story.as_a}", :styles => [:bold]},
-            {:text => "\nI want to ", :color => '666666'}, {:text => "#{story.i_want_to}", :styles => [:bold]},
-            {:text => "\nSo I can ", :color => '666666'}, {:text => "#{story.so_i_can}", :styles => [:bold]}
+            {:text => "#{I18n.t 'backlog.as_a', :default => 'As'} ", :color => '666666'}, {:text => "#{story.as_a}", :styles => [:bold]},
+            {:text => "\n#{I18n.t 'backlog.i_want_to', :default => 'I want to'} ", :color => '666666'}, {:text => "#{story.i_want_to}", :styles => [:bold]},
+            {:text => "\n#{I18n.t 'backlog.so_i_can', :default => 'So I can'} ", :color => '666666'}, {:text => "#{story.so_i_can}", :styles => [:bold]}
           ],
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.65],
           :width => pdf.bounds.width * 0.9,
@@ -79,7 +79,7 @@ class StoryCardsReport
       standard_box_fields(story, pdf, offset, card_width*0.9, card_height*0.9) do
         acceptance_criteria = story.acceptance_criteria.each_with_index.map { |crit, index| "#{index + 1}. #{crit.criterion}" }
         pdf.formatted_text_box [
-            {:text => "Acceptance Criteria\n", :styles => [:bold], :size => 16},
+            {:text => "#{I18n.t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria'}\n", :styles => [:bold], :size => 16},
             {:text => "\n", :size => 6},
             {:text => acceptance_criteria.join("\n") }
           ],

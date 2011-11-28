@@ -1,5 +1,33 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  hello: "Hello world"
+  backlog:
+    theme: Theme
+    id: ID
+    user_story: User Story
+    acceptance_criteria: Acceptance Criteria
+    comments: Comments
+    points_50: '50'
+    points_90: '90'
+    points_heading: Points
+    cost: Cost
+    days: Days
+    as_a: As
+    i_want_to: I want to
+    so_i_can: So I can
+    rate: Rate
+    velocity: Velocity
+    sprint: Sprint
+    sprint_lower: sprint
+    code: Code
+    totals:
+      backlog_total: 'Backlog total'
+      backlog: "Total for backlog '%{name}'"
+      sprint_total: 'Sprint total'
+      theme: "Total for theme '%{name}'"
+      points: points
+      days: days
+      point: point
+      day: day
+      pts_allocated: pts allocated
+      pts_expected: pts expected
+      pts_completed: pts completed
+  loading: Loading
