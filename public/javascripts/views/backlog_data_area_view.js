@@ -18,8 +18,9 @@ App.Views.BacklogDataArea = {
       $('#compare-snapshot').click(this.compareSnapshot);
       $('select.snapshot-selector').change(this.jumpToSnapshot);
 
-      // snapshot menu
+      // snapshot and filter menu
       this.enableSnapshotsMenu();
+      this.enableFilterMenu();
 
       if (!this.model.IsEditable()) {
         $(this.el).addClass('not-editable');
@@ -69,13 +70,17 @@ App.Views.BacklogDataArea = {
               of: $('#backlog-data-area .snapshot'),
               my: 'right top',
               at: 'right bottom',
-              offset: "0 -5"
+              offset: "0 -8"
             });
             overEitherNode = true;
           };
 
       // allow click to active menu for testing
       $('#backlog-data-area .snapshot').mouseover(showMenu).click(showMenu).mouseout(hideMenu);
+      $('section.for-backlog .snapshot-menu-container').mouseover(function() {
+        overEitherNode = true;
+      }).mouseout(hideMenu);
+
       $('.snapshot-menu-container .select select').click(function(event) {
         // when user clicks on drop down, no longer hide the menu even if they move down the drop down off this area (on PC IE)
         // until they click it again and select something
@@ -92,9 +97,92 @@ App.Views.BacklogDataArea = {
       }).keydown(function() {
         selectIsOpen = false;
       });
-      $('section.for-backlog .snapshot-menu-container').mouseover(function() {
+    },
+
+    enableFilterMenu: function() {
+      var overEitherNode = false,
+          selectIsOpen = false,
+          hideMenu = function() {
+            overEitherNode = false;
+            if (!selectIsOpen) {
+              _.delay(function() {  // give user a change to move mouse onto either of the nodes, menu or menu container
+                if (overEitherNode === false) {
+                  $('#backlog-data-area .filter').removeClass('hover');
+                  $('section.for-backlog .filter-container').hide();
+                }
+              }, 50);
+            }
+          },
+          showMenu = function() {
+            $('#backlog-data-area .filter').addClass('hover');
+            $('section.for-backlog .filter-container').show().position({
+              of: $('#backlog-data-area .filter'),
+              my: 'right top',
+              at: 'right bottom',
+              offset: "0 -8"
+            });
+            overEitherNode = true;
+          },
+          filterChangeEvent = function(event) {
+            var backlog = App.Collections.Backlogs.at(0),
+                hideCompleted = ($(event.target).is(':checked'));
+
+            // show filtering notice if filtering
+            if (hideCompleted) {
+              $('.filter-notifier').slideDown();
+              // store filtering preference for session
+              $.cookie('filter_completed_stories', true);
+            } else {
+              $('.filter-notifier').slideUp();
+              // delete the cookie preference
+              $.cookie('filter_completed_stories', null);
+            }
+
+            // iterate through each story that is completed and hide
+            backlog.Themes().each(function(theme) {
+              theme.Stories().each(function(story) {
+                if (story.SprintStory() && story.SprintStory().Status().isDone()) {
+                  if (hideCompleted) {
+                    $('#story-' + story.get('id')).slideUp();
+                  } else {
+                    $('#story-' + story.get('id')).slideDown();
+                  }
+                }
+              });
+            });
+          },
+          filterNoticeClicked = function(event) {
+            event.preventDefault();
+            var filterCheckbox = $('.filter-container input[type=checkbox]').removeAttr('checked');
+            filterChangeEvent({ target: filterCheckbox });
+          };
+
+      // allow click to active menu for testing
+      $('#backlog-data-area .filter').mouseover(showMenu).click(showMenu).mouseout(hideMenu);
+      $('section.for-backlog .filter-container').mouseover(function() {
         overEitherNode = true;
       }).mouseout(hideMenu);
+
+      $('.filter-container input[type=checkbox]').change(filterChangeEvent);
+      // event fired from filter notice shown
+      $('.filter-notifier a').click(filterNoticeClicked)
+
+      // keep preference in session of whether to show completed stories or not
+      if ($.cookie('filter_completed_stories')) {
+        // wait until the page has rendered
+        _.delay(function() {
+          var filterCheckbox = $('.filter-container input[type=checkbox]').attr('checked', 'checked');
+          filterChangeEvent({ target: filterCheckbox });
+          // interface has moved, so blur the selected item, and show the editable text again
+          var focus = $('input[name=value]').parents('.data');
+          if (focus) {
+            $('input[name=value]').blur();
+            _.delay(function() {
+              focus.click();
+            }, 150);
+          }
+        }, 750);
+      }
     },
 
     print: function(event) {

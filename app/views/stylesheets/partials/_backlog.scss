@@ -153,6 +153,18 @@ section.content .not-editable-backlog-notice {
       }
     }
   }
+  /* filter roll over menu */
+  .filter-container {
+    position: absolute;
+    background-color: #000;
+    display: none;
+    overflow: hidden;
+    padding: 10px;
+    z-index: 10; /* appears on a header of z-index 5 */
+    label {
+      color: white;
+    }
+  }
 }
 
 #presence-notifier {
@@ -211,6 +223,7 @@ section.content .not-editable-backlog-notice {
     overflow: hidden;
     padding: 0.1em $standard-header-padding-height*2+5px 0.1em 0;
     margin-top: 0.4em;
+    width: 350px;
     a {
       display: block;
       float: left;
@@ -259,9 +272,9 @@ section.content .not-editable-backlog-notice {
       padding-left: 0.5em;
     }
   }
-  /* snap shot menu item on top righ */
-  .snapshot {
-    padding: 6px 6px 6px 12px;
+  /* snap shot and filter menu item on top righ */
+  .snapshot, .filter {
+    padding: 6px 6px 6px 6px;
     margin: -6px;
     position: relative;
     float: left;
@@ -271,6 +284,9 @@ section.content .not-editable-backlog-notice {
         text-decoration: none;
       }
     }
+  }
+  .filter {
+    padding-left: 12px;
   }
   #backlog-settings {
     float: right;
@@ -387,6 +403,19 @@ section.content .not-editable-backlog-notice {
       color: inherit;
     }
   }
+}
+
+/* notice showing when filtering the backlog */
+.filter-notifier {
+  background-color: #FFFF99;
+  border: 1px solid darken(#FFFF99, 50);
+  padding: 3px;
+  margin: 3px auto;
+  text-align: center;
+  font-weight: bold;
+  width: 50%;
+  @include border-radius(6px 6px 6px 6px);
+  display: none;
 }
 
 #themes-header {

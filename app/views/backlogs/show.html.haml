@@ -34,8 +34,16 @@
   .description
     View changes between the current version and any historical snapshots
 
+.filter-container
+  %form
+    = check_box_tag 'filter_completed'
+    = label_tag 'filter_completed', 'Hide completed stories in the backlog'
+
 #backlog-data-area
   .actions
+    .filter
+      %a#filter-menu{ :vtip => 'Hide/show completed stories' } Filter
+    .divider
     .snapshot
       %a#snapshot-menu Snapshots
     .divider
@@ -85,7 +93,13 @@
 
 #presence-notifier
 #backlog-container
+  .filter-notifier
+    You are viewing a filtered view of this backlog.
+    %a{ :href => '#remove-filter', :id => 'remove-filter' } Remove filter »
   = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
+  .filter-notifier
+    You are viewing a filtered view of this backlog.
+    %a{ :href => '#remove-filter', :id => 'remove-filter' } Remove filter »
 #sprints-container.contracted-unassigned-stories
 #sprints-help-container
 #stats-container
