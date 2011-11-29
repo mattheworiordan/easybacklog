@@ -1,0 +1,34 @@
+de:
+  backlog:
+    backlog: Backlog
+    theme: Thema
+    id: ID
+    user_story: User Story
+    acceptance_criteria: Akzeptanzkriterien
+    comments: Kommentare
+    points_50: '50'
+    points_90: '90'
+    points_heading: Punkte
+    cost: Kosten
+    days: Tage
+    as_a: Als
+    i_want_to: möchte ich
+    so_i_can: um
+    rate: Tagessatz
+    velocity: Velocity
+    sprint: Sprint
+    sprint_lower: sprint
+    code: Kürzel
+    totals:
+      backlog_total: 'Backlog gesamt'
+      backlog: "Summe für Backlog '%{name}'"
+      sprint_total: 'Sprint gesamt'
+      theme: "Summe für Thema '%{name}'"
+      points: punkte
+      days: tage
+      point: punkt
+      day: tag
+      pts_allocated: zugew. Pkte
+      pts_expected: erwartete Pkte
+      pts_completed: abgeschl. Pkte
+  loading: Lädt
