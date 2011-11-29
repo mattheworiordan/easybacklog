@@ -22,29 +22,31 @@ class Devise::RegistrationsController < ApplicationController
 
     # if user has visited sign_up by default they are asked to set up an account
     # if user comes from an embedded form (such as an invite), then account_setup is not shown as they are not setting up an account
-    @account = (params[:show_account_setup] == 'true' ? Account.new(params[:account]) : nil)
-    @account.save unless @account.blank?
+    Account.transaction do
+      @account = (params[:show_account_setup] == 'true' ? Account.new(params[:account]) : nil)
+      @account.save unless @account.blank?
 
-    # if valid account created or if not creating an account at all (invited users)
-    if resource.save && (@account.blank? || @account.valid?)
-      if @account.present? # new account is being setup
-        @account.add_first_user resource
-        @account.add_example_backlog resource
-      end
-      flash[:notice] = 'Your new account has been created for you'
-      sign_in(resource_name, resource)
-      respond_with resource, :location => after_update_path_for(resource)
-    else
-      unless @account.blank?
-        # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id
-        if (@account.errors[:locale].present?)
-          @account.errors.add(:locale_id, @account.errors[:locale].join(', '))
-          @account.errors.delete(:locale)
+      # if valid account created or if not creating an account at all (invited users)
+      if resource.save && (@account.blank? || @account.valid?)
+        if @account.present? # new account is being setup
+          @account.add_first_user resource
+          @account.add_example_backlog resource
         end
-        @account.destroy # clean up the account as user account was not created
+        flash[:notice] = 'Your new account has been created for you'
+        sign_in(resource_name, resource)
+        respond_with resource, :location => after_update_path_for(resource)
+      else
+        unless @account.blank?
+          # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id
+          if (@account.errors[:locale].present?)
+            @account.errors.add(:locale_id, @account.errors[:locale].join(', '))
+            @account.errors.delete(:locale)
+          end
+          @account.destroy # clean up the account as user account was not created
+        end
+        clean_up_passwords(resource)
+        render_with_scope :new
       end
-      clean_up_passwords(resource)
-      render_with_scope :new
     end
   end
 
