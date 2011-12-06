@@ -11,7 +11,7 @@ class AdminController < ApplicationController
 
     },
     :backlog => {
-      :model => Backlog,
+      :model => Backlog.masters,
       :name => 'Backlogs',
       :columns => [:name, { :account => :name }, :created_at]
     },
@@ -42,7 +42,7 @@ class AdminController < ApplicationController
       :user_count => User.all.count,
       :user_count_within_14_days => User.where("created_at >= ?", 14.days.ago).count,
       :account_count => Account.all.count,
-      :backlog_count => Backlog.all.count,
+      :backlog_count => Backlog.masters.count,
       :story_count => Story.all.count,
       :pending_invites => InvitedUser.all.count,
       :beta_signups => BetaSignup.all.count
@@ -70,7 +70,9 @@ class AdminController < ApplicationController
             else
               col.each do |relation_name, relation_field|
                 relation = row_data.send relation_name
-                if relation.respond_to? :count
+                if relation.nil?
+                  ''
+                elsif relation.respond_to? :count
                   # relation is a has_many, get a list
                   row[col] = relation.map { |relation_row| relation_row.send relation_field }.join(', ')
                 else

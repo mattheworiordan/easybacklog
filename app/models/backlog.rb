@@ -24,6 +24,7 @@ class Backlog < ActiveRecord::Base
   scope :active, where(:archived => false).where(:deleted => false)
   scope :deleted, where(:deleted => true)
   scope :archived, where(:archived => true).where(:deleted => false)
+  scope :masters, where('snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL')
 
   include ScoreStatistics
 
