@@ -15,6 +15,12 @@
     %li= link_to "Beta Signups: #{@stats[:beta_signups]}", admin_data_path('beta_signup')
     %li= link_to "A/B Split Tests", vanity_path, { :target => '_blank' }
 
+  %h2 Exports
+  %ul
+    %li= link_to "Beta sign ups", admin_export_path('beta_signup'), :target => "_blank"
+    %li= link_to "Users applied for beta but never signed up, older than 7 days", admin_export_path('not_signed_up_7_days'), :target => "_blank"
+    %li= link_to "Users signed up that have not used easyBacklog in 7 days", admin_export_path('not_used_7_days'), :target => "_blank"
+
   %h2 People currently editing backlogs
   %table.people
     %tr.head
