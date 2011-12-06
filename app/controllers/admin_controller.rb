@@ -105,7 +105,7 @@ class AdminController < ApplicationController
     when 'not_signed_up_7_days'
       [['email','company','applied days ago']].concat(BetaSignup.where('email not in (select email from users)').map { |d| [d.email, "#{d.company}".gsub(/,/, ' '), (Date.today - d.created_at.to_date).to_i] }.select { |d| d[2] >= 7 }).map{ |d| d.join(',') }.join("\n")
     when 'not_used_7_days'
-      puts [['email','sign ins', 'days since signed in','days since created','full name','first name']].concat(User.where('created_at >= ?', '7 Nov 2011').order('sign_in_count desc').map { |m| [m.email, m.sign_in_count, (Date.today - m.last_sign_in_at.to_date).to_i, (Date.today - m.created_at.to_date).to_i, m.name, m.name.split(' ').first.titleize] }.select { |d| d[2] >= 7 }).map { |d| d.join(',') }.join("\n")
+      [['email','sign ins', 'days since signed in','days since created','full name','first name']].concat(User.where('created_at >= ?', '7 Nov 2011').order('sign_in_count desc').map { |m| [m.email, m.sign_in_count, (Date.today - m.last_sign_in_at.to_date).to_i, (Date.today - m.created_at.to_date).to_i, m.name, m.name.split(' ').first.titleize] }.select { |d| d[2] >= 7 }).map { |d| d.join(',') }.join("\n")
     end
     headers["Content-Type"] = 'text/plain'
     render :text => data
