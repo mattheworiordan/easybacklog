@@ -13,7 +13,8 @@ class Backlog < ActiveRecord::Base
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
   validates_presence_of :name, :rate, :velocity
-  validates_numericality_of :rate, :velocity
+  validates_numericality_of :rate
+  validates_numericality_of :velocity, :greater_than => 0
 
   attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id
 

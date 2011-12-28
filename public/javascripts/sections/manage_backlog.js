@@ -19,7 +19,7 @@ App.Views.BacklogCreateUpdateMethods = (function() {
       'backlog[velocity]': {
         required: true,
         number: true,
-        min: 0
+        min: 0.1
       }
     };
 
@@ -30,6 +30,9 @@ App.Views.BacklogCreateUpdateMethods = (function() {
         'backlog[name]': {
           required: "You must enter a backlog name",
           remote: 'That backlog name is already taken.  Please enter another name'
+        },
+        'backlog[velocity]': {
+          min: 'Please enter a velocity greater than zero'
         }
       },
       // set this class to error-labels to indicate valid fields
