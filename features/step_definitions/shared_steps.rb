@@ -125,6 +125,6 @@ When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
 end
 
-Then /^start (?:the debugger|debugging)$/ do
+Then /^(?:I )start (?:the debugger|debugging)$/ do
   debugger
 end

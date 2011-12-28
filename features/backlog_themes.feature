@@ -76,7 +76,7 @@ Feature: Backlog Themes
     Then I should see the error "Code has already been taken"
       And I should see the text "TH2" within the "second theme's code"
 
-  @javascript
+  @selenium
   Scenario: Ensure the tab order works
     # new theme starts with Add theme selected
     Then the focussed element should have the text "Add theme"
@@ -96,7 +96,8 @@ Feature: Backlog Themes
       And I tab backwards
     Then the focussed element should be an editable text field
     # tab back again from the top most theme field
-    When I tab backwards and wait for AJAX to update
+    When I tab backwards
+      And I wait for 1 second
     # can't go back any further, so should still be a theme field
     Then the focussed element should be the "first theme's name"
 
