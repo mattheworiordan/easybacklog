@@ -22,15 +22,17 @@ class BacklogStats
     projected << burn_down_json(sprint, actual_points, 0, sprint.start_on, sprint.duration_days) unless (sprints.first.completed?)
     last_projected = sprint
 
-    # iterate through each sprint and build up data based on configured sprints
+    # iterate through each sprint and build up trend data based on configured sprints
     sprints.each do |sprint|
-      if (trend_points > 0)
+      if trend_points > 0
         expected_points = sprint.total_expected_points
         trend_points -= expected_points
 
         trend << burn_down_json(sprint, trend_points, expected_points, sprint.completed_on, sprint.duration_days) unless trend_finished
         trend_finished = true if trend_points < 0
+      end
 
+      if actual_points > 0
         if sprint.completed?
           # log actual sprint data
           actual_points -= sprint.total_completed_points

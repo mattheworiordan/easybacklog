@@ -5,6 +5,7 @@ class Account < ActiveRecord::Base
   has_many :invited_users, :dependent => :destroy
   has_many :companies, :dependent => :destroy
   belongs_to :locale
+  belongs_to :scoring_rule
 
   validates_uniqueness_of :name
   validates_presence_of :name, :default_rate, :default_velocity, :locale
