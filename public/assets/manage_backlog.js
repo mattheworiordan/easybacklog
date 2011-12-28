@@ -1,7 +1,7 @@
 App.Views.BacklogCreateUpdateMethods=(function(){function initializeManageBacklog(){var excludeThisBacklog="";
 if(isEditingBacklog()){excludeThisBacklog="?exclude="+document.location.href.match(/\/backlogs\/(\d+)\//i)[1]
-}var rules={"backlog[name]":{required:true},"backlog[rate]":{required:true,number:true,min:0},"backlog[velocity]":{required:true,number:true,min:0}};
-$("form#new_backlog, form.edit_backlog").validate({rules:rules,messages:{"backlog[name]":{required:"You must enter a backlog name",remote:"That backlog name is already taken.  Please enter another name"}},success:function(label){label.html("&nbsp;").addClass("correct")
+}var rules={"backlog[name]":{required:true},"backlog[rate]":{required:true,number:true,min:0},"backlog[velocity]":{required:true,number:true,min:0.1}};
+$("form#new_backlog, form.edit_backlog").validate({rules:rules,messages:{"backlog[name]":{required:"You must enter a backlog name",remote:"That backlog name is already taken.  Please enter another name"},"backlog[velocity]":{min:"Please enter a velocity greater than zero"}},success:function(label){label.html("&nbsp;").addClass("correct")
 }});
 storeAccountDefaults();
 setCompanyVisibility();
