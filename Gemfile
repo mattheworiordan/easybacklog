@@ -35,7 +35,7 @@ group :development, :test, :cucumber do
   gem 'growl'
   gem 'pry'
   gem 'pry-rails', :git => 'git://github.com/chrisfarber/pry-rails.git'
-  gem 'pry-doc' # apparently causing segmentation faults http://stackoverflow.com/questions/8065611/ruby-1-9-3-p0-and-rspec-causes-frequent-segmentation-faults/8619319#8619319
+  # gem 'pry-doc' # apparently causing segmentation faults http://stackoverflow.com/questions/8065611/ruby-1-9-3-p0-and-rspec-causes-frequent-segmentation-faults/8619319#8619319
 end
 
 group :test, :cucumber do
