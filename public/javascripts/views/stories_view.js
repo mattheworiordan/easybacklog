@@ -166,7 +166,9 @@ App.Views.Stories = {
     },
 
     configureView: function() {
-      var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() });
+      var view = new App.Views.AcceptanceCriteria.Index({ collection: this.model.AcceptanceCriteria() }),
+        show_view = this,
+        tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data', '.score .data'];
 
       this.$('.acceptance-criteria').html(view.render().el);
 
@@ -174,8 +176,6 @@ App.Views.Stories = {
         this.makeFieldsEditable();
 
         // make all input and textarea fields respond to Tab/Enter
-        var show_view = this;
-        var tabElems = ['.user-story .data', '.unique-id .data', '.comments .data', '.score-50 .data', '.score-90 .data', '.score .data'];
         _.each(tabElems, function(elem) {
           show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent);
         });
@@ -198,6 +198,13 @@ App.Views.Stories = {
                    '#f4cccc', '#d9ead3', '#cfe2f3', '#ead1dc',
                    '#ffe599', '#b6d7a8', '#b4a7d6', '#d5a6bd',
                    '#e06666', '#f6b26b', '#ffd966', '#93c47d']
+        });
+      } else {
+        // make all editable fields show warning that item is not editable
+        _.each(tabElems, function(elem) {
+          show_view.$(elem).click(function() {
+            new App.Views.Warning({ message: 'You cannot edit a story that is marked as done'});
+          });
         });
       }
 
