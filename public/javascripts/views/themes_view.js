@@ -340,9 +340,16 @@ App.Views.Themes = {
         success: function() {
           $(dialog).dialog("close");
         },
-        error: function() {
-          var errorView = new App.Views.Error({ message: 'Server error trying to renumber stories'});
-          $(dialog).dialog("close");
+        error: function(event) {
+          var errorMessage = 'Server error trying to renumber stories';
+          try {
+            errorMessage = $.parseJSON(event.responseText).message;
+            var errorView = new App.Views.Warning({ message: errorMessage});
+          } catch (e) {
+            if (window.console) { console.log(e); }
+            var errorView = new App.Views.Error({ message: errorMessage});
+          }
+          $(dialog).dialog("close"); // hide the dialog
         }
       });
     }

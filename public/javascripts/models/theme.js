@@ -30,11 +30,11 @@ var Theme = Backbone.Model.extend({
         // callback for success
         options.success(theme, response);
       }
-    }).error(function(event, response) {
+    }).error(function(event) {
       if (window.console) { console.log('Renumber stories failed'); }
       if (_.isFunction(options.error)) {
         // callback for error
-        options.error(theme, response);
+        options.error(event);
       }
     });
   }

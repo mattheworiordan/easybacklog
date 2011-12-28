@@ -71,6 +71,20 @@ describe Theme do
     story3.reload.unique_id.should eql(1)
   end
 
+  it 'should not allow stories to be renumbered when one or more stories are DONE' do
+    status_done = Factory.create(:sprint_story_status_done)
+    theme = Factory.create(:theme)
+    story1 = Factory.create(:story, :theme => theme)
+    story2 = Factory.create(:story, :theme => theme)
+
+    sprint = Factory.create(:sprint, :backlog => theme.backlog)
+    sprint.sprint_stories.create! :story_id => story1.id, :sprint_story_status_id => SprintStoryStatus.done.id
+
+    theme.reload
+    expect { theme.re_number_stories }.to raise_error Theme::StoriesCannotBeRenumbered
+  end
+
+
   # Hoptoad/Airbrake error https://herokuapp439683herokucom.hoptoadapp.com/errors/4865945
   it 'should create a new theme with edge case theme name "Safe hands user tests"' do
     theme = Factory.create(:theme, :name => 'Safe hands users tests')

@@ -44,8 +44,13 @@ class ThemesController < ApplicationController
 
   def re_number_stories
     @theme = @backlog.themes.find(params[:id])
-    @theme.re_number_stories
-    send_json_notice 'Stories re-numbered'
+    begin
+      @theme.re_number_stories
+    rescue Theme::StoriesCannotBeRenumbered => e
+      send_json_error 'Stories which are marked as done cannot be re-numbered'
+    else
+      send_json_notice 'Stories re-numbered'
+    end
   end
 
   private

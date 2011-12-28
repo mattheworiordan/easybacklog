@@ -10,4 +10,8 @@ class SprintStoryStatus < ActiveRecord::Base
 
   validates_presence_of :status, :code
   validates_uniqueness_of :status, :code
+
+  def self.done
+    find_by_code(DONE_CODE)
+  end
 end

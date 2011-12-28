@@ -1,4 +1,5 @@
 class Theme < ActiveRecord::Base
+  include ActiveRecordExceptions
   acts_as_list :scope => :backlog
 
   belongs_to :backlog
@@ -44,18 +45,20 @@ class Theme < ActiveRecord::Base
 
   def re_number_stories
     ActiveRecord::Base.transaction do
+      raise StoriesCannotBeRenumbered unless stories.select { |s| s.done? }.blank?
+
       # if stories have unique id greater than 10,000,000 simply make space for up to 10,000 stories
-      self.stories.where('unique_id >= ?', (1000 * 1000 * 10)).each do |story|
+      stories.where('unique_id >= ?', (1000 * 1000 * 10)).each do |story|
         story.unique_id = story.unique_id + 10000
         story.save!
       end
       # now renumber in the range 10,000,000 - 10,010,000 so that next number does not create unique validation problems
-      self.stories.each_with_index do |story, index|
+      stories.each_with_index do |story, index|
         story.unique_id = index + (1000 * 1000 * 10)
         story.save!
       end
       # renumber starting at 1
-      self.stories.each_with_index do |story, index|
+      stories.each_with_index do |story, index|
         story.unique_id = index+1
         story.save!
       end
