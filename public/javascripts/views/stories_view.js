@@ -55,8 +55,7 @@ App.Views.Stories = {
             view.$('.move-story').addClass('vtip');
           },
           placeholder: 'target-order-highlight',
-          axis: 'y',
-          handle: '.move-story a'
+          axis: 'y'
         }).find('.move-story').disableSelection();
 
         // not using standard view events as they fire too late, we need this to fire before colorPicker catches the event
