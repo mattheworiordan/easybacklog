@@ -116,7 +116,7 @@ App.Views.BacklogStats = {
         },
         colors: [
           '#0000FF',
-          '#FF0000',
+          '#009900',
           '#FF0000'
         ],
         tooltip: {
