@@ -120,6 +120,9 @@ section.content .not-editable-backlog-notice {
       float: left;
       clear: left;
       width: 165px;
+      a:active {
+        font-weight: normal;
+      }
     }
     .description {
       margin-top: 8px;
