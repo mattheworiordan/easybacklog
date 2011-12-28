@@ -20,5 +20,8 @@
         </x:ExcelWorksheets>
         </x:ExcelWorkbook>
         </xml>
+    %style
+      br
+      {mso-data-placement:same-cell;}
   %body
     = render :partial => 'table_backlog', :locals => { :backlog => @backlog, :total_columns => 10 - (@backlog.use_50_90? ? 0 : 1) }

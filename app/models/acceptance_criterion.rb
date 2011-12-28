@@ -14,6 +14,10 @@ class AcceptanceCriterion < ActiveRecord::Base
     story.theme.backlog.editable?
   end
 
+  def index_to_letters(index)
+    ((index % 26) + 97).chr + (index < 26 ? '' : (index.to_f / 26.0).floor).to_s
+  end
+
   private
     def check_story_editable
       errors.add :base, 'Cannot edit as story is marked as done and therefore locked' if story.done?

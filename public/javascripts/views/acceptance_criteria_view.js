@@ -94,8 +94,10 @@ App.Views.AcceptanceCriteria = {
     // instead of using an ordered list which presented issues with drag handles
     //  we use div.index where we manually insert the index
     displayOrderIndexes: function() {
+      var charFrom = 97,
+          charMax = 26;
       this.$('li.criterion').each(function(index, elem) {
-        $(elem).find('.index').html((index + 1) + '.');
+        $(elem).find('.index').html(String.fromCharCode(charFrom + (index % charMax)) + (index < charMax ? '' : Math.floor(index / charMax)) + ')');
       });
     },
 

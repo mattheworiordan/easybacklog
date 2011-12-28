@@ -23,6 +23,9 @@
         </x:ExcelWorksheets>
         </x:ExcelWorkbook>
         </xml>
+    %style
+      br
+      {mso-data-placement:same-cell;}
     - if request.format == 'text/html'
       = include_javascripts :workspace
       = include_javascripts :snapshots
@@ -44,7 +47,7 @@
               %span.rate{:style => 'margin-bottom: 5px;' }
                 Rate:
                 = color_number(@comparison, :rate, :base, @base.rate_formatted)
-              %br.rate{ :style => 'mso-data-placement:same-cell;' }
+              %br.rate
               %span
                 Velocity:
                 = color_number(@comparison, :velocity, :base, "#{format('%0.1f', @base.velocity)}")
@@ -55,7 +58,7 @@
               %span.rate{:style => 'margin-bottom: 5px;' }
                 Rate:
                 = color_number(@comparison, :rate, :target, @target.rate_formatted)
-              %br.rate{ :style => 'mso-data-placement:same-cell;' }
+              %br.rate
               %span
                 Velocity:
                 = color_number(@comparison, :velocity, :target, "#{format('%0.1f', @target.velocity)}")

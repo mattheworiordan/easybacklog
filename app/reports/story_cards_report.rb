@@ -77,7 +77,7 @@ class StoryCardsReport
 
       offset = mirror_box_offset(0.05, 0.95, @box_count, page_size, fold_side)
       standard_box_fields(story, pdf, offset, card_width*0.9, card_height*0.9) do
-        acceptance_criteria = story.acceptance_criteria.each_with_index.map { |crit, index| "#{index + 1}. #{crit.criterion}" }
+        acceptance_criteria = story.acceptance_criteria.each_with_index.map { |crit, index| "#{crit.index_to_letters(index)}) #{crit.criterion}" }
         pdf.formatted_text_box [
             {:text => "#{I18n.t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria'}\n", :styles => [:bold], :size => 16},
             {:text => "\n", :size => 6},

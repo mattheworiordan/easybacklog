@@ -2,14 +2,14 @@
   = "#{story.theme.code}#{story.unique_id}"
 %td{:valign => 'top'}
   = "#{t 'backlog.as_a', :default => 'As a'} #{story.as_a}"
-  %br{ :style => 'mso-data-placement:same-cell;' }
+  %br
   = "#{t 'backlog.i_want_to', :default => 'I want to'} #{story.i_want_to}"
-  %br{ :style => 'mso-data-placement:same-cell;' }
+  %br
   = "#{t 'backlog.so_i_can', :default => 'So I can'} #{story.so_i_can}"
 %td{:valign => 'top'}
   - story.acceptance_criteria.each_with_index do |criterion, index|
-    = "#{index+1}. #{criterion.criterion}"
-    %br{ :style => 'mso-data-placement:same-cell;' }
+    = "#{criterion.index_to_letters(index)}) #{criterion.criterion}"
+    %br
 %td{:valign => 'top'}
   = story.comments
 %td{:valign => 'top'}
