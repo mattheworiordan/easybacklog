@@ -87,24 +87,28 @@ class BacklogStats
     trend_data
   end
 
-  def burn_down_json(sprint, points, completed, completed_date, days)
-    if (points < 0)
+  # return JSON representing this sprint
+  # total_remaining_points represents total remaining points at the end of this sprint
+  # points_this_sprint represents points completed this sprint
+  # if total_remaining_points < 0 (when projection for sprint means total completed points goes past zero) then we need to adjust back to zero
+  def burn_down_json(sprint, total_remaining_points, points_this_sprint, completed_date, days)
+    if (total_remaining_points < 0)
       # if we've gone past 0 points, adjust back proportionally
-      move_back_days = (sprint.assumed_completed_on - sprint.start_on).to_f * (-points / completed)
-      completed = completed + points
+      move_back_days = (1 + (sprint.assumed_completed_on - sprint.start_on).to_f) * (-total_remaining_points.to_f / points_this_sprint.to_f)
+      points_this_sprint = points_this_sprint + total_remaining_points
       completed_date = completed_date - move_back_days.to_i.days
       days = days - move_back_days
-      points = 0
+      total_remaining_points = 0
     end
 
     {
       :starts_on => sprint.start_on,
       :completed_on => completed_date,
-      :points => points,
+      :points => total_remaining_points,
       :iteration => sprint.iteration,
       :team => sprint.number_team_members,
-      :duration => days,
-      :completed => completed,
+      :duration => days.ceil,
+      :completed => points_this_sprint,
       :actual => sprint.actual_velocity
     }
   end
