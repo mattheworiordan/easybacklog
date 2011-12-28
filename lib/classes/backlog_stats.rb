@@ -80,6 +80,11 @@ class BacklogStats
       trend_points -= points_this_sprint
 
       sprint.start_on = sprint.assumed_completed_on + 1.day
+
+      # don't start on a weekend, shift to next working day
+      sprint.start_on += 2.days if sprint.start_on.saturday?
+      sprint.start_on += 1.days if sprint.start_on.sunday?
+
       sprint.iteration += 1
 
       trend_data << burn_down_json(sprint, trend_points, points_this_sprint, sprint.assumed_completed_on, sprint.duration_days)

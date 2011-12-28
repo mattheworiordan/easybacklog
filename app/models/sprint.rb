@@ -93,6 +93,7 @@ class Sprint < ActiveRecord::Base
 
   # the assumed completed on date based on the start date and duration of this sprint
   def assumed_completed_on
+    # complete on monday if weekend
     started = if start_on.saturday?
       start_on + 2.days
     elsif start_on.sunday?
