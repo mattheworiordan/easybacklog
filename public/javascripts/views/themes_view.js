@@ -22,7 +22,7 @@ App.Views.Themes = {
     initialize: function() {
       this.collection = this.options.collection;
       this.use5090estimates = this.options.use5090estimates;
-      _.bindAll(this, 'orderChanged', 'displayOrderIndexes');
+      _.bindAll(this, 'orderChanged');
     },
 
     render: function() {
