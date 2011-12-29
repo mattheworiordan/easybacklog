@@ -318,6 +318,8 @@ _.bindAll(this,"navigateEvent")
 },render:function(){$(this.el).html(JST["acceptance_criteria/show"]({model:this.model}));
 if(this.model.IsEditable()){this.makeFieldsEditable();
 this.$(".data input, .data textarea").live("keydown",this.navigateEvent)
+}else{$(this.el).find(">div.data").click(function(){new App.Views.Warning({message:"You cannot edit a story that is marked as done"})
+})
 }return(this)
 },changeEvent:function(eventName,model){if(eventName=="change:id"){$(this.el).attr("id","acceptance-criteria-"+model.get("id"))
 }},makeFieldsEditable:function(){var ac_view=this;
