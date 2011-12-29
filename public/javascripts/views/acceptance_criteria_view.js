@@ -151,7 +151,7 @@ App.Views.AcceptanceCriteria = {
           $(ac_view.el).slideUp('fast', function() {
             ac_view.model.destroy({
               error: function(model, response) {
-                var errorMessage = 'Unable to delete story...  Please refresh.';
+                var errorMessage = 'Unable to delete criteria...  Please refresh.';
                 try {
                   errorMessage = $.parseJSON(response.responseText).message;
                 } catch (e) { if (window.console) { console.log(e); } }
