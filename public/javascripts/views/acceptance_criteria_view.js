@@ -128,6 +128,11 @@ App.Views.AcceptanceCriteria = {
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
         this.$('.data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
+      } else {
+        // make all editable fields show warning that item is not editable
+        $(this.el).find('>div.data').click(function() {
+          new App.Views.Warning({ message: 'You cannot edit a story that is marked as done'});
+        });
       }
 
       return (this);
