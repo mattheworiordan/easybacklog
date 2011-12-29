@@ -79,8 +79,8 @@ this.unset("stories")
 $.post(this.collection.url()+"/"+this.get("id")+"/re-number-stories").success(function(ajaxResult,status,response){theme.Stories().each(function(story){story.fetch()
 });
 if(_.isFunction(options.success)){options.success(theme,response)
-}}).error(function(event,response){if(window.console){console.log("Renumber stories failed")
-}if(_.isFunction(options.error)){options.error(theme,response)
+}}).error(function(event){if(window.console){console.log("Renumber stories failed")
+}if(_.isFunction(options.error)){options.error(event)
 }})
 }});
 var AcceptanceCriteriaCollection=Backbone.Collection.extend({model:AcceptanceCriterion,story:null,url:function(){if(!this.story||!this.story.get("id")){var errorView=new App.Views.Error({message:"Error, missing necessary data ID to display Acceptance Criteria"})
@@ -307,7 +307,8 @@ orderIndexesWithIds[elemId]=index+1
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds);
 this.displayOrderIndexes()
-},displayOrderIndexes:function(){this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html((index+1)+".")
+},displayOrderIndexes:function(){var charFrom=97,charMax=26;
+this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html(String.fromCharCode(charFrom+(index%charMax))+(index<charMax?"":Math.floor(index/charMax))+")")
 })
 },hideEditIfCriteriaExist:function(force){if(this.collection.length||force){this.$("li.new-acceptance-criterion").hide()
 }else{this.$("li.new-acceptance-criterion").show()
@@ -321,7 +322,7 @@ this.$(".data input, .data textarea").live("keydown",this.navigateEvent)
 },changeEvent:function(eventName,model){if(eventName=="change:id"){$(this.el).attr("id","acceptance-criteria-"+model.get("id"))
 }},makeFieldsEditable:function(){var ac_view=this;
 var contentUpdatedFunc=function(newVal){var that=this,model_collection=ac_view.model.collection;
-if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete story...  Please refresh.";
+if(_.isEmpty(newVal)){$(ac_view.el).slideUp("fast",function(){ac_view.model.destroy({error:function(model,response){var errorMessage="Unable to delete criteria...  Please refresh.";
 try{errorMessage=$.parseJSON(response.responseText).message
 }catch(e){if(window.console){console.log(e)
 }}var errorView=new App.Views.Error({message:errorMessage})
@@ -575,7 +576,7 @@ this.$(".no-points").hide();
 this.$(".no-stats").show()
 }},backlogSettings:function(event){event.preventDefault();
 document.location.href=$("#backlog-data-area a:last").attr("href")
-},displayBurnDown:function(data){this.burnDownChart=new Highcharts.Chart({chart:{renderTo:"burn-down-chart",type:"line"},title:{text:"Burn down"},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"},min:0},colors:["#0000FF","#FF0000","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,completedTerminology,pluralize,seriesName=this.series.name,html;
+},displayBurnDown:function(data){this.burnDownChart=new Highcharts.Chart({chart:{renderTo:"burn-down-chart",type:"line"},title:{text:"Burn down"},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"},min:0},colors:["#0000FF","#009900","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,completedTerminology,pluralize,seriesName=this.series.name,html;
 switch(seriesName){case"Trend":dataSeries=data.trend;
 completedTerminology="expected";
 break;
@@ -994,7 +995,7 @@ if(this.model.active){$(this.el).addClass("active")
 App.Views.Stories={Index:Backbone.View.extend({tagName:"div",className:"stories",childId:function(model){return"story-"+model.get("id")
 },events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"addStoryKeyPress"},initialize:function(){this.collection=this.options.collection;
 this.use5090estimates=this.options.use5090estimates;
-_.bindAll(this,"orderChanged","displayOrderIndexes")
+_.bindAll(this,"orderChanged")
 },render:function(){var view=this;
 $(this.el).html(JST["stories/index"]({collection:this.collection.models}));
 this.collection.each(function(model){var storyView=new App.Views.Stories.Show({model:model,id:view.childId(model),use5090estimates:view.use5090estimates});
@@ -1014,7 +1015,7 @@ $(".color-picker").hide()
 orderChangedEvent();
 view.$("ul.stories").append(actionsElem);
 view.$(".move-story").addClass("vtip")
-},placeholder:"target-order-highlight",axis:"y",handle:".move-story a"}).find(".move-story").disableSelection();
+},placeholder:"target-order-highlight",axis:"y"}).find(".move-story").disableSelection();
 this.$(".color-picker-icon a").click(function(event){$("#vtip").remove();
 $(event.target).mouseleave()
 })
@@ -1057,11 +1058,9 @@ this.model.bind("change",function(model){that.updateViewWithModelData(model.chan
 },render:function(){this.updateViewWithModelData("all");
 this.configureView();
 return this
-},configureView:function(){var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()});
+},configureView:function(){var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()}),show_view=this,tabElems=[".user-story .data",".unique-id .data",".comments .data",".score-50 .data",".score-90 .data",".score .data"];
 this.$(".acceptance-criteria").html(view.render().el);
 if(this.model.IsEditable()){this.makeFieldsEditable();
-var show_view=this;
-var tabElems=[".user-story .data",".unique-id .data",".comments .data",".score-50 .data",".score-90 .data",".score .data"];
 _.each(tabElems,function(elem){show_view.$(elem+" textarea, "+elem+" input").live("keydown",show_view.navigateEvent)
 });
 this.$(".move-story a").mousedown(function(event){App.Views.Stories.Index.stopMoveEvent=false
@@ -1070,6 +1069,9 @@ if(!App.Views.Stories.Index.stopMoveEvent){show_view.moveToThemeDialog()
 }});
 this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){show_view.changeColor(col)
 },colorsPerLine:4,colors:["#ffffff","#dddddd","#bbbbbb","#999999","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#6666ff","#9900ff","#ff00ff","#f4cccc","#d9ead3","#cfe2f3","#ead1dc","#ffe599","#b6d7a8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d"]})
+}else{_.each(tabElems,function(elem){show_view.$(elem).click(function(){new App.Views.Warning({message:"You cannot edit a story that is marked as done"})
+})
+})
 }if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
 }App.Views.Helpers.activateUrlify(this.el);
 this.setStatusHover()
@@ -1209,7 +1211,7 @@ _.delay(function(){newStoryDomElem.find(".user-story .as-a>.data").click()
 App.Views.Themes={Index:Backbone.View.extend({tagName:"div",className:"themes",reorderSlideUpElements:"ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions",childId:function(model){return"theme-"+model.get("id")
 },events:{"click ul.themes .actions a.new-theme":"createNew","keydown ul.themes .actions a.new-theme":"themeKeyPress","click ul.themes .actions a.reorder-themes":"startReorder","keydown ul.themes .actions a.reorder-themes":"themeKeyPress","click .stop-ordering a":"stopReorder"},initialize:function(){this.collection=this.options.collection;
 this.use5090estimates=this.options.use5090estimates;
-_.bindAll(this,"orderChanged","displayOrderIndexes")
+_.bindAll(this,"orderChanged")
 },render:function(){var that=this;
 $(this.el).html(JST["themes/index"]({collection:this.collection.models}));
 this.collection.each(function(model){var view=new App.Views.Themes.Show({model:model,id:that.childId(model),use5090estimates:that.use5090estimates});
@@ -1341,8 +1343,12 @@ $(dialog).find(">p").html('Re-numbering stories...<br />Please wait.<br /><br />
 $(dialog).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Close");
 $(dialog).parent().find(".ui-dialog-buttonset button:nth-child(1)").remove();
 view.model.ReNumberStories({success:function(){$(dialog).dialog("close")
-},error:function(){var errorView=new App.Views.Error({message:"Server error trying to renumber stories"});
-$(dialog).dialog("close")
+},error:function(event){var errorMessage="Server error trying to renumber stories";
+try{errorMessage=$.parseJSON(event.responseText).message;
+var errorView=new App.Views.Warning({message:errorMessage})
+}catch(e){if(window.console){console.log(e)
+}var errorView=new App.Views.Error({message:errorMessage})
+}$(dialog).dialog("close")
 }})
 }})};
 App.Routers.Backlog=Backbone.Router.extend({backlogView:false,oldView:false,routes:{"":"showBacklog","Backlog":"showBacklog","Stats":"showStats","Sprints":"showSprintsHelp",":iteration":"showSprint"},initialize:function(options){_.bindAll(this,"setTabsReference","cleanUpOldView")
