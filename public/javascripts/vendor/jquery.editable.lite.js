@@ -32,6 +32,7 @@
  * - assumedBorderWidth: 4, // border width of input field allowed for in width calculations
  * - displayDelay: 50 // optional delay before displaying the text field, sometimes useful if GUI is changing just as user clicks on editable field
  * - zIndex: 10000 // zIndex for the input, defaults to a ridiculously high number
+ * - widen: 5 // widens the editable field by an additional X pixels
  *
  * Command usage example:
  *   $('div').editable(valueChangedCallback);
@@ -129,7 +130,7 @@
 
       // ensure input element has not additional padding inherited and set width
       elem.css('padding',0).css('margin',0)
-        .css('width', ($(target).outerWidth() - options.assumedBorderWidth - offsetBy) + 'px'); // less 4 pixels to allow for border
+        .css('width', ($(target).outerWidth() - options.assumedBorderWidth - offsetBy + (options.widen ? options.widen : 0)) + 'px'); // less 4 pixels to allow for border
 
       positioningSpan.remove();
 
