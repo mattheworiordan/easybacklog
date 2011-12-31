@@ -37,7 +37,7 @@ Feature: Account
       | Sam   |
       | Simon |
 
-    When I click on the "delete user icon for Sam@acme.com"
+    When I click on the "delete user icon for sam@acme.com"
       And I press "Delete" within "a dialog"
       And I wait 0.5 seconds
     Then I should see the following data in column 1 of "account user table" table:
