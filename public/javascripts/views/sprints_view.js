@@ -15,7 +15,7 @@ App.Views.Sprints = {
     initialize: function(options) {
       App.Views.BaseView.prototype.initialize.call(this);
       this.sprintTabsView = options.sprintTabsView;
-      _.bindAll(this, 'toggleMore', 'persistSprintStories', 'positionStoriesContainerOnScroll', 'updateStatistics');
+      _.bindAll(this, 'persistSprintStories', 'positionStoriesContainerOnScroll', 'updateStatistics');
     },
 
     render: function() {
