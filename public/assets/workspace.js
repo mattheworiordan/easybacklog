@@ -5573,7 +5573,7 @@ positioningSpan=$("<span>&nbsp;</span>");
 $(target).prepend(positioningSpan);
 form.css("position","absolute").css("margin","0").css("padding","0").css("top",options.offsetY+$(target).position().top+"px").css("left",options.offsetY+$(positioningSpan).position().left+"px").css("z-index",options.zIndex).append(elem);
 offsetBy=$(positioningSpan).position().left-$(target).position().left;
-elem.css("padding",0).css("margin",0).css("width",($(target).outerWidth()-options.assumedBorderWidth-offsetBy)+"px");
+elem.css("padding",0).css("margin",0).css("width",($(target).outerWidth()-options.assumedBorderWidth-offsetBy+(options.widen?options.widen:0))+"px");
 positioningSpan.remove();
 elem.val(inputText);
 $(target).css("height",$(target).height()+"px").text("");

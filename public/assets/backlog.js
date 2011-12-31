@@ -670,7 +670,7 @@ App.Views.Warning=App.Views.Notice.extend({className:"warning",defaultMessage:"U
 App.Views.Sprints={Show:App.Views.BaseView.extend({childId:function(model){return"sprint-story-"+model.get("id")
 },persistOrderActions:0,events:{"click .stories-divider .change-size":"toggleUnassignedStoriesSize","click a.mark-sprint-as-incomplete":"markSprintAsIncomplete","click a.mark-sprint-as-complete":"markSprintAsComplete","click a.bulk-move-stories":"bulkMoveStories"},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
 this.sprintTabsView=options.sprintTabsView;
-_.bindAll(this,"toggleMore","persistSprintStories","positionStoriesContainerOnScroll","updateStatistics")
+_.bindAll(this,"persistSprintStories","positionStoriesContainerOnScroll","updateStatistics")
 },render:function(){var that=this,storiesAssignedToSprints={},sortFn;
 $(this.el).html(JST["sprints/show"]({model:this.model}));
 that.toggleUnassignedStoriesSize(true);
@@ -1286,7 +1286,7 @@ var beforeChangeFunc=function(value,settings){return show_view.beforeChange(valu
 };
 var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
 this.$(".theme-data .name div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:100}));
-this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{lesswidth:-10,maxLength:3}))
+this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{widen:8,maxLength:3}))
 },navigateEvent:function(event){var storyElem,thisThemeAddStory,target,dataField,prev;
 if(_.include([9,13,27],event.keyCode)){try{event.preventDefault()
 }catch(e){}if(!event.shiftKey){$(event.target).blur();
