@@ -20,10 +20,10 @@ Scenario: Add and remove acceptance criteria
   Then the focussed element should be an "acceptance criterion"
     And I should see "line 1" within the "first acceptance criterion"
   When I change the current editable text to "line 2"
-    And I tab forwards
+    And I tab forwards and wait for AJAX
     And I change the current editable text to "line 3"
     And I click on the "second story's so I can field"
-    And I tab forwards
+    And I tab forwards and wait for AJAX
     And I change the current editable text to "line 4"
     And I tab forwards and wait for AJAX
     And I tab forwards and wait for AJAX
