@@ -194,7 +194,7 @@ App.Views.Themes = {
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
 
       this.$('.theme-data .name div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 100 }) );
-      this.$('.theme-data .code div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { lesswidth: -10, maxLength: 3 }) );
+      this.$('.theme-data .code div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { widen: 8, maxLength: 3 }) );
     },
 
     // Tab or Enter key pressed so let's move on
