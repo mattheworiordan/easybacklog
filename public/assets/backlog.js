@@ -176,6 +176,7 @@ $("html").unbind("click.status-drop-down")
 });
 dropDown.find("li").click(function(event){event.preventDefault();
 event.stopPropagation();
+$(event.target).trigger("statusChanged");
 var id=$(this).attr("id").replace("status-id-",""),code=$(this).attr("class").match(/status-code-(\w+)/)[1],name=$(this).text();
 $("body").find("#sprint-story-status-dropdown").remove();
 $("html").unbind("click.status-drop-down");
@@ -570,7 +571,8 @@ if($.cookie("stats_show_projected")==="no"){that.$("#show-projected").removeAttr
 }that.displayBurnDown(data.burn_down);
 that.displayBurnUp(data.burn_up);
 that.displayVelocityCompleted(data.velocity_completed);
-that.displayVelocityStats(data.velocity_stats)
+that.displayVelocityStats(data.velocity_stats);
+$(that.el).trigger("renderingCharts")
 }})
 }else{this.$(".loading").hide();
 this.$(".stats").hide();
