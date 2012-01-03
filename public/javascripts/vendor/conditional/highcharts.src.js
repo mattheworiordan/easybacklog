@@ -2,7 +2,7 @@
 // @compilation_level SIMPLE_OPTIMIZATIONS
 
 /**
- * @license Highcharts JS v2.1.7 (2011-10-19)
+ * @license Highcharts JS v2.1.9 (2011-11-11)
  *
  * (c) 2009-2011 Torstein Hønsi
  *
@@ -791,7 +791,8 @@ if (!globalAdapter && win.jQuery) {
 	};
 
 
-	// extend jQuery
+	//=== Extend jQuery on init
+
 	/*jslint unparam: true*//* allow unused param x in this function */
 	jQ.extend(jQ.easing, {
 		easeOutQuad: function (x, t, b, c, d) {
@@ -801,20 +802,37 @@ if (!globalAdapter && win.jQuery) {
 	/*jslint unparam: false*/
 
 	// extend the animate function to allow SVG animations
-	var oldStepDefault = jQuery.fx.step._default,
-		oldCur = jQuery.fx.prototype.cur;
+	var jFx = jQuery.fx,
+		jStep = jFx.step;
 
-	// do the step
-	jQ.fx.step._default = function (fx) {
-		var elem = fx.elem;
-		if (elem.attr) { // is SVG element wrapper
-			elem.attr(fx.prop, fx.now);
-		} else {
-			oldStepDefault.apply(this, arguments);
+	// extend some methods to check for elem.attr, which means it is a Highcharts SVG object
+	each(['cur', '_default', 'width', 'height'], function (fn, i) {
+		var obj = i ? jStep : jFx.prototype, // 'cur', the getter' relates to jFx.prototype
+			base = obj[fn],
+			elem;
+
+		if (base) { // step.width and step.height don't exist in jQuery < 1.7
+
+			// create the extended function replacement
+			obj[fn] = function (fx) {
+
+				// jFx.prototype.cur does not use fx argument
+				fx = i ? fx : this;
+
+				// shortcut
+				elem = fx.elem;
+
+				// jFX.prototype.cur returns the current value. The other ones are setters
+				// and returning a value has no effect.
+				return elem.attr ? // is SVG element wrapper
+					elem.attr(fx.prop, fx.now) : // apply the SVG wrapper's method
+					base.apply(this, arguments); // use jQuery's built-in method
+			};
 		}
-	};
+	});
+
 	// animate paths
-	jQ.fx.step.d = function (fx) {
+	jStep.d = function (fx) {
 		var elem = fx.elem;
 
 
@@ -832,17 +850,6 @@ if (!globalAdapter && win.jQuery) {
 		// interpolate each value of the path
 		elem.attr('d', pathAnim.step(fx.start, fx.end, fx.pos, elem.toD));
 
-	};
-	// get the current value
-	jQ.fx.prototype.cur = function () {
-		var elem = this.elem,
-			r;
-		if (elem.attr) { // is SVG element wrapper
-			r = elem.attr(this.prop);
-		} else {
-			r = oldCur.apply(this, arguments);
-		}
-		return r;
 	};
 }
 
@@ -1180,7 +1187,7 @@ defaultOptions = {
 	},
 
 	credits: {
-		enabled: false,
+		enabled: true,
 		text: 'Highcharts.com',
 		href: 'http://www.highcharts.com',
 		position: {
@@ -2179,13 +2186,23 @@ SVGElement.prototype = {
 	},
 
 	/**
+	 * Removes a child either by removeChild or move to garbageBin.
+	 * Issue 490; in VML removeChild results in Orphaned nodes according to sIEve, discardElement does not.
+	 */
+	safeRemoveChild: function (element) {
+		var parentNode = element.parentNode;
+		if (parentNode) {
+			parentNode.removeChild(element);
+		}
+	},
+
+	/**
 	 * Destroy the element and element wrapper
 	 */
 	destroy: function () {
 		var wrapper = this,
 			element = wrapper.element || {},
 			shadows = wrapper.shadows,
-			parentNode = element.parentNode,
 			key,
 			i;
 
@@ -2206,17 +2223,12 @@ SVGElement.prototype = {
 		}
 
 		// remove element
-		if (parentNode) {
-			parentNode.removeChild(element);
-		}
+		wrapper.safeRemoveChild(element);
 
 		// destroy shadows
 		if (shadows) {
 			each(shadows, function (shadow) {
-				parentNode = shadow.parentNode;
-				if (parentNode) { // the entire chart HTML can be overwritten
-					parentNode.removeChild(shadow);
-				}
+				wrapper.safeRemoveChild(shadow);
 			});
 		}
 
@@ -3365,6 +3377,19 @@ var VMLElement = extendClass(SVGElement, {
 		css(wrapper.element, styles);
 
 		return wrapper;
+	},
+
+	/**
+	 * Removes a child either by removeChild or move to garbageBin.
+	 * Issue 490; in VML removeChild results in Orphaned nodes according to sIEve, discardElement does not.
+	 */
+	safeRemoveChild: function (element) {
+		// discardElement will detach the node from its parent before attaching it
+		// to the garbage bin. Therefore it is important that the node is attached and have parent.
+		var parentNode = element.parentNode;
+		if (parentNode) {
+			discardElement(element);
+		}
 	},
 
 	/**
@@ -8305,19 +8330,19 @@ function Chart(options, callback) {
 		});
 
 		// ==== Destroy local variables:
-		each([chartBackground, legend, tooltip, renderer, tracker], function (obj) {
+		each([chartBackground, plotBorder, plotBackground, legend, tooltip, renderer, tracker], function (obj) {
 			if (obj && obj.destroy) {
 				obj.destroy();
 			}
 		});
-		chartBackground = legend = tooltip = renderer = tracker = null;
+		chartBackground = plotBorder = plotBackground = legend = tooltip = renderer = tracker = null;
 
 		// remove container and all SVG
 		if (container) { // can break in IE when destroyed before finished loading
 			container.innerHTML = '';
 			removeEvent(container);
 			if (parentNode) {
-				parentNode.removeChild(container);
+				discardElement(container);
 			}
 
 			// IE6 leak
@@ -11413,6 +11438,7 @@ win.Highcharts = {
 
 	// Expose utility funcitons for modules
 	addEvent: addEvent,
+	removeEvent: removeEvent,
 	createElement: createElement,
 	discardElement: discardElement,
 	css: css,
@@ -11423,6 +11449,6 @@ win.Highcharts = {
 	pick: pick,
 	extendClass: extendClass,
 	product: 'Highcharts',
-	version: '2.1.7'
+	version: '2.1.9'
 };
 }());
