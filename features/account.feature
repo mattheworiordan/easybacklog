@@ -29,14 +29,14 @@ Feature: Account
 
     # now check that example backlog has been added and tooltip is showing
     Then I should see the text "Example corporate website backlog"
-      And I should see the text "We've added this great example of how people are using easyBacklog"
+      And I should see the text "We've added this great example and walk through"
     When I follow "Create a new backlog"
       And I fill in "Name the backlog" with "My first backlog"
       And I press "Create new backlog"
     Then I should see the notice "Backlog was successfully created"
     When I follow "← Back to dashboard"
     # tool tip should be gone as we only show this when we have one backlog
-      Then I should not see the text "We've added this great example of how people are using easyBacklog"
+      Then I should not see the text "We've added this great example and walk through"
 
     When I am on the new account page
     When I fill in "Name" with "Acme Corporation"

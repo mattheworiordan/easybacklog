@@ -38,4 +38,4 @@ Feature: Sign Up
     And I should see "Big co" within the "primary page heading"
 
     Then I should see the text "Example corporate website backlog"
-      And I should see the text "We've added this great example of how people are using easyBacklog"
+      And I should see the text "We've added this great example and walk through"

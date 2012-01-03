@@ -214,6 +214,11 @@ class BacklogsController < ApplicationController
   end
   helper_method :current_account_locale_code
 
+  def is_example_backlog?
+    @backlog.name =~ /example corporate website backlog/i
+  end
+  helper_method :is_example_backlog?
+
   private
     def update_backlog_metadata
       @backlog.update_meta_data current_user unless @backlog.archived

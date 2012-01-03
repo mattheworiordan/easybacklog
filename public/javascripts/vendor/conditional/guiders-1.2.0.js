@@ -22,7 +22,7 @@ var guiders = (function($) {
 
   guiders._defaultSettings = {
     attachTo: null,
-    buttons: [{name: "Close"}],
+    buttons: [{name: "Next"}],
     buttonCustomHTML: "",
     classString: null,
     description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -33,11 +33,12 @@ var guiders = (function($) {
         left: null
     },
     onShow: null,
+	onHide: null,
     overlay: false,
     position: 0, // 1-12 follows an analog clock, 0 means centered
     title: "Sample title goes here",
     width: 400,
-    xButton: false // this places a closer "x" button in the top right of the guider
+    xButton: true // this places a closer "x" button in the top right of the guider
   };
 
   guiders._htmlSkeleton = [
@@ -83,7 +84,7 @@ var guiders = (function($) {
       guiderButtonsContainer.append(thisButtonElem);
 
       if (thisButton.onclick) {
-        thisButtonElem.bind("click", thisButton.onclick);
+        thisButtonElem.bind("click", myGuider, thisButton.onclick);
       } else if (!thisButton.onclick &&
                  thisButton.name.toLowerCase() === guiders._closeButtonTitle.toLowerCase()) {
         thisButtonElem.bind("click", function() { guiders.hideAll(); });
@@ -128,6 +129,9 @@ var guiders = (function($) {
     }
 
     myGuider.attachTo = $(myGuider.attachTo);
+    if (myGuider.attachTo.length < 1) {
+      return;
+    }
     var base = myGuider.attachTo.offset();
     var attachToHeight = myGuider.attachTo.innerHeight();
     var attachToWidth = myGuider.attachTo.innerWidth();
@@ -281,7 +285,7 @@ var guiders = (function($) {
     if (nextGuiderId !== null && nextGuiderId !== "") {
       var myGuider = guiders._guiderById(nextGuiderId);
       var omitHidingOverlay = myGuider.overlay ? true : false;
-      guiders.hideAll(omitHidingOverlay);
+      guiders.hideAll(omitHidingOverlay, true);
       if (currentGuider.highlight) {
           guiders._dehighlightElement(currentGuider.highlight);
       }
@@ -343,7 +347,16 @@ var guiders = (function($) {
     return guiders;
   };
 
-  guiders.hideAll = function(omitHidingOverlay) {
+  guiders.hideAll = function(omitHidingOverlay, next) {
+	if(typeof next === 'undefined') {
+		next = false;
+	}
+	$(".guider:visible").each(function(index, elem){
+		var myGuider = guiders._guiderById($(elem).attr('id'));
+		if (myGuider.onHide) {
+		  myGuider.onHide(myGuider, next);
+		}
+	});
     $(".guider").fadeOut("fast");
     if (typeof omitHidingOverlay !== "undefined" && omitHidingOverlay === true) {
       // do nothing for now
@@ -367,12 +380,12 @@ var guiders = (function($) {
       }
     }
 
-    guiders._attach(myGuider);
-
     // You can use an onShow function to take some action before the guider is shown.
     if (myGuider.onShow) {
       myGuider.onShow(myGuider);
     }
+
+    guiders._attach(myGuider);
 
     myGuider.elem.fadeIn("fast");
 

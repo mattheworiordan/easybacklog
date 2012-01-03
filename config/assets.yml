@@ -31,6 +31,9 @@ javascripts:
     - public/javascripts/views/stories_view.js
     - public/javascripts/views/themes_view.js
     - public/javascripts/routers/backlog_router.js
+  backlog_walkthrough:
+    - public/javascripts/vendor/conditional/guiders-1.2.0.js
+    - public/javascripts/sections/backlog_walkthrough.js
   ie_compatibility:
     - public/javascripts/ie_compatibility/*
   users:
@@ -55,6 +58,8 @@ stylesheets:
   common:
     - tmp/stylesheets/global.css
     - public/stylesheets/ui-lightness/jquery-ui-1.8.9.custom.css
+  backlog_walkthrough:
+    - public/stylesheets/guiders-1.2.0.css
   ie_compatibility:
     - tmp/stylesheets/ie_compatibility.css
   snapshots:

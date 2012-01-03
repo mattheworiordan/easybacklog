@@ -92,6 +92,7 @@ App.Views.Helpers = {
       dropDown.find('li').click(function(event) {
         event.preventDefault();
         event.stopPropagation();
+        $(event.target).trigger('statusChanged'); // custom event for backlog_walkthrough
 
         var id = $(this).attr('id').replace('status-id-',''),
             code = $(this).attr('class').match(/status-code-(\w+)/)[1],

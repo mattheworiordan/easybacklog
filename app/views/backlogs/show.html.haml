@@ -1,6 +1,8 @@
 - title "#{@backlog.name} – #{@backlog.company.present? ? @backlog.company.name : @backlog.account.name}"
 - content_for :head do
   = include_javascripts :backlog
+  - if is_example_backlog?
+    = include_stylesheets :backlog_walkthrough
 
 - content_for :global_nav_left do
   .logo
@@ -137,3 +139,6 @@
     $('head').append('#{escape_javascript(include_javascripts :validation, :charts)}');
   });
   #{render :partial => 'i18n.js.erb'}
+
+- if is_example_backlog?
+  =include_javascripts :backlog_walkthrough

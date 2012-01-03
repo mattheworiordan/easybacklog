@@ -76,6 +76,8 @@ App.Views.BacklogStats = {
             that.displayBurnUp(data.burn_up);
             that.displayVelocityCompleted(data.velocity_completed);
             that.displayVelocityStats(data.velocity_stats);
+
+            $(that.el).trigger('renderingCharts'); // event fired to help with guiders to know when charts are rendered
           }
         });
       } else {
