@@ -149,22 +149,19 @@ stop=function(el){jQ(el).stop()
 };
 jQ.extend(jQ.easing,{easeOutQuad:function(x,t,b,c,d){return -c*(t/=d)*(t-2)+b
 }});
-var oldStepDefault=jQuery.fx.step._default,oldCur=jQuery.fx.prototype.cur;
-jQ.fx.step._default=function(fx){var elem=fx.elem;
-if(elem.attr){elem.attr(fx.prop,fx.now)
-}else{oldStepDefault.apply(this,arguments)
-}};
-jQ.fx.step.d=function(fx){var elem=fx.elem;
+var jFx=jQuery.fx,jStep=jFx.step;
+each(["cur","_default","width","height"],function(fn,i){var obj=i?jStep:jFx.prototype,base=obj[fn],elem;
+if(base){obj[fn]=function(fx){fx=i?fx:this;
+elem=fx.elem;
+return elem.attr?elem.attr(fx.prop,fx.now):base.apply(this,arguments)
+}
+}});
+jStep.d=function(fx){var elem=fx.elem;
 if(!fx.started){var ends=pathAnim.init(elem,elem.d,elem.toD);
 fx.start=ends[0];
 fx.end=ends[1];
 fx.started=true
 }elem.attr("d",pathAnim.step(fx.start,fx.end,fx.pos,elem.toD))
-};
-jQ.fx.prototype.cur=function(){var elem=this.elem,r;
-if(elem.attr){r=elem.attr(this.prop)
-}else{r=oldCur.apply(this,arguments)
-}return r
 }
 }function setTimeMethods(){var useUTC=defaultOptions.global.useUTC;
 makeTime=useUTC?Date.UTC:function(year,month,date,hours,minutes,seconds){return new Date(year,month,pick(date,1),pick(hours,0),pick(minutes,0),pick(seconds,0)).getTime()
@@ -190,7 +187,7 @@ return defaultOptions
 }var defaultLabelOptions={enabled:true,align:"center",x:0,y:15,style:{color:"#666",fontSize:"11px",lineHeight:"14px"}};
 defaultOptions={colors:["#4572A7","#AA4643","#89A54E","#80699B","#3D96AE","#DB843D","#92A8CD","#A47D7C","#B5CA92"],symbols:["circle","diamond","square","triangle","triangle-down"],lang:{loading:"Loading...",months:["January","February","March","April","May","June","July","August","September","October","November","December"],shortMonths:["Jan","Feb","Mar","Apr","May","June","Jul","Aug","Sep","Oct","Nov","Dec"],weekdays:["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],decimalPoint:".",resetZoom:"Reset zoom",resetZoomTitle:"Reset zoom level 1:1",thousandsSep:","},global:{useUTC:true},chart:{borderColor:"#4572A7",borderRadius:5,defaultSeriesType:"line",ignoreHiddenSeries:true,spacingTop:10,spacingRight:10,spacingBottom:15,spacingLeft:10,style:{fontFamily:'"Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif',fontSize:"12px"},backgroundColor:"#FFFFFF",plotBorderColor:"#C0C0C0"},title:{text:"Chart title",align:"center",y:15,style:{color:"#3E576F",fontSize:"16px"}},subtitle:{text:"",align:"center",y:30,style:{color:"#6D869F"}},plotOptions:{line:{allowPointSelect:false,showCheckbox:false,animation:{duration:1000},events:{},lineWidth:2,shadow:true,marker:{enabled:true,lineWidth:0,radius:4,lineColor:"#FFFFFF",states:{hover:{},select:{fillColor:"#FFFFFF",lineColor:"#000000",lineWidth:2}}},point:{events:{}},dataLabels:merge(defaultLabelOptions,{enabled:false,y:-6,formatter:function(){return this.y
 }}),showInLegend:true,states:{hover:{marker:{}},select:{marker:{}}},stickyTracking:true}},labels:{style:{position:ABSOLUTE,color:"#3E576F"}},legend:{enabled:true,align:"center",layout:"horizontal",labelFormatter:function(){return this.name
-},borderWidth:1,borderColor:"#909090",borderRadius:5,shadow:false,style:{padding:"5px"},itemStyle:{cursor:"pointer",color:"#3E576F"},itemHoverStyle:{cursor:"pointer",color:"#000000"},itemHiddenStyle:{color:"#C0C0C0"},itemCheckboxStyle:{position:ABSOLUTE,width:"13px",height:"13px"},symbolWidth:16,symbolPadding:5,verticalAlign:"bottom",x:0,y:0},loading:{hideDuration:100,labelStyle:{fontWeight:"bold",position:RELATIVE,top:"1em"},showDuration:100,style:{position:ABSOLUTE,backgroundColor:"white",opacity:0.5,textAlign:"center"}},tooltip:{enabled:true,backgroundColor:"rgba(255, 255, 255, .85)",borderWidth:2,borderRadius:5,shadow:true,snap:hasTouch?25:10,style:{color:"#333333",fontSize:"12px",padding:"5px",whiteSpace:"nowrap"}},toolbar:{itemStyle:{color:"#4572A7",cursor:"pointer"}},credits:{enabled:false,text:"Highcharts.com",href:"http://www.highcharts.com",position:{align:"right",x:-10,verticalAlign:"bottom",y:-5},style:{cursor:"pointer",color:"#909090",fontSize:"10px"}}};
+},borderWidth:1,borderColor:"#909090",borderRadius:5,shadow:false,style:{padding:"5px"},itemStyle:{cursor:"pointer",color:"#3E576F"},itemHoverStyle:{cursor:"pointer",color:"#000000"},itemHiddenStyle:{color:"#C0C0C0"},itemCheckboxStyle:{position:ABSOLUTE,width:"13px",height:"13px"},symbolWidth:16,symbolPadding:5,verticalAlign:"bottom",x:0,y:0},loading:{hideDuration:100,labelStyle:{fontWeight:"bold",position:RELATIVE,top:"1em"},showDuration:100,style:{position:ABSOLUTE,backgroundColor:"white",opacity:0.5,textAlign:"center"}},tooltip:{enabled:true,backgroundColor:"rgba(255, 255, 255, .85)",borderWidth:2,borderRadius:5,shadow:true,snap:hasTouch?25:10,style:{color:"#333333",fontSize:"12px",padding:"5px",whiteSpace:"nowrap"}},toolbar:{itemStyle:{color:"#4572A7",cursor:"pointer"}},credits:{enabled:true,text:"Highcharts.com",href:"http://www.highcharts.com",position:{align:"right",x:-10,verticalAlign:"bottom",y:-5},style:{cursor:"pointer",color:"#909090",fontSize:"10px"}}};
 var defaultXAxisOptions={dateTimeLabelFormats:{second:"%H:%M:%S",minute:"%H:%M",hour:"%H:%M",day:"%e. %b",week:"%e. %b",month:"%b '%y",year:"%Y"},endOnTick:false,gridLineColor:"#C0C0C0",labels:defaultLabelOptions,lineColor:"#C0D0E0",lineWidth:1,max:null,min:null,minPadding:0.01,maxPadding:0.01,minorGridLineColor:"#E0E0E0",minorGridLineWidth:1,minorTickColor:"#A0A0A0",minorTickLength:2,minorTickPosition:"outside",startOfWeek:1,startOnTick:false,tickColor:"#C0D0E0",tickLength:5,tickmarkPlacement:"between",tickPixelInterval:100,tickPosition:"outside",tickWidth:1,title:{align:"middle",style:{color:"#6D869F",fontWeight:"bold"}},type:"linear"},defaultYAxisOptions=merge(defaultXAxisOptions,{endOnTick:true,gridLineWidth:1,tickPixelInterval:72,showLastLabel:true,labels:{align:"right",x:-8,y:3},lineWidth:0,maxPadding:0.05,minPadding:0.05,startOnTick:true,tickWidth:0,title:{rotation:270,text:"Y-values"},stackLabels:{enabled:false,formatter:function(){return this.total
 },style:defaultLabelOptions.style}}),defaultLeftAxisOptions={labels:{align:"right",x:-8,y:null},title:{rotation:270}},defaultRightAxisOptions={labels:{align:"left",x:8,y:null},title:{rotation:90}},defaultBottomAxisOptions={labels:{align:"center",x:0,y:14},title:{rotation:0}},defaultTopAxisOptions=merge(defaultBottomAxisOptions,{labels:{y:-5}});
 var defaultPlotOptions=defaultOptions.plotOptions,defaultSeriesOptions=defaultPlotOptions.line;
@@ -383,7 +380,9 @@ return this
 }}}parentNode.appendChild(element);
 this.added=true;
 return this
-},destroy:function(){var wrapper=this,element=wrapper.element||{},shadows=wrapper.shadows,parentNode=element.parentNode,key,i;
+},safeRemoveChild:function(element){var parentNode=element.parentNode;
+if(parentNode){parentNode.removeChild(element)
+}},destroy:function(){var wrapper=this,element=wrapper.element||{},shadows=wrapper.shadows,key,i;
 element.onclick=element.onmouseout=element.onmouseover=element.onmousemove=null;
 stop(wrapper);
 if(wrapper.clipPath){wrapper.clipPath=wrapper.clipPath.destroy()
@@ -391,10 +390,9 @@ if(wrapper.clipPath){wrapper.clipPath=wrapper.clipPath.destroy()
 i<wrapper.stops.length;
 i++){wrapper.stops[i]=wrapper.stops[i].destroy()
 }wrapper.stops=null
-}if(parentNode){parentNode.removeChild(element)
-}if(shadows){each(shadows,function(shadow){parentNode=shadow.parentNode;
-if(parentNode){parentNode.removeChild(shadow)
-}})
+}wrapper.safeRemoveChild(element);
+if(shadows){each(shadows,function(shadow){wrapper.safeRemoveChild(shadow)
+})
 }erase(wrapper.renderer.alignedObjects,wrapper);
 for(key in wrapper){delete wrapper[key]
 }return null
@@ -662,7 +660,9 @@ wrapper.updateTransform()
 }wrapper.styles=extend(wrapper.styles,styles);
 css(wrapper.element,styles);
 return wrapper
-},destroy:function(){var wrapper=this;
+},safeRemoveChild:function(element){var parentNode=element.parentNode;
+if(parentNode){discardElement(element)
+}},destroy:function(){var wrapper=this;
 if(wrapper.destroyClip){wrapper.destroyClip()
 }return SVGElement.prototype.destroy.apply(wrapper)
 },empty:function(){var element=this.element,childNodes=element.childNodes,i=childNodes.length,node;
@@ -1717,12 +1717,12 @@ while(i--){series[i]=series[i].destroy()
 }each(["title","subtitle","seriesGroup","clipRect","credits","tracker"],function(name){var prop=chart[name];
 if(prop){chart[name]=prop.destroy()
 }});
-each([chartBackground,legend,tooltip,renderer,tracker],function(obj){if(obj&&obj.destroy){obj.destroy()
+each([chartBackground,plotBorder,plotBackground,legend,tooltip,renderer,tracker],function(obj){if(obj&&obj.destroy){obj.destroy()
 }});
-chartBackground=legend=tooltip=renderer=tracker=null;
+chartBackground=plotBorder=plotBackground=legend=tooltip=renderer=tracker=null;
 if(container){container.innerHTML="";
 removeEvent(container);
-if(parentNode){parentNode.removeChild(container)
+if(parentNode){discardElement(container)
 }container=null
 }clearInterval(tooltipInterval);
 for(i in chart){delete chart[i]
@@ -2396,5 +2396,5 @@ connector.attr("visibility",visibility)
 }else{point.connector=connector=series.chart.renderer.path(connectorPath).attr({"stroke-width":connectorWidth,stroke:options.connectorColor||point.color||"#606060",visibility:visibility,zIndex:3}).translate(chart.plotLeft,chart.plotTop).add()
 }}}}},drawTracker:ColumnSeries.prototype.drawTracker,getSymbol:function(){}});
 seriesTypes.pie=PieSeries;
-win.Highcharts={Chart:Chart,dateFormat:dateFormat,pathAnim:pathAnim,getOptions:getOptions,hasRtlBug:hasRtlBug,numberFormat:numberFormat,Point:Point,Color:Color,Renderer:Renderer,seriesTypes:seriesTypes,setOptions:setOptions,Series:Series,addEvent:addEvent,createElement:createElement,discardElement:discardElement,css:css,each:each,extend:extend,map:map,merge:merge,pick:pick,extendClass:extendClass,product:"Highcharts",version:"2.1.7"}
+win.Highcharts={Chart:Chart,dateFormat:dateFormat,pathAnim:pathAnim,getOptions:getOptions,hasRtlBug:hasRtlBug,numberFormat:numberFormat,Point:Point,Color:Color,Renderer:Renderer,seriesTypes:seriesTypes,setOptions:setOptions,Series:Series,addEvent:addEvent,removeEvent:removeEvent,createElement:createElement,discardElement:discardElement,css:css,each:each,extend:extend,map:map,merge:merge,pick:pick,extendClass:extendClass,product:"Highcharts",version:"2.1.9"}
 }());

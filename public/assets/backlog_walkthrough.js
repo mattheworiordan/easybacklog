@@ -1,6 +1,6 @@
 var guiders=(function($){var guiders={};
 guiders.version="1.2.0";
-guiders._defaultSettings={attachTo:null,buttons:[{name:"Close"}],buttonCustomHTML:"",classString:null,description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",highlight:null,isHashable:true,offset:{top:null,left:null},onShow:null,overlay:false,position:0,title:"Sample title goes here",width:400,xButton:false};
+guiders._defaultSettings={attachTo:null,buttons:[{name:"Next"}],buttonCustomHTML:"",classString:null,description:"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",highlight:null,isHashable:true,offset:{top:null,left:null},onShow:null,onHide:null,overlay:false,position:0,title:"Sample title goes here",width:400,xButton:true};
 guiders._htmlSkeleton=["<div class='guider'>","  <div class='guider_content'>","    <h1 class='guider_title'></h1>","    <div class='guider_close'></div>","    <p class='guider_description'></p>","    <div class='guider_buttons'>","    </div>","  </div>","  <div class='guider_arrow'>","  </div>","</div>"].join("");
 guiders._arrowSize=42;
 guiders._closeButtonTitle="Close";
@@ -18,7 +18,7 @@ i--){var thisButton=myGuider.buttons[i];
 var thisButtonElem=$("<a></a>",{"class":"guider_button","text":thisButton.name});
 if(typeof thisButton.classString!=="undefined"&&thisButton.classString!==null){thisButtonElem.addClass(thisButton.classString)
 }guiderButtonsContainer.append(thisButtonElem);
-if(thisButton.onclick){thisButtonElem.bind("click",thisButton.onclick)
+if(thisButton.onclick){thisButtonElem.bind("click",myGuider,thisButton.onclick)
 }else{if(!thisButton.onclick&&thisButton.name.toLowerCase()===guiders._closeButtonTitle.toLowerCase()){thisButtonElem.bind("click",function(){guiders.hideAll()
 })
 }else{if(!thisButton.onclick&&thisButton.name.toLowerCase()===guiders._nextButtonTitle.toLowerCase()){thisButtonElem.bind("click",function(){guiders.next()
@@ -30,8 +30,7 @@ myGuider.elem.find(".guider_buttons").append(myCustomHTML)
 guiders._addXButton=function(myGuider){var xButtonContainer=myGuider.elem.find(".guider_close");
 var xButton=$("<div></div>",{"class":"x_button","role":"button"});
 xButtonContainer.append(xButton);
-xButton.click(function(){guiders.hideAll();
-$(document).trigger("closeGuiders")
+xButton.click(function(){guiders.hideAll()
 })
 };
 guiders._attach=function(myGuider){if(myGuider===null){return
@@ -92,7 +91,7 @@ if(typeof currentGuider==="undefined"){return
 }var nextGuiderId=currentGuider.next||null;
 if(nextGuiderId!==null&&nextGuiderId!==""){var myGuider=guiders._guiderById(nextGuiderId);
 var omitHidingOverlay=myGuider.overlay?true:false;
-guiders.hideAll(omitHidingOverlay);
+guiders.hideAll(omitHidingOverlay,true);
 if(currentGuider.highlight){guiders._dehighlightElement(currentGuider.highlight)
 }guiders.show(nextGuiderId)
 }};
@@ -119,7 +118,11 @@ guiders._lastCreatedGuiderID=myGuider.id;
 if(myGuider.isHashable){guiders._showIfHashed(myGuider)
 }return guiders
 };
-guiders.hideAll=function(omitHidingOverlay){$(".guider").fadeOut("fast");
+guiders.hideAll=function(omitHidingOverlay,next){if(typeof next==="undefined"){next=false
+}$(".guider:visible").each(function(index,elem){var myGuider=guiders._guiderById($(elem).attr("id"));
+if(myGuider.onHide){myGuider.onHide(myGuider,next)
+}});
+$(".guider").fadeOut("fast");
 if(typeof omitHidingOverlay!=="undefined"&&omitHidingOverlay===true){}else{guiders._hideOverlay()
 }return guiders
 };
@@ -127,9 +130,9 @@ guiders.show=function(id){if(!id&&guiders._lastCreatedGuiderID){id=guiders._last
 }var myGuider=guiders._guiderById(id);
 if(myGuider.overlay){guiders._showOverlay();
 if(myGuider.highlight){guiders._highlightElement(myGuider.highlight)
-}}guiders._attach(myGuider);
-if(myGuider.onShow){myGuider.onShow(myGuider)
-}myGuider.elem.fadeIn("fast");
+}}if(myGuider.onShow){myGuider.onShow(myGuider)
+}guiders._attach(myGuider);
+myGuider.elem.fadeIn("fast");
 var windowHeight=$(window).height();
 var scrollHeight=$(window).scrollTop();
 var guiderOffset=myGuider.elem.offset();
@@ -140,28 +143,43 @@ return guiders
 };
 return guiders
 }).call(this,jQuery);
-function setupGuiders(){var nextFn=function(){guiders.next()
-},codeBlur=false;
-$("li.theme:first .theme-data .name .data").bind("click.guiders",nextFn);
-$("li.theme:first .theme-data .code .data").bind("click.guiders",nextFn);
-$("li.theme:first .theme-data .code .data input").live("blur",function(){if(!codeBlur){codeBlur=true;
-guiders.next();
-$(this).die("blur")
-}});
-$("li.theme:first li.actions a.new-story").bind("focus.guiders",nextFn);
-$(document).bind("closeGuiders",function(){tearDownGuiders()
-})
-}function tearDownGuiders(){$("*").unbind(".guiders");
-$("li.theme:first .theme-data .code .data input").die("blur");
-$(document).unbind("closeGuiders")
-}guiders.createGuider({buttons:[{name:"Close"},{name:"Next",onclick:function(){setupGuiders();
-guiders.next()
-}}],title:"Example backlog walk through",description:"Let us quickly walk you through some of the key features of easyBacklog.  Click next to proceed or close if you don't want to view the walk through.",id:"first",next:"themes",overlay:true,xButton:true});
-guiders.createGuider({buttons:[],title:"Themes",description:"All stories are categorised into themes.  Each theme is automatically assigned a theme code (below) which is used to prefix each story's ID within that theme.<br><br><b>Click on the theme field</b> to the left to edit it now.",offset:{left:-20,top:0},id:"themes",next:"themes.code",attachTo:"li.theme:first .theme-data .name .data",position:3,xButton:true});
-guiders.createGuider({buttons:[],title:"Fields are editable",description:"As you have seen, fields become immediately editable when you click on them.<br><br>Now <b>click on the field '"+$("li.theme:first .theme-data .code .data").text()+"' to the right of the text 'Code:'</b> to edit the theme code",id:"themes.code",next:"themes.code.edit",attachTo:"li.theme:first .theme-data .code .data",position:3,xButton:true});
-guiders.createGuider({buttons:[],title:"Theme code",description:"Now <b>enter any 3 letter code into this field, press Enter or Tab</b>, and watch how the code changes cascade down to the stories within this theme.",id:"themes.code.edit",next:"story.unique_id",attachTo:"li.theme:first .theme-data .code .data",offset:{left:20,top:0},position:3,xButton:true});
-guiders.createGuider({buttons:[],title:"Keyboard navigation",description:"Now try pressing tab &amp; shift tab to navigate forwards and backwards within the story.  <br/><br/><b>Keep tabbing forwards until you stop on the 'Add story' button.</b>",id:"story.unique_id",next:"story.create",attachTo:"li.theme:first li.story:not(.locked):first .unique-id .data",position:12,width:300,xButton:true});
-guiders.createGuider({buttons:[{name:"Next"}],title:"Adding story",description:"To add a story at any point to a theme you simply press the 'Add story' button associated with each theme.",id:"story.create",next:"backlog_tab",attachTo:"li.theme:first li.actions a.new-story",position:12,width:300,xButton:true,overlay:true});
-guiders.createGuider({buttons:[{name:"Next"}],title:"All stories are in your backlog",description:"Your backlog of user stories is always accessible using this backlog tab",id:"backlog_tab",next:"stats_tab",attachTo:"#tab-sprint-Backlog",position:3,xButton:true});
-if($("#backlog-container").is(":visible")){guiders.show("first")
+$(function(){var nextFn=function(){guiders.next()
 };
+if(!$("#backlog-container").is(":visible")){return
+}guiders.createGuider({buttons:[{name:"Close"},{name:"Next"}],title:"easyBacklog walk through",description:"In <b>less than 3 minutes</b> we will walk you through some of the key features of easyBacklog.  <br/><br/>"+"<b>Click next (highly recommended for new users)</b> to proceed or close if you don't want to view the walk through.",id:"first",next:"themes",overlay:true,onHide:function(){$(".filter-container input#filter_completed").attr("checked",false).change()
+}});
+guiders.createGuider({buttons:[],title:"Themes",description:"All stories are categorised into themes.  Each theme is automatically assigned a theme code (shown below as '"+htmlEncode($("li.theme:first .theme-data .code .data").text())+"') which is used to prefix each story's ID within that theme."+"<br><br><b>Click on the theme field '"+htmlEncode($("li.theme:first .theme-data .name .data").text())+"'</b> to the left to edit it now.",offset:{left:-20,top:0},id:"themes",next:"themes.code",attachTo:"li.theme:first .theme-data .name .data",position:3,onShow:function(){$("li.theme:first .theme-data .name .data").bind("click.guiders",nextFn)
+},onHide:function(){$("*").unbind(".guiders")
+}});
+guiders.createGuider({buttons:[],title:"Fields are editable",description:"The theme name field is now editable as you have clicked on it - clicking on theme or story fields allows you to edit theme inline.<br><br>Now <b>click on the field '"+$("li.theme:first .theme-data .code .data").text()+"' to the right of the text 'Code:'</b> to edit the theme code",id:"themes.code",next:"themes.code.edit",attachTo:"li.theme:first .theme-data .code .data",position:3,onShow:function(){$("li.theme:first .theme-data .code .data").bind("click.guiders",nextFn)
+},onHide:function(){$("*").unbind(".guiders")
+}});
+guiders.createGuider({buttons:[],title:"Theme code",description:"Now <b>change this field to any 3 letters or digits  and press Enter or Tab</b>, and watch how the code changes cascade down to the stories within this theme.",id:"themes.code.edit",next:"story.unique_id",attachTo:"li.theme:first .theme-data .code .data",offset:{left:20,top:0},position:3,onShow:function(){$("li.theme:first .theme-data .code .data input").live("blur",nextFn)
+},onHide:function(){$("li.theme:first .theme-data .code .data input").die("blur")
+}});
+guiders.createGuider({title:"Keyboard navigation",description:"Now try pressing Tab &amp; Shift-Tab to navigate forwards and backwards within the story.  <br/>"+"If you've mistakenly lost focus, click on a field in this story.<br/><br/><b>Keep tabbing forwards until you stop on the 'Add story' button.</b>",id:"story.unique_id",next:"story.create",attachTo:"li.theme:first li.story:not(.locked):first .unique-id .data",position:_.include($("li.theme:first li.story:lt(2)"),$("li.theme:first li.story:not(.locked):first")[0])?6:12,onShow:function(){$("li.theme:first li.actions a.new-story").bind("focus.guiders",nextFn)
+},onHide:function(){$("*").unbind(".guiders")
+},width:300});
+guiders.createGuider({title:"Adding story",description:"To add a story at any point to a theme you simply press the 'Add story' button associated with each theme.",id:"story.create",next:"story.tools",attachTo:"li.theme:first li.actions a.new-story",position:12,width:300,overlay:true});
+guiders.createGuider({title:"Story tools",description:"Each story has a set of tools you can click on to do one of the following<ul><li>Assign a colour to a story</li><li>Delete a story</li><li>Duplicate a story</li><li>Move a story</li></ul>Note: Story tools are only visible on editable stories (ones that are not marked as Done).",id:"story.tools",next:"story.drag",attachTo:"li.theme:first li.story:not(.locked):first .story-actions",position:3,overlay:true,offset:{left:-15,top:0}});
+guiders.createGuider({title:"Reordering stories",description:"Stories can be re-prioritized and ordered by simply dragging them up or down, or clicking on the move tool.<br><br><b>Try dragging this story up now to reorder it</b>",id:"story.drag",next:"backlog.total",attachTo:"li.theme:first li.story:last",offset:{top:40,left:0},position:12,onShow:function(){$("li.theme:first li.story:last").bind("mousedown.guiders",function(){$(this).unbind("mousedown.guiders");
+guiders.hideAll()
+}).bind("mouseup.guiders",function(){guiders.show("backlog.total");
+$(this).unbind("mouseup.guiders")
+})
+}});
+guiders.createGuider({title:"Backlog totals",description:"The total points within your backlog is shown here.  If you are using cost and day estimates, then the total estimated man days and cost based on your day rate will be shown.",id:"backlog.total",next:"backlog.export",attachTo:"#backlog-data-area .backlog-stats",position:9});
+guiders.createGuider({title:"Exporting and Printing",description:"You can <b>Export</b> your entire backlog into Microsoft Excel format.<br><br>And you can <b>Print</b> double-sided story cards that can be placed on your scrum boards.",id:"backlog.export",next:"backlog.filter",attachTo:"#backlog-data-area .actions a:contains(Export)",position:6,width:330});
+guiders.createGuider({title:"Filtering Done Stories",description:"When stories are assigned to sprints, each story's status is updated until it is marked as Done.  When viewing and editing the backlog, it is often useful to filter out all Done stories so that you can see which stories are remaining."+"<br><br><b>Now roll over 'Filter' above, and click on 'Hide completed stories in the backlog'</b>",id:"backlog.filter",next:"backlog.filtered",attachTo:"#backlog-data-area .actions a:contains(Filter)",position:6,width:330,offset:{top:20,left:0},onShow:function(){$(".filter-container input#filter_completed").attr("checked",false).change().bind("change.guiders",function(){nextFn()
+})
+},onHide:function(){$("*").unbind(".guiders")
+}});
+guiders.createGuider({title:"Filtered view",description:"As you can now see, all the stories that were previously marked as Done are no longer visible in the backlog.<br><br>"+"<b>Now click on the 'Remove filter' link above to remove the filter.</b>",id:"backlog.filtered",next:"backlog.tab",attachTo:"#backlog-container .filter-notifier:first",position:6,width:330,offset:{top:20,left:0},onShow:function(){$("#backlog-container .filter-notifier a").bind("click.guiders",function(){nextFn()
+})
+},onHide:function(){$("*").unbind(".guiders");
+$(".filter-container input#filter_completed").attr("checked",false).change()
+}});
+guiders.createGuider({title:"Backlog tab",description:"Your backlog of all your user stories is always accessible using this backlog tab.",id:"backlog.tab",next:"stats.tab",attachTo:"#tab-sprint-Backlog",position:3});
+guiders.createGuider({title:"Stats tab",description:"Your backlog of all your user stories is always accessible using this backlog tab.",id:"stats.tab",next:"sprint.tab",attachTo:"#tab-sprint-Stats",position:3});
+guiders.show("first")
+});
