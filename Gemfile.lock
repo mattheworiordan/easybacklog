@@ -78,6 +78,9 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 0.1.4)
+    capybara-screenshot (0.1.7)
+      capybara (>= 1.0)
+      cucumber (>= 1.0)
     childprocess (0.2.2)
       ffi (~> 1.0.6)
     chunky_png (1.2.5)
@@ -283,6 +286,7 @@ DEPENDENCIES
   autotest-rails
   awesome_print!
   capybara (~> 1.0)
+  capybara-screenshot
   capybara-webkit!
   compass
   compass-960-plugin

@@ -55,6 +55,7 @@ group :test, :cucumber do
   gem 'launchy', '>=2'
   gem 'pdf-reader'
   gem 'email_spec'
+  gem 'capybara-screenshot'
 end
 
 group :development do
