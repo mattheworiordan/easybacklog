@@ -5551,7 +5551,7 @@ return this.each(function(){initialize.call(this,opts)
 })
 }};
 initialize=function(options){var target=this,form,elem,targetProps={},showEditableField,editableFieldFactory,restoreTarget,saveChanges,addPlaceHolderIfEmpty,stripPlaceHolder;
-showEditableField=function(evt){var getBackgroundColor,positioningSpan,offsetBy,inputText,eventAlreadyProcessed=false;
+showEditableField=function(evt){var getBackgroundColor,positioningSpan,offsetBy,inputText,eventAlreadyProcessed=false,relayEvents,assignBinding;
 stripPlaceHolder();
 targetProps.style=$(target).attr("style");
 targetProps.text=multiLineHtmlDecode($(target).html());
@@ -5573,7 +5573,7 @@ positioningSpan=$("<span>&nbsp;</span>");
 $(target).prepend(positioningSpan);
 form.css("position","absolute").css("margin","0").css("padding","0").css("top",options.offsetY+$(target).position().top+"px").css("left",options.offsetY+$(positioningSpan).position().left+"px").css("z-index",options.zIndex).append(elem);
 offsetBy=$(positioningSpan).position().left-$(target).position().left;
-elem.css("padding",0).css("margin",0).css("width",($(target).outerWidth()-options.assumedBorderWidth-offsetBy+(options.widen?options.widen:0))+"px");
+elem.css("padding",0).css("margin",0).css("width",($(target).outerWidth()-options.assumedBorderWidth-offsetBy+(options.widen||0))+"px");
 positioningSpan.remove();
 elem.val(inputText);
 $(target).css("height",$(target).height()+"px").text("");
@@ -5595,11 +5595,18 @@ $(elem).keydown(function(event){if(!eventAlreadyProcessed){if(event.which===13){
 }else{eventAlreadyProcessed=true;
 saveChanges()
 }}else{if(event.which===27){eventAlreadyProcessed=true;
-restoreTarget()
+setTimeout(restoreTarget,1)
 }else{if(event.which===9){eventAlreadyProcessed=true;
-saveChanges()
+setTimeout(saveChanges,1)
 }}}}if(!eventAlreadyProcessed&&(options.type==="textarea")&&(options.autoResize)){if($(elem).height()>targetProps.inputHeight){$(target).css("height",(targetProps.height+$(elem).height()-targetProps.inputHeight+10)+"px")
-}}})
+}}});
+relayEvents={"keydown":"onKeyDown","keyup":"onKeyUp","keypress":"onKeyPress"};
+assignBinding=function(callback,evt){$(elem).bind(evt,function(event){callback.call(this,event)
+})
+};
+$.each(relayEvents,function(jqueryEvent,callBackEventId){var callback=options[callBackEventId];
+if($.isFunction(callback)){assignBinding(callback,jqueryEvent)
+}})
 };
 editableFieldFactory=function(type,target){var elem;
 if(type==="textarea"){elem=$('<textarea name="value"></textarea>');
@@ -5612,7 +5619,7 @@ elem.autocomplete({source:($.isArray(options.autoComplete)?options.autoComplete:
 }}return elem
 };
 restoreTarget=function(newVal){var val=typeof newVal!=="undefined"?newVal:targetProps.text,encodedVal=multiLineHtmlEncode(val);
-setTimeout(function(){$(target).attr("style",targetProps.style||"").html(encodedVal).append(form);
+$(target).attr("style",targetProps.style||"").html(encodedVal).append(form);
 $(target).data("editable-active",false);
 setTimeout(function(){form.hide().remove();
 $(target).find("form.editable-lite-form").remove();
@@ -5620,7 +5627,6 @@ addPlaceHolderIfEmpty()
 },20);
 if((typeof newVal==="undefined")&&(typeof options.noChange==="function")){options.noChange.call(target,val)
 }$("html").unbind("click.editable")
-},1)
 };
 saveChanges=function(){var returnVal;
 if(elem.val()!==targetProps.text){returnVal=options.changeCallback.call(target,elem.val(),target);

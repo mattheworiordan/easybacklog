@@ -317,8 +317,7 @@ this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html(Str
 this.parentView=options.parentView;
 _.bindAll(this,"navigateEvent")
 },render:function(){$(this.el).html(JST["acceptance_criteria/show"]({model:this.model}));
-if(this.model.IsEditable()){this.makeFieldsEditable();
-this.$(".data input, .data textarea").live("keydown",this.navigateEvent)
+if(this.model.IsEditable()){this.makeFieldsEditable()
 }else{$(this.el).find(">div.data").click(function(){new App.Views.Warning({message:"You cannot edit a story that is marked as done"})
 })
 }return(this)
@@ -342,7 +341,7 @@ return ac_view.contentUpdated(newVal,this)
 var beforeChangeFunc=function(value){unUrlify(this);
 return ac_view.beforeChange($(this).text(),this)
 };
-var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,noChange:contentUpdatedFunc,type:"textarea",autoResize:true,displayDelay:40});
+var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,noChange:contentUpdatedFunc,type:"textarea",autoResize:true,displayDelay:40,onKeyDown:ac_view.navigateEvent});
 $(this.el).find(">div.data").editable(contentUpdatedFunc,defaultOptions)
 },navigateEvent:function(event){if(_.include([9,13,27],event.keyCode)&&(!event.ctrlKey)){$(event.target).blur();
 try{event.preventDefault()
@@ -1065,8 +1064,6 @@ return this
 },configureView:function(){var view=new App.Views.AcceptanceCriteria.Index({collection:this.model.AcceptanceCriteria()}),show_view=this,tabElems=[".user-story .data",".unique-id .data",".comments .data",".score-50 .data",".score-90 .data",".score .data"];
 this.$(".acceptance-criteria").html(view.render().el);
 if(this.model.IsEditable()){this.makeFieldsEditable();
-_.each(tabElems,function(elem){show_view.$(elem+" textarea, "+elem+" input").live("keydown",show_view.navigateEvent)
-});
 this.$(".move-story a").mousedown(function(event){App.Views.Stories.Index.stopMoveEvent=false
 }).click(function(event){event.preventDefault();
 if(!App.Views.Stories.Index.stopMoveEvent){show_view.moveToThemeDialog()
@@ -1089,7 +1086,7 @@ this.configureView()
 },statusChangeClick:function(event){App.Views.Helpers.statusChangeClick.apply(this,arguments)
 },makeFieldsEditable:function(){var show_view=this,contentUpdatedFunc=function(value){return show_view.contentUpdated(value,this)
 },beforeChangeFunc=function(value){return show_view.beforeChange(value,this)
-},defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
+},defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,onKeyDown:show_view.navigateEvent});
 var uniqueIdContentUpdatedFunc=function(value){return show_view.model.Theme().get("code")+contentUpdatedFunc.call(this,value)
 },uniqueIdBeforeChangeFunc=function(value){return beforeChangeFunc.call(this,value.substring(3))
 },scoreContentUpdatedFunc=function(value){return contentUpdatedFunc.call(this,niceNum(value))
@@ -1269,10 +1266,7 @@ _.bindAll(this,"navigateEvent","reNumberStoriesAction")
 var view=new App.Views.Stories.Index({collection:this.model.Stories(),use5090estimates:this.use5090estimates});
 this.$(">.stories").prepend(view.render().el);
 this.updateStatistics();
-if(this.model.IsEditable()){this.makeFieldsEditable();
-var self=this;
-_.each([".name",".code"],function(elem){self.$(".theme-data "+elem+">.data input").live("keydown",self.navigateEvent)
-})
+if(this.model.IsEditable()){this.makeFieldsEditable()
 }else{this.$("ul.stories>li.actions").remove();
 this.$(".re-number-stories a").remove();
 this.$(".delete-theme>a").remove()
@@ -1286,7 +1280,7 @@ if(fieldId=="code"){show_view.model.Stories().each(function(story,index){story.t
 };
 var beforeChangeFunc=function(value,settings){return show_view.beforeChange(value,settings,this)
 };
-var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc});
+var defaultOptions=_.extend(_.clone(this.defaultEditableOptions),{data:beforeChangeFunc,onKeyDown:show_view.navigateEvent});
 this.$(".theme-data .name div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{maxLength:100}));
 this.$(".theme-data .code div.data").editable(contentUpdatedFunc,_.extend(_.clone(defaultOptions),{widen:8,maxLength:3}))
 },navigateEvent:function(event){var storyElem,thisThemeAddStory,target,dataField,prev;
