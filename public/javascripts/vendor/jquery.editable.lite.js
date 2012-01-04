@@ -231,26 +231,29 @@
       var val = typeof newVal !== 'undefined' ? newVal : targetProps.text,
           encodedVal = multiLineHtmlEncode(val);
 
-      // save value to target HTML element, but keep form visible so append to the HTML
-      $(target).attr('style', targetProps.style || '').html(encodedVal).append(form);
-      // restore height as it may be changed as textarea expands vertically
-      // if ((options.type === 'textarea') && (options.autoResize)) { $(target).css('height', ''); }
-      $(target).data('editable-active', false);
-
-      // pause before we remove the element as other events may need to access this element before it disappears
+      // wait a split second to ensure all events propogate down to the form element in case other code has bound to the editable element
       setTimeout(function() {
-        form.hide().remove();
-        $(target).find('form.editable-lite-form').remove(); // odd bug where a blank form was appearing, had to manually remove any forms matching the class
-        addPlaceHolderIfEmpty();
-      }, 20);
+        // save value to target HTML element, but keep form visible so append to the HTML
+        $(target).attr('style', targetProps.style || '').html(encodedVal).append(form);
+        // restore height as it may be changed as textarea expands vertically
+        // if ((options.type === 'textarea') && (options.autoResize)) { $(target).css('height', ''); }
+        $(target).data('editable-active', false);
 
-      // if user wants a callback even if there was no change, then call this now
-      if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
-        options.noChange.call(target, val);
-      }
+        // pause before we remove the element as other events may need to access this element before it disappears
+        setTimeout(function() {
+          form.hide().remove();
+          $(target).find('form.editable-lite-form').remove(); // odd bug where a blank form was appearing, had to manually remove any forms matching the class
+          addPlaceHolderIfEmpty();
+        }, 20);
 
-      // remove catch all event to see if user clicked outside this elem
-      $('html').unbind('click.editable');
+        // if user wants a callback even if there was no change, then call this now
+        if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
+          options.noChange.call(target, val);
+        }
+
+        // remove catch all event to see if user clicked outside this elem
+        $('html').unbind('click.editable');
+      }, 1);
     };
 
     saveChanges = function() {
