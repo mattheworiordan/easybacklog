@@ -1019,7 +1019,7 @@ $(".color-picker").hide()
 orderChangedEvent();
 view.$("ul.stories").append(actionsElem);
 view.$(".move-story").addClass("vtip")
-},placeholder:"target-order-highlight",axis:"y"}).find(".move-story").disableSelection();
+},placeholder:"target-order-highlight",axis:"y",items:"li.story"}).find(".move-story").disableSelection();
 this.$(".color-picker-icon a").click(function(event){$("#vtip").remove();
 $(event.target).mouseleave()
 })

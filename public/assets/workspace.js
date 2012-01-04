@@ -5612,7 +5612,7 @@ elem.autocomplete({source:($.isArray(options.autoComplete)?options.autoComplete:
 }}return elem
 };
 restoreTarget=function(newVal){var val=typeof newVal!=="undefined"?newVal:targetProps.text,encodedVal=multiLineHtmlEncode(val);
-$(target).attr("style",targetProps.style||"").html(encodedVal).append(form);
+setTimeout(function(){$(target).attr("style",targetProps.style||"").html(encodedVal).append(form);
 $(target).data("editable-active",false);
 setTimeout(function(){form.hide().remove();
 $(target).find("form.editable-lite-form").remove();
@@ -5620,6 +5620,7 @@ addPlaceHolderIfEmpty()
 },20);
 if((typeof newVal==="undefined")&&(typeof options.noChange==="function")){options.noChange.call(target,val)
 }$("html").unbind("click.editable")
+},1)
 };
 saveChanges=function(){var returnVal;
 if(elem.val()!==targetProps.text){returnVal=options.changeCallback.call(target,elem.val(),target);
