@@ -20,7 +20,7 @@ Feature: Backlog Stats
 
   @javascript
   Scenario: Stats are visible
-    Given a new example backlog is set up for the account "Acme"
+    Given an example backlog for testing is set up for the account "Acme"
       And I am on the backlog "Cucumber example backlog" page
     When I click on the "Stats backlog tab"
       And I wait 2 seconds

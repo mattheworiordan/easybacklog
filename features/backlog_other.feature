@@ -151,7 +151,7 @@ Feature: Backlog Other Functionality
 
   @javascript
   Scenario: Print shows sprints and themes
-    Given a new example backlog is set up for the account "Acme"
+    Given an example backlog for testing is set up for the account "Acme"
       And I am on the backlog "Cucumber example backlog" page
     When I follow "Print"
     Then the "print story cards dialog" should be visible
@@ -161,7 +161,7 @@ Feature: Backlog Other Functionality
 
   @javascript
   Scenario: Snapshot settings for sprints must work and should not be editable
-    Given a new example backlog is set up for the account "Acme"
+    Given an example backlog for testing is set up for the account "Acme"
       And I am on the backlog "Cucumber example backlog" page
     When I click on the "snapshots menu"
       And I select "Sprint 1" from "Select a snapshot to view:"

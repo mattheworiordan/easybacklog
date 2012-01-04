@@ -71,7 +71,7 @@ Given /^a backlog named "([^"]*)" assigned to company "([^"]*)" for account "([^
   backlog = Factory.create(:backlog, :account => account, :name => backlog_name, :company => company)
 end
 
-Given /^a new example backlog is set up for the account "([^"]*)"$/ do |account_name|
+Given /^an example backlog for testing is set up for the account "([^"]*)"$/ do |account_name|
   account = Account.find_by_name(account_name)
   raise "Account #{account_name} does not exist." if account.blank?
   user = account.users.first
