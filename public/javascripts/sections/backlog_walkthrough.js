@@ -79,7 +79,12 @@ $(function() {
     next: 'story.create',
     attachTo: "li.theme:first li.story:not(.locked):first .unique-id .data",
     position: _.include($("li.theme:first li.story:lt(2)"), $("li.theme:first li.story:not(.locked):first")[0]) ? 6 : 12, // show bubble on top if lower down, or beneath if at the top
-    onShow: function() { $('li.theme:first li.story:not(.locked) .unique-id .data').click(); $('li.theme:first li.actions a.new-story').bind('focus.guiders', nextFn); },
+    onShow: function() {
+      _.delay(function() {
+        $('li.theme:first li.story:not(.locked) .unique-id .data').click();
+      }, 100);
+      $('li.theme:first li.actions a.new-story').bind('focus.guiders', nextFn);
+    },
     onHide: function() { unbind(); },
     width: 300
   });

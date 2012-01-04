@@ -71,11 +71,12 @@ Given /^a backlog named "([^"]*)" assigned to company "([^"]*)" for account "([^
   backlog = Factory.create(:backlog, :account => account, :name => backlog_name, :company => company)
 end
 
-Given /^an example backlog for testing is set up for the account "([^"]*)"$/ do |account_name|
+Given /^(an example backlog for testing|the example backlog) is set up for (?:the |)account "([^"]*)"$/ do |which_example, account_name|
   account = Account.find_by_name(account_name)
   raise "Account #{account_name} does not exist." if account.blank?
   user = account.users.first
-  example_data = XMLObject.new(Rails.root.join('db/samples/cucumber_example_backlog_with_sprints.xml'))
+  file = which_example =~ /an example backlog for testing/ ? 'cucumber_example_backlog_with_sprints' : 'new_account_backlog'
+  example_data = XMLObject.new(Rails.root.join("db/samples/#{file}.xml"))
   backlog_builder = Creators::BacklogCreator.new
   backlog_builder.create example_data, account, user
 end
@@ -222,8 +223,8 @@ When /^I drag story with as equal to "([^"]+)" (down|up) by (\d+) positions?$/ d
   page.evaluate_script(%{ $('ul.stories li.story:has(".user-story .as-a .data:contains(#{story_as})")').length }).should > 0
   page.execute_script %{
     $('li.story:has(".user-story .as-a .data:contains(#{story_as})")').
-      simulateDragSortable({ move: #{move_by}, handle: '.move-story a', listItem: '.story', placeHolder: '.target-order-highlight' });
-  }
+      simulateDragSortable({ move: #{move_by}, listItem: '.story', placeHolder: '.target-order-highlight' });
+  } # old drag used handle: '.move-story a'
   sleep 0.1
 end
 
@@ -392,4 +393,23 @@ When /^I change the scoring rule for this backlog to "([^"]+)"$/ do |scoring_rul
   step %{I follow "Settings"}
   step %{I choose "#{scoring_rule}"}
   step %{I press "Update backlog settings"}
+end
+
+##
+# Backlog guiders
+Then /^I should (|not )see (?:|the text )"([^"]+)" within the visible guider$/ do |negation, text|
+  page.evaluate_script(%{ $(".guider:visible:contains('#{text}')").length }).should == (negation == 'not ' ? 0 : 1)
+end
+
+Then /^I press the (close button|next button|cross) within the visible guider$/ do |button|
+  button_path = case button
+  when 'close button'
+    "a:contains('Close')"
+  when 'next button'
+    "a:contains('Next')"
+  when 'cross'
+    'div.x_button'
+  end
+  page.evaluate_script(%{ $(".guider:visible #{button_path}").length }).should > 0
+  page.execute_script %{ $(".guider:visible #{button_path}").click() }
 end

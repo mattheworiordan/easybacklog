@@ -68,13 +68,14 @@ Then /^"([^"]*)" should be an option for (?:the )?"([^"]+)"$/ do |value, field|
 end
 
 # not the same as press, as press relies on there being a button
-When /^(?:|I )click (?:|the element |on |on the )"([^"]+)"(?: within (?:|the )"([^"]+)")?$/ do |selector, scope|
+When /^(?:|I )(click|hover over) (?:|the element |on |on the |the )"([^"]+)"(?: within (?:|the )"([^"]+)")?$/ do |action, selector, scope|
+  action = (action == 'click' ? '.mousedown().click()' : '.mouseover()')
   selector = selector_to(selector)
   scope = scope.blank? ? '' : "#{selector_to(scope)} "
   page.execute_script "$(':focus').blur()"
   sleep 0.25
   page.evaluate_script("$('#{scope}#{selector.gsub(/'/,'"')}').length").should > 0
-  page.execute_script "$('#{scope}#{selector.gsub(/'/,'"')}').mousedown().click()"
+  page.execute_script "$('#{scope}#{selector.gsub(/'/,'"')}')#{action}"
 end
 
 When /^(?:|I )fill in "([^"]+)" using Javascript with "([^"]+)"$/ do |selector, value|

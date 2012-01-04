@@ -21,7 +21,7 @@
             <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
           </criteria>
         </story>
-        <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="00ff00" score="8.0">
+        <story unique_id="4" code="HOP4" as_a="investor" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="00ff00" score="8.0">
           <criteria>
             <criterion>Short about text to be displayed</criterion>
             <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>

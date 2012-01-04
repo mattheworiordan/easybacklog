@@ -47,6 +47,9 @@ module HtmlSelectorHelpers
     when /^snapshots menu$/
       '#backlog-data-area a#snapshot-menu'
 
+    when /^filter menu$/
+      '#backlog-data-area .actions .filter'
+
     when /^create new snapshot button$/
       'a#new-snapshot'
 
@@ -231,6 +234,11 @@ module HtmlSelectorHelpers
 
     when /^print story card dialog scope drop down$/
       '.ui-dialog #dialog-print select#print-scope'
+
+    ##
+    # Backlog guiders
+    when /^visible guider$/
+      '.guider:visible'
 
     ##
     # Beta sign up launch page
