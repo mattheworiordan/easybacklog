@@ -110,7 +110,7 @@ ul.your-backlog-list {
     -moz-border-radius: 10px;
     border-radius: 10px;
     input[type=submit] {
-      @include grey-button-override-style;
+      @include grey-button-style;
     }
     h2 {
       background-color: transparent;

@@ -174,14 +174,14 @@ section.content {
       @include button-style;
     }
     &.greyed {
-      @include grey-button-override-style;
+      @include grey-button-style;
     }
   }
   input[type=submit] {
     @include button-style;
     font-size: 100%;
     &.greyed {
-      @include grey-button-override-style;
+      @include grey-button-style;
     }
   }
   input[type=text], input[type=password] {
@@ -243,7 +243,7 @@ section.side-panel {
     margin-bottom: $ninesixty-vertical;
   }
   a.button {
-    @include grey-button-override-style;
+    @include grey-button-style;
   }
   h2 {
     clear: left;
