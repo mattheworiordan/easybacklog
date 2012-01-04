@@ -127,7 +127,6 @@ App.Views.AcceptanceCriteria = {
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
-        this.$('.data input, .data textarea').live('keydown', this.navigateEvent); // make all input and textarea fields respond to Tab/Enter
       } else {
         // make all editable fields show warning that item is not editable
         $(this.el).find('>div.data').click(function() {
@@ -183,7 +182,14 @@ App.Views.AcceptanceCriteria = {
         return ac_view.beforeChange($(this).text(), this);
       };
 
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc, noChange: contentUpdatedFunc, type: 'textarea', autoResize: true, displayDelay: 40 });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
+        data: beforeChangeFunc,
+        noChange: contentUpdatedFunc,
+        type: 'textarea',
+        autoResize: true,
+        displayDelay: 40,
+        onKeyDown: ac_view.navigateEvent // make all input and textarea fields respond to Tab/Enter
+      });
 
       $(this.el).find('>div.data').editable(contentUpdatedFunc, defaultOptions);
     },

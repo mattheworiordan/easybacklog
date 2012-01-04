@@ -33,6 +33,9 @@
  * - displayDelay: 50 // optional delay before displaying the text field, sometimes useful if GUI is changing just as user clicks on editable field
  * - zIndex: 10000 // zIndex for the input, defaults to a ridiculously high number
  * - widen: 5 // widens the editable field by an additional X pixels
+ * - onKeyDown: function(event) {} // callback for keydown event, event is JQuery event object
+ * - onKeyUp: function(event) {} // callback for keyup event, event is JQuery event object
+ * - onKeyPress: function(event) {} // callback for keypress event, event is JQuery event object
  *
  * Command usage example:
  *   $('div').editable(valueChangedCallback);
@@ -74,7 +77,8 @@
 
     showEditableField = function(evt) {
       var getBackgroundColor, positioningSpan, offsetBy, inputText,
-          eventAlreadyProcessed = false; // multiple keydown events are sometimes fired, ensure we only deal with the first valid one
+          eventAlreadyProcessed = false, // multiple keydown events are sometimes fired, ensure we only deal with the first valid one
+          relayEvents, assignBinding;
 
       stripPlaceHolder();
 
@@ -130,7 +134,7 @@
 
       // ensure input element has not additional padding inherited and set width
       elem.css('padding',0).css('margin',0)
-        .css('width', ($(target).outerWidth() - options.assumedBorderWidth - offsetBy + (options.widen ? options.widen : 0)) + 'px'); // less 4 pixels to allow for border
+        .css('width', ($(target).outerWidth() - options.assumedBorderWidth - offsetBy + (options.widen || 0)) + 'px'); // less 4 pixels to allow for border
 
       positioningSpan.remove();
 
@@ -185,10 +189,10 @@
             }
           } else if (event.which === 27) { // escape key
             eventAlreadyProcessed = true;
-            restoreTarget();
+            setTimeout(restoreTarget, 1); // wait for option keydown event callback to fire first before modifying the DOM
           } else if (event.which === 9) { // tab
             eventAlreadyProcessed = true;
-            saveChanges();
+            setTimeout(saveChanges, 1); // wait for option keydown event callback to fire first before modifying the DOM
           }
         }
         if (!eventAlreadyProcessed && (options.type === 'textarea') && (options.autoResize)) {
@@ -197,6 +201,24 @@
             // in Firefox the textarea is cropped to the parent element, so we need to expand the parent element to allow for the expanded textarea
             $(target).css('height', (targetProps.height + $(elem).height() - targetProps.inputHeight + 10) + 'px');
           }
+        }
+      });
+
+      // if on[Event] option is set, then issue a callback when that event is fired
+      relayEvents = {
+        'keydown': 'onKeyDown',
+        'keyup': 'onKeyUp',
+        'keypress': 'onKeyPress'
+      };
+      assignBinding = function(callback, evt) {
+        $(elem).bind(evt, function(event) {
+          callback.call(this, event);
+        });
+      };
+      $.each(relayEvents, function(jqueryEvent, callBackEventId) {
+        var callback = options[callBackEventId];
+        if ($.isFunction(callback)) {
+          assignBinding(callback, jqueryEvent);
         }
       });
     };
@@ -231,29 +253,26 @@
       var val = typeof newVal !== 'undefined' ? newVal : targetProps.text,
           encodedVal = multiLineHtmlEncode(val);
 
-      // wait a split second to ensure all events propogate down to the form element in case other code has bound to the editable element
+      // save value to target HTML element, but keep form visible so append to the HTML
+      $(target).attr('style', targetProps.style || '').html(encodedVal).append(form);
+      // restore height as it may be changed as textarea expands vertically
+      // if ((options.type === 'textarea') && (options.autoResize)) { $(target).css('height', ''); }
+      $(target).data('editable-active', false);
+
+      // pause before we remove the element as other events may need to access this element before it disappears
       setTimeout(function() {
-        // save value to target HTML element, but keep form visible so append to the HTML
-        $(target).attr('style', targetProps.style || '').html(encodedVal).append(form);
-        // restore height as it may be changed as textarea expands vertically
-        // if ((options.type === 'textarea') && (options.autoResize)) { $(target).css('height', ''); }
-        $(target).data('editable-active', false);
+        form.hide().remove();
+        $(target).find('form.editable-lite-form').remove(); // odd bug where a blank form was appearing, had to manually remove any forms matching the class
+        addPlaceHolderIfEmpty();
+      }, 20);
 
-        // pause before we remove the element as other events may need to access this element before it disappears
-        setTimeout(function() {
-          form.hide().remove();
-          $(target).find('form.editable-lite-form').remove(); // odd bug where a blank form was appearing, had to manually remove any forms matching the class
-          addPlaceHolderIfEmpty();
-        }, 20);
+      // if user wants a callback even if there was no change, then call this now
+      if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
+        options.noChange.call(target, val);
+      }
 
-        // if user wants a callback even if there was no change, then call this now
-        if ((typeof newVal === 'undefined') && (typeof options.noChange === 'function')) {
-          options.noChange.call(target, val);
-        }
-
-        // remove catch all event to see if user clicked outside this elem
-        $('html').unbind('click.editable');
-      }, 1);
+      // remove catch all event to see if user clicked outside this elem
+      $('html').unbind('click.editable');
     };
 
     saveChanges = function() {

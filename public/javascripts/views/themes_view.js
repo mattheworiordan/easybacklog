@@ -164,12 +164,6 @@ App.Views.Themes = {
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
-
-        var self = this;
-        _.each(['.name', '.code'], function(elem) {
-          self.$('.theme-data ' + elem + '>.data input')
-            .live('keydown', self.navigateEvent); // make all input and textarea fields respond to Tab/Enter
-        });
       } else {
         this.$('ul.stories>li.actions').remove();
         this.$('.re-number-stories a').remove();
@@ -191,7 +185,10 @@ App.Views.Themes = {
         return (newVal);
       };
       var beforeChangeFunc = function(value, settings) { return show_view.beforeChange(value, settings, this); };
-      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
+      var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
+        data: beforeChangeFunc,
+        onKeyDown: show_view.navigateEvent // make all input and textarea fields respond to Tab/Enter
+      });
 
       this.$('.theme-data .name div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 100 }) );
       this.$('.theme-data .code div.data').editable(contentUpdatedFunc, _.extend(_.clone(defaultOptions), { widen: 8, maxLength: 3 }) );

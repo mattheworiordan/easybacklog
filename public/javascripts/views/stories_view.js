@@ -175,11 +175,6 @@ App.Views.Stories = {
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
 
-        // make all input and textarea fields respond to Tab/Enter
-        _.each(tabElems, function(elem) {
-          show_view.$(elem + ' textarea, ' + elem + ' input').live('keydown', show_view.navigateEvent);
-        });
-
         this.$('.move-story a').mousedown(function(event) {
           App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
         }).click(function(event) {
@@ -249,7 +244,10 @@ App.Views.Stories = {
       var show_view = this,
           contentUpdatedFunc = function(value) { return show_view.contentUpdated(value, this); },
           beforeChangeFunc = function(value) { return show_view.beforeChange(value, this); },
-          defaultOptions = _.extend(_.clone(this.defaultEditableOptions), { data: beforeChangeFunc });
+          defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
+            data: beforeChangeFunc,
+            onKeyDown: show_view.navigateEvent // make all input and textarea fields respond to Tab/Enter
+          });
 
       // for unique ID, we need to remove the code before editing and insert back in after editing
       var uniqueIdContentUpdatedFunc = function(value) {
