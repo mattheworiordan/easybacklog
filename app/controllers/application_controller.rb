@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
 
   after_filter :log_last_page_viewed
   before_filter :test_env_mail_config if Rails.env.test? # set up ActionMailer host when running Cuke so links work
+  before_filter :ensure_last_sign_in_updated # last sign in date is not updated if user is automatically logged in
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
@@ -88,6 +89,15 @@ class ApplicationController < ActionController::Base
       unless is_admin?
         flash[:error] = 'You do not have permission to access the bunker'
         redirect_to root_path
+      end
+    end
+
+    # last sign in date is not updated if user is automatically logged in
+    # force login for the first impression of this session
+    def ensure_last_sign_in_updated
+      if user_signed_in? && session[:logged_signin]
+        sign_in(current_user, :force => true)
+        session[:logged_signin] = true
       end
     end
 end
