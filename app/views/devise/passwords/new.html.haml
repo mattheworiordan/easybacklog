@@ -2,7 +2,12 @@
   %h1 Forgot your password?
 
 = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
-  = devise_error_messages!
+  - unless resource.errors.empty?
+    .form_errors
+      Sorry, but we could not find that email address, did you enter it correctly?
+      %br
+      Please try again.
+
   %p
     = f.label :email
     %br/
