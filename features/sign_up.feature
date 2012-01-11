@@ -11,7 +11,7 @@ Feature: Sign Up
       And I am on the sign up page
     When I press "Sign up"
     Then I should see "You must enter an account name"
-      And there should be 6 "this field is required messages"
+      And there should be 4 "this field is required messages"
       And I should see "Please enter your full name"
     When I fill in "Sign Up Account Name" using Javascript with "Acme"
       And I press "Sign up"
@@ -19,8 +19,6 @@ Feature: Sign Up
     Then I should see "An account with this name is already set up"
     When I fill in "Account Name" with "Big co"
       And I select "British English" from "What is your preferred language setting?"
-      And I fill in "Default day rate" with "800"
-      And I fill in "Default velocity achieved per day" with "5"
       And I fill in "Full name" with "James"
       And I fill in "Sign Up Email" using Javascript with "john@acme.com"
       And I fill in "Password" with "123"

@@ -1,6 +1,9 @@
 = f.label :name, "Account Name"
 .input-row
   = f.text_field :name
+- # We are editing account details so store the original account name as we can ignore that
+- if account.id.present?
+  = hidden_field_tag :account_name_original, account.name_was
 
 = f.label :locale_id, "What is your preferred language setting?", :class => 'spacer'
 .input-row
@@ -8,17 +11,19 @@
   .form-hint.inline
     We use this to ensure currency amounts and formatting is accurate to your locality
 
-= f.label :default_rate, "Default day rate", :class => 'spacer'
-.input-row
-  = f.text_field :default_rate
-  .form-hint.inline
-    The rate per day you charge (do not use a currency symbol i.e. enter 800 for $800 per day)
+- # We are editing account details so show default day rate & velocity & 50_90 rule
+- if account.id.present?
+  = f.label :default_rate, "Default day rate", :class => 'spacer'
+  .input-row
+    = f.text_field :default_rate
+    .form-hint.inline
+      The rate per day you charge (do not use a currency symbol i.e. enter 800 for $800 per day)
 
-= f.label :default_velocity, "Default velocity achieved per day", :class => 'spacer'
-.input-row
-  = f.text_field :default_velocity
-  .form-hint.inline
-    The velocity is the average number of points a single team member completes in a day
+  = f.label :default_velocity, "Default velocity achieved per day", :class => 'spacer'
+  .input-row
+    = f.text_field :default_velocity
+    .form-hint.inline
+      The velocity is the average number of points a single team member completes in a day
 
 = f.label :scoring_rule, "Default scoring rule for stories", :class => 'spacer vtip', :title => 'The scoring rule is used to ensure you enter valid scores when scoring your backlog stories.  You can change this at any point in the future'
 - ScoringRule.all.each do |rule|
@@ -28,11 +33,13 @@
     .form-hint.inline
       = "(#{rule.description})"
 
-.input-row.for-check-box
-  = f.check_box :default_use_50_90
-  = f.label :default_use_50_90, "By default, use the 50/90 estimation method"
-.form-hint
-  If you are not sure what the
-  = link_to '50% / 90% estimation method', 'http://www.calgaryapln.org/files/AgileEstimationandPlanning.pdf', :target => '_blank'
-  is, then leave this unchecked.
+- # We are editing account details so show default day rate & velocity & 50_90 rule
+- if account.id.present?
+  .input-row.for-check-box
+    = f.check_box :default_use_50_90
+    = f.label :default_use_50_90, "By default, use the 50/90 estimation method"
+  .form-hint
+    If you are not sure what the
+    = link_to '50% / 90% estimation method', 'http://www.calgaryapln.org/files/AgileEstimationandPlanning.pdf', :target => '_blank'
+    is, then leave this unchecked.
 

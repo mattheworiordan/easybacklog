@@ -277,6 +277,13 @@ class BacklogsController < ApplicationController
         end
       else
         @backlog.company = nil
+
+        # if account does not yet have defaults, assign them to the account
+        unassigned_attributes = {}
+        unassigned_attributes[:default_velocity] = @backlog.velocity if @backlog.account.default_velocity.blank?
+        unassigned_attributes[:default_rate] = @backlog.rate if @backlog.account.default_rate.blank?
+        unassigned_attributes[:default_use_50_90] = @backlog.use_50_90 if @backlog.account.default_use_50_90.blank?
+        @backlog.account.update_attributes! unassigned_attributes unless unassigned_attributes.empty?
       end
     end
 

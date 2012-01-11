@@ -58,7 +58,9 @@ class AccountsController < ApplicationController
 
   def name_available
     account_name = (params[:account] || {})[:name] || ''
-    if Account.where('UPPER(name) like ?', account_name.upcase).empty?
+    if (params[:except] || '').upcase == account_name.upcase
+      render :text => 'true'
+    elsif Account.where('UPPER(name) like ?', account_name.upcase).empty?
       render :text => 'true'
     else
       render :text => 'false'

@@ -1,28 +1,33 @@
 /*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
 
 $(document).ready(function() {
-  var rules = {}; // default: don't need to validate anything as not setting up an account now
+  var rules = {}, // default: don't need to validate anything as not setting up an account now
+      frm = $('form#user_new, form#new_account, form.edit_account');
+
   // validation settings if account being set up at the same time
-  if ($('form#user_new input#account_name').length) {
+  if (frm.find('input#account_name').length) {
     rules = {
       'account[name]': {
         required: true,
-        remote: '/accounts/name_available'
+        remote: '/accounts/name_available' + (frm.find('input#account_name_original').length ? '?except=' + escape(frm.find('input#account_name_original').val()) : '')
       },
       'account[locale_id]': {
         required: true
-      },
-      'account[default_rate]': {
-        required: true,
-        number: true,
-        min: 0
-      },
-      'account[default_velocity]': {
-        required: true,
-        number: true,
-        min: 0
       }
     };
+    // default rate & velocity only available when editing account settings, not setting up account settings
+    if (frm.find('input#account_default_rate').length) {
+      _.extend(rules, {
+        'account[default_rate]': {
+          number: true,
+          min: 0
+        },
+        'account[default_velocity]': {
+          number: true,
+          min: 0
+        }
+      });
+    }
   }
 
   // standard user rules
@@ -44,7 +49,7 @@ $(document).ready(function() {
   });
 
   // validate signup form on keyup and submit
-  $("form#user_new").validate({
+  frm.validate({
     rules: rules,
     messages: {
       'account[name]': {
@@ -69,10 +74,10 @@ $(document).ready(function() {
     }
   });
 
-  $('form#user_new').submit(function() {
-    if ($("form#user_new").valid()) {
+  frm.submit(function() {
+    if (frm.valid()) {
       $(window).scrollTop(1000000); // ensure we're at the bottom so user can see the notice
-      $('input#user_submit').addClass('greyed').attr('disabled','true').val('Preparing your account...');
+      $('form#user_new input#user_submit, form#new_account input#account_submit').addClass('greyed').attr('disabled','true').val('Preparing your account...');
       $('.waiting').slideDown();
     }
   })

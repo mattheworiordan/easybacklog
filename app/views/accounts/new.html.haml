@@ -1,5 +1,9 @@
 - title 'Create a new account'
 
+- content_for :head do
+  = include_javascripts :validation
+  = include_javascripts :register
+
 - content_for :title do
   %h1 Create a new account
 
