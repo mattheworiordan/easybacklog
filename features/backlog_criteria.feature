@@ -6,9 +6,9 @@ Feature: Backlog Acceptance Criteria
 Background:
   Given the database has the necessary lookup tables
     And a user named "John" is registered
-    And I am signed in as "John"
     And an account called "Acme" is set up for "John"
     And a backlog named "Backlog 1" with 1 theme and 2 stories in each theme is set up for "Acme"
+    And I am signed in as "John"
     And I am on the backlog "Backlog 1" page
 
 @javascript
