@@ -71,6 +71,9 @@ App.Views.BacklogCreateUpdateMethods = (function() {
     // update company defaults when selecting a company
     $('select#backlog_company_id').change(getCompanyDefaults);
 
+    // hide the option to select an existing company if none yet exist
+    if ($('.client-select .existing select option').length === 0) { $('.client-select .new .select-existing').hide(); }
+
     // if this page is in a non-editable state, then trim the page down and disable all input elements
     if ($('.not-editable-notice').length) {
       $('input[type=text],input[type=checkbox],input[name="backlog[scoring_rule_id]"],select').attr('disabled', true);
