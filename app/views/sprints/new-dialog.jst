@@ -30,7 +30,7 @@
             <tr class="heading">
               <td rowspan="3"><input type="radio" id="use-team-members" name="calculation_method"></td>
               <td>
-                <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day</label>
+                <label for="use-team-members" id="use-explicit-velocity-false">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day</label>
               </td>
             </tr>
             <tr class="sub-section use-team-members">
@@ -53,7 +53,7 @@
             <% if (backlog.get('velocity')) { %>
               <td rowspan="3"><input type="radio" id="use-explicit-velocity" name="calculation_method" autocomplete="off"></td>
               <td>
-                <label for="use-explicit-velocity">Manually define a team velocity for this sprint</label>
+                <label for="use-explicit-velocity" id="use-explicit-velocity-true">Manually define a team velocity for this sprint</label>
               </td>
             <% } else { %>
               <td><label for="explicit-velocity">Expected team velocity for this sprint</label></td>

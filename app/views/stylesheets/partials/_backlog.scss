@@ -1019,6 +1019,13 @@ ul.themes {
       }
     }
   }
+  label.selected {
+    background-color: #FAFAFA;
+    border: 1px solid #DDD;
+    @include border-radius(4px);
+    padding: 3px;
+    margin: -3px;
+  }
 }
 
 #dialog-create-snapshot {

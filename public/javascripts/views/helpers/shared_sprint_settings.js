@@ -62,6 +62,8 @@ App.Views.SharedSprintSettings = {
         }
         target.find('#use-team-members-container').slideDown();
         target.find('#number-team-members').rules('add', { required: true });
+        target.find('label#use-explicit-velocity-false').addClass('selected');
+        target.find('label#use-explicit-velocity-true').removeClass('selected');
       } else {
         // using explicity velocity for velocity
         target.find('tr.use-team-members').addClass('disabled').find('input').attr('disabled','true');
@@ -73,6 +75,8 @@ App.Views.SharedSprintSettings = {
           firstRun = true;
         }
         target.find('#use-explicit-velocity-container').slideDown();
+        target.find('label#use-explicit-velocity-true').addClass('selected');
+        target.find('label#use-explicit-velocity-false').removeClass('selected');
       }
     },  teamSizeChanged = function() {
       var expectedVelocity;
