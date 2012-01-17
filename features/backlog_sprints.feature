@@ -26,7 +26,7 @@ Feature: Backlog Sprints
     When I click on the "add sprint button"
     Then a "new sprint dialog box" should be visible
       And the "new sprint estimation question" should be visible
-      And the "Use backlog velocity of 2 points per person per day and team size" checkbox should be checked
+      And the "Use backlog velocity of 2 points per person per day" checkbox should be checked
       And the "Enter your team size" field should contain "1"
       And "Velocity in points" should be disabled
       And the "date picker" should not be visible
@@ -66,7 +66,7 @@ Feature: Backlog Sprints
     When I click on the "add sprint button"
     Then a "new sprint dialog box" should be visible
       # make sure settings from previous sprint are retained
-      And the "Use backlog velocity of 2 points per person per day and team size" checkbox should be checked
+      And the "Use backlog velocity of 2 points per person per day" checkbox should be checked
       And the "Duration of sprint in working days" field should contain "8"
       And the "Enter your team size" field should contain "2"
       And I should see "32" within "new sprint expected velocity"
@@ -103,7 +103,7 @@ Feature: Backlog Sprints
     Then the "Sprint 1" tab should be selected
       And the "Sprint start date" field should contain "02/01/2012"
       And the "Duration of sprint in days" field should contain "8"
-      And the "Use backlog velocity of 2 points per person per day and team size" checkbox should be checked
+      And the "Use backlog velocity of 2 points per person per day" checkbox should be checked
       And the "Number of team members" field should contain "2"
       And I should see "32" within "edit sprint expected velocity"
       And the "Velocity in points" should not be visible
@@ -137,7 +137,7 @@ Feature: Backlog Sprints
       And I should see the page title "Backlog settings"
       And the "Sprint start date" field should contain "01/01/2012"
       And the "Duration of sprint in days" field should contain "5"
-      And the "Use backlog velocity of 2 points per person per day and team size" checkbox should be checked
+      And the "Use backlog velocity of 2 points per person per day" checkbox should be checked
       And the "Number of team members" field should contain "3"
       And I should see "30" within "edit sprint expected velocity"
       And the "Velocity in points" should not be visible
@@ -158,7 +158,7 @@ Feature: Backlog Sprints
       And the "Velocity in points" field should contain "20"
       And the "Manually define a team velocity for this sprint" checkbox should be checked
       And the "Number of team members" should not be visible
-    When I choose "Use backlog velocity of 2 points per person per day and team size"
+    When I choose "Use backlog velocity of 2 points per person per day"
       And I wait for AJAX for 1 second
       Then the "Velocity in points" should not be visible
     When I click on "2 backlog tab"

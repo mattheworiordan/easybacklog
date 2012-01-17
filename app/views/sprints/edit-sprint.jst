@@ -23,12 +23,12 @@
 
   <% if (backlog.get('velocity')) { %>
     <div class='input-row question'>
-      <label>How would you like the velocity for this sprint to be determined?</label>
+      <label>How would you like the team velocity for this sprint to be determined?</label>
     </div>
 
     <div class='input-row'>
       <input type="radio" id="use-team-members" name="calculation_method">
-      <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day and team size</label>
+      <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day</label>
     </div>
 
     <div id="use-team-members-container">
@@ -40,7 +40,7 @@
         <input id="number-team-members" name="number_team_members" type="text" value="<%=niceNum(model.get('number_team_members'))%>" class="narrow" autocomplete="off">
       </div>
       <div class='input-row'>
-        Expected velocity: <span id="expected-velocity">x points</span>
+        Expected team velocity: <span id="expected-velocity">(unknown)</span>
       </div>
     </div>
 

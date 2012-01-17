@@ -1,7 +1,7 @@
 <div id="dialog-new-sprint" title="Create a new sprint">
   <form>
     <p class="intro">
-      Each sprint must have a start date, a set duration and a pre-determined number of team members for that sprint.  Enter the details below to create a new sprint.
+      Each sprint must have a start date, a duration in working days and an expected velocity.  Please complete the fields below to set up your new sprint.
     </p>
     <p>
       <div>
@@ -30,7 +30,7 @@
             <tr class="heading">
               <td rowspan="3"><input type="radio" id="use-team-members" name="calculation_method"></td>
               <td>
-                <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day and team size</label>
+                <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day</label>
               </td>
             </tr>
             <tr class="sub-section use-team-members">
@@ -43,8 +43,8 @@
             </tr>
             <tr class="sub-section use-team-members">
               <td>
-                <label>Expected velocity:</label>
-                <div id="expected-velocity">x points</div>
+                <label>Expected team velocity:</label>
+                <div id="expected-velocity">(unknown)</div>
               </td>
             </tr>
           <% } %>
