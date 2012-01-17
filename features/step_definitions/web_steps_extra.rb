@@ -1,6 +1,6 @@
 When /^(?:|I )press "([^"]*)"(?: within (?:|the )"([^"]*)")?$/ do |button, selector|
   with_scope(selector_to(selector)) do
-    click_button(selector_to(button))
+    click_button(selector_to(button, :dont_translate_to_css=>true))
   end
 end
 
@@ -16,7 +16,7 @@ end
 
 When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
   with_scope(selector_to(selector)) do
-    select(value, :from => selector_to(field))
+    select(value, :from => selector_to(field, :dont_translate_to_css=>true))
   end
 end
 

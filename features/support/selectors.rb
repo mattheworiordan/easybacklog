@@ -1,7 +1,7 @@
 module HtmlSelectorHelpers
   # Maps a CSS or XPath selector to a name. Used by various steps
 
-  def selector_to(location)
+  def selector_to(location, params={})
     case location
 
     ##
@@ -389,23 +389,25 @@ module HtmlSelectorHelpers
       '#ui-datepicker-div'
 
     else
-      supports_javascript = page.evaluate_script('true') rescue false
-      # if location does not already look like a selector
-      if supports_javascript && location.present? && location.kind_of?(String) && !(location =~ /^[a-z0-9_-]*[\.#][a-z_-]+/i)
-        # try and find a label containing the text set for location which is pointing to a form element
-        label_selector = page.evaluate_script <<-JS
-          // wrap in try catch so we don't get script errors
-          var ret = false;
-          try {
-            ret = $('label:contains("#{location.gsub(/"/, '')}")').attr('for');
-          } catch (e) { true; }
-          ret;
-        JS
-        if label_selector.present? && page.evaluate_script("$('form ##{label_selector}').length") >= 1
-          location = "##{label_selector}"
+      unless params.has_key?(:dont_translate_to_css)
+        supports_javascript = page.evaluate_script('true') rescue false
+        # if location does not already look like a selector
+        if supports_javascript && location.present? && location.kind_of?(String) && !(location =~ /^[a-z0-9_-]*[\.#][a-z_-]+/i)
+          # try and find a label containing the text set for location which is pointing to a form element
+          label_selector = page.evaluate_script <<-JS
+            // wrap in try catch so we don't get script errors
+            var ret = false;
+            try {
+              ret = $('label:contains("#{location.gsub(/"/, '')}")').attr('for');
+            } catch (e) { true; }
+            ret;
+          JS
+          if label_selector.present? && page.evaluate_script("$('form ##{label_selector}').length") >= 1
+            location = "##{label_selector}"
+          end
         end
       end
-      # no mapping exists, assume location is a CSS/XPath selector
+      # no mapping exists, assume location is a CSS/XPath selector or text which matches a label or button that Capybara can find
       location
     end
   end

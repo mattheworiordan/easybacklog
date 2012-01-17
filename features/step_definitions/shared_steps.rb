@@ -143,4 +143,5 @@ end
 
 Then /^(?:I )start (?:the debugger|debugging)$/ do
   debugger
+  page
 end
