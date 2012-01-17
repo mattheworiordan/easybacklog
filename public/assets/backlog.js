@@ -150,6 +150,33 @@ if(theme){theme.set(themeData);
 theme.trigger("statisticsUpdated")
 }})
 }}};
+App.Views.SharedSprintSettings={formValidationConfig:{rules:{start_on:{required:true},duration_days:{required:true,digits:true,min:1},number_team_members:{number:true,min:0},explicit_velocity:{number:true,min:1}},messages:{start_on:{required:"Date&nbsp;missing"},duration_days:{required:"Sprint duration is required",digits:"Enter a value using whole numbers",min:"Sprint duration must be at least 1 day"},number_team_members:{required:"Team size is required",min:"Team size must be greater than 0",number:"Team size must be a valid number"},explicit_velocity:{required:"Velocity is required",number:"Velocity must be a valid number",min:"Velocity must be at least 1"}}},addFormBehaviour:function(target,backlogVelocity){var firstRun=false,velocityCalculationMethodChanged=function(){target.find("tr").removeClass("disabled").find("input").removeAttr("disabled");
+target.find("#explicit-velocity, #number-team-members").rules("add",{required:false});
+if(target.find("#use-team-members").is(":checked")){target.find("tr.use-explicit-velocity").addClass("disabled").find("input").attr("disabled","true");
+if(firstRun){target.find("#use-explicit-velocity-container").slideUp()
+}else{target.find("#use-explicit-velocity-container").hide();
+firstRun=true
+}target.find("#use-team-members-container").slideDown();
+target.find("#number-team-members").rules("add",{required:true})
+}else{target.find("tr.use-team-members").addClass("disabled").find("input").attr("disabled","true");
+target.find("#explicit-velocity").rules("add",{required:true});
+if(firstRun){target.find("#use-team-members-container").slideUp()
+}else{target.find("#use-team-members-container").hide();
+firstRun=true
+}target.find("#use-explicit-velocity-container").slideDown()
+}},teamSizeChanged=function(){var expectedVelocity;
+if(isNaN(parseFloat(target.find("#number-team-members").val()))){target.find("#expected-velocity").text("(enter your team size)")
+}else{if(isNaN(parseFloat(target.find("#duration-days").val()))){target.find("#expected-velocity").text("(enter duration of sprint)")
+}else{expectedVelocity=parseFloat(target.find("#number-team-members").val())*parseFloat(target.find("#duration-days").val())*backlogVelocity;
+target.find("#expected-velocity").text(expectedVelocity===1?niceNum(expectedVelocity)+" point":niceNum(expectedVelocity)+" points")
+}}};
+if(backlogVelocity&&!target.find("#explicit-velocity").val()){target.find("#use-team-members").attr("checked",true)
+}else{target.find("#use-explicit-velocity").attr("checked",true)
+}target.find("#use-team-members, #use-explicit-velocity").change(velocityCalculationMethodChanged);
+velocityCalculationMethodChanged();
+target.find("#duration-days, #number-team-members").keyup(teamSizeChanged);
+teamSizeChanged()
+}};
 App.Views.Helpers={scrollIntoBacklogView:function(elem,callback){if($(elem).length){var scrollAmount=$(window).scrollTop(),currentPosition=$(elem).offset().top,bufferBottom=100,bufferTop=this.bufferTop?this.bufferTop:this.bufferTop=$("#backlog-container").offset().top,newScrollPosition=false;
 if(currentPosition<scrollAmount+bufferTop){newScrollPosition=currentPosition-bufferTop
 }else{if(currentPosition>scrollAmount+$(window).height()-bufferBottom){newScrollPosition=currentPosition-$(window).height()+bufferBottom
@@ -217,6 +244,7 @@ that.linkRolloutTimeout=false
 if(that.linkRolloutTimeout){clearTimeout(that.linkRolloutTimeout)
 }if(that.linkHelper){that.linkHelper.remove()
 }})
+},addUseOptions:function(target,options){return _(target).extend({use5090Estimates:options.use5090Estimates,useCostEstimates:options.useCostEstimates,useDaysEstimates:options.useDaysEstimates})
 }};
 App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{placeHolder:'<span class="editable-blank">[edit]</span>',type:"text",zIndex:3},initialize:function(){this.model=this.options.model;
 this.parentView=this.options.parentView;
@@ -356,16 +384,17 @@ if(!event.shiftKey){if(_.first(liElem)!=_.last(liElem.parent("ul").find("li.crit
 }else{App.Views.Helpers.scrollIntoBacklogView(liElem.prev().find(".data"),function(elem){elem.click()
 })
 }}}}})};
-App.Views.Backlogs={Show:App.Views.BaseView.extend({dataArea:$("#backlog-data-area"),initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
+App.Views.Backlogs={Show:App.Views.BaseView.extend({dataArea:$("#backlog-data-area"),useOptions:{},initialize:function(options){var columns=$("#backlog-container #themes-header .columns");
+App.Views.BaseView.prototype.initialize.call(this);
 this.sprintTabsView=options.sprintTabsView;
-_.bindAll(this,"activated")
-},render:function(){var use5090estimates=$("#backlog-container #themes-header .columns .score-50").length?true:false;
-var view=new App.Views.Themes.Index({collection:this.model.Themes(),use5090estimates:use5090estimates});
+_.bindAll(this,"activated");
+this.useOptions={use5090Estimates:columns.find(".score-50").length?true:false,useCostEstimates:columns.find(".cost-formatted").length?true:false,useDaysEstimates:columns.find(".days-formatted").length?true:false}
+},render:function(){var view=new App.Views.Themes.Index(_.extend({collection:this.model.Themes()},this.useOptions));
 this.$("#themes-container").html(view.render().el);
 var show_view=this;
 this.activated();
 return(this)
-},updateStatistics:function(){$("#backlog-data-area .backlog-stats").html(JST["backlogs/stats"]({model:this.model}));
+},updateStatistics:function(){$("#backlog-data-area .backlog-stats").html(JST["backlogs/stats"](_.extend({model:this.model},this.useOptions)));
 this.sprintTabsView.adjustTabConstraints(true)
 },activated:function(){this.updateStatistics();
 if(this.model.IsEditable()){setTimeout(function(){var firstEditableElem=$("ul.themes li.theme:first .theme-data .name .data");
@@ -559,7 +588,7 @@ if(!counter){counter=1
 }}else{callback()
 }},showCharts:function(){var that=this;
 if(this.model.Sprints().select(function(sprint){return sprint.isComplete()
-}).length>0){$.get("/backlogs/"+this.model.get("id")+"/backlog-stats",{},function(data){that.$(".loading").hide();
+}).length>0){$.getJSON("/backlogs/"+this.model.get("id")+"/backlog-stats").success(function(data){that.$(".loading").hide();
 that.$(".no-stats").hide();
 if(data.zero_points){that.$(".no-points").show();
 that.$(".stats").hide()
@@ -572,14 +601,15 @@ that.displayBurnUp(data.burn_up);
 that.displayVelocityCompleted(data.velocity_completed);
 that.displayVelocityStats(data.velocity_stats);
 $(that.el).trigger("renderingCharts")
-}})
+}}).error(function(err){new App.Views.Error({message:'Unfortunately there has been an internal error loading your statistics.  Please refresh this page or report this error using the "feedback" button on the bottom right of this page.'})
+})
 }else{this.$(".loading").hide();
 this.$(".stats").hide();
 this.$(".no-points").hide();
 this.$(".no-stats").show()
 }},backlogSettings:function(event){event.preventDefault();
 document.location.href=$("#backlog-data-area a:last").attr("href")
-},displayBurnDown:function(data){this.burnDownChart=new Highcharts.Chart({chart:{renderTo:"burn-down-chart",type:"line"},title:{text:"Burn down"},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"},min:0},colors:["#0000FF","#009900","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,completedTerminology,pluralize,seriesName=this.series.name,html;
+},displayBurnDown:function(data){this.burnDownChart=new Highcharts.Chart({chart:{renderTo:"burn-down-chart",type:"line"},title:{text:"Burn down",style:{fontSize:"20px",color:"#000000"}},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"},min:0},colors:["#0000FF","#009900","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,completedTerminology,pluralize,seriesName=this.series.name,html;
 switch(seriesName){case"Trend":dataSeries=data.trend;
 completedTerminology="expected";
 break;
@@ -594,14 +624,16 @@ if((dataSeries===data.projected)&&(sprint===data.projected[0])){dataSeries=data.
 completedTerminology="completed";
 sprint=_(data.actual).last();
 seriesName="Actual"
-}pluralize=function(val){return val===1?"":"s"
+}pluralize=function(val){return Number(val)===1?"":"s"
 },round=function(val){return Math.max(0,Math.round(val*10)/10)
 };
 html="<b>"+seriesName;
 if(sprint.iteration===0){html+=" - Sprint 0</b> (Project start)<br/>"+"Project started on "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+"<br/>"+round(this.y)+" points remaining"
 }else{html+=" - Sprint "+sprint.iteration+"</b><br/>"+"Sprint "+sprint.iteration+" finished, "+completedTerminology+" "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>"+round(this.y)+" points remaining";
-if(seriesName==="Actual"){html+="<br/>Actual velocity per day: "+round(sprint.actual)
-}html+="<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)+"<br/>"+"Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on))
+if((seriesName==="Actual")&&(sprint.actual)){html+="<br/>Actual velocity per day per person: "+round(sprint.actual)
+}if(sprint.team){html+="<br/>"+niceNum(sprint.team)+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}else{html+="<br/>Sprint duration: "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}html+="<br/>Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on))
 }return html
 }},series:[{name:"Trend",data:_(data.trend).map(function(d){return[parseRubyDate(d.completed_on).getTime(),Number(d.points)]
 }),},{name:"Projected",data:_(data.projected).map(function(d){return[parseRubyDate(d.completed_on).getTime(),Number(d.points)]
@@ -612,45 +644,52 @@ this.showOrHideBurnDownProjected()
 this.showOrHideBurnDownProjected()
 },showOrHideBurnDownProjected:function(){if(this.$("#show-projected").is(":checked")){this.burnDownChart.series[1].show()
 }else{this.burnDownChart.series[1].hide()
-}},displayBurnUp:function(data){chart1=new Highcharts.Chart({chart:{renderTo:"burn-up-chart",type:"area"},title:{text:"Burn up"},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"}},colors:["#0000FF","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,pluralize,seriesName=this.series.name,html,lastSprint;
+}},displayBurnUp:function(data){chart1=new Highcharts.Chart({chart:{renderTo:"burn-up-chart",type:"area"},title:{text:"Burn up",style:{fontSize:"20px",color:"#000000"}},xAxis:{type:"datetime",dateTimeLabelFormats:{month:"%e %b",year:"%b"}},yAxis:{title:{text:"Points"}},colors:["#0000FF","#FF0000"],tooltip:{formatter:function(){var dataSeries,that=this,sprint,pluralize,seriesName=this.series.name,html,lastSprint;
 switch(seriesName){case"Actual":dataSeries=data.actual;
 break;
 case"Total":dataSeries=data.total
 }sprint=_(dataSeries).find(function(elem){return that.x===parseRubyDate(elem.starts_on).getTime()
 });
-pluralize=function(val){return val===1?"":"s"
+pluralize=function(val){return Number(val)===1?"":"s"
 },round=function(val){return Math.max(0,Math.round(val*10)/10)
 };
 html="<b>"+seriesName;
-if(sprint.iteration===0){lastSprint=_(data.actual).last();
+if(sprint.iteration===0){lastSprint=dataSeries[dataSeries.length-2];
 html+=" - end of sprint "+lastSprint.iteration+"</b><br/>"+"Sprint ended on "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(lastSprint.completed_on))+"<br/>";
 if(seriesName==="Actual"){html+="Completed "+round(sprint.total_points)+" point"+pluralize(sprint.total_points)
 }else{html+="Total points to complete: "+round(this.y)
 }}else{html+=" - Sprint "+sprint.iteration+"</b><br/>";
-if(seriesName==="Actual"){html+=round(sprint.total_points)+" point"+pluralize(sprint.total_points)+" completed at the start"+"<br/>Velocity this sprint: "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>Velocity per day: "+round(sprint.actual)+"<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)
-}else{html+="Total points to complete: "+round(this.y)
+if(seriesName==="Actual"){html+=round(sprint.total_points)+" point"+pluralize(sprint.total_points)+" completed at the start"+"<br/>Velocity this sprint: "+round(sprint.completed)+" point"+pluralize(sprint.completed);
+if(sprint.actual){html+="<br/>Velocity per day per person: "+round(sprint.actual)+"<br/>"+niceNum(sprint.team)+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}else{html+="<br/>Sprint duration: "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}}else{html+="Total points to complete: "+round(this.y)
 }html+="<br />Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on))
 }return html
 }},series:[{name:"Total",data:_(data.total).map(function(d){return[parseRubyDate(d.starts_on).getTime(),Number(d.total_points)]
 }),},{name:"Actual",data:_(data.actual).map(function(d){return[parseRubyDate(d.starts_on).getTime(),Number(d.total_points)]
 })}]})
-},displayVelocityCompleted:function(data){chart1=new Highcharts.Chart({chart:{renderTo:"velocity-chart",type:"column"},title:{text:"Velocity of completed sprints"},xAxis:{categories:_(data).map(function(d){return"Sprint "+d.iteration
+},displayVelocityCompleted:function(data){chart1=new Highcharts.Chart({chart:{renderTo:"velocity-chart",type:"column"},title:{text:"Velocity of completed sprints",style:{fontSize:"20px",color:"#000000"}},xAxis:{categories:_(data).map(function(d){return"Sprint "+d.iteration
 })},yAxis:{title:{text:"Points"}},colors:["#0000FF"],tooltip:{formatter:function(){var that=this,sprint,pluralize,html;
 sprint=_(data).find(function(elem){return that.x==="Sprint "+elem.iteration
 });
-pluralize=function(val){return val===1?"":"s"
+pluralize=function(val){return Number(val)===1?"":"s"
 },round=function(val){return Math.max(0,Math.round(val*10)/10)
 };
-html="<b>Sprint "+sprint.iteration+"</b><br />"+"Completed "+round(sprint.completed)+" point"+pluralize(sprint.completed)+"<br/>Actual velocity per day: "+round(sprint.actual)+"<br/>"+sprint.team+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)+"<br/>"+"Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on));
+html="<b>Sprint "+sprint.iteration+"</b><br />"+"Completed "+round(sprint.completed)+" point"+pluralize(sprint.completed);
+if(sprint.actual){html+="<br/>Actual velocity per day per person: "+round(sprint.actual)+"<br/>"+niceNum(sprint.team)+" team member"+pluralize(sprint.team)+" for "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}else{html+="<br/>Sprint duration: "+round(sprint.duration)+" day"+pluralize(sprint.duration)
+}html+="<br/>Dates: "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.starts_on))+" - "+$.datepicker.formatDate($.datepicker._defaults.dateFormat,parseRubyDate(sprint.completed_on));
 return html
 }},series:[{name:"Total",data:_(data).map(function(d){return d.completed
 })}]})
 },displayVelocityStats:function(data){var expectedDay=data.expected_day,expectedSprint=data.expected_sprint,actualDay=data.actual_day,actualSprint=data.actual_sprint;
-this.$("#velocity-per-day-average").text(Math.round(actualDay*10)/10);
+if(expectedDay){this.$("#velocity-per-day-average").text(Math.round(actualDay*10)/10);
 this.$("#velocity-per-day-expected").text(Math.round(expectedDay*10)/10);
-this.$("#velocity-per-sprint-average").text(Math.round(actualSprint*10)/10);
-this.$("#velocity-per-sprint-expected").text(Math.round(expectedSprint*10)/10);
-this.$(".stats .average .notice").html("Your expected backlog daily velocity is configured as "+(expectedDay==1?"1 point":expectedDay+" points")+' per day. <br/><a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog settings &raquo;</a>')
+this.$(".stats .average .notice").html("The expected backlog daily velocity is configured as "+(expectedDay==1?"1 point":expectedDay+" points")+' per day per team member. <br/><a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog settings &raquo;</a>')
+}else{this.$(".average .per-day").hide();
+this.$(".stats .average .notice").html("The expected velocity is based on the velocity set up in the most recent sprint. "+'<a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog and sprint settings &raquo;</a>')
+}this.$("#velocity-per-sprint-average").text(Math.round(actualSprint*10)/10);
+this.$("#velocity-per-sprint-expected").text(Math.round(expectedSprint*10)/10)
 }})};
 App.Views.Notice=Backbone.View.extend({className:"notice",displayLength:5000,defaultMessage:"",initialize:function(){_.bindAll(this,"render");
 this.message=this.options.message||this.defaultMessage;
@@ -944,25 +983,32 @@ if(_.isFunction(callback)){callback()
 }}})
 }else{this.router.navigate("Backlog",true);
 if(_.isFunction(callback)){callback()
-}}},createNew:function(event){var view=this;
+}}},createNew:function(event){var view=this,backlogVelocity=this.collection.backlog.get("velocity");
 event.preventDefault();
 $("#dialog-new-sprint").remove();
-$("body").append(JST["sprints/new-dialog"]({sprints:this.collection}));
-$("#dialog-new-sprint").dialog({resizable:false,height:350,width:400,modal:true,buttons:{Create:function(){var dialog=$(this);
+$("body").append(JST["sprints/new-dialog"]({sprints:this.collection,backlog:this.collection.backlog}));
+$("#dialog-new-sprint").dialog({resizable:false,height:backlogVelocity?400:285,width:470,modal:true,buttons:{Create:function(){var dialog=$(this),modelData,model;
 if(!dialog.find("form").valid()){$(dialog).find("p.intro").addClass("error").html("One or more fields are not completed correctly.  Please correct these to continue.");
 return false
 }$(this).find("p.progress-placeholder").html("Please wait, creating new sprint...");
 $(this).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Preparing...");
 $(this).parent().find(".ui-dialog-buttonset button:nth-child(1)").hide();
-var model=new Sprint({start_on:$.datepicker.formatDate("yy-mm-dd",dialog.find("#start-on").datepicker("getDate")),duration_days:dialog.find("#duration-days").val(),number_team_members:dialog.find("#number-team-members").val()});
-if(view.collection.length==0){$.cookie("sprint_duration",model.get("duration_days"))
+modelData={start_on:$.datepicker.formatDate("yy-mm-dd",dialog.find("#start-on").datepicker("getDate")),duration_days:dialog.find("#duration-days").val()};
+if(!backlogVelocity||dialog.find("#use-explicit-velocity").is(":checked")){modelData["explicit_velocity"]=dialog.find("#explicit-velocity").val()
+}else{modelData["number_team_members"]=dialog.find("#number-team-members").val()
+}model=new Sprint(modelData);
+if(view.collection.length===0){$.cookie("sprint_duration",model.get("duration_days"))
 }view.collection.add(model);
 model.save(false,{success:function(model,response){view.showNew(model);
 new App.Views.Notice({message:"Sprint number "+model.get("iteration")+" has been added"});
 $(dialog).dialog("close")
-},error:function(model,error){if(window.console){console.log(JSON.stringify(error))
-}if($(dialog).is(":visible")){$(dialog).find("p.intro").addClass("error").html("Oops, we could not create a sprint as it looks like you haven't filled in everything correctly:<br>"+JSON.parse(error.responseText).message);
-$(dialog).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Cancel");
+},error:function(model,error){var errorMessage;
+if(window.console){console.log(JSON.stringify(error))
+}if($(dialog).is(":visible")){try{errorMessage=JSON.parse(error.responseText).message;
+$(dialog).find("p.intro").addClass("error").html("Oops, we could not create a sprint as it looks like you haven't filled in everything correctly:<br>"+errorMessage)
+}catch(e){$(dialog).find("p.intro").addClass("error").html("Oops, somethign has gone wrong and we could not create the sprint.  Please try again.");
+if(window.console){console.log(e)
+}}$(dialog).parent().find(".ui-dialog-buttonset button:nth-child(2) span").text("Cancel");
 $(dialog).parent().find(".ui-dialog-buttonset button:nth-child(1)").show();
 $(dialog).find("p.progress-placeholder").html("")
 }else{var errorView=new App.Views.Error({message:"Sprint was not created, please try again"})
@@ -971,21 +1017,29 @@ $(dialog).find("p.progress-placeholder").html("")
 },Cancel:function(){$(this).dialog("close")
 }}});
 var dialog=$("#dialog-new-sprint");
-dialog.find("#start-on").datepicker();
-if(_.isFunction($.fn.validate)){dialog.find("form").validate({rules:{duration_days:{required:true,digits:true,min:1},number_team_members:{required:true,digits:true,min:1}},messages:{duration_days:{required:"Sprint duration is required",digits:"Enter a value using whole numbers only",min:"Sprint duration must be at least 1 day"},number_team_members:{required:"Number of team members is required",digits:"Enter a value using whole numbers only",min:"Team must comprise of at least one member"}}})
-}if(this.collection.length===0){dialog.find("#start-on").datepicker("setDate",new Date(new Date().getTime()+1000*60*60*24));
+dialog.find("#start-on").blur().datepicker();
+if(_.isFunction($.fn.validate)){dialog.find("form").validate(App.Views.SharedSprintSettings.formValidationConfig)
+}var dayInMs=1000*60*60*24,shiftToNextWeekday=function(dateInMs){var date=new Date(dateInMs);
+switch(date.getDay()){case 0:return dateInMs+dayInMs;
+case 6:return dateInMs+(dayInMs*2)
+}return dateInMs
+};
+if(this.collection.length===0){dialog.find("#start-on").datepicker("setDate",new Date(new Date().getTime()+1000*60*60*24));
 dialog.find("#duration-days").val(!isNaN(parseInt($.cookie("sprint_duration")))?$.cookie("sprint_duration"):10);
 dialog.find("#number-team-members").val("1")
-}else{if(this.collection.length==1){var dayInMs=1000*60*60*24,lastSprint=this.collection.at(0),lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),nextDate=lastDate+(lastDuration*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs);
-dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
+}else{if(this.collection.length==1){var lastSprint=this.collection.at(0),lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),nextDate=lastDate+(lastDuration*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs);
+dialog.find("#start-on").datepicker("setDate",new Date(shiftToNextWeekday(nextDate)));
 dialog.find("#duration-days").val(lastDuration);
-dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
-}else{var dayInMs=1000*60*60*24,sprintsDesc=this.collection.sortBy(function(sprint){return sprint.get("iteration")
+dialog.find("#number-team-members").val(niceNum(lastSprint.get("number_team_members")));
+dialog.find("#explicit-velocity").val(niceNum(lastSprint.get("explicit_velocity")))
+}else{var sprintsDesc=this.collection.sortBy(function(sprint){return sprint.get("iteration")
 }).reverse(),lastSprint=sprintsDesc[0],previousSprint=sprintsDesc[1],lastDate=parseRubyDate(lastSprint.get("start_on")).getTime(),lastDuration=Number(lastSprint.get("duration_days")),timePassedBetweenDates=parseRubyDate(lastSprint.get("start_on")).getTime()-parseRubyDate(previousSprint.get("start_on")).getTime(),nextDateByDuration=lastDate+(lastDuration*dayInMs)+(Math.floor(lastDuration/5)*2*dayInMs),nextDateByTimeBetweenSprints=lastDate+timePassedBetweenDates,nextDate=Math.max(nextDateByDuration,nextDateByTimeBetweenSprints);
-dialog.find("#start-on").datepicker("setDate",new Date(nextDate));
+dialog.find("#start-on").datepicker("setDate",new Date(shiftToNextWeekday(nextDate)));
 dialog.find("#duration-days").val(lastSprint.get("duration_days"));
-dialog.find("#number-team-members").val(lastSprint.get("number_team_members"))
-}}}}),Show:App.Views.BaseView.extend({tagName:"li",className:"sprint-tab",events:{"click a":"activate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
+dialog.find("#number-team-members").val(niceNum(lastSprint.get("number_team_members")));
+dialog.find("#explicit-velocity").val(niceNum(lastSprint.get("explicit_velocity")))
+}}App.Views.SharedSprintSettings.addFormBehaviour(dialog,backlogVelocity)
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"sprint-tab",events:{"click a":"activate"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 this.router=this.options.router;
 this.parentView=this.options.parentView;
 _.bindAll(this,"remove")
@@ -995,20 +1049,18 @@ if(this.model.active){$(this.el).addClass("active")
 }return this
 },activate:function(){this.router.navigate(String(this.model.get("iteration")),true)
 }})};
-App.Views.Stories={Index:Backbone.View.extend({tagName:"div",className:"stories",childId:function(model){return"story-"+model.get("id")
-},events:{"click ul.stories .actions a.new-story":"createNew","keydown ul.stories .actions a.new-story":"addStoryKeyPress"},initialize:function(){this.collection=this.options.collection;
-this.use5090estimates=this.options.use5090estimates;
+App.Views.Stories={Index:Backbone.View.extend({tagName:"ul",className:"stories",childId:function(model){return"story-"+model.get("id")
+},events:{"click .actions a.new-story":"createNew","keydown .actions a.new-story":"addStoryKeyPress"},initialize:function(){this.collection=this.options.collection;
 _.bindAll(this,"orderChanged")
 },render:function(){var view=this;
-$(this.el).html(JST["stories/index"]({collection:this.collection.models}));
-this.collection.each(function(model){var storyView=new App.Views.Stories.Show({model:model,id:view.childId(model),use5090estimates:view.use5090estimates});
-view.$("ul.stories").append(storyView.render().el)
+this.collection.each(function(model){var storyView=new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({model:model,id:view.childId(model)},view.options));
+$(view.el).append(storyView.render().el)
 });
-if(this.collection.theme.IsEditable()){if(!this.collection.theme.isNew()){this.$("ul.stories").append(JST["stories/new"]())
+if(this.collection.theme.IsEditable()){if(!this.collection.theme.isNew()){$(this.el).append(JST["stories/new"]())
 }var orderChangedEvent=this.orderChanged;
 var actionsElem;
-this.$("ul.stories").sortable({start:function(event,ui){actionsElem=view.$("ul.stories>.actions").clone();
-view.$("ul.stories>.actions").remove();
+$(this.el).sortable({start:function(event,ui){actionsElem=view.$(">.actions").clone();
+view.$(">.actions").remove();
 view.storyDragged=true;
 $("#vtip").remove();
 view.$(".move-story.vtipActive").mouseleave();
@@ -1016,7 +1068,7 @@ view.$(".move-story").removeClass("vtip");
 $(".color-picker").hide()
 },stop:function(event,ui){App.Views.Stories.Index.stopMoveEvent=true;
 orderChangedEvent();
-view.$("ul.stories").append(actionsElem);
+$(view.el).append(actionsElem);
 view.$(".move-story").addClass("vtip")
 },placeholder:"target-order-highlight",axis:"y",items:"li.story"}).find(".move-story").disableSelection();
 this.$(".color-picker-icon a").click(function(event){$("#vtip").remove();
@@ -1026,9 +1078,9 @@ $(event.target).mouseleave()
 },createNew:function(event){event.preventDefault();
 var model=new Story();
 this.collection.add(model);
-this.$("ul.stories li:last").before(new App.Views.Stories.Show({model:model,use5090estimates:this.use5090estimates}).render().el);
-var this_view=this;
-this.$("ul.stories li.story:last").css("display","none").slideDown("fast",function(){this_view.$("ul.stories li.story:last > .user-story > .as-a > .data").click()
+this.$("li:last").before(new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({model:model},this.options)).render().el);
+var view=this;
+this.$("li.story:last").css("display","none").slideDown("fast",function(){view.$("li.story:last > .user-story > .as-a > .data").click()
 })
 },addStoryKeyPress:function(event){var thisTheme,nextTheme,lastStory;
 if(9==event.keyCode){event.preventDefault();
@@ -1053,7 +1105,6 @@ if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
 }}),Show:App.Views.BaseView.extend({tagName:"li",className:"story",deleteDialogTemplate:"stories/delete-dialog",events:{"click .delete-story>a":"remove","click .duplicate-story>a":"duplicate","click .status .tab":"statusChangeClick"},initialize:function(){var that=this;
-this.use5090estimates=this.options.use5090estimates;
 App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","moveToThemeDialog","moveToTheme","changeColor","updateViewWithModelData");
 this.model.bind("change",function(model){that.updateViewWithModelData(model.changedAttributes())
@@ -1077,8 +1128,8 @@ this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){sh
 }App.Views.Helpers.activateUrlify(this.el);
 this.setStatusHover()
 },updateViewWithModelData:function(attributes){var that=this;
-if(attributes==="all"){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}))
-}else{if(attributes&&(attributes.sprint_story_status_id||attributes.sprint_story_id)){$(this.el).html(JST["stories/show"]({model:this.model,use5090estimates:this.use5090estimates}));
+if(attributes==="all"){$(this.el).html(JST["stories/show"](App.Views.Helpers.addUseOptions({model:this.model},this.options)))
+}else{if(attributes&&(attributes.sprint_story_status_id||attributes.sprint_story_id)){$(this.el).html(JST["stories/show"](App.Views.Helpers.addUseOptions({model:this.model},this.options)));
 this.configureView()
 }}if(this.model.IsEditable()){$(this.el).removeClass("locked")
 }else{$(this.el).addClass("locked")
@@ -1115,7 +1166,7 @@ show_view.$(">div.user-story ."+elem+" .data").editable(contentUpdatedFunc,optio
 if(_.include([9,13,27],event.keyCode)&&(isInput||!event.ctrlKey)){$(event.target).blur();
 try{event.preventDefault()
 }catch(e){}viewElements=["unique-id .data","as-a .data","i-want-to .data","so-i-can .data","acceptance-criteria ul.acceptance-criteria li:first-child>*","comments .data"];
-if(this.use5090estimates){viewElements.push("score-50 .data");
+if(this.options.use5090Estimates){viewElements.push("score-50 .data");
 viewElements.push("score-90 .data")
 }else{viewElements.push("score .data")
 }dataClass=$(event.target);
@@ -1188,8 +1239,8 @@ $(this.el).css("background-color","rgba("+parseInt(colors[0],16)+", "+parseInt(c
 }$(this.el).find(".background-color-indicator").css("background-color",colorWithHex);
 if(!options||!options.silent){this.model.set({color:colorWithoutHex});
 this.model.save()
-}},duplicate:function(event){var model=new Story();
-var attributes=_.clone(this.model.attributes);
+}},duplicate:function(event){var model=new Story(),attributes=_.clone(this.model.attributes);
+event.preventDefault();
 delete attributes.id;
 delete attributes.unique_id;
 this.model.AcceptanceCriteria().each(function(criterion){var crit=new AcceptanceCriterion();
@@ -1198,7 +1249,7 @@ model.AcceptanceCriteria().add(crit)
 });
 model.set(attributes);
 this.model.collection.add(model);
-var storyView=new App.Views.Stories.Show({model:model,id:0,use5090estimates:this.use5090estimates});
+var storyView=new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({model:model,id:0},this.options));
 var newStoryDomElem=$(storyView.render().el);
 newStoryDomElem.insertBefore($(this.el).parents("ul.stories").find(">li.actions"));
 model.save(false,{success:function(model,response){model.AcceptanceCriteria().each(function(criterion){criterion.save()
@@ -1211,11 +1262,10 @@ _.delay(function(){newStoryDomElem.find(".user-story .as-a>.data").click()
 }})};
 App.Views.Themes={Index:Backbone.View.extend({tagName:"div",className:"themes",reorderSlideUpElements:"ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions",childId:function(model){return"theme-"+model.get("id")
 },events:{"click ul.themes .actions a.new-theme":"createNew","keydown ul.themes .actions a.new-theme":"themeKeyPress","click ul.themes .actions a.reorder-themes":"startReorder","keydown ul.themes .actions a.reorder-themes":"themeKeyPress","click .stop-ordering a":"stopReorder"},initialize:function(){this.collection=this.options.collection;
-this.use5090estimates=this.options.use5090estimates;
 _.bindAll(this,"orderChanged")
 },render:function(){var that=this;
 $(this.el).html(JST["themes/index"]({collection:this.collection.models}));
-this.collection.each(function(model){var view=new App.Views.Themes.Show({model:model,id:that.childId(model),use5090estimates:that.use5090estimates});
+this.collection.each(function(model){var view=new App.Views.Themes.Show(App.Views.Helpers.addUseOptions({model:model,id:that.childId(model)},that.options));
 that.$(">ul").append(view.render().el)
 });
 this.$("ul.themes").append(JST["themes/new"]());
@@ -1239,7 +1289,7 @@ this.$(this.reorderSlideUpElements).slideDown(250)
 },createNew:function(event){event.preventDefault();
 var model=new Theme();
 this.collection.add(model);
-this.$("ul.themes li:last").before(new App.Views.Themes.Show({model:model,use5090estimates:this.use5090estimates}).render().el);
+this.$("ul.themes li:last").before(new App.Views.Themes.Show(App.Views.Helpers.addUseOptions({model:model},this.options)).render().el);
 var that=this;
 this.$("ul.themes li.theme:last").css("display","none").slideDown("fast",function(){$(that.el).find("ul.themes li.theme:last>.theme-data .name .data").click()
 })
@@ -1259,11 +1309,10 @@ if(!isNaN(parseInt(elemId,10))){orderIndexesWithIds[elemId]=index+1
 }});
 if(window.console){console.log("Order changed and saving - "+JSON.stringify(orderIndexesWithIds))
 }this.collection.saveOrder(orderIndexesWithIds)
-}}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){this.use5090estimates=this.options.use5090estimates;
-App.Views.BaseView.prototype.initialize.call(this);
+}}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","reNumberStoriesAction")
 },render:function(){$(this.el).html(JST["themes/show"]({model:this.model}));
-var view=new App.Views.Stories.Index({collection:this.model.Stories(),use5090estimates:this.use5090estimates});
+var view=new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({collection:this.model.Stories()},this.options));
 this.$(">.stories").prepend(view.render().el);
 this.updateStatistics();
 if(this.model.IsEditable()){this.makeFieldsEditable()
@@ -1328,7 +1377,7 @@ $(view.el).remove();
 $(dialog_obj).dialog("close");
 App.Controllers.Statistics.updateStatistics(response.score_statistics)
 }})
-},updateStatistics:function(){this.$(".theme-stats div").html(JST["themes/stats"]({model:this.model}))
+},updateStatistics:function(){this.$(".theme-stats div").html(JST["themes/stats"](App.Views.Helpers.addUseOptions({model:this.model},this.options)))
 },reNumberStories:function(event){var view=this;
 event.preventDefault();
 $("#dialog-re-number").remove();
