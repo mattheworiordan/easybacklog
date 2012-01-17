@@ -73,7 +73,14 @@ class StoriesController < ApplicationController
     end
 
     def story_json()
-      @story.to_json(:methods => [:score_statistics, :cost_formatted, :days_formatted, :score], :except => [:updated_at, :created_at])
+      story_methods = if @story.theme.backlog.cost_estimatable?
+        [:score_statistics, :cost_formatted, :days_formatted, :score]
+      elsif @story.theme.backlog.days_estimatable?
+        [:score_statistics, :days_formatted, :score]
+      else
+        [:score_statistics, :score]
+      end
+      @story.to_json(:methods => story_methods, :except => [:updated_at, :created_at])
     end
 
     def update_backlog_metadata

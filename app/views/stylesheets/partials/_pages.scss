@@ -194,7 +194,7 @@ form#new_account {
   }
 }
 
-form#new_backlog, form.edit_backlog, form.edit_company, form.edit_sprint {
+form#new_backlog, form.edit_backlog, form.edit_company, form.edit_sprint, form.edit_account, form#new_account {
   .not-editable-notice {
     @include within-content-notice;
   }
@@ -241,11 +241,21 @@ form#new_backlog, form.edit_backlog, form.edit_company, form.edit_sprint {
       }
     }
   }
+  .cost-elements {
+    margin-left: 20px;
+  }
   input.narrow {
     width: 80px;
   }
   input.error {
     border: 2px solid red;
+  }
+  #use-team-members-container, #use-explicit-velocity-container {
+    margin-left: 20px;
+  }
+  input[disabled] {
+    background-color: #F8F8F8;
+    color: #222;
   }
 }
 

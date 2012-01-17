@@ -29,7 +29,11 @@ Ibacklog::Application.routes.draw do
       end
     end
     resources :users, :controller => 'account_users'
-    resources :companies, :only => [:show, :edit, :update]
+    resources :companies, :only => [:show, :edit, :update] do
+      collection do
+        get 'name_available' => 'companies#name_available'
+      end
+    end
     resources :invites, :only => [:destroy] do
       member do
         get ':security_code' => 'invites#show', :as => 'show'

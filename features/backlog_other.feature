@@ -133,13 +133,51 @@ Feature: Backlog Other Functionality
       And I should see "As Story 1" within row 3, column 3 of the first table
       And I should see "Total for theme 'Theme 1'" within row 5, column 1 of the first table
       And I should see "0.0 days" within row 12, column 2 of the first table
+      And I should see "Cost" within row 2, column 9 of the first table
+      And I should see "Days" within row 2, column 10 of the first table
+
+  Scenario: Export backlog with costs and points disabled
+    When I follow "Settings"
+      And I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
+      And I press "Update backlog settings"
+      And I follow "Export"
+    Then I should not see "Cost" within row 2, column 9 of the first table
+    And I should not see "Days" within row 2, column 10 of the first table
+
+  Scenario: Export backlog with costs disabled
+    When I follow "Settings"
+      And I fill in "Rate (optional)" with ""
+      And I press "Update backlog settings"
+      And I follow "Export"
+    Then I should not see "Cost" within row 2, column 9 of the first table
+    And I should see "Days" within row 2, column 9 of the first table
 
   Scenario: Export snapshot
     Given a snapshot called "Snapshot 1" exists for backlog "Backlog 1"
     When I am on the snapshot base "Snapshot 1" and backlog "Backlog 1" Excel export page
-    Then I should see "TH11" within row 5, column 1 of the first table
-      And I should see "As Story 1" within row 5, column 2 of the first table
-      And I should see "TH11" within row 5, column 9 of the first table
+    Then I should see "TH11" within row 6, column 1 of the first table
+      And I should see "As Story 1" within row 6, column 2 of the first table
+      And I should see "TH11" within row 6, column 9 of the first table
+      And I should see "Cost" within row 4, column 7 of the first table
+      And I should see "Days" within row 4, column 8 of the first table
+
+  Scenario: Export snapshot with costs and points disabled
+    When I follow "Settings"
+      And I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
+      And I press "Update backlog settings"
+    Given a snapshot called "Snapshot 1" exists for backlog "Backlog 1"
+    When I am on the snapshot base "Snapshot 1" and backlog "Backlog 1" Excel export page
+    Then I should not see "Cost" within row 4, column 7 of the first table
+    And I should not see "Days" within row 4, column 7 of the first table
+
+  Scenario: Export snapshot with costs disabled
+    When I follow "Settings"
+      And I fill in "Rate (optional)" with ""
+      And I press "Update backlog settings"
+    Given a snapshot called "Snapshot 1" exists for backlog "Backlog 1"
+    When I am on the snapshot base "Snapshot 1" and backlog "Backlog 1" Excel export page
+    Then I should not see "Cost" within row 4, column 7 of the first table
+    And I should see "Days" within row 4, column 7 of the first table
 
   Scenario: Export PDF cards
     When I follow the PDF link "Print"

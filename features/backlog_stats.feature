@@ -31,3 +31,16 @@ Feature: Backlog Stats
       And the "burn up chart" should be visible
       And the "velocity chart" should be visible
       And the actual completed velocity in the stats JSON for backlog "Cucumber example backlog" should be 2 for sprint 1
+
+  @javascript
+  Scenario: Days and are not visible in the stats when days and cost estimation is turned off
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I follow "Settings"
+      And I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
+      And I press "Update backlog settings"
+    Then I should see the notice "Backlog settings were successfully updated"
+    When I click on the "Stats backlog tab"
+      And I wait 2 seconds
+    Then the "backlog stats for individual velocity" should not be visible
+    And I should see the text "The expected velocity is based on the velocity set up in the most recent sprint"

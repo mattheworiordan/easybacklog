@@ -5,13 +5,17 @@ class Sprint < ActiveRecord::Base
   has_many :sprint_stories, :order => 'position ASC', :dependent => :destroy
 
   validates_uniqueness_of :iteration, :scope => [:backlog_id], :message => 'has already been taken for another sprint'
-  validates_presence_of :iteration, :start_on, :number_team_members, :duration_days
-  validates_numericality_of :number_team_members, :duration_days, :iteration, :greater_than => 0, :message => 'must be a number greater than or equal to one'
+  validates_presence_of :iteration, :start_on, :duration_days
+  validates_presence_of :number_team_members, :unless => lambda { |sprint| sprint.explicit_velocity.present? }
+  validates_presence_of :explicit_velocity, :unless => lambda { |sprint| sprint.backlog.days_estimatable? }
+  validates_numericality_of :duration_days, :iteration, :greater_than => 0, :message => 'must be a number greater than or equal to one'
+  validates_numericality_of :number_team_members, :explicit_velocity, :greater_than => 0, :allow_nil => true
 
-  attr_accessible :number_team_members, :duration_days, :start_on, :completed_at
+  attr_accessible :number_team_members, :duration_days, :start_on, :completed_at, :explicit_velocity
 
-  before_validation :restrict_iteration_changes, :assign_iteration, :check_date_overlaps_and_successive, :ensure_all_stories_are_done
+  before_validation :restrict_iteration_changes, :assign_iteration
   before_validation :restrict_changes_if_completed, :manage_completeness_amongst_other_sprints
+  after_validation :check_date_overlaps_and_successive, :ensure_all_stories_are_done, :disallow_number_team_members_if_not_estimatable
   before_destroy :ensure_sprint_allows_delete
   after_save :manage_sprint_snapshot
 
@@ -56,7 +60,11 @@ class Sprint < ActiveRecord::Base
   end
 
   def total_expected_points
-    backlog.velocity * number_team_members * duration_days
+    if explicit_velocity.present?
+      explicit_velocity
+    else
+      backlog.velocity * number_team_members * duration_days
+    end
   end
 
   def total_allocated_points
@@ -69,11 +77,15 @@ class Sprint < ActiveRecord::Base
 
   # calculate total expected points based on the backlog average velocity as opposed to configured velocity
   def total_expected_based_on_average_points
-    backlog.average_velocity * number_team_members * duration_days
+    if (backlog.sprints.completed.present?)
+      backlog.sprints.completed.inject(0) { |sum, sprint| sum + sprint.total_completed_points }.to_f / backlog.sprints.completed.count
+    else
+      total_expected_points
+    end
   end
 
   def actual_velocity
-    total_completed_points.to_f / number_team_members.to_f / duration_days.to_f
+    total_completed_points.to_f / number_team_members.to_f / duration_days.to_f if number_team_members.present?
   end
 
   # calculates completed on based on day before next sprint starting
@@ -140,6 +152,18 @@ class Sprint < ActiveRecord::Base
     end
   end
 
+  # method typically called when a backlog velocity is removed and we therefore need to retain the velocity set for each sprint
+  def convert_to_explicit_velocity
+    if explicit_velocity.blank?
+      update_attribute :explicit_velocity, total_expected_points
+      update_attribute :number_team_members, nil
+    end
+  end
+
+  def team_velocity_estimatable?
+    explicit_velocity.blank?
+  end
+
   private
     # automatically assign a sequential iteration number
     def assign_iteration
@@ -164,7 +188,7 @@ class Sprint < ActiveRecord::Base
 
     # ensure the date does not overlap with another iteration
     def check_date_overlaps_and_successive
-      unless backlog.blank?
+      unless backlog.blank? || errors[:start_on].present?
         other_sprints = backlog.sprints.order('iteration').reject { |s| s.iteration == self.iteration }
         other_sprints.each do |sprint|
           date_range = sprint.start_on..sprint.end_on
@@ -242,6 +266,14 @@ class Sprint < ActiveRecord::Base
         create_snapshot_if_missing
       elsif snapshot.present? && start_on.to_time > Time.now
         snapshot.delete
+      end
+    end
+
+    # if a backlog does not have a velocity set
+    # then don't allow the number of team members to be set
+    def disallow_number_team_members_if_not_estimatable
+      if number_team_members.present? && backlog.velocity.blank?
+        errors.add :number_team_members, 'is not editable with this backlog'
       end
     end
 end

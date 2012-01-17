@@ -16,13 +16,16 @@
           - if index < story.acceptance_criteria.count-1
             %br
     %td{ :valign => 'top' }= color_text(story, :comments, story.base.comments)
+    - score_style = 'border-right: 1px solid #AAA' unless show_days
     - if use_50_90
       %td{ :valign => 'top' }= color_number(story, :score_50, :base, story.base.score_50)
-      %td{ :valign => 'top' }= color_number(story, :score_90, :base, story.base.score_90)
+      %td{ :valign => 'top', :style => score_style }= color_number(story, :score_90, :base, story.base.score_90)
     - else
-      %td{ :valign => 'top' }= color_number(story, :score, :base, story.base.score)
-    %td{ :valign => 'top' }= color_number(story, :cost_formatted, :base, story.base.cost_formatted)
-    %td{ :style => 'border-right: 1px solid #AAA', :valign => 'top' }= color_number(story, :days_formatted, :base, story.base.days_formatted)
+      %td{ :valign => 'top', :style => score_style }= color_number(story, :score, :base, story.base.score)
+    - if show_costs
+      %td{ :valign => 'top' }= color_number(story, :cost_formatted, :base, story.base.cost_formatted)
+    - if show_days
+      %td{ :style => 'border-right: 1px solid #AAA', :valign => 'top' }= color_number(story, :days_formatted, :base, story.base.days_formatted)
   - if story.target.blank?
     %td{ :colspan => columns} &nbsp;
   - else
@@ -40,10 +43,13 @@
           - if index < story.acceptance_criteria.count-1
             %br
     %td{ :valign => 'top' }= color_text(story, :comments, story.target.comments)
+    - score_style = 'border-right: 1px solid #AAA' unless show_days
     - if use_50_90
       %td{ :valign => 'top' }= color_number(story, :score_50, :target, story.target.score_50)
       %td{ :valign => 'top' }= color_number(story, :score_90, :target, story.target.score_90)
     - else
       %td{ :valign => 'top' }= color_number(story, :score, :target, story.target.score)
-    %td{ :valign => 'top' }= color_number(story, :cost_formatted, :target, story.target.cost_formatted)
-    %td{ :valign => 'top' }= color_number(story, :days_formatted, :target, story.target.days_formatted)
+    - if show_costs
+      %td{ :valign => 'top' }= color_number(story, :cost_formatted, :target, story.target.cost_formatted)
+    - if show_days
+      %td{ :valign => 'top' }= color_number(story, :days_formatted, :target, story.target.days_formatted)

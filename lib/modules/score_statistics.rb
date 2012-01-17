@@ -19,20 +19,22 @@ module ScoreStatistics
       end
 
       themes = backlog.themes.map do |theme|
-        {
+        stats = {
           :theme_id => theme.id,
-          :points => theme.points,
-          :cost_formatted => theme.cost_formatted,
-          :days => theme.days
+          :points => theme.points
         }
+        stats[:cost_formatted] = theme.cost_formatted if backlog.cost_estimatable?
+        stats[:days] = theme.days if backlog.days_estimatable?
+        stats
       end
 
-      {
-          :points => backlog.points,
-          :cost_formatted => backlog.cost_formatted,
-          :days => backlog.days,
-          :themes => themes
+      stats = {
+        :points => backlog.points,
+        :themes => themes
       }
+      stats[:cost_formatted] = backlog.cost_formatted if backlog.cost_estimatable?
+      stats[:days] = backlog.days if backlog.days_estimatable?
+      stats
     end
   end
 

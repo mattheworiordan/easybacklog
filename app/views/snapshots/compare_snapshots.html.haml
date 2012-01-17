@@ -1,5 +1,7 @@
 - use_50_90 = @base.use_50_90? || @target.use_50_90?
-- columns = 8 - (use_50_90 ? 0 : 1)
+- show_costs = @base.cost_estimatable? && @target.cost_estimatable? # both snapshots must support costs to compare
+- show_days = @base.days_estimatable? && @target.days_estimatable? # both snapshots must support days to compare
+- columns = 8 - (use_50_90 ? 0 : 1) - (show_costs ? 0 : 1) - (show_days ? 0 : 1)
 
 %html{:xmlns => "http://www.w3.org/TR/REC-html40", "xmlns:o" => "urn:schemas-microsoft-com:office:office", "xmlns:v" => "urn:schemas-microsoft-com:vml", "xmlns:x" => "urn:schemas-microsoft-com:office:excel"}
   %head
@@ -39,70 +41,82 @@
             easyBacklog - Snapshot Comparison
           %td.actions{ :colspan => columns }
             &nbsp;
-        %tr.title{:style => 'border-bottom: 1px solid #AAA'}
-          %td{:colspan => columns - 4}
+        %tr.title
+          %td{:colspan => columns, :style => 'border-right: 1px solid #AAA'}
             %font.backlog-heading{:size => 3}= "#{@base.name}, #{backlog_date @base}"
-          %td{:colspan => 4, :align => 'center', :style => 'border-left: 1px solid #CCC; border-right: 1px solid #AAA' }
-            %font{:size => 1}
-              %span.rate{:style => 'margin-bottom: 5px;' }
-                Rate:
-                = color_number(@comparison, :rate, :base, @base.rate_formatted)
-              %br.rate
-              %span
-                Velocity:
-                = color_number(@comparison, :velocity, :base, "#{format('%0.1f', @base.velocity)}")
-          %td{:colspan => columns - 4}
+          %td{:colspan => columns}
             %font.backlog-heading{:size => 3}= "#{@target.name}, #{backlog_date @target}"
-          %td{:colspan => 4, :align => 'center', :style => 'border-left: 1px solid #CCC;' }
+        %tr{:style => 'border-bottom: 1px solid #AAA'}
+          %td{:colspan => columns, :style => "text-align: right; border-right: 1px solid #AAA", :align => 'right' }
             %font{:size => 1}
-              %span.rate{:style => 'margin-bottom: 5px;' }
-                Rate:
-                = color_number(@comparison, :rate, :target, @target.rate_formatted)
-              %br.rate
-              %span
-                Velocity:
-                = color_number(@comparison, :velocity, :target, "#{format('%0.1f', @target.velocity)}")
+              - if show_costs
+                %span.rate{:style => 'margin-bottom: 5px;' }
+                  Rate:
+                  = "#{color_number(@comparison, :rate, :base, @base.rate_formatted)}, "
+              - if show_days
+                %span
+                  Velocity:
+                  = color_number(@comparison, :velocity, :base, "#{format('%0.1f', @base.velocity)}")
+          %td{:colspan => columns, :style=>"text-align: right", :align => 'right' }
+            %font{:size => 1}
+              - if show_costs
+                %span.rate{:style => 'margin-bottom: 5px;' }
+                  Rate:
+                  = "#{color_number(@comparison, :rate, :target, @target.rate_formatted)}, "
+              - if show_days
+                %span
+                  Velocity:
+                  = color_number(@comparison, :velocity, :target, "#{format('%0.1f', @target.velocity)}")
         %tr.row-headers{:style => 'border-bottom: 1px solid #AAA; background-color: #EEE;'}
           %th{:style => 'border-left: none; border-right: 1px solid #CCC'} ID
-          %th{:style => 'border-right: 1px solid #CCC'}  User Story
-          %th{:style => 'border-right: 1px solid #CCC'}  Acceptance Criteria
-          %th{:style => 'border-right: 1px solid #CCC'}  Comments
+          %th{:style => 'border-right: 1px solid #CCC'} User Story
+          %th{:style => 'border-right: 1px solid #CCC'} Acceptance Criteria
+          %th{:style => 'border-right: 1px solid #CCC'} Comments
           - if use_50_90
-            %th{:style => 'border-right: 1px solid #CCC'}  50
-            %th{:style => 'border-right: 1px solid #CCC'}  90
+            %th{:style => 'border-right: 1px solid #CCC'} 50
+            %th{:style => 'border-right: 1px solid #CCC'} 90
           - else
-            %th{:style => 'border-right: 1px solid #CCC'}  Score
-          %th{:style => 'border-right: 1px solid #CCC'}  Cost
-          %th{:style => 'border-right: 1px solid #AAA'} Days
-          %th{:style => 'border-right: 1px solid #CCC'}  ID
-          %th{:style => 'border-right: 1px solid #CCC'}  User Story
-          %th{:style => 'border-right: 1px solid #CCC'}  Acceptance Criteria
-          %th{:style => 'border-right: 1px solid #CCC'}  Comments
+            %th{:style => 'border-right: 1px solid #CCC'} Score
+          - if show_costs
+            %th{:style => 'border-right: 1px solid #CCC'} Cost
+          - if show_days
+            %th{:style => 'border-right: 1px solid #AAA'} Days
+          %th{:style => 'border-right: 1px solid #CCC'} ID
+          %th{:style => 'border-right: 1px solid #CCC'} User Story
+          %th{:style => 'border-right: 1px solid #CCC'} Acceptance Criteria
+          %th{:style => 'border-right: 1px solid #CCC'} Comments
+          - score_style = 'border-right: 1px solid #CCC' if show_days
           - if use_50_90
-            %th{:style => 'border-right: 1px solid #CCC'}  50
-            %th{:style => 'border-right: 1px solid #CCC'}  90
+            %th{:style => 'border-right: 1px solid #CCC'} 50
+            %th{:style => score_style || ''} 90
           - else
-            %th{:style => 'border-right: 1px solid #CCC'}  Score
-          %th{:style => 'border-right: 1px solid #CCC'}  Cost
-          %th Days
+            %th{:style => score_style || ''} Score
+          - if show_costs
+            %th{:style => 'border-right: 1px solid #CCC'} Cost
+          - if show_days
+            %th Days
         - @comparison.themes.each do |theme|
-          = render :partial => 'theme', :locals => { :columns => columns, :theme => theme, :use_50_90 => use_50_90 }
+          = render :partial => 'theme', :locals => { :columns => columns, :theme => theme, :use_50_90 => use_50_90, :show_costs => show_costs, :show_days => show_days }
         %tr{:style => 'border-top: 1px solid #333; border-bottom: 1px solid #333' }
-          %td{:colspan => columns, :style => 'border-right: 1px solid #AAA;', :align => 'right' }
+          %td{:colspan => columns, :style => 'border-right: 1px solid #AAA; text-align: right', :align => 'right' }
             %font{:size => 3}
               %b
                 Totals:
                 = color_number(@comparison, :points, :base, "#{format('%0.1f', @base.points)} points")
-                ="/"
-                = color_number(@comparison, :cost_formatted, :base, "#{@base.cost_formatted}")
-                ="/"
-                = color_number(@comparison, :days_formatted, :base, "#{@base.days_formatted} days")
-          %td{:colspan => columns, :align => 'right' }
+                - if show_costs
+                  ="/"
+                  = color_number(@comparison, :cost_formatted, :base, "#{@base.cost_formatted}")
+                - if show_days
+                  ="/"
+                  = color_number(@comparison, :days_formatted, :base, "#{@base.days_formatted} days")
+          %td{:colspan => columns, :align => 'right', :style => 'text-align: right' }
             %font{:size => 3}
               %b
                 Totals:
                 = color_number(@comparison, :points, :target, "#{format('%0.1f', @target.points)} points")
-                ="/"
-                = color_number(@comparison, :cost_formatted, :target, "#{@target.cost_formatted}")
-                ="/"
-                = color_number(@comparison, :days_formatted, :target, "#{@target.days_formatted} days")
+                - if show_costs
+                  ="/"
+                  = color_number(@comparison, :cost_formatted, :target, "#{@target.cost_formatted}")
+                - if show_days
+                  ="/"
+                  = color_number(@comparison, :days_formatted, :target, "#{@target.days_formatted} days")

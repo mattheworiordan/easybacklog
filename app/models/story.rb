@@ -26,7 +26,7 @@ class Story < ActiveRecord::Base
   end
 
   def cost
-    days * theme.backlog.rate
+    days * theme.backlog.rate if theme.backlog.cost_estimatable?
   end
 
   def cost_formatted
@@ -38,7 +38,7 @@ class Story < ActiveRecord::Base
   end
 
   def days
-    points / theme.backlog.velocity
+    points / theme.backlog.velocity if theme.backlog.days_estimatable?
   end
 
   def days_formatted

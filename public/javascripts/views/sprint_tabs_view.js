@@ -152,18 +152,25 @@ App.Views.SprintTabs = {
     },
 
     createNew: function(event) {
-      var view = this;
+      var view = this,
+          backlogVelocity = this.collection.backlog.get('velocity');
+
       event.preventDefault();
+
       $('#dialog-new-sprint').remove(); // ensure old dialog HTML is not still in the DOM
-      $('body').append(JST['sprints/new-dialog']({ sprints: this.collection }));
+      $('body').append(JST['sprints/new-dialog']({
+        sprints: this.collection,
+        backlog: this.collection.backlog
+      }));
+
       $('#dialog-new-sprint').dialog({
         resizable: false,
-        height:350,
-        width: 400,
+        height: backlogVelocity ? 400 : 285, // if no estimate by points per day option, then dialog is a lot smaller
+        width: 470,
         modal: true,
         buttons: {
           Create: function() {
-            var dialog = $(this);
+            var dialog = $(this), modelData, model;
 
             // check that client side validation reports no problems
             if (!dialog.find('form').valid()) {
@@ -176,13 +183,18 @@ App.Views.SprintTabs = {
             $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
             $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').hide();
 
-            var model = new Sprint({
+            modelData = {
               start_on: $.datepicker.formatDate('yy-mm-dd', dialog.find('#start-on').datepicker('getDate')),
-              duration_days: dialog.find('#duration-days').val(),
-              number_team_members: dialog.find('#number-team-members').val()
-            });
+              duration_days: dialog.find('#duration-days').val()
+            }
+            if (!backlogVelocity || dialog.find('#use-explicit-velocity').is(':checked')) {
+              modelData['explicit_velocity'] = dialog.find('#explicit-velocity').val();
+            } else {
+              modelData['number_team_members'] = dialog.find('#number-team-members').val();
+            }
+            model = new Sprint(modelData);
 
-            if (view.collection.length == 0) {
+            if (view.collection.length === 0) {
               // first sprint is being added, store the user's duration in days for a sprint so that
               // we default to this next time
               $.cookie('sprint_duration', model.get('duration_days'));
@@ -196,10 +208,16 @@ App.Views.SprintTabs = {
                 $(dialog).dialog("close");
               },
               error: function(model, error) {
+                var errorMessage;
                 if (window.console) { console.log(JSON.stringify(error)); }
                 if ($(dialog).is(':visible')) {
-                  $(dialog).find('p.intro').addClass('error').html("Oops, we could not create a sprint as it looks like you haven't filled in everything correctly:<br>" +
-                    JSON.parse(error.responseText).message);
+                  try {
+                    errorMessage = JSON.parse(error.responseText).message;
+                    $(dialog).find('p.intro').addClass('error').html("Oops, we could not create a sprint as it looks like you haven't filled in everything correctly:<br>" + errorMessage);
+                  } catch (e) {
+                    $(dialog).find('p.intro').addClass('error').html("Oops, somethign has gone wrong and we could not create the sprint.  Please try again.");
+                    if (window.console) { console.log(e); }
+                  }
                   $(dialog).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Cancel');
                   $(dialog).parent().find('.ui-dialog-buttonset button:nth-child(1)').show();
                   $(dialog).find('p.progress-placeholder').html('');
@@ -219,37 +237,24 @@ App.Views.SprintTabs = {
       });
 
       var dialog = $('#dialog-new-sprint');
-      dialog.find('#start-on').datepicker();
+      dialog.find('#start-on').blur().datepicker(); // blur first so that when user clicks on date picker the date picker shows
 
       // check that validation plugin is loaded as it is loaded only when document.ready
       if (_.isFunction($.fn.validate)) {
-        dialog.find('form').validate({
-          rules: {
-            duration_days: {
-              required: true,
-              digits: true,
-              min: 1
-            },
-            number_team_members: {
-              required: true,
-              digits: true,
-              min: 1
-            }
-          },
-          messages: {
-            duration_days: {
-              required: 'Sprint duration is required',
-              digits: 'Enter a value using whole numbers only',
-              min: 'Sprint duration must be at least 1 day'
-            },
-            number_team_members: {
-              required: 'Number of team members is required',
-              digits: 'Enter a value using whole numbers only',
-              min: 'Team must comprise of at least one member'
-            }
-          }
-        });
+        dialog.find('form').validate(App.Views.SharedSprintSettings.formValidationConfig);
       }
+
+      var dayInMs = 1000 * 60 * 60 * 24,
+          shiftToNextWeekday = function(dateInMs) {
+            var date = new Date(dateInMs);
+            switch (date.getDay()) {
+              case 0:
+                return dateInMs + dayInMs;
+              case 6:
+                return dateInMs + (dayInMs * 2);
+            }
+            return dateInMs;
+          };
 
       // set sensible defaults for new sprint based on previous sprints (if they exist)
       if (this.collection.length === 0) {
@@ -259,18 +264,17 @@ App.Views.SprintTabs = {
         dialog.find('#number-team-members').val('1');
       } else if (this.collection.length == 1) {
         // we have one previous sprint so we can make some assumptions
-        var dayInMs = 1000 * 60 * 60 * 24,
-            lastSprint = this.collection.at(0),
+        var lastSprint = this.collection.at(0),
             lastDate = parseRubyDate(lastSprint.get('start_on')).getTime(),
             lastDuration = Number(lastSprint.get('duration_days')),
             nextDate = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs); // next sprint starts next day plus account for weekends every 5 days
-        dialog.find('#start-on').datepicker("setDate", new Date(nextDate));
+        dialog.find('#start-on').datepicker("setDate", new Date(shiftToNextWeekday(nextDate)));
         dialog.find('#duration-days').val(lastDuration);
-        dialog.find('#number-team-members').val(lastSprint.get('number_team_members'));
+        dialog.find('#number-team-members').val(niceNum(lastSprint.get('number_team_members')));
+        dialog.find('#explicit-velocity').val(niceNum(lastSprint.get('explicit_velocity')));
       } else {
-          // we have one previous sprint so we can make some assumptions
-        var dayInMs = 1000 * 60 * 60 * 24,
-            sprintsDesc = this.collection.sortBy(function(sprint) { return sprint.get('iteration'); }).reverse(),
+        // we have more than one previous sprint so we can make some assumptions
+        var sprintsDesc = this.collection.sortBy(function(sprint) { return sprint.get('iteration'); }).reverse(),
             lastSprint = sprintsDesc[0],
             previousSprint = sprintsDesc[1],
             lastDate = parseRubyDate(lastSprint.get('start_on')).getTime(),
@@ -279,10 +283,13 @@ App.Views.SprintTabs = {
             nextDateByDuration = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs), // next sprint starts next day plus account for weekends every 5 days
             nextDateByTimeBetweenSprints = lastDate + timePassedBetweenDates,
             nextDate = Math.max(nextDateByDuration, nextDateByTimeBetweenSprints);
-        dialog.find('#start-on').datepicker("setDate", new Date(nextDate));
+        dialog.find('#start-on').datepicker("setDate", new Date(shiftToNextWeekday(nextDate)));
         dialog.find('#duration-days').val(lastSprint.get('duration_days'));
-        dialog.find('#number-team-members').val(lastSprint.get('number_team_members'));
+        dialog.find('#number-team-members').val(niceNum(lastSprint.get('number_team_members')));
+        dialog.find('#explicit-velocity').val(niceNum(lastSprint.get('explicit_velocity')));
       }
+
+      App.Views.SharedSprintSettings.addFormBehaviour(dialog, backlogVelocity);
     }
   }),
 

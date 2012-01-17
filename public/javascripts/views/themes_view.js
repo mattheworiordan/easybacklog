@@ -21,7 +21,6 @@ App.Views.Themes = {
 
     initialize: function() {
       this.collection = this.options.collection;
-      this.use5090estimates = this.options.use5090estimates;
       _.bindAll(this, 'orderChanged');
     },
 
@@ -30,7 +29,7 @@ App.Views.Themes = {
       $(this.el).html(JST['themes/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
-        var view = new App.Views.Themes.Show({ model: model, id: that.childId(model), use5090estimates: that.use5090estimates });
+        var view = new App.Views.Themes.Show(App.Views.Helpers.addUseOptions({ model: model, id: that.childId(model) }, that.options));
         that.$('>ul').append(view.render().el);
       });
 
@@ -82,7 +81,7 @@ App.Views.Themes = {
       event.preventDefault();
       var model = new Theme();
       this.collection.add(model);
-      this.$('ul.themes li:last').before(new App.Views.Themes.Show({ model: model, use5090estimates: this.use5090estimates }).render().el);
+      this.$('ul.themes li:last').before(new App.Views.Themes.Show(App.Views.Helpers.addUseOptions({ model: model }, this.options)).render().el);
       var that = this;
       this.$('ul.themes li.theme:last').css('display','none').slideDown('fast', function() {
         $(that.el).find('ul.themes li.theme:last>.theme-data .name .data').click();
@@ -150,14 +149,13 @@ App.Views.Themes = {
     },
 
     initialize: function() {
-      this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
       _.bindAll(this, 'navigateEvent', 'reNumberStoriesAction');
     },
 
     render: function() {
       $(this.el).html( JST['themes/show']({ model: this.model }) );
-      var view = new App.Views.Stories.Index({ collection: this.model.Stories(), use5090estimates: this.use5090estimates });
+      var view = new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({ collection: this.model.Stories() }, this.options));
       this.$('>.stories').prepend(view.render().el);
 
       this.updateStatistics();
@@ -303,7 +301,7 @@ App.Views.Themes = {
     },
 
     updateStatistics: function() {
-      this.$('.theme-stats div').html( JST['themes/stats']({ model: this.model }) );
+      this.$('.theme-stats div').html( JST['themes/stats'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
     },
 
     reNumberStories: function(event) {

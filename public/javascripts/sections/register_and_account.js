@@ -30,23 +30,25 @@ $(document).ready(function() {
     }
   }
 
-  // standard user rules
-  _.extend(rules, {
-    'user[name]': 'required',
-    'user[email]': {
-      required: true,
-      email: true,
-      remote: '/users/email_available'
-    },
-    'user[password]': {
-      required: true,
-      minlength: 6
-    },
-    'user[password_confirmation]': {
-      required: true,
-      equalTo: "#user_password"
-    }
-  });
+  // standard user rules unless creating a new account
+  if (frm.find('input#user_name')) {
+    _.extend(rules, {
+      'user[name]': 'required',
+      'user[email]': {
+        required: true,
+        email: true,
+        remote: '/users/email_available'
+      },
+      'user[password]': {
+        required: true,
+        minlength: 6
+      },
+      'user[password_confirmation]': {
+        required: true,
+        equalTo: "#user_password"
+      }
+    });
+  }
 
   // validate signup form on keyup and submit
   frm.validate({
@@ -80,5 +82,8 @@ $(document).ready(function() {
       $('form#user_new input#user_submit, form#new_account input#account_submit').addClass('greyed').attr('disabled','true').val('Preparing your account...');
       $('.waiting').slideDown();
     }
-  })
+  });
+
+  // set up backlog settings, if not editing the backlog, then default to show points if no preference yet exists
+  App.Views.Shared.EnableBacklogEstimationPreferences(frm, 'account');
 });

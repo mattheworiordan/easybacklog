@@ -18,7 +18,7 @@ class SprintsController < ApplicationController
   end
 
   def create
-    @sprint = @backlog.sprints.new(params)
+    @sprint = @backlog.sprints.new(params.select { |key,val| [:start_on, :duration_days, :explicit_velocity, :number_team_members].include?(key.to_sym) })
     if @sprint.save
       render :json => @sprint.to_json(:methods => SPRINT_METHODS)
     else
@@ -29,9 +29,10 @@ class SprintsController < ApplicationController
   def update
     @sprint = @backlog.sprints.find(params[:id])
 
+    # changing completed is exclusive, no other updates will occur at the same time
     if (%w(true false).include? params[:completed])
       begin
-      # special params set by front end to mark as compelted or incomplete which can throw an erro
+      # special params set by front end to mark as completed or incomplete which can throw an error
         @sprint.mark_as_complete if params[:completed] == 'true'
         @sprint.mark_as_incomplete if params[:completed] == 'false'
       rescue Exception => e

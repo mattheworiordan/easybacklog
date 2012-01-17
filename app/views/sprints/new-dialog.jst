@@ -5,24 +5,71 @@
     </p>
     <p>
       <div>
-        <p>
-          <label for="number-team-members">Number of team members working on completing stories</label>
-        </p>
-        <p>
-          <input id="number-team-members" name="number_team_members" type="text" value="">
-        </p>
-        <p>
-          <label for="start-on">Sprint start date</label>
-        </p>
-        <p>
-          <input id="start-on" name="start_on" type="text" value="">
-        </p>
-        <p>
-          <label for="duration-days">Duration of sprint in days (typically working days)</label>
-        </p>
-        <p>
-          <input id="duration-days" name="duration_days" type="text" value="">
-        </p>
+        <table>
+          <tr>
+            <td class="space">
+              <label for="start-on">Sprint start date</label>
+              <br/>
+              <input id="start-on" name="start_on" type="text" autocomplete="off">
+            </td>
+            <td>
+              <label for="duration-days">Duration of sprint in working days</label>
+              <br />
+              <input id="duration-days" name="duration_days" type="text" autocomplete="off">
+            </td>
+          </tr>
+        </table>
+
+        <table>
+          <% if (backlog.get('velocity')) { %>
+            <tr class="question">
+              <td colspan="2">
+                How would you like the team velocity for this sprint to be determined?
+              </td>
+            </tr>
+            <tr class="heading">
+              <td rowspan="3"><input type="radio" id="use-team-members" name="calculation_method"></td>
+              <td>
+                <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day and team size</label>
+              </td>
+            </tr>
+            <tr class="sub-section use-team-members">
+              <td>
+                <label for="number-team-members">Enter your team size</label>
+                <div>
+                  <input id="number-team-members" name="number_team_members" type="text" autocomplete="off">
+                </div>
+              </td>
+            </tr>
+            <tr class="sub-section use-team-members">
+              <td>
+                <label>Expected velocity:</label>
+                <div id="expected-velocity">x points</div>
+              </td>
+            </tr>
+          <% } %>
+
+          <tr class="heading">
+            <% if (backlog.get('velocity')) { %>
+              <td rowspan="3"><input type="radio" id="use-explicit-velocity" name="calculation_method" autocomplete="off"></td>
+              <td>
+                <label for="use-explicit-velocity">Manually define a team velocity for this sprint</label>
+              </td>
+            <% } else { %>
+              <td><label for="explicit-velocity">Expected team velocity for this sprint</label></td>
+            <% } %>
+          </tr>
+          <tr class="sub-section use-explicit-velocity">
+            <td>
+              <% if (backlog.get('velocity')) { %>
+              <label for="explicit-velocity">Velocity in points</label>
+              <% } %>
+              <div>
+                <input id="explicit-velocity" name="explicit_velocity" type="text">
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
     </p>
     <p class="progress-placeholder"></p>

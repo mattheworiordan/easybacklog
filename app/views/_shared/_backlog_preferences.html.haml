@@ -1,0 +1,38 @@
+- # when editing a backlog, we are no longer dealing with defaults but are in fact dealing with actual setting such as velocity
+- prefix = namespace == 'backlog' ? '' : 'default_'
+
+- # We are editing account/company/backlog details so show default day rate & velocity & 50_90 rule
+.label-spacer
+
+= f.label :estimates, "#{prefix == '' ? 'Would' : 'By default, would'} you like to have the man days for each story and theme automatically calculated?"
+.input-row
+  = f.radio_button :days_estimatable?, false
+  = label_tag "#{namespace}_days_estimatable_false", 'No, I\'d prefer to estimate once I set up my first iteration and defined the velocity', :class => 'light', :id => 'days_estimatable_false_label'
+.input-row
+  = f.radio_button :days_estimatable?, true
+  = label_tag "#{namespace}_days_estimatable_true", 'Yes, I would like to automatically estimate the days required to deliver my backlog', :class => 'light', :id => 'days_estimatable_true_label'
+.cost-elements
+  = f.label "#{prefix}velocity".to_sym, "Velocity"
+  .label-hint
+    (the average velocity each team member achieves per working day)
+  .input-row
+    = f.text_field "#{prefix}velocity".to_sym, :autocomplete => 'off'
+    = hidden_field_tag :velocity_was
+
+  .label-spacer
+
+  = f.label "#{prefix}rate".to_sym, "Rate (optional)"
+  .label-hint
+    (if you want to estimate costs, enter your average daily rate without the currency symbol, or else leave blank)
+  .input-row
+    = f.text_field "#{prefix}rate".to_sym, :autocomplete => 'off'
+    = hidden_field_tag :rate_was
+
+- # We are editing account/company/backlog details so show default day rate & velocity & 50_90 rule
+.input-row.for-check-box
+  = f.check_box "#{prefix}use_50_90".to_sym
+  = f.label "#{prefix}use_50_90".to_sym, "#{prefix == '' ? 'Use' : 'By default, use'} the 50/90 estimation method"
+.form-hint
+  If you are not sure what the
+  = link_to '50% / 90% estimation method', 'http://www.calgaryapln.org/files/AgileEstimationandPlanning.pdf', :target => '_blank'
+  is, then leave this unchecked.

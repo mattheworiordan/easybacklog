@@ -39,11 +39,13 @@ javascripts:
   users:
     - public/javascripts/sections/users.js
   register:
-    - public/javascripts/sections/register.js
+    - public/javascripts/sections/shared_backlog_preferences.js
+    - public/javascripts/sections/register_and_account.js
   backlog_settings:
     - public/javascripts/views/backlog_settings_view.js
     - public/javascripts/routers/backlog_settings_router.js
   manage_backlog:
+    - public/javascripts/sections/shared_backlog_preferences.js
     - public/javascripts/sections/manage_backlog.js
   validation:
     - public/javascripts/vendor/conditional/jquery.validate.js
@@ -54,6 +56,11 @@ javascripts:
     - public/javascripts/sections/beta_signup.js
   charts:
     - public/javascripts/vendor/conditional/highcharts.src.js
+  company:
+    - public/javascripts/sections/shared_backlog_preferences.js
+    - public/javascripts/sections/company.js
+  account:
+    - public/javascripts/sections/register_and_account.js
 stylesheets:
   common:
     - tmp/stylesheets/global.css

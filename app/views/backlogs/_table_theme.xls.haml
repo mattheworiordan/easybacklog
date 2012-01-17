@@ -16,6 +16,6 @@
     = t 'backlog.totals.theme', :default => "Total for theme '#{theme.name}'", :name => theme.name
   %td{:bgcolor => '#DDDDDD', :colspan => total_columns - 4, :align => 'right' }
     %b
-      = export_totals(theme.points, theme.cost_formatted, theme.days_formatted)
+      = export_totals(theme)
 %tr
   %td{:colspan => total_columns, :height => 5}

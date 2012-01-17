@@ -1,5 +1,9 @@
 - title 'Edit Company Defaults'
 
+- content_for :head do
+  = include_javascripts :validation
+  = include_javascripts :company
+
 - content_for :title do
   %h1 Edit Company Defaults
 
@@ -18,30 +22,10 @@
   = f.label :name, "Company Name"
   .input-row
     = f.text_field :name
+    - if @company.id.present?
+      = hidden_field_tag :company_name_original, @company.name_was
 
-  .label-spacer
-
-  = f.label :default_rate, "Default day rate"
-  .label-hint
-    (your average daily rate without the currency symbol)
-  .input-row
-    = f.text_field :default_rate
-
-  .label-spacer
-
-  = f.label :default_velocity, "Default velocity achieved per day"
-  .label-hint
-    (the average velocity each team member achieves per day)
-  .input-row
-    = f.text_field :default_velocity
-
-  .label-spacer
-
-  .input-row.for-check-box
-    = f.check_box :default_use_50_90
-    = f.label :default_use_50_90, "By default, use the 50/90 estimation method"
-    .label-hint
-      (leave this unchecked to use the simpler single score system)
+  = render :partial => '/_shared/backlog_preferences', :locals => { :context => @company, :namespace => 'company', :f => f }
 
   %br/
   = f.submit "Update company"

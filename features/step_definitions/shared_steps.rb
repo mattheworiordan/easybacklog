@@ -37,11 +37,14 @@ end
 
 Then /^(?:|I )should (|not )see the (notice|alert|error|warning) "([^"]+)"$/ do |negation, notice_alert, message|
   notice_alert = 'error' if notice_alert == 'alert' # errors and alerts are stored in the same .error class
-  within("#alert-space .#{notice_alert}") do |content|
-    if negation.strip == "not"
-      page.should_not have_content(message)
-    else
-      page.should have_content(message)
+  selector = "#alert-space .#{notice_alert}"
+  unless negation.strip == "not" && page.has_no_selector?(selector) # if notice not shown at all allow this to pass if in the negative
+    within(selector) do |content|
+      if negation.strip == "not"
+        page.should_not have_content(message)
+      else
+        page.should have_content(message)
+      end
     end
   end
 end
@@ -108,9 +111,21 @@ Then /^within (?:|the )"([^"]*)" there should be a clickable element with the te
   page.evaluate_script(%{$('#{selector}').find('input[value="#{text}"],button:contains("#{text}"),a:contains("#{text}")').length}).should > 0
 end
 
-Then /^the (?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
+Then /^(?:a |the )(?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|
   selector = selector_to(selector)
   page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
+end
+
+Then /^(?:the |)"([^"]+)" should be disabled$/ do |field_selector|
+  selector = selector_to(field_selector)
+  all_disabled = page.evaluate_script <<-JS
+    (function() {
+      var allDisabled = true;
+      $('#{field_selector}').each(function(index, elem) { if (!$(elem).attr('disabled')) { allDisabled = false; } });
+      return allDisabled;
+    })();
+  JS
+  all_disabled.should == true
 end
 
 Then /^I should see the following data in column (\d+) of "([^"]+)" table:$/ do |data_column, table_path, expected_table|

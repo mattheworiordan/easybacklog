@@ -50,6 +50,9 @@ module HtmlSelectorHelpers
     when /^filter menu$/
       '#backlog-data-area .actions .filter'
 
+    when /^filter notifier$/
+      '#backlog-container .filter-notifier'
+
     when /^create new snapshot button$/
       'a#new-snapshot'
 
@@ -130,6 +133,8 @@ module HtmlSelectorHelpers
         '.score-50 .data'
       when '90 score'
         '.score-90 .data'
+      when 'score'
+        '.score .data'
       when 'duplicate'
         '.story-actions .duplicate-story a'
       when 'delete'
@@ -160,6 +165,9 @@ module HtmlSelectorHelpers
 
     when /^delete theme buttons?$/
       'ul.themes li.theme .theme-actions .delete-theme a'
+
+    when /^done stor(?:y|ies)$/
+      'ul.themes li.theme li.story.locked:visible'
 
     ##
     # Acceptance criteria
@@ -195,7 +203,28 @@ module HtmlSelectorHelpers
     ## Backlog tabs
     #
     when /^(.*) backlog tab$/
-      "#backlog-tabs li:contains(#{$1}) a"
+      "#backlog-tabs li:not(.scroller):contains(#{$1}) a, #backlog-settings-tabs li:not(.scroller):contains(#{$1}) a"
+
+    ## Backlog sprints
+    #
+    when /^add sprint button$/
+      '#backlog-tabs #add-sprint a'
+
+    when /^new sprint dialog box$/
+      '.ui-dialog #dialog-new-sprint'
+
+    when /^new sprint estimation question$/
+      '#dialog-new-sprint tr.question'
+
+    when /^edit sprint estimation question$/
+      'form.edit_sprint div.question'
+
+    when /^new sprint expected velocity$/
+      '#dialog-new-sprint #expected-velocity'
+
+    when /^edit sprint expected velocity$/
+      'form.edit_sprint #expected-velocity'
+
 
     ## Backlog stats
     #
@@ -219,6 +248,9 @@ module HtmlSelectorHelpers
       end
       ".stats ##{chart} .highcharts-container"
 
+    when /^backlog stats for individual velocity$/
+      'table.comparison tr.per-day'
+
     ##
     # Backlog settings
     when /^non editable notice$/
@@ -226,6 +258,12 @@ module HtmlSelectorHelpers
 
     when /^backlog setting company drop down$/
       '.existing select#backlog_company_id'
+
+    when /^backlog velocity$/
+      'input#backlog_velocity'
+
+    when /^backlog rate$/
+      'input#backlog_rate'
 
     ##
     # Backlog print
@@ -241,6 +279,16 @@ module HtmlSelectorHelpers
       '.guider:visible'
 
     ##
+    # Company
+
+    when /^company velocity$/
+      'input#company_default_velocity'
+
+    when /^company rate$/
+      'input#company_default_rate'
+
+
+    ##
     # Beta sign up launch page
     when /^visible story card$/
       '.dual-cards .card.visible'
@@ -254,6 +302,14 @@ module HtmlSelectorHelpers
 
     when /^beta page request access area$/
       '.request-access'
+
+    ## Account settings
+    #
+    when /^account velocity$/
+      'input#account_default_velocity'
+
+    when /^account rate$/
+      'input#account_default_rate'
 
     ##
     # Account user management, invite and sign up
@@ -289,7 +345,7 @@ module HtmlSelectorHelpers
 
     ##
     # Generic and other selectors
-    when /^(a|the) dialog(?:| box)$/
+    when /^(a|the|) dialog(?:| box)$/
       '.ui-dialog'
 
     when /^move story dialog theme drop down$/
@@ -329,7 +385,26 @@ module HtmlSelectorHelpers
     when /^top nav$/
       'header'
 
+    when /^date picker$/
+      '#ui-datepicker-div'
+
     else
+      supports_javascript = page.evaluate_script('true') rescue false
+      # if location does not already look like a selector
+      if supports_javascript && location.present? && location.kind_of?(String) && !(location =~ /^[a-z0-9_-]*[\.#][a-z_-]+/i)
+        # try and find a label containing the text set for location which is pointing to a form element
+        label_selector = page.evaluate_script <<-JS
+          // wrap in try catch so we don't get script errors
+          var ret = false;
+          try {
+            ret = $('label:contains("#{location.gsub(/"/, '')}")').attr('for');
+          } catch (e) { true; }
+          ret;
+        JS
+        if label_selector.present? && page.evaluate_script("$('form ##{label_selector}').length") >= 1
+          location = "##{label_selector}"
+        end
+      end
       # no mapping exists, assume location is a CSS/XPath selector
       location
     end

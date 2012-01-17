@@ -133,6 +133,10 @@ When /^(?:|I )press enter$/ do
   page.execute_script page.execute_script "$(':focus').simulate('keydown', { keyCode: $.simulate.VK_ENTER })"
 end
 
+When /^(?:|I )press escape$/ do
+  page.execute_script page.execute_script "$(':focus').simulate('keydown', { keyCode: $.simulate.VK_ESC })"
+end
+
 When /^(?:|I )press enter and wait for AJAX(?:| to update)$/ do
   step %{I press enter}
   sleep 0.75
@@ -268,6 +272,13 @@ Then /^the story with as equal to "([^"]*)" should be (red|green)$/ do |as_value
 end
 
 ##
+# Tab system
+Then /^the "([^"]*)" tab should be selected$/ do |tab|
+  selector = selector_to("#{tab} backlog tab")
+  page.evaluate_script("$('#{selector}').length").should >= 1
+end
+
+##
 # Server communication and verification
 #
 
@@ -359,9 +370,12 @@ end
 
 ##
 # Tables within Excel exports and Snapshots
-Then /^(?:I |)should(not |) see "([^"]+)" within row (\d+), column (\d+) of the ([\w\d]+) table$/ do |negation, text, row, column, table_position|
+Then /^(?:I |)should( not|) see "([^"]+)" within row (\d+), column (\d+) of the ([\w\d]+) table$/ do |negation, text, row, column, table_position|
   table_selector = string_quantity_to_numeric_pseudo_selector(table_position)
-  step %{I should #{negation}see the text "#{text}" within "table:#{table_selector} tr:nth-child(#{row}) td:nth-child(#{column})"}
+  selector = "table:#{table_selector} tr:nth-child(#{row}) td:nth-child(#{column}), table:#{table_selector} tr:nth-child(#{row}) th:nth-child(#{column})"
+  unless negation == ' not' && !page.has_selector?(:selector) # if cell does not exist, then content does not exist so negative test is fine
+    step %{I should#{negation} see the text "#{text}" within "#{selector}"}
+  end
 end
 
 ##
@@ -378,17 +392,6 @@ end
 
 ##
 # Backlog settings
-Then /^the "([^"]+)" should be disabled$/ do |field_selector|
-  all_disabled = page.evaluate_script <<-JS
-    (function() {
-      var allDisabled = true;
-      $('#{field_selector}').each(function(index, elem) { if (!$(elem).attr('disabled')) { allDisabled = false; } });
-      return allDisabled;
-    })();
-  JS
-  all_disabled.should == true
-end
-
 When /^I change the scoring rule for this backlog to "([^"]+)"$/ do |scoring_rule|
   step %{I follow "Settings"}
   step %{I choose "#{scoring_rule}"}

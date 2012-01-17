@@ -266,3 +266,13 @@ Feature: Backlog Stories
         | unique_id | as_a      | i_want_to   | so_i_can  | comments    | score  |
         | 1         | as        |             |           |             | 3.0    |
         | 2         | as 2nd    |             |           |             | 21.0   |
+
+  @javascript
+  Scenario: Check that user is notified when trying to edit a done story
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the accounts page
+    When I follow "Cucumber example backlog"
+    When I click on the "first story's as field"
+    Then I should not see the notice "You cannot edit a story that is marked as done"
+    When I click on the "second story's as field"
+    Then I should see the warning "You cannot edit a story that is marked as done"

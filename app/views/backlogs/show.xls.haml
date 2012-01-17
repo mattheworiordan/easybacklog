@@ -24,4 +24,4 @@
       br
       {mso-data-placement:same-cell;}
   %body
-    = render :partial => 'table_backlog', :locals => { :backlog => @backlog, :total_columns => 10 - (@backlog.use_50_90? ? 0 : 1) }
+    = render :partial => 'table_backlog', :locals => { :backlog => @backlog, :total_columns => export_to_excel_column_count(@backlog) }

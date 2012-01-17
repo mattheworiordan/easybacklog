@@ -190,5 +190,13 @@ App.Views.Helpers = {
       if (that.linkRolloutTimeout) { clearTimeout(that.linkRolloutTimeout); }
       if (that.linkHelper) { that.linkHelper.remove(); }
     });
+  },
+
+  addUseOptions: function(target, options) {
+    return _(target).extend({
+      use5090Estimates: options.use5090Estimates,
+      useCostEstimates: options.useCostEstimates,
+      useDaysEstimates: options.useDaysEstimates
+    });
   }
 }

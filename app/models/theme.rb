@@ -28,11 +28,11 @@ class Theme < ActiveRecord::Base
   end
 
   def days
-    points / backlog.velocity
+    points / backlog.velocity if backlog.days_estimatable?
   end
 
   def cost
-    days * backlog.rate
+    days * backlog.rate if backlog.cost_estimatable?
   end
 
   def cost_formatted

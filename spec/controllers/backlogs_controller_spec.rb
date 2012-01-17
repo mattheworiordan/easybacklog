@@ -77,6 +77,8 @@ describe BacklogsController do
 
     it 'should be assigned to an account if no company is specified and should update the account defaults if blank' do
       @account.update_attributes! :default_rate => nil, :default_velocity => nil, :default_use_50_90 => nil
+      # when updating the attributes defaults_set is fired, so we need to manually override
+      @account.update_attribute :defaults_set, false
       params = {
         :backlog => {
           :name => 'website',

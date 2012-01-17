@@ -9,6 +9,13 @@ Feature: Sign Up
       And the database has the necessary lookup tables
       And an account called "Acme" is set up for "John"
       And I am on the sign up page
+    Then I should see "Account Name"
+      # check that no automatic calculation fields are asked
+      And I should not see "automatically calculated"
+      # check that no 50/90 rules are asked
+      And I should not see "50/90"
+      # ensure fib question is deferred to first backlog creation
+      And I should not see "Fibonacci"
     When I press "Sign up"
     Then I should see "You must enter an account name"
       And there should be 4 "this field is required messages"

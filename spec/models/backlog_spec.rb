@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe Backlog do
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
 
   it 'should duplicate backlog along with all related records' do
     # get a backlog set up with at least one story
@@ -275,8 +277,6 @@ describe Backlog do
   end
 
   it 'should return an average velocity based on completed sprints' do
-    todo = Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
-    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
     theme = Factory.create(:theme)
     backlog = theme.backlog
     backlog.velocity = 4
@@ -290,7 +290,7 @@ describe Backlog do
       sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 1, :number_team_members => 1)
       story = Factory.create(:story, :score_50 => score, :score_90 => score)
       sprint.stories << story
-      story.sprint_story.sprint_story_status = done
+      story.sprint_story.sprint_story_status = done_sprint_story_status
       story.sprint_story.save!
       sprint.reload
       sprint.mark_as_complete
@@ -338,5 +338,84 @@ describe Backlog do
     account.update_attributes :scoring_rule_id => scoring_rule_fib.id
 
     backlog.scoring_rule.should == scoring_rule_fib
+  end
+
+  it 'should only allow a rate if velocity is present' do
+    backlog = Factory.create(:backlog, :rate => 50, :velocity => nil)
+    backlog.rate.should be_blank
+
+    backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
+    backlog.rate.should == 50
+  end
+
+  it 'should trigger sprints to change from calculated velocity to explicit velocity when velocity p/day nilled in backlog settings' do
+    # set up two stories
+    story = Factory.create(:story)
+    story2 = Factory.create(:story, :theme => story.theme)
+    backlog = story.theme.backlog
+
+    # assign stories to a completed sprint
+    completed_sprint = Factory.create(:sprint, :backlog => backlog, :number_team_members => 5)
+    [story, story2].each do |story|
+      completed_sprint.stories << story
+      story.reload
+      story.sprint_story_status = done_sprint_story_status
+    end
+    completed_sprint.mark_as_complete
+    completed_sprint_points = completed_sprint.total_expected_points
+
+    # set up an imcomplete sprint with a different expected velocity based on number team members
+    incomplete_sprint = Factory.create(:sprint, :backlog => backlog, :number_team_members => 20)
+    incomplete_sprint_points = incomplete_sprint.total_expected_points
+
+    # remove velocity for backlog, which should trigger updates to sprints so that explicit velocities are set based on the old backlog velocity
+    backlog.update_attributes :velocity => nil
+
+    completed_sprint.reload
+    completed_sprint.total_expected_points.should == completed_sprint_points
+    completed_sprint.explicit_velocity.should == completed_sprint_points
+
+    incomplete_sprint.reload
+    incomplete_sprint.total_expected_points.should == incomplete_sprint_points
+    incomplete_sprint.explicit_velocity.should == incomplete_sprint_points
+  end
+
+  it 'should not change sprint settings when backlog settings change back to average velocity per day setting' do
+    # set up a backlog with a sprint with explicit velocity set
+    backlog = Factory.create(:backlog, :velocity => nil)
+    sprint = Factory.create(:sprint, :backlog => backlog, :explicit_velocity => 7, :number_team_members => nil)
+
+    # now set to use velocity calculations for the backlog
+    backlog.update_attributes :velocity => 5
+
+    sprint.reload
+    sprint.explicit_velocity.should == 7
+    sprint.total_expected_points.should == 7
+  end
+
+  it 'should remove the rate when velocity for sprint is empty' do
+    backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
+    backlog.rate.should == 50
+
+    backlog.update_attributes :velocity => nil
+    backlog.rate.should == nil
+  end
+
+  it 'should be cost estimatable and velocity estimatable' do
+    backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
+    backlog.should be_cost_estimatable
+    backlog.should be_days_estimatable
+  end
+
+  it 'should be velocity estimatable and not cost estimatable' do
+    backlog = Factory.create(:backlog, :rate => nil, :velocity => 5)
+    backlog.should be_days_estimatable
+    backlog.should_not be_cost_estimatable
+  end
+
+  it 'should not be cost estimatable and not velocity estimatable' do
+    backlog = Factory.create(:backlog, :rate => nil, :velocity => nil)
+    backlog.should_not be_days_estimatable
+    backlog.should_not be_cost_estimatable
   end
 end

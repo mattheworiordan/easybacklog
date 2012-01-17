@@ -248,9 +248,37 @@ describe Sprint do
 
   it 'should return total expected points based on backlog average' do
     backlog = Factory.create(:backlog, :velocity => 10)
+    theme = Factory.create(:theme, :backlog => backlog)
+
+    # No completed sprints, estimation is based on settings
     sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 5)
-    # average for Backlog will be 10 as there are no completd sprints
+    # average for Backlog will be 10 as there are no completed sprints
     sprint.total_expected_based_on_average_points.should == 10 * 10 * 5
+
+    # two completed sprints, one empty one with a 21 point story
+    story = Factory.create(:story, :theme => theme, :score_50 => 21, :score_90 => 21)
+    sprint.stories << story
+    story.reload
+    story.sprint_story_status = done_sprint_story_status
+    sprint.mark_as_complete
+
+    sprint2 = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 1)
+    sprint2.mark_as_complete
+    sprint2.reload
+    sprint2.total_expected_based_on_average_points.should == (21.0 + 0.0) / 2.0
+
+    # new sprint added that is not complete, should not have any effect
+    was_average = sprint2.total_expected_based_on_average_points
+    sprint3 = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 20)
+    sprint3.total_expected_based_on_average_points.should == was_average
+  end
+
+  it 'should return total expected points based on backlog average from completed sprints when using explicit points' do
+    backlog = Factory.create(:backlog, :velocity => 10)
+
+    # No completed sprints, estimation is based on settings
+    sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :explicit_velocity => 20)
+    sprint.total_expected_based_on_average_points.should == 20
   end
 
   it 'should return actual velocity completed for completed stories' do
@@ -329,5 +357,37 @@ describe Sprint do
     # first sprint starts on 2nd Sunday of 2012, with 6 days duration, should therefore end one week on Monday
     sprint1 = Factory.create(:sprint, :backlog => backlog, :start_on => 'Sun 8 Jan 2012', :duration_days => 6)
     sprint1.assumed_completed_on.should == Date.parse('Mon 16 Jan 2012')
+  end
+
+  it 'should return explicit velocity for total expected points when explicit velocity set in sprint' do
+    backlog = Factory.create(:backlog, :velocity => nil)
+    sprint = Factory.create(:sprint, :backlog => backlog, :explicit_velocity => 12, :number_team_members => nil)
+    sprint.total_expected_points.should == 12
+
+    backlog2 = Factory.create(:backlog, :velocity => 5)
+    sprint2 = Factory.create(:sprint, :backlog => backlog2, :explicit_velocity => 12)
+    sprint2.total_expected_points.should == 12
+  end
+
+  it 'should require an explicit velocity when backlog average velocity not set' do
+    backlog = Factory.create(:backlog, :velocity => nil)
+    expect { Factory.create(:sprint, :backlog => backlog, :number_team_members => nil) }.should raise_error ActiveRecord::RecordInvalid, /Explicit velocity can't be blank/
+  end
+
+  it 'should not allow number_team_members to be set when backlog average velocity is not set' do
+    backlog = Factory.create(:backlog, :velocity => nil)
+    expect { Factory.create(:sprint, :backlog => backlog, :number_team_members => 5) }.should raise_error ActiveRecord::RecordInvalid, /Number team members is not editable with this backlog/
+  end
+
+  it 'should update explicit velocity based on calculated velocity when backlog settings change triggered' do
+    backlog = Factory.create(:backlog, :velocity => 4)
+    sprint = Factory.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3)
+    sprint.mark_as_complete # ensure we test with completed sprints which are technically not editable
+    sprint.total_expected_points.should == 4 * 2 * 3
+
+    sprint.convert_to_explicit_velocity
+
+    sprint.total_expected_points.should == 4 * 2 * 3
+    sprint.number_team_members.should be_nil
   end
 end

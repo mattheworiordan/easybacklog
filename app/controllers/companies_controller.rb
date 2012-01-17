@@ -22,4 +22,15 @@ class CompaniesController < ApplicationController
       render :action => "edit"
     end
   end
+
+  def name_available
+    company_name = (params[:company] || {})[:name] || ''
+    if (params[:except] || '').upcase == company_name.upcase
+      render :text => 'true'
+    elsif current_account.companies.where('UPPER(name) like ?', company_name.upcase).empty?
+      render :text => 'true'
+    else
+      render :text => 'false'
+    end
+  end
 end

@@ -12,13 +12,12 @@ class Backlog < ActiveRecord::Base
   has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
   belongs_to :snapshot_master, :class_name => 'Backlog'
 
-  validates_presence_of :name, :rate, :velocity
-  validates_numericality_of :rate
-  validates_numericality_of :velocity, :greater_than => 0
+  validates_presence_of :name
+  validates_numericality_of :rate, :velocity, :greater_than => 0, :allow_nil => true
 
   attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id
 
-  before_save :check_can_modify
+  before_save :check_can_modify, :remove_rate_if_velocity_empty, :update_sprint_estimation_method
   after_save :update_account_scoring_rule_if_empty
 
   scope :available, where(:deleted => false)
@@ -30,7 +29,7 @@ class Backlog < ActiveRecord::Base
   include ScoreStatistics
 
   def days
-    themes.inject(0) { |val, theme| val + theme.days }
+    themes.inject(0) { |val, theme| val + theme.days } if days_estimatable?
   end
 
   def points
@@ -38,7 +37,7 @@ class Backlog < ActiveRecord::Base
   end
 
   def cost
-    themes.inject(0) { |val, theme| val + theme.cost }
+    themes.inject(0) { |val, theme| val + theme.cost } if cost_estimatable?
   end
 
   def cost_formatted
@@ -51,6 +50,19 @@ class Backlog < ActiveRecord::Base
 
   def days_formatted
     format('%0.1f', days)
+  end
+
+  # check if backlog rate & velocity set to calculate rate
+  def cost_estimatable?
+    rate.present? && velocity.present?
+  end
+
+  def days_estimatable?
+    velocity.present?
+  end
+
+  def all_sprints_team_velocity_estimatable?
+    sprints.all? { |sprint| sprint.team_velocity_estimatable? }
   end
 
   def average_velocity
@@ -213,6 +225,19 @@ class Backlog < ActiveRecord::Base
     def update_account_scoring_rule_if_empty
       unless scoring_rule_id.blank?
         account.update_attributes :scoring_rule_id => scoring_rule_id if account.scoring_rule_id.blank?
+      end
+    end
+
+    def remove_rate_if_velocity_empty
+      self.rate = nil if velocity.blank?
+    end
+
+    # if average velocity for this backlog is removed, then all existing sprints will need to be
+    # modified to use explicit velocities as they can no longer calculate their expected velocity
+    # based on the backlog velocity
+    def update_sprint_estimation_method
+      if velocity_changed? && velocity.blank?
+        sprints.each { |sprint| sprint.convert_to_explicit_velocity }
       end
     end
 end

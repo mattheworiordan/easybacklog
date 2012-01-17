@@ -23,42 +23,16 @@ App.Views.BacklogSettings = {
         $('section.title h1').html('Sprint ' + this.model.get('iteration') + ' settings');
         $('section.side-panel').html(JST['sprints/sprint-delete-panel']({ model: this.model }));
         $('section.side-panel a.delete-sprint').click(this.deleteSprint); // outside of the view DOM element
-        this.el = $('section.content .backlog-settings-body').html(JST['sprints/edit-sprint']({ model: this.model }));
+        this.el = $('section.content .backlog-settings-body').html(JST['sprints/edit-sprint']({ model: this.model, backlog: this.model.Backlog() }));
         this.$('#start-on').datepicker().datepicker("setDate", parseRubyDate(this.model.get('start_on')));
         this.$('a#sprint_submit').click(this.updateSprint);
         this.$('a#sprint_cancel').click(this.cancel);
 
         this.disableFieldsIfComplete();
 
-        this.$('form').validate({
-          rules: {
-              duration_days: {
-              required: true,
-              digits: true,
-              min: 1
-            },
-            number_team_members: {
-              required: true,
-              digits: true,
-              min: 1
-            },
-            start_on: {
-              required: true
-            }
-          },
-          messages: {
-            duration_days: {
-              required: 'Sprint duration is required',
-              digits: 'Enter a value using whole numbers only',
-              min: 'Sprint duration must be at least 1 day'
-            },
-            number_team_members: {
-              required: 'Number of team members is required',
-              digits: 'Enter a value using whole numbers only',
-              min: 'Team must comprise of at least one member'
-            }
-          }
-        });
+        this.$('form').validate(App.Views.SharedSprintSettings.formValidationConfig);
+
+        App.Views.SharedSprintSettings.addFormBehaviour(this.$('form'), this.model.Backlog().get('velocity'));
       }
       this.storeState();
       return this;
@@ -158,15 +132,29 @@ App.Views.BacklogSettings = {
         } else {
           this.model.set({
             start_on: $.datepicker.formatDate('yy-mm-dd', this.$('#start-on').datepicker('getDate')),
-            duration_days: this.$('#duration-days').val(),
-            number_team_members: this.$('#number-team-members').val()
+            duration_days: this.$('#duration-days').val()
           });
+
+          if (!this.model.Backlog().get('velocity') || this.$('#use-explicit-velocity').is(':checked')) {
+            this.model.set({
+              explicit_velocity: this.$('#explicit-velocity').val(),
+              number_team_members: null
+            });
+          } else {
+            this.model.set({
+              explicit_velocity: null,
+              number_team_members: this.$('#number-team-members').val()
+            });
+          }
 
           if (this.$('#sprint_status_completed').is(':checked')) {
             this.saveSprintFields(function() {
               // need to save and then mark as complete as cannot save fields when completed
-              view.model.set({ completed: 'true' });
-              view.saveSprintFields();
+              view.saveSprintFields(function() {
+                // now mark as complete and save as all other fields ignored on first save
+                view.model.set({ completed: 'true' });
+                view.saveSprintFields();
+              });
             })
           } else {
             // just save the form changes
@@ -206,7 +194,7 @@ App.Views.BacklogSettings = {
     },
 
     disableFieldsIfComplete: function() {
-      this.$('#number-team-members, #start-on, #duration-days').attr('disabled', this.model.isComplete());
+      this.$('#number-team-members, #start-on, #duration-days, #explicit-velocity, input[name=calculation_method]').attr('disabled', this.model.isComplete());
     },
 
     cancel: function(event) {

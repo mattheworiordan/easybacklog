@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111113185809) do
+ActiveRecord::Schema.define(:version => 20120115093606) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20111113185809) do
     t.integer  "locale_id"
     t.boolean  "default_use_50_90"
     t.integer  "scoring_rule_id"
+    t.boolean  "defaults_set"
   end
 
   create_table "backlogs", :force => true do |t|
@@ -150,14 +151,15 @@ ActiveRecord::Schema.define(:version => 20111113185809) do
   add_index "sprint_story_statuses", ["code"], :name => "index_sprint_statuses_on_code"
 
   create_table "sprints", :force => true do |t|
-    t.integer  "backlog_id",          :null => false
-    t.integer  "iteration",           :null => false
-    t.date     "start_on",            :null => false
-    t.integer  "number_team_members", :null => false
-    t.integer  "duration_days",       :null => false
+    t.integer  "backlog_id",                                        :null => false
+    t.integer  "iteration",                                         :null => false
+    t.date     "start_on",                                          :null => false
+    t.decimal  "number_team_members", :precision => 6, :scale => 2
+    t.integer  "duration_days",                                     :null => false
     t.datetime "completed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "explicit_velocity",   :precision => 5, :scale => 1
   end
 
   add_index "sprints", ["backlog_id"], :name => "index_sprints_on_backlog_id"

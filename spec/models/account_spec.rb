@@ -68,4 +68,12 @@ describe Account do
     account.scoring_rule_id.should be_blank
     account.scoring_rule.should == default_scoring_rule
   end
+
+  it 'should only allow a rate if velocity is present' do
+    account = Factory.create(:account, :default_rate => 50, :default_velocity => nil)
+    account.default_rate.should be_blank
+
+    account = Factory.create(:account, :default_rate => 50, :default_velocity => 5)
+    account.default_rate.should == 50
+  end
 end

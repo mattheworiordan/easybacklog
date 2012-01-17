@@ -107,7 +107,7 @@
 
       var router = new App.Routers.BacklogSettings();
 
-      var backlog = new Backlog({ id: #{@backlog.id} });
+      var backlog = new Backlog({ id: #{@backlog.id}, velocity: #{@backlog.velocity.blank? ? 'null' : @backlog.velocity} });
       App.Collections.SprintStoryStatuses = new SprintStoryStatusesCollection(#{embedded_json_safe sprint_story_statuses_json});
       App.Collections.Sprints = new SprintsCollection(#{embedded_json_safe sprints_json(@backlog)}, { backlog: backlog });
 

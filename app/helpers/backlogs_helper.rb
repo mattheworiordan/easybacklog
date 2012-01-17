@@ -12,9 +12,36 @@ module BacklogsHelper
     SprintStoryStatus.all.to_json
   end
 
-  def export_totals(points, cost, days)
-    "#{format('%0.1f', points)} #{t (points == 1 ? 'backlog.totals.point' : 'backlog.totals.points'), :default => 'points'}" +
-    " / #{cost}" +
-    " / #{days} #{t (days.to_f == 1 ? 'backlog.totals.day' : 'backlog.totals.days'), :default => 'days'}"
+  def export_totals(context)
+    backlog = if context.respond_to? :cost_estimatable?
+      context
+    else
+      # context is a theme
+      context.backlog
+    end
+
+    totals = "#{format('%0.1f', context.points)} #{t (context.points == 1 ? 'backlog.totals.point' : 'backlog.totals.points'), :default => 'points'}"
+    totals += " / #{context.cost_formatted}" if backlog.cost_estimatable?
+    totals += " / #{context.days_formatted} #{t (context.days.to_f == 1 ? 'backlog.totals.day' : 'backlog.totals.days'), :default => 'days'}" if backlog.days_estimatable?
+    totals
+  end
+
+  # return a class that redefines the style sheet used so that the days or cost columns are hidden if appropriate
+  def reduced_column_class(backlog)
+    if !backlog.days_estimatable?
+      'no-days-or-cost'
+    elsif !backlog.cost_estimatable?
+      'no-cost'
+    else
+      ''
+    end
+  end
+
+  def export_to_excel_column_count(backlog)
+    total_columns = 7
+    total_columns += 1 if @backlog.use_50_90? # 50/90 rule uses 2 columns
+    total_columns += 1 if backlog.cost_estimatable?
+    total_columns += 1 if backlog.days_estimatable?
+    total_columns
   end
 end

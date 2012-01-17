@@ -22,7 +22,9 @@
 - else
   %td{:valign => 'top'}
     = story.score
-%td{:valign => 'top'}
-  = story.cost_formatted
-%td{:valign => 'top'}
-  = story.days_formatted
+- if story.theme.backlog.cost_estimatable?
+  %td{:valign => 'top'}
+    = story.cost_formatted
+- if story.theme.backlog.days_estimatable?
+  %td{:valign => 'top'}
+    = story.days_formatted

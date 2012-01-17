@@ -1,21 +1,12 @@
 <form class="edit_sprint">
   <div id="form-errors"></div>
-  <label for="number-team-members">Number of team members</label>
-  <div class='label-hint'>
-    (working on this sprint completing stories)
-  </div>
-  <div class='input-row'>
-    <input id="number-team-members" name="number_team_members" type="text" value="<%=model.get('number_team_members')%>" class="narrow"/>
-  </div>
-
-  <div class='label-spacer'></div>
 
   <label for="start-on">Sprint start date</label>
   <div class='label-hint'>
     (click to show the calendar)
   </div>
   <div class='input-row'>
-    <input id="start-on" name="start_on" type="text" value="" />
+    <input id="start-on" name="start_on" type="text" autocomplete="off">
   </div>
 
   <div class='label-spacer'></div>
@@ -25,8 +16,55 @@
     (typically working days)
   </div>
   <div class='input-row'>
-    <input id="duration-days" name="duration_days" type="text" value="<%=model.get('duration_days')%>" class="narrow"/>
+    <input id="duration-days" name="duration_days" type="text" value="<%=model.get('duration_days')%>" class="narrow" autocomplete="off">
   </div>
+
+  <div class='label-spacer'></div>
+
+  <% if (backlog.get('velocity')) { %>
+    <div class='input-row question'>
+      <label>How would you like the velocity for this sprint to be determined?</label>
+    </div>
+
+    <div class='input-row'>
+      <input type="radio" id="use-team-members" name="calculation_method">
+      <label for="use-team-members">Use backlog velocity of <%= niceNum(backlog.get('velocity')) %> points per person per day and team size</label>
+    </div>
+
+    <div id="use-team-members-container">
+      <label for="number-team-members" class="light">Number of team members</label>
+      <div class='label-hint'>
+        (working on this sprint completing stories)
+      </div>
+      <div class='input-row'>
+        <input id="number-team-members" name="number_team_members" type="text" value="<%=niceNum(model.get('number_team_members'))%>" class="narrow" autocomplete="off">
+      </div>
+      <div class='input-row'>
+        Expected velocity: <span id="expected-velocity">x points</span>
+      </div>
+    </div>
+
+    <div class='input-row'>
+      <input type="radio" id="use-explicit-velocity" name="calculation_method">
+      <label for="use-explicit-velocity">Manually define a team velocity for this sprint</label>
+    </div>
+
+    <div id="use-explicit-velocity-container">
+      <label for="explicit-velocity" class="light">Velocity in points</label>
+  <% } else { %>
+    <div class="input=row">
+      <label for="explicit-velocity">Team velocity for this sprint</label>
+      <div class='label-hint'>
+        (in points)
+      </div>
+    </div>
+  <% } %>
+      <div class='input-row'>
+        <input id="explicit-velocity" name="explicit_velocity" type="text" value="<%=niceNum(model.get('explicit_velocity'))%>" class="narrow" autocomplete="off">
+      </div>
+  <% if (backlog.get('velocity')) { %>
+    </div>
+  <% } %>
 
   <div class='label-spacer'></div>
 

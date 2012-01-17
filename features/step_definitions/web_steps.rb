@@ -92,26 +92,22 @@ Then /^(?:|I )should see JSON:$/ do |expected_json|
   expected.should == actual
 end
 
-Then /^the "([^"]*)" field(?: within "([^"]*)")? should contain "([^"]*)"$/ do |field, selector, value|
+Then /^the "([^"]*)" field(?: within "([^"]*)")? should (|not )(contain "([^"]*)"|be empty)$/ do |field, selector, negation, check_for_empty, value|
   with_scope(selector) do
     field = find_field(field)
     field_value = (field.tag_name == 'textarea') ? field.text : field.value
-    if field_value.respond_to? :should
-      field_value.should =~ /#{value}/
+    if negation == 'not '
+      if check_for_empty == 'be empty'
+        field_value.should_not == ""
+      else
+        field_value.should_not =~ /#{value}/
+      end
     else
-      assert_match(/#{value}/, field_value)
-    end
-  end
-end
-
-Then /^the "([^"]*)" field(?: within "([^"]*)")? should not contain "([^"]*)"$/ do |field, selector, value|
-  with_scope(selector) do
-    field = find_field(field)
-    field_value = (field.tag_name == 'textarea') ? field.text : field.value
-    if field_value.respond_to? :should_not
-      field_value.should_not =~ /#{value}/
-    else
-      assert_no_match(/#{value}/, field_value)
+      if check_for_empty == 'be empty'
+        field_value.should == ""
+      else
+        field_value.should =~ /#{value}/
+      end
     end
   end
 end

@@ -56,30 +56,34 @@ App.Views.BacklogStats = {
       var that = this;
       if (this.model.Sprints().select(function(sprint) { return sprint.isComplete(); }).length > 0) {
         // load data and then...
-        $.get('/backlogs/' + this.model.get('id') + '/backlog-stats', {}, function(data) {
-          that.$('.loading').hide();
-          that.$('.no-stats').hide();
-          if (data.zero_points) {
-            that.$('.no-points').show();
-            that.$('.stats').hide();
-          } else {
-            that.$('.stats').show();
-            that.$('.no-points').hide();
-
-            if ($.cookie('stats_show_projected') === 'no') {
-              that.$('#show-projected').removeAttr('checked')
+        $.getJSON('/backlogs/' + this.model.get('id') + '/backlog-stats')
+          .success(function(data) {
+            that.$('.loading').hide();
+            that.$('.no-stats').hide();
+            if (data.zero_points) {
+              that.$('.no-points').show();
+              that.$('.stats').hide();
             } else {
-              that.$('#show-projected').attr('checked','checked')
+              that.$('.stats').show();
+              that.$('.no-points').hide();
+
+              if ($.cookie('stats_show_projected') === 'no') {
+                that.$('#show-projected').removeAttr('checked')
+              } else {
+                that.$('#show-projected').attr('checked','checked')
+              }
+
+              that.displayBurnDown(data.burn_down);
+              that.displayBurnUp(data.burn_up);
+              that.displayVelocityCompleted(data.velocity_completed);
+              that.displayVelocityStats(data.velocity_stats);
+
+              $(that.el).trigger('renderingCharts'); // event fired to help with guiders to know when charts are rendered
             }
-
-            that.displayBurnDown(data.burn_down);
-            that.displayBurnUp(data.burn_up);
-            that.displayVelocityCompleted(data.velocity_completed);
-            that.displayVelocityStats(data.velocity_stats);
-
-            $(that.el).trigger('renderingCharts'); // event fired to help with guiders to know when charts are rendered
-          }
-        });
+          })
+          .error(function(err) {
+            new App.Views.Error({ message: 'Unfortunately there has been an internal error loading your statistics.  Please refresh this page or report this error using the "feedback" button on the bottom right of this page.' })
+          });
       } else {
         // no sprints are completed, show placeholder
         this.$('.loading').hide();
@@ -101,7 +105,11 @@ App.Views.BacklogStats = {
           type: 'line'
         },
         title: {
-          text: 'Burn down'
+          text: 'Burn down',
+          style: {
+            fontSize: '20px',
+            color: '#000000'
+          }
         },
         xAxis: {
           type: 'datetime',
@@ -153,7 +161,7 @@ App.Views.BacklogStats = {
               seriesName = 'Actual';
             }
 
-            pluralize = function(val) { return val === 1 ? '' : 's'; },
+            pluralize = function(val) { return Number(val) === 1 ? '' : 's'; },
             round = function(val) { return Math.max(0,Math.round(val * 10)/10); }
 
             html = '<b>'+ seriesName;
@@ -165,11 +173,15 @@ App.Views.BacklogStats = {
               html += ' - Sprint ' + sprint.iteration + '</b><br/>' +
                 'Sprint ' + sprint.iteration + ' finished, ' + completedTerminology + ' ' + round(sprint.completed) + ' point' + pluralize(sprint.completed) + '<br/>' +
                 round(this.y) + ' points remaining';
-              if (seriesName === 'Actual') {
-                html += '<br/>Actual velocity per day: ' + round(sprint.actual);
+              if ((seriesName === 'Actual') && (sprint.actual)) { // actual will be null if day velocity calculation not possible
+                html += '<br/>Actual velocity per day per person: ' + round(sprint.actual);
               }
-              html += '<br/>' + sprint.team + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration) + '<br/>' +
-                'Dates: ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.starts_on)) + ' - ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.completed_on));
+              if (sprint.team) {
+                html += '<br/>' + niceNum(sprint.team) + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+              } else {
+                html += '<br/>Sprint duration: ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+              }
+              html += '<br/>Dates: ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.starts_on)) + ' - ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.completed_on));
 
             }
             return html;
@@ -210,7 +222,11 @@ App.Views.BacklogStats = {
           type: 'area'
         },
         title: {
-          text: 'Burn up'
+          text: 'Burn up',
+          style: {
+            fontSize: '20px',
+            color: '#000000'
+          }
         },
         xAxis: {
           type: 'datetime',
@@ -255,12 +271,12 @@ App.Views.BacklogStats = {
             //   seriesName = 'Actual';
             // }
 
-            pluralize = function(val) { return val === 1 ? '' : 's'; },
+            pluralize = function(val) { return Number(val) === 1 ? '' : 's'; },
             round = function(val) { return Math.max(0,Math.round(val * 10)/10); }
 
             html = '<b>'+ seriesName;
             if (sprint.iteration === 0) {
-              lastSprint = _(data.actual).last();
+              lastSprint = dataSeries[dataSeries.length-2]; // second to last sprint
               html += ' - end of sprint ' + lastSprint.iteration + '</b><br/>' +
                 'Sprint ended on ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(lastSprint.completed_on)) + '<br/>'
               if (seriesName === 'Actual') {
@@ -272,9 +288,13 @@ App.Views.BacklogStats = {
               html += ' - Sprint ' + sprint.iteration + '</b><br/>';
               if (seriesName === 'Actual') {
                 html += round(sprint.total_points) + ' point' + pluralize(sprint.total_points) + ' completed at the start' +
-                  '<br/>Velocity this sprint: ' + round(sprint.completed) + ' point' + pluralize(sprint.completed) +
-                  '<br/>Velocity per day: ' + round(sprint.actual) +
-                  '<br/>' + sprint.team + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+                  '<br/>Velocity this sprint: ' + round(sprint.completed) + ' point' + pluralize(sprint.completed);
+                if (sprint.actual) {
+                  html += '<br/>Velocity per day per person: ' + round(sprint.actual) +
+                    '<br/>' + niceNum(sprint.team) + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+                } else {
+                  html += '<br/>Sprint duration: ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+                }
               } else {
                 html += 'Total points to complete: ' + round(this.y);
               }
@@ -300,7 +320,11 @@ App.Views.BacklogStats = {
           type: 'column'
         },
         title: {
-          text: 'Velocity of completed sprints'
+          text: 'Velocity of completed sprints',
+          style: {
+            fontSize: '20px',
+            color: '#000000'
+          }
         },
         xAxis: {
            categories: _(data).map(function(d) { return 'Sprint ' + d.iteration })
@@ -321,14 +345,18 @@ App.Views.BacklogStats = {
 
             sprint = _(data).find(function(elem) { return that.x === 'Sprint ' + elem.iteration });
 
-            pluralize = function(val) { return val === 1 ? '' : 's'; },
+            pluralize = function(val) { return Number(val) === 1 ? '' : 's'; },
             round = function(val) { return Math.max(0,Math.round(val * 10)/10); }
 
             html = '<b>Sprint ' + sprint.iteration + '</b><br />' +
-              'Completed ' + round(sprint.completed) + ' point' + pluralize(sprint.completed) +
-              '<br/>Actual velocity per day: ' + round(sprint.actual) +
-              '<br/>' + sprint.team + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration) + '<br/>' +
-              'Dates: ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.starts_on)) + ' - ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.completed_on));
+              'Completed ' + round(sprint.completed) + ' point' + pluralize(sprint.completed);
+            if (sprint.actual) {
+              html += '<br/>Actual velocity per day per person: ' + round(sprint.actual) +
+              '<br/>' + niceNum(sprint.team) + ' team member' + pluralize(sprint.team) + ' for ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+            } else {
+              html += '<br/>Sprint duration: ' + round(sprint.duration) + ' day' + pluralize(sprint.duration);
+            }
+            html += '<br/>Dates: ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.starts_on)) + ' - ' + $.datepicker.formatDate($.datepicker._defaults.dateFormat, parseRubyDate(sprint.completed_on));
 
             return html;
           }
@@ -346,14 +374,19 @@ App.Views.BacklogStats = {
           actualDay = data.actual_day,
           actualSprint = data.actual_sprint;
 
-      this.$('#velocity-per-day-average').text(Math.round(actualDay*10)/10);
-      this.$('#velocity-per-day-expected').text(Math.round(expectedDay*10)/10);
+      if (expectedDay) {
+        this.$('#velocity-per-day-average').text(Math.round(actualDay*10)/10);
+        this.$('#velocity-per-day-expected').text(Math.round(expectedDay*10)/10);
+        this.$('.stats .average .notice').html('The expected backlog daily velocity is configured as ' +
+          (expectedDay == 1 ? '1 point' : expectedDay + ' points') +
+          ' per day per team member. <br/><a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog settings &raquo;</a>');
+      } else {
+        this.$('.average .per-day').hide();
+        this.$('.stats .average .notice').html('The expected velocity is based on the velocity set up in the most recent sprint. ' +
+          '<a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog and sprint settings &raquo;</a>');
+      }
       this.$('#velocity-per-sprint-average').text(Math.round(actualSprint*10)/10);
       this.$('#velocity-per-sprint-expected').text(Math.round(expectedSprint*10)/10);
-
-      this.$('.stats .average .notice').html('Your expected backlog daily velocity is configured as ' +
-        (expectedDay == 1 ? '1 point' : expectedDay + ' points') +
-        ' per day. <br/><a href="#backlog-settings" id="stats-backlog-settings-change">Change backlog settings &raquo;</a>');
     }
   })
 };

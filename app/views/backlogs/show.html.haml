@@ -98,7 +98,7 @@
   .filter-notifier
     You are viewing a filtered view of this backlog.
     %a{ :href => '#remove-filter', :id => 'remove-filter' } Remove filter »
-  = render :partial => 'themes_container', :locals => { :use_50_90 => @backlog.use_50_90? }
+  = render :partial => 'themes_container', :locals => { :backlog => @backlog }
   .filter-notifier
     You are viewing a filtered view of this backlog.
     %a{ :href => '#remove-filter', :id => 'remove-filter' } Remove filter »

@@ -3,16 +3,22 @@
 App.Views.Backlogs = {
   Show: App.Views.BaseView.extend({
     dataArea: $('#backlog-data-area'), // this view will never exist with others so build an absolute JQuery link
+    useOptions: {}, // options reflecting whether cost or day estimating is enabled
 
     initialize: function(options) {
+      var columns = $('#backlog-container #themes-header .columns');
       App.Views.BaseView.prototype.initialize.call(this);
       this.sprintTabsView = options.sprintTabsView;
       _.bindAll(this, 'activated');
+      this.useOptions = {
+        use5090Estimates: columns.find('.score-50').length ? true : false,
+        useCostEstimates: columns.find('.cost-formatted').length ? true : false,
+        useDaysEstimates: columns.find('.days-formatted').length ? true : false
+      };
     },
 
     render: function() {
-      var use5090estimates = $('#backlog-container #themes-header .columns .score-50').length ? true : false;
-      var view = new App.Views.Themes.Index({ collection: this.model.Themes(), use5090estimates: use5090estimates });
+      var view = new App.Views.Themes.Index(_.extend({ collection: this.model.Themes() }, this.useOptions));
       this.$('#themes-container').html(view.render().el);
 
       var show_view = this;
@@ -23,7 +29,7 @@ App.Views.Backlogs = {
     },
 
     updateStatistics: function() {
-      $('#backlog-data-area .backlog-stats').html( JST['backlogs/stats']({ model: this.model }) );
+      $('#backlog-data-area .backlog-stats').html( JST['backlogs/stats'](_.extend({ model: this.model }, this.useOptions)) );
       this.sprintTabsView.adjustTabConstraints(true);
     },
 

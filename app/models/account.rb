@@ -13,6 +13,9 @@ class Account < ActiveRecord::Base
 
   attr_accessible :name, :default_rate, :default_velocity, :locale_id, :default_use_50_90, :scoring_rule_id
 
+  before_save :remove_rate_if_velocity_empty
+  before_update :enable_defaults_set
+
   def add_first_user(user)
     self.account_users.create!(:user => user, :admin => true)
   end
@@ -52,6 +55,10 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def days_estimatable?
+    default_velocity.present?
+  end
+
   private
     def grouped_backlogs_by_company(backlog_list)
       list = backlog_list.order('LOWER(name)').group_by do |backlog|
@@ -61,5 +68,15 @@ class Account < ActiveRecord::Base
         # order by company with account company at top (i.e. no company)
         key == name ? '0' : key
       end
+    end
+
+    def remove_rate_if_velocity_empty
+      self.default_rate = nil if default_velocity.blank?
+    end
+
+    # when an account is create, defaults have not yet been set for the account, however once the account is
+    # updated, then we know the user has set the defaults so we can use those defaults moving forwards
+    def enable_defaults_set
+      self.defaults_set = true unless defaults_set_changed?
     end
 end

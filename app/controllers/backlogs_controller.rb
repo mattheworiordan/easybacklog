@@ -169,10 +169,17 @@ class BacklogsController < ApplicationController
     backlog_fields = [:id, :name, :account_id, :name, :rate, :velocity]
     backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_editable]
     theme_fields = [:id, :name, :code, :position]
-    sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days]
+    sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days, :explicit_velocity]
     sprint_story_fields = [:id, :story_id, :sprint_story_status_id, :position]
     story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
     criteria_fields =  [:id, :criterion, :position]
+    story_methods = if @backlog.cost_estimatable?
+      [:cost_formatted, :days_formatted, :score]
+    elsif @backlog.days_estimatable?
+      [:days_formatted, :score]
+    else
+      [:score]
+    end
 
     @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
       :include =>
@@ -181,7 +188,7 @@ class BacklogsController < ApplicationController
           :include =>
           { :stories =>
             { :only => story_fields,
-              :methods => [:cost_formatted, :days_formatted, :score],
+              :methods => story_methods,
               :include =>
               { :acceptance_criteria =>
                 { :only => criteria_fields }
@@ -205,7 +212,7 @@ class BacklogsController < ApplicationController
   helper_method :backlog_json
 
   def sprints_json(backlog)
-    @backlog.sprints.to_json(:only => [:id, :iteration, :start_on, :number_team_members, :duration_days], :methods => [:completed?, :deletable?])
+    @backlog.sprints.to_json(:only => [:id, :iteration, :start_on, :number_team_members, :duration_days, :explicit_velocity], :methods => [:completed?, :deletable?])
   end
   helper_method :sprints_json
 
@@ -273,17 +280,24 @@ class BacklogsController < ApplicationController
         else
           if params[:backlog][:company_id].present?
             @backlog.company = current_account.companies.find_by_id(params[:backlog][:company_id])
+          else
+            @backlog.company = nil
           end
         end
       else
         @backlog.company = nil
+      end
 
+      if @backlog.company.blank?
         # if account does not yet have defaults, assign them to the account
-        unassigned_attributes = {}
-        unassigned_attributes[:default_velocity] = @backlog.velocity if @backlog.account.default_velocity.blank?
-        unassigned_attributes[:default_rate] = @backlog.rate if @backlog.account.default_rate.blank?
-        unassigned_attributes[:default_use_50_90] = @backlog.use_50_90 if @backlog.account.default_use_50_90.blank?
-        @backlog.account.update_attributes! unassigned_attributes unless unassigned_attributes.empty?
+        unless @backlog.account.defaults_set?
+          unassigned_attributes = {
+            :default_velocity => @backlog.velocity,
+            :default_rate => @backlog.rate,
+            :default_use_50_90 => @backlog.use_50_90
+          }
+          @backlog.account.update_attributes! unassigned_attributes
+        end
       end
     end
 

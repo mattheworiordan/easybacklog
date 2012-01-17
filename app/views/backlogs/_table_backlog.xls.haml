@@ -8,7 +8,10 @@
         - else
           %b= backlog.name
     %td{:colspan => total_columns - 4, :align => 'right'}
-      = "#{t 'backlog.rate', :default => 'Rate'}: #{backlog.rate_formatted}, #{t 'backlog.velocity', :default => 'Velocity'}: #{backlog.velocity}"
+      - if backlog.cost_estimatable?
+        = "#{t 'backlog.rate', :default => 'Rate'}: #{backlog.rate_formatted}, "
+      - if backlog.days_estimatable?
+        = "#{t 'backlog.velocity', :default => 'Velocity'}: #{backlog.velocity}"
   %tr
     %th{:bgcolor => '#B6F2FA'}= t 'backlog.theme', :default => 'Theme'
     %th{:bgcolor => '#B6F2FA'}= t 'backlog.id', :default => 'ID'
@@ -21,8 +24,10 @@
       %th{:bgcolor => '#B6F2FA'}= t 'backlog.points_90', :default => '90'
     - else
       %th{:bgcolor => '#B6F2FA'}= t 'backlog.points', :default => 'Points'
-    %th{:bgcolor => '#B6F2FA'}= t 'backlog.cost', :default => 'Cost'
-    %th{:bgcolor => '#B6F2FA'}= t 'backlog.days', :default => 'Days'
+    - if backlog.cost_estimatable?
+      %th{:bgcolor => '#B6F2FA'}= t 'backlog.cost', :default => 'Cost'
+    - if backlog.days_estimatable?
+      %th{:bgcolor => '#B6F2FA'}= t 'backlog.days', :default => 'Days'
   = render :partial => 'table_theme', :collection => backlog.themes, :as => :theme, :locals => { :use_50_90 => backlog.use_50_90?, :total_columns => total_columns }
   %tr
     %td{:colspan => total_columns, :height => 5}
@@ -34,4 +39,4 @@
     %td{:bgcolor => '#B6F2FA', :colspan => total_columns - 4, :align => 'right'}
       %font{:size => '4'}
         %b
-          = export_totals(backlog.points, backlog.cost_formatted, backlog.days_formatted)
+          = export_totals(backlog)

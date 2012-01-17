@@ -1,11 +1,25 @@
 $add-button-color: green;
 $delete-link-color: darken(red, 20%);
 $stats-bg-color: #EEE;
-$table-first-col-width: 88%;
 $backlog-horizontal-padding: 5px;
 
+/* Column widths for story headers, used in various scaled solutions, adds to 100 */
+$col-theme-width: 12%;
+$col-unique-id-width: 7%;
+$col-main-width: 22%; /* 3 columns of user-story, acceptance-criteria and comments */
+$col-score-width: 3%;
+$col-cost-width: 5%;
+$col-days-width: 4%;
+
+/* provide a method to scale up the elements within a story which is less than the whole
+   for example, comments is 22% of the entire width, but stories are all contained within 88% of the entire width,
+   so comments is actually say 23% of the stories container */
+@mixin scaled-up-width($width, $theme-width) {
+  width: $width * 100% / (100% - $theme-width);
+}
+
 @mixin table-col($width) {
-  width: $width * 100% / $table-first-col-width; /* all story elements use up % of total width as embedded in another elem */
+  @include scaled-up-width($width, $col-theme-width); /* all story elements use up % of total width as embedded in another elem */
   float: left;
   &>div {
     margin: 0 0 1px 1px;
@@ -433,15 +447,16 @@ section.content .not-editable-backlog-notice {
   border-bottom: 1px solid white;
   border-top: 1px solid white;
   font-size: 12px;
+  @include drop-shadow(2px, 2px);
   .columns {
     margin: 0 $backlog-horizontal-padding 0 $backlog-horizontal-padding;
-    .theme { @include table-head(12%); }
-    .unique-id { @include table-head(7%); }
-    .user-story, .acceptance-criteria, .comments { @include table-head(22%); }
-    .score-50, .score-90 { @include table-head(3%); }
-    .score { @include table-head(6%); &>div { text-align: right; } }
-    .cost-formatted { @include table-head(5%); &>div { text-align: right; } }
-    .days-formatted {
+    .theme { @include table-head($col-theme-width); }
+    .unique-id { @include table-head($col-unique-id-width); }
+    .user-story, .acceptance-criteria, .comments { @include table-head($col-main-width); }
+    .score-50, .score-90 { @include table-head($col-score-width); }
+    .score { @include table-head($col-score-width * 2); &>div { text-align: right; } }
+    .cost-formatted { @include table-head($col-cost-width); &>div { text-align: right; } }
+    .days-formatted { /* $col-days-width but use auto instead to take up slack */
       background-color: #DDD;
       margin: 0;
       width: auto;
@@ -451,7 +466,34 @@ section.content .not-editable-backlog-notice {
       }
     }
   }
-  @include drop-shadow(2px, 2px);
+  /* if day and cost estimates are turned off, let's scale things out as 9% more space*/
+  &.no-days-or-cost .columns {
+    $ratio: 100% / (100% - $col-cost-width - $col-days-width);
+    .theme { width: $col-theme-width * $ratio; }
+    .unique-id { width: $col-unique-id-width * $ratio; }
+    .user-story, .acceptance-criteria, .comments { width: $col-main-width * $ratio }
+    .score-50, .score-90 {
+      width: $col-score-width * $ratio;
+      >div { border-right: none; }
+    }
+    .score {
+      width: $col-score-width * 2 * $ratio;
+      >div { border-right: none; }
+    }
+  }
+  /* if day and cost estimates are turned off, let's scale things out as 9% more space*/
+  &.no-cost .columns {
+    $ratio: 100% / (100% - $col-days-width);
+    .theme { width: $col-theme-width * $ratio; }
+    .unique-id { width: $col-unique-id-width * $ratio; }
+    .user-story, .acceptance-criteria, .comments { width: $col-main-width * $ratio }
+    .score-50, .score-90 { width: $col-score-width * $ratio; }
+    .score { width: $col-score-width * 2 * $ratio; }
+    .days-formatted {
+      width: auto;
+      >div { border-right: none; }
+    }
+  }
 }
 
 #themes-container {
@@ -554,7 +596,7 @@ ul.themes {
     }
     /* theme name field */
     &>div.theme-data {
-      @include table-col(12% / 100% * $table-first-col-width);
+      @include table-col($col-theme-width / 100% * (100% - $col-theme-width)); /* negate the column scaling of table-col */
       margin: 2px 0 1px 0;
       &>div {
         margin-right: 0;
@@ -626,7 +668,7 @@ ul.themes {
       overflow: hidden;
       margin: 3px 0 8px 0;
       .container {
-        margin-left: 7%/88%*100%;
+        margin-left: $col-unique-id-width / (100% - $col-theme-width) * 100%;
         overflow: hidden;
         background-color: $stats-bg-color;
         div.title {
@@ -643,7 +685,7 @@ ul.themes {
 
     &>div.stories {
       float: left;
-      width: $table-first-col-width;
+      width: 100% - $col-theme-width;
       ul.stories {
         list-style: none;
         margin: 0;
@@ -674,7 +716,7 @@ ul.themes {
             margin: 2px 0 2px 0;
           }
           &>.unique-id {
-            @include table-col(7%);
+            @include table-col($col-unique-id-width);
             >.data {
               margin-bottom: 0;
             }
@@ -737,22 +779,22 @@ ul.themes {
             }
           }
           &>.user-story, &>.acceptance-criteria, &>.comments {
-            @include table-col(22%);
+            @include table-col($col-main-width);
             &>div {
               min-height: 1.1em;
             }
           }
           &>.score-50, &>.score-90, &>.score {
-            @include table-col(3%);
+            @include table-col($col-score-width);
             &>div {
               min-height: 1.1em;
             }
           }
           &>.score {
-            @include table-col(6%);
+            @include table-col($col-score-width * 2);
           }
-          &>.cost-formatted { @include table-col(5%); text-align: right; &>div { border: none; padding: 3px; } }
-          &>.days-formatted {
+          &>.cost-formatted { @include table-col($col-cost-width); text-align: right; &>div { border: none; padding: 3px; } }
+          &>.days-formatted { /* $col-days-width */
             &>div {
               margin: 1px 0 1px 1px;
               padding: 3px;
@@ -817,6 +859,45 @@ ul.themes {
     }
   }
 }
+
+/* modifier for column widths if days or cost columns are missing */
+/* if day and cost estimates are turned off, let's scale things out as 9% more space*/
+#themes-container.no-days-or-cost li.theme {
+  $ratio: 100% / (100% - $col-cost-width - $col-days-width);
+  $theme-width: $col-theme-width * $ratio;
+  > .theme-data { width: $theme-width; }
+  > div.stories { width: 100% - $theme-width; } /* resize the entire stories container down */
+  li.story {
+    > .unique-id { @include scaled-up-width($col-unique-id-width * $ratio, $theme-width) }
+    > .user-story, > .acceptance-criteria, > .comments { @include scaled-up-width($col-main-width * $ratio, $theme-width) }
+    > .score-50, .score-90 {
+      @include scaled-up-width($col-score-width * $ratio, $theme-width);
+      >div { border-right: none; }
+    }
+    > .score {
+      @include scaled-up-width($col-score-width * 2 * $ratio, $theme-width);
+      >div { border-right: none; }
+    }
+  }
+}
+/* if day and cost estimates are turned off, let's scale things out as 9% more space*/
+#themes-container.no-cost li.theme {
+  $ratio: 100% / (100% - $col-days-width);
+  $theme-width: $col-theme-width * $ratio;
+  > .theme-data { width: $theme-width; }
+  > div.stories { width: 100% - $theme-width; } /* resize the entire stories container down */
+  li.story {
+    > .unique-id { @include scaled-up-width($col-unique-id-width * $ratio, $theme-width) }
+    > .user-story, > .acceptance-criteria, > .comments { @include scaled-up-width($col-main-width * $ratio, $theme-width) }
+    > .score-50, .score-90 { @include scaled-up-width($col-score-width * $ratio, $theme-width) }
+    > .score { @include scaled-up-width($col-score-width * 2 * $ratio, $theme-width) }
+    > .days-formatted {
+      width: auto;
+      >div { border-right: none; }
+    }
+  }
+}
+
 /* link helper that is displayed when rolling over links inside a backlog */
 .link-helper {
   position: absolute;
@@ -884,6 +965,59 @@ ul.themes {
   }
   input.error {
     border: 2px solid red;
+  }
+  input#duration-days, input#number-team-members, input#explicit-velocity {
+    width: 5em;
+  }
+  table {
+    margin-bottom: 0;
+    td {
+      vertical-align: top;
+      &:first-child {
+        padding-right: 0.5em;
+      }
+      &.space {
+        padding-right: 4em;
+      }
+    }
+    tr.heading {
+      td {
+        font-weight: bold;
+        padding-top: 0.75em;
+        padding-bottom: 0.25em;
+      }
+    }
+    tr.question {
+      td {
+        font-weight: bold;
+        padding-top: 1.75em;
+        padding-bottom: 0.25em;
+      }
+    }
+    tr.sub-section {
+      label {
+        float: left;
+        font-weight: normal;
+        width: 11em;
+        clear: left;
+        &.error {
+          float: none;
+          width: auto;
+          clear: none;
+        }
+      }
+      > div {
+        float: left;
+        margin-left: 11.1em;
+      }
+    }
+    tr.disabled {
+      color: #999;
+      input {
+        background-color: #EEE;
+        color: #999;
+      }
+    }
   }
 }
 

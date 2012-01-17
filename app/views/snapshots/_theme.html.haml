@@ -12,25 +12,31 @@
       %b= color_text(theme, :name, theme.target.name)
       = color_text(theme, :code, "(Code: #{theme.target.code})")
 - theme.stories.each do |story|
-  = render :partial => 'story', :locals => { :columns => columns, :story => story, :position => 'left', :use_50_90 => use_50_90 }
+  = render :partial => 'story', :locals => { :columns => columns, :story => story, :position => 'left', :use_50_90 => use_50_90, :show_costs => show_costs, :show_days => show_days }
 %tr{ :bgcolor => '#EEEEEE' }
-  %td{ :colspan => columns, :align => 'right', :style => 'border-right: 1px solid #AAA;' }
+  %td{ :colspan => columns, :align => 'right', :style => 'border-right: 1px solid #AAA; text-align: right' }
     - if theme.base.blank?
       &nbsp;
     - else
-      = "#{theme.base.name} totals: "
-      = color_number(theme, :points, :base, "#{format('%0.1f', theme.base.points)} points")
-      ="/"
-      = color_number(theme, :cost_formatted, :base, "#{theme.base.cost_formatted}")
-      ="/"
-      = color_number(theme, :days_formatted, :base, "#{theme.base.days_formatted} days")
-  %td{ :colspan => columns, :align => 'right' }
+      %b
+        = "#{theme.base.name} totals: "
+        = color_number(theme, :points, :base, "#{format('%0.1f', theme.base.points)} points")
+        - if show_costs
+          ="/"
+          = color_number(theme, :cost_formatted, :base, "#{theme.base.cost_formatted}")
+        - if show_days
+          ="/"
+          = color_number(theme, :days_formatted, :base, "#{theme.base.days_formatted} days")
+  %td{ :colspan => columns, :align => 'right', :style => 'text-align: right' }
     - if theme.target.blank?
       &nbsp;
     - else
-      = "#{theme.target.name} totals: "
-      = color_number(theme, :points, :target, "#{format('%0.1f', theme.target.points)} points")
-      ="/"
-      = color_number(theme, :cost_formatted, :target, "#{theme.target.cost_formatted}")
-      ="/"
-      = color_number(theme, :days_formatted, :target, "#{theme.target.days_formatted} days")
+      %b
+        = "#{theme.target.name} totals: "
+        = color_number(theme, :points, :target, "#{format('%0.1f', theme.target.points)} points")
+        - if show_costs
+          ="/"
+          = color_number(theme, :cost_formatted, :target, "#{theme.target.cost_formatted}")
+        - if show_days
+          ="/"
+          = color_number(theme, :days_formatted, :target, "#{theme.target.days_formatted} days")

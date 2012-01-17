@@ -38,7 +38,7 @@
 <div class="comments">
   <div class="data"><%= urlify(multiLineHtmlEncode(model.get('comments')), 35) %></div>
 </div>
-<% if (use5090estimates) { %>
+<% if (use5090Estimates) { %>
 <div class="score-50">
   <div class="data"><%= niceNum(model.get('score_50')) %></div>
 </div>
@@ -50,9 +50,13 @@
   <div class="data"><%= niceNum(model.get('score')) %></div>
 </div>
 <% } %>
+<% if (useCostEstimates) { %>
 <div class="cost-formatted">
   <div class="data"><%= model.get('cost_formatted') %></div>
 </div>
+<% } %>
+<% if (useDaysEstimates) { %>
 <div class="days-formatted">
   <div class="data"><%= model.get('days_formatted') %></div>
 </div>
+<% } %>

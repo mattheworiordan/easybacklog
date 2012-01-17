@@ -3,40 +3,41 @@
 
 App.Views.Stories = {
   Index: Backbone.View.extend({
-    tagName: 'div',
+    tagName: 'ul',
     className: 'stories',
     childId: function(model) { return 'story-' + model.get('id'); },
 
     events: {
-      "click ul.stories .actions a.new-story": "createNew",
-      "keydown ul.stories .actions a.new-story": "addStoryKeyPress"
+      "click .actions a.new-story": "createNew",
+      "keydown .actions a.new-story": "addStoryKeyPress"
     },
 
     initialize: function() {
       this.collection = this.options.collection;
-      this.use5090estimates = this.options.use5090estimates;
       _.bindAll(this, 'orderChanged');
     },
 
     render: function() {
       var view = this;
-      $(this.el).html(JST['stories/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
-        var storyView = new App.Views.Stories.Show({ model: model, id: view.childId(model), use5090estimates: view.use5090estimates });
-        view.$('ul.stories').append(storyView.render().el);
+        var storyView = new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({
+          model: model,
+          id: view.childId(model)
+        }, view.options));
+        $(view.el).append(storyView.render().el);
       });
 
       if (this.collection.theme.IsEditable()) {
-        if (!this.collection.theme.isNew()) { this.$('ul.stories').append(JST['stories/new']()); }
+        if (!this.collection.theme.isNew()) { $(this.el).append(JST['stories/new']()); }
         var orderChangedEvent = this.orderChanged;
         var actionsElem;
         // allow stories to be sorted using JQuery UI
-        this.$('ul.stories').sortable({
+        $(this.el).sortable({
           start: function(event, ui) {
             // hide the new story button when dragging
-            actionsElem = view.$('ul.stories>.actions').clone();
-            view.$('ul.stories>.actions').remove();
+            actionsElem = view.$('>.actions').clone();
+            view.$('>.actions').remove();
             view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
             // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip
             //  won't do anything until dragging is over
@@ -50,7 +51,7 @@ App.Views.Stories = {
             App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
             orderChangedEvent();
             // show the new story button again
-            view.$('ul.stories').append(actionsElem);
+            $(view.el).append(actionsElem);
             // add the tips back in to work around jQuery UI and vTip conflict on Firefox
             view.$('.move-story').addClass('vtip');
           },
@@ -74,10 +75,12 @@ App.Views.Stories = {
       event.preventDefault();
       var model = new Story();
       this.collection.add(model);
-      this.$('ul.stories li:last').before(new App.Views.Stories.Show({ model: model, use5090estimates: this.use5090estimates }).render().el);
-      var this_view = this;
-      this.$('ul.stories li.story:last').css('display','none').slideDown('fast', function() {
-        this_view.$('ul.stories li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
+      this.$('li:last').before(new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({
+        model: model
+      }, this.options)).render().el);
+      var view = this;
+      this.$('li.story:last').css('display','none').slideDown('fast', function() {
+        view.$('li.story:last > .user-story > .as-a > .data').click(); // browser bug, needs to defer, so used animation
       });
     },
 
@@ -147,7 +150,6 @@ App.Views.Stories = {
     initialize: function() {
       var that = this;
 
-      this.use5090estimates = this.options.use5090estimates;
       App.Views.BaseView.prototype.initialize.call(this);
       _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'updateViewWithModelData');
 
@@ -217,10 +219,10 @@ App.Views.Stories = {
 
       if (attributes === 'all') {
         // just populate the entire element as we're initializing
-        $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
+        $(this.el).html( JST['stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
       } else if (attributes && (attributes.sprint_story_status_id || attributes.sprint_story_id)) {
         // sprint story status has changed, lets update the entire HTML as it may or may not be locked now
-        $(this.el).html( JST['stories/show']({ model: this.model, use5090estimates: this.use5090estimates }) );
+        $(this.el).html( JST['stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
         this.configureView();
       }
 
@@ -324,7 +326,7 @@ App.Views.Stories = {
           'acceptance-criteria ul.acceptance-criteria li:first-child>*',
           'comments .data'
         ];
-        if (this.use5090estimates) {
+        if (this.options.use5090Estimates) {
           viewElements.push('score-50 .data');
           viewElements.push('score-90 .data');
         } else {
@@ -508,8 +510,9 @@ App.Views.Stories = {
 
     // duplicate story event fired
     duplicate: function(event) {
-      var model = new Story();
-      var attributes = _.clone(this.model.attributes);
+      var model = new Story(),
+          attributes = _.clone(this.model.attributes);
+      event.preventDefault();
       delete attributes.id;
       delete attributes.unique_id;
       // get the criteria and add to the new model
@@ -520,7 +523,7 @@ App.Views.Stories = {
       });
       model.set(attributes);
       this.model.collection.add(model);
-      var storyView = new App.Views.Stories.Show({ model: model, id: 0, use5090estimates: this.use5090estimates }); // set id 0 as will change when model is saved
+      var storyView = new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({ model: model, id: 0 }, this.options)); // set id 0 as will change when model is saved
       var newStoryDomElem = $(storyView.render().el);
       newStoryDomElem.insertBefore($(this.el).parents('ul.stories').find('>li.actions'));
       model.save(false, {

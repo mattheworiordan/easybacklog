@@ -39,33 +39,15 @@
           or
           = link_to 'select an existing company', '#', :id => 'select_an_existing_company'
 
-
-.label-spacer
-
-= f.label :rate, "Rate"
-.label-hint
-  (your average daily rate without the currency symbol)
-.input-row
-  = f.text_field :rate
-
-.label-spacer
-
-= f.label :velocity, "Velocity"
-.label-hint
-  (the average velocity each team member achieves per day)
-.input-row
-  = f.text_field :velocity
+= render :partial => '/_shared/backlog_preferences', :locals => { :context => @backlog, :namespace => 'backlog', :f => f }
 
 = f.label :scoring_rule, "Scoring rule for stories", :class => 'spacer vtip', :title => 'The scoring rule is used to ensure you enter valid scores when scoring your backlog stories.  You can change this at any point in the future'
 - ScoringRule.all.each do |rule|
   .input-row
-    = f.radio_button :scoring_rule_id, rule.id, @backlog.scoring_rule_id.blank? ? (rule == ScoringRule.default ? { :checked => 'checked' } : {}) : {}
+    = f.radio_button :scoring_rule_id, rule.id, @backlog.scoring_rule.blank? ? (rule == ScoringRule.default ? { :checked => 'checked' } : {}) : (rule == @backlog.scoring_rule ? { :checked => 'checked' } : {})
     = f.label "scoring_rule_id_#{rule.id}", rule.title, :class => 'light'
     .form-hint.inline
       = "(#{rule.description})"
 
-.input-row.for-check-box
-  = f.check_box :use_50_90
-  = f.label :use_50_90, "Use the 50/90 estimation method"
-  .label-hint
-    (leave this unchecked to use the simpler single score system)
+- # if the defaults are not yet set, then indicate this to the view so that Yes, I would like to use estimates is shown by default
+= hidden_field_tag :account_defaults_set, @backlog.account.defaults_set
