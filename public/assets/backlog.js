@@ -157,13 +157,17 @@ if(firstRun){target.find("#use-explicit-velocity-container").slideUp()
 }else{target.find("#use-explicit-velocity-container").hide();
 firstRun=true
 }target.find("#use-team-members-container").slideDown();
-target.find("#number-team-members").rules("add",{required:true})
+target.find("#number-team-members").rules("add",{required:true});
+target.find("label#use-explicit-velocity-false").addClass("selected");
+target.find("label#use-explicit-velocity-true").removeClass("selected")
 }else{target.find("tr.use-team-members").addClass("disabled").find("input").attr("disabled","true");
 target.find("#explicit-velocity").rules("add",{required:true});
 if(firstRun){target.find("#use-team-members-container").slideUp()
 }else{target.find("#use-team-members-container").hide();
 firstRun=true
-}target.find("#use-explicit-velocity-container").slideDown()
+}target.find("#use-explicit-velocity-container").slideDown();
+target.find("label#use-explicit-velocity-true").addClass("selected");
+target.find("label#use-explicit-velocity-false").removeClass("selected")
 }},teamSizeChanged=function(){var expectedVelocity;
 if(isNaN(parseFloat(target.find("#number-team-members").val()))){target.find("#expected-velocity").text("(enter your team size)")
 }else{if(isNaN(parseFloat(target.find("#duration-days").val()))){target.find("#expected-velocity").text("(enter duration of sprint)")
