@@ -184,6 +184,27 @@ section.content .not-editable-backlog-notice {
   }
 }
 
+@mixin pulse-frames {
+  0% {
+    @include opacity(1);
+  }
+  50% {
+    @include opacity(1);
+  }
+  75% {
+    @include opacity(0.1);
+  }
+  100% {
+    @include opacity(0.1);
+  }
+}
+@-moz-keyframes pulse {
+  @include pulse-frames;
+}
+@-webkit-keyframes pulse {
+  @include pulse-frames;
+}
+
 #presence-notifier {
   display: none;
   position: fixed;
@@ -203,6 +224,14 @@ section.content .not-editable-backlog-notice {
     float: left;
     width: 16px;
     margin-top: 2px;
+    -moz-animation-duration: 0.5s;
+    -moz-animation-name: pulse;
+    -moz-animation-iteration-count: infinite;
+    -moz-animation-direction: alternate;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-name: pulse;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-direction: alternate;
   }
   .title {
     float: left;
