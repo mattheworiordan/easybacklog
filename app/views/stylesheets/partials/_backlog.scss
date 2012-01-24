@@ -538,7 +538,11 @@ ul.themes {
   /* styling for an empty editable field with edit text in it */
   .editable-blank {
     font-size: 80%;
-    color: #666;
+    color: #DDD;
+    color: rgba(0,0,0,0.2);
+    &:hover {
+      color: #555;
+    }
   }
 
   /* buttons for adding theme / story */
@@ -832,8 +836,6 @@ ul.themes {
             }
             li.new-acceptance-criterion {
               margin: -2px 0 0 -2px;
-              color: #666;
-              font-size: 80%;
             }
             .index {
               width: 1.5em;
