@@ -175,6 +175,7 @@ section.showing-sprints {
     border: 1px solid #DDD;
     @include border-radius(3px);
     @include single-box-shadow(#EEE, 0, 0, 3px, 1px);
+    margin-left: 1px;
     margin-top: 8px;
     overflow: hidden;
     font-size: 12px;
