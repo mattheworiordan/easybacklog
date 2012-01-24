@@ -785,9 +785,9 @@ ul.themes {
           &>.user-story, &>.acceptance-criteria, &>.comments {
             @include table-col($col-main-width);
             &>div {
+              margin-bottom: 0;
               &:nth-child(2),&:nth-child(3) {
                 border-top: 0;
-                margin-bottom: 0;
               };
             }
           }
