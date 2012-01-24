@@ -153,7 +153,7 @@ section.content .not-editable-backlog-notice {
     top: 63px;
     left: 120px;
     overflow: hidden;
-    z-index: 10; /* must appear over header */
+    z-index: 9; /* must appear over header and drop down */
     .title {
       color: lighten($light-text-on-title-area-color, 20%);
       float: left;
@@ -177,7 +177,7 @@ section.content .not-editable-backlog-notice {
     display: none;
     overflow: hidden;
     padding: 10px;
-    z-index: 10; /* appears on a header of z-index 5 */
+    z-index: 10; /* appears on a header of z-index 5 must be over viewing snapshot container */
     label {
       color: white;
     }
