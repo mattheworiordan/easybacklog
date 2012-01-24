@@ -249,14 +249,13 @@ if(that.linkRolloutTimeout){clearTimeout(that.linkRolloutTimeout)
 }if(that.linkHelper){that.linkHelper.remove()
 }})
 },addUseOptions:function(target,options){return _(target).extend({use5090Estimates:options.use5090Estimates,useCostEstimates:options.useCostEstimates,useDaysEstimates:options.useDaysEstimates})
-},setStoryColor:function(target,color){var colorWithoutHex=(color.match(/^#/)?color.substring(1):color);
-var colorWithHex="#"+colorWithoutHex;
+},setStoryColor:function(target,color){var colorWithoutHex=(color.match(/^#/)?color.substring(1):color),colorWithHex="#"+colorWithoutHex,colors=colorWithoutHex.match(/[\d\w]{2}/g),boxShadowCss="0 0 3px 1px rgba("+parseInt(colors[0],16)+", "+parseInt(colors[1],16)+", "+parseInt(colors[2],16)+", 0.35)";
 if(colorWithoutHex.toLowerCase()==="ffffff"){colorWithoutHex=colorWithHex="";
 $(target).css("background-color","transparent")
-}else{var colors=colorWithoutHex.match(/[\d\w]{2}/g);
-$(target).css("background-color","rgba("+parseInt(colors[0],16)+", "+parseInt(colors[1],16)+", "+parseInt(colors[2],16)+", 0.15)")
+}else{$(target).css("background-color","rgba("+parseInt(colors[0],16)+", "+parseInt(colors[1],16)+", "+parseInt(colors[2],16)+", 0.15)")
 }$(target).find(".background-color-indicator").css("background-color",colorWithHex);
-if($(target).is(".story-card")){$(target).css("border-color",colorWithHex)
+if($(target).is(".story-card")){$(target).css("border-color",colorWithHex);
+$(target).css("box-shadow",boxShadowCss).css("-moz-box-shadow",boxShadowCss).css("-webkit-box-shadow",boxShadowCss).css("-o-box-shadow",boxShadowCss)
 }return colorWithoutHex
 }};
 App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{placeHolder:'<span class="editable-blank">[edit]</span>',type:"text",zIndex:3},initialize:function(){this.model=this.options.model;
