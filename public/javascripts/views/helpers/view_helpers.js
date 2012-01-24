@@ -198,5 +198,22 @@ App.Views.Helpers = {
       useCostEstimates: options.useCostEstimates,
       useDaysEstimates: options.useDaysEstimates
     });
+  },
+
+  setStoryColor: function(target, color) {
+    var colorWithoutHex = (color.match(/^#/) ? color.substring(1) : color);
+    var colorWithHex = '#' + colorWithoutHex;
+    if (colorWithoutHex.toLowerCase() === 'ffffff') {
+      colorWithoutHex = colorWithHex = '';
+      $(target).css('background-color','transparent');
+    } else {
+      var colors = colorWithoutHex.match(/[\d\w]{2}/g);
+      $(target).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.15)');
+    }
+    $(target).find('.background-color-indicator').css('background-color', colorWithHex);
+    if ($(target).is('.story-card')) {
+      $(target).css('border-color', colorWithHex);
+    }
+    return colorWithoutHex;
   }
 }

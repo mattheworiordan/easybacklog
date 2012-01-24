@@ -496,6 +496,8 @@ App.Views.Sprints = {
       // add reference to method to update sprintStoryStatus as this will change when moved
       $(this.el).data('update-sprint-story-status', this.updateSprintStoryStatus);
 
+      if (this.model.get('color')) { App.Views.Helpers.setStoryColor(this.el, this.model.get('color')); }
+
       // if not editable, set the class so it cannot be moved
       this.setEditableState();
 
