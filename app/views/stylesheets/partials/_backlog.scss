@@ -204,6 +204,9 @@ section.content .not-editable-backlog-notice {
 @-webkit-keyframes pulse {
   @include pulse-frames;
 }
+@-ms-keyframes pulse {
+  @include pulse-frames;
+}
 
 #presence-notifier {
   display: none;
@@ -232,6 +235,10 @@ section.content .not-editable-backlog-notice {
     -webkit-animation-name: pulse;
     -webkit-animation-iteration-count: infinite;
     -webkit-animation-direction: alternate;
+    -ms-animation-duration: 0.5s;
+    -ms-animation-name: pulse;
+    -ms-animation-iteration-count: infinite;
+    -ms-animation-direction: alternate;
   }
   .title {
     float: left;
