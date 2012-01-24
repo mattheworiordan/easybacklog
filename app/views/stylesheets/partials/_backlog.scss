@@ -781,7 +781,10 @@ ul.themes {
           &>.user-story, &>.acceptance-criteria, &>.comments {
             @include table-col($col-main-width);
             &>div {
-              min-height: 1.1em;
+              &:nth-child(2),&:nth-child(3) {
+                border-top: 0;
+                margin-bottom: 0;
+              };
             }
           }
           &>.score-50, &>.score-90, &>.score {
