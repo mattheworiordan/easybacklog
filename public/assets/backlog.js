@@ -249,6 +249,15 @@ if(that.linkRolloutTimeout){clearTimeout(that.linkRolloutTimeout)
 }if(that.linkHelper){that.linkHelper.remove()
 }})
 },addUseOptions:function(target,options){return _(target).extend({use5090Estimates:options.use5090Estimates,useCostEstimates:options.useCostEstimates,useDaysEstimates:options.useDaysEstimates})
+},setStoryColor:function(target,color){var colorWithoutHex=(color.match(/^#/)?color.substring(1):color);
+var colorWithHex="#"+colorWithoutHex;
+if(colorWithoutHex.toLowerCase()==="ffffff"){colorWithoutHex=colorWithHex="";
+$(target).css("background-color","transparent")
+}else{var colors=colorWithoutHex.match(/[\d\w]{2}/g);
+$(target).css("background-color","rgba("+parseInt(colors[0],16)+", "+parseInt(colors[1],16)+", "+parseInt(colors[2],16)+", 0.15)")
+}$(target).find(".background-color-indicator").css("background-color",colorWithHex);
+if($(target).is(".story-card")){$(target).css("border-color",colorWithHex)
+}return colorWithoutHex
 }};
 App.Views.BaseView=Backbone.View.extend({defaultEditableOptions:{placeHolder:'<span class="editable-blank">[edit]</span>',type:"text",zIndex:3},initialize:function(){this.model=this.options.model;
 this.parentView=this.options.parentView;
@@ -904,7 +913,8 @@ $(this.el).hover(function(){$(this).addClass("hover")
 });
 $(this.el).data("story_id",this.model.get("id"));
 $(this.el).data("update-sprint-story-status",this.updateSprintStoryStatus);
-this.setEditableState();
+if(this.model.get("color")){App.Views.Helpers.setStoryColor(this.el,this.model.get("color"))
+}this.setEditableState();
 return this
 },resetToggle:function(){$(this.el).css("height","auto");
 if($(this.el).height()>this.contractedHeight+this.heightBuffer){$(this.el).data("original-height",$(this.el).height());
@@ -1236,13 +1246,7 @@ this.model.MoveToTheme(themeId,{success:function(model,response){var errorView=n
 },error:function(){var errorView=new App.Views.Error({message:"The story move failed.  Please refresh your browser."})
 }})
 }$(dialog).dialog("close")
-},changeColor:function(color,options){var colorWithoutHex=(color.match(/^#/)?color.substring(1):color);
-var colorWithHex="#"+colorWithoutHex;
-if(colorWithoutHex.toLowerCase()==="ffffff"){colorWithoutHex=colorWithHex="";
-$(this.el).css("background-color","transparent")
-}else{var colors=colorWithoutHex.match(/[\d\w]{2}/g);
-$(this.el).css("background-color","rgba("+parseInt(colors[0],16)+", "+parseInt(colors[1],16)+", "+parseInt(colors[2],16)+", 0.15)")
-}$(this.el).find(".background-color-indicator").css("background-color",colorWithHex);
+},changeColor:function(color,options){var colorWithoutHex=App.Views.Helpers.setStoryColor(this.el,color);
 if(!options||!options.silent){this.model.set({color:colorWithoutHex});
 this.model.save()
 }},duplicate:function(event){var model=new Story(),attributes=_.clone(this.model.attributes);
