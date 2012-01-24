@@ -10,7 +10,7 @@
   The following <% if (people.length === 1) { %>person is<% } else { %>people are<% } %> currently editing this backlog:
   <ul>
     <% _(people).each(function(person) { %>
-      <li><%= htmlEncode(person.name) %></li>
+      <li><%= htmlEncode(person) %></li>
     <% }); %>
   </ul>
 </div>

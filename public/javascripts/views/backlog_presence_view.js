@@ -67,6 +67,8 @@ App.Views.BacklogPresence = {
             if (response && response.length) { // must be an array or else we've got an empty response
               if (response.length > 1) {
                 var people = _(response).reject(function(elem) { return elem.id === that.userId; });
+                // remove duplicates
+                people = _.uniq(_.map(people, function(person) { return person.name }));
                 $(that.el).html(JST['backlogs/presence']({ people: people }));
                 $(that.el).show();
               } else {
