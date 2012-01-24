@@ -312,7 +312,7 @@ if(this.collection.story.IsEditable()){this.$("ul").append(JST["acceptance_crite
 var orderChangedEvent=this.orderChanged;
 this.$("ul.acceptance-criteria").sortable({start:function(event,ui){parentView.$("textarea, input").blur()
 },stop:function(event,ui){orderChangedEvent()
-},placeholder:"target-order-highlight",axis:"y",handle:".index"}).find(".index").disableSelection()
+},placeholder:"target-order-highlight",axis:"y",handle:".index, .cross-hair-indicator"}).find(".index").disableSelection()
 }this.hideEditIfCriteriaExist();
 this.displayOrderIndexes();
 return(this)
