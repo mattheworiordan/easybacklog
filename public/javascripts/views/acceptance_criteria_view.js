@@ -37,7 +37,7 @@ App.Views.AcceptanceCriteria = {
           },
           placeholder: 'target-order-highlight',
           axis: 'y',
-          handle: '.index'
+          handle: '.index, .cross-hair-indicator'
         }).find('.index').disableSelection();
       }
 

@@ -826,6 +826,14 @@ ul.themes {
           ul.acceptance-criteria {
             margin: 0;
             list-style: none;
+            li:hover {
+              .index {
+                display: none;
+              }
+              .cross-hair-indicator {
+                display: block;
+              }
+            }
             /* acceptance criteria row */
             li.criterion {
               margin: 0;
@@ -842,6 +850,15 @@ ul.themes {
               cursor: move;
               float: left;
               clear: left;
+              display: block;
+            }
+            .cross-hair-indicator {
+              width: 1.5em;
+              cursor: move;
+              float: left;
+              clear: left;
+              display: none;
+              background: url(/images/cross-hair.png) no-repeat left center;
             }
             .data {
               clear: right;
