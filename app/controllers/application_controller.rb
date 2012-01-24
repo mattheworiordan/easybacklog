@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   after_filter :log_last_page_viewed
   before_filter :test_env_mail_config if Rails.env.test? # set up ActionMailer host when running Cuke so links work
   before_filter :ensure_last_sign_in_updated # last sign in date is not updated if user is automatically logged in
+  before_filter :set_default_locale
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
@@ -99,5 +100,11 @@ class ApplicationController < ActionController::Base
         sign_in(current_user, :force => true)
         session[:logged_signin] = true
       end
+    end
+
+    # because of issue with local persisting with the same instance http://labs.revelationglobal.com/2009/11/13/unicorn_and_i18n.html
+    # we reset the locale to the default_locale for all requests and let this be overriden in other controllers
+    def set_default_locale
+      I18n.locale = I18n.default_locale
     end
 end
