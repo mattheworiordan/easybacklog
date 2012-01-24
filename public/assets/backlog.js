@@ -556,6 +556,8 @@ $.ajax(ajaxOptions)
 var _poll=function(){that.ajaxRequest({path:"poll",data:{id:that.userId,name:that.name,channel:that.model.get("id")},success:function(response){if((typeof response==="string")&&response.replace(/\s/g,"").length){response=JSON.parse(response)
 }if(response&&response.length){if(response.length>1){var people=_(response).reject(function(elem){return elem.id===that.userId
 });
+people=_.uniq(_.map(people,function(person){return person.name
+}));
 $(that.el).html(JST["backlogs/presence"]({people:people}));
 $(that.el).show()
 }else{if($(that.el).is(":visible")){$(that.el).hide()
