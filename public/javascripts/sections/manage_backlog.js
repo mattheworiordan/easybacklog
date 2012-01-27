@@ -129,7 +129,6 @@ App.Views.BacklogCreateUpdateMethods = (function() {
         $('input#backlog_rate').val(data.default_rate);
         $('input#backlog_velocity').val(data.default_velocity);
         $('input#backlog_use_50_90').attr('checked', data.default_use_50_90);
-        console.log("value:" + firstCall + '.');
         // show cost estimate options if previously used for this company
         if (!firstCall) { resetEstimatableVisibility(); }
       });
@@ -137,7 +136,6 @@ App.Views.BacklogCreateUpdateMethods = (function() {
   }
 
   function resetEstimatableVisibility() {
-    console.log("value" + $('input#backlog_velocity').val() + '.');
     if ($('input#backlog_velocity').val()) {
       $('input#backlog_days_estimatable_true').attr('checked', true);
     } else {
