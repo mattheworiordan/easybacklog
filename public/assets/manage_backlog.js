@@ -74,11 +74,9 @@ var account_ID=document.location.href.match(/\/accounts\/(\d+)\//i);
 $.getJSON("/accounts/"+account_ID[1]+"/companies/"+selected+".json",{},function(data){$("input#backlog_rate").val(data.default_rate);
 $("input#backlog_velocity").val(data.default_velocity);
 $("input#backlog_use_50_90").attr("checked",data.default_use_50_90);
-console.log("value:"+firstCall+".");
 if(!firstCall){resetEstimatableVisibility()
 }})
-}}function resetEstimatableVisibility(){console.log("value"+$("input#backlog_velocity").val()+".");
-if($("input#backlog_velocity").val()){$("input#backlog_days_estimatable_true").attr("checked",true)
+}}function resetEstimatableVisibility(){if($("input#backlog_velocity").val()){$("input#backlog_days_estimatable_true").attr("checked",true)
 }else{$("input#backlog_days_estimatable_false").attr("checked",true)
 }setDaysEstimatableVisibility()
 }function isEditingBacklog(){return $("form.edit_backlog").length>0
