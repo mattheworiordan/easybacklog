@@ -87,6 +87,14 @@ class Story < ActiveRecord::Base
     self.sprint_story.present? && self.sprint_story.sprint_story_status
   end
 
+  def move_to_theme(new_theme)
+    # ensure unique ID is empty first as we will need to assign a new one
+    self.unique_id = nil
+    self.theme = new_theme
+    save!
+    move_to_bottom
+  end
+
   private
     def score_90_greater_than_50
       unless score_50.blank? || score_90.blank?

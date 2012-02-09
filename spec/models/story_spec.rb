@@ -174,4 +174,30 @@ describe Story do
     story.reload
     expect { sprint.stories.destroy(story) }.should_not raise_error
   end
+
+  context 'moving to another theme' do
+    before(:each) do
+      @theme1 = Factory.create(:theme)
+      @theme2 = Factory.create(:theme, :backlog => @theme1.backlog)
+    end
+    subject { Factory.create(:story, :theme => @theme2) }
+
+    it 'should allow a story to be moved to another theme with existing stories' do
+      Factory.create(:story, :theme => @theme1)
+      Factory.create(:story, :theme => @theme1)
+      subject.move_to_theme @theme1
+      [@theme1, @theme2].each(&:reload)
+      @theme1.stories.count.should == 3
+      @theme1.stories.last.should == subject
+      @theme2.stories.should be_empty
+    end
+
+    it 'should allow a story to be moved to an empty theme' do
+      subject.move_to_theme @theme1
+      [@theme1, @theme2].each(&:reload)
+      @theme1.stories.count.should == 1
+      @theme1.stories.first.should == subject
+      @theme2.stories.should be_empty
+    end
+  end
 end

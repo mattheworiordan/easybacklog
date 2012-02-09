@@ -54,13 +54,7 @@ class StoriesController < ApplicationController
     new_theme = Theme.find(params[:new_theme_id])
 
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      # ensure unique ID is empty first as we will need to assign a new one
-      @story.unique_id = nil
-      # assign to new theme, note: using new_theme.stories << self failed
-      new_theme.stories << @story
-      # now move to last item
-      @story.move_to_bottom
-
+      @story.move_to_theme new_theme
       render :json => story_json
     end
   rescue Exception => e
