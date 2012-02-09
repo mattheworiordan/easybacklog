@@ -1,15 +1,14 @@
 - content_for :title do
-  = link_to "Manage account", edit_account_path(current_account), :class => 'back'
-  - if current_user.accounts.count > 1
-    .back
-      |
-    = link_to "View other accounts", accounts_path, { :class => 'back' }
+  - if can? :full
+    = link_to "Manage account", edit_account_path(current_account), :class => 'back'
+
   %h1
     = truncate(@account.name, :length => 50)
 
 - content_for :side_panel do
-  .button-container
-    = link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }
+  - if can? :full
+    .button-container
+      = link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }
   %h2 Your backlogs
   .your-back-list-side-panel
     - @your_backlogs.each do |company, backlogs|

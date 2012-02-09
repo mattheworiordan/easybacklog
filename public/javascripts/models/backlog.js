@@ -10,9 +10,24 @@ var Backlog = Backbone.Model.extend({
       '?cache-buster' + Math.floor(Math.random()*1000000));
   },
 
-  // editable if no snapshot master
+  // Backlog may not be editable because it's locked (archive, snapshot) or because the user does not have the necessary privileges
   IsEditable: function() {
-    return (this.get('is_editable') ? true : false);
+    return this.CanEdit();
+  },
+
+  // Backlog could be locked based on whether it's an archive or snapshot
+  IsLocked: function() {
+    return this.get('is_locked');
+  },
+
+  // Whether user has permission to edit this backlog
+  CanEdit: function() {
+    return this.get('is_editable') ? true : false;
+  },
+
+  // Whether user has permission to edit the status of stories in this backlog
+  CanEditStatus: function() {
+    return this.get('is_status_editable') ? true : false;
   },
 
   // access to themes child collection

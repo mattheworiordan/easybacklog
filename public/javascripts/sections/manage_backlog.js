@@ -42,13 +42,12 @@ App.Views.BacklogCreateUpdateMethods = (function() {
     // store initial account defaults
     storeAccountDefaults();
     // highlight the label when the check boxes are selected
-    $('input#backlog_has_company_false, input#backlog_has_company_true').change(function() { setCompanyVisibility() });
+    $('input#backlog_has_company_false, input#backlog_has_company_true').change(function() { setCompanyVisibility(); });
     // show new company text boxes
     $('a#add_new_company').click(function(event) {
       event.preventDefault();
       $('.client-select .existing').hide();
       $('.client-select .new').show();
-      return;
       setAccountDefaults(); // use account defaults as adding a new company
       $('input#company_name').focus();
     });
@@ -70,13 +69,17 @@ App.Views.BacklogCreateUpdateMethods = (function() {
       $('input[type=text],input[type=checkbox],input[name="backlog[scoring_rule_id]"],select').attr('disabled', true);
       $('#backlog_has_company_false, #backlog_has_company_true').attr('disabled', true);
       $('.client-select .new-company').hide();
+      // reason this page is non-editable is because user does not have sufficient privileges, so hide all buttons & disable archive radios
+      if ($('.not-editable-notice').is('.no-permission')) {
+        $('input[type=radio]').attr('disabled', true);
+      }
     }
 
     // hide / show the company selection depending on state
     setCompanyVisibility(true);
     // update company defaults when selecting a company
     $('select#backlog_company_id').change(function() { getCompanyDefaults(); });
-  };
+  }
 
   function setCompanyVisibility(firstCall) {
     if ($('input#backlog_has_company_false').is(':checked')) {

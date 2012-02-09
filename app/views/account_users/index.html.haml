@@ -1,6 +1,8 @@
 - title 'Users'
 - content_for :head do
   = include_javascripts :users
+- content_for :title do
+  = link_to "← Back to account dashboard", account_path(current_account), :class => 'back'
 
 - if @users.blank?
   - content_for :title do
@@ -8,37 +10,43 @@
 - else
   - content_for :title do
     %h1 Account users
-  %p
-    The following people have access to this account:
+  %h2.divider Users with access to this account
   %form
     %table.users
       %tr
         %th Name
         %th Email address
-        %th Admin Rights?
+        %th Permission
+        %th Account Administrator
       - @users.each do |account_user|
+        - select_id = "user-privilege-#{account_user.user.id}"
         %tr
           %td
-            = account_user.user.name
+            = label_tag select_id, account_user.user.name
           %td
-            = account_user.user.email
+            = label_tag select_id, account_user.user.email
           - unless account_user.user == current_user
+            %td.privilege
+              %select.privilege{ :id => select_id, :name => select_id }
+                = privilege_options account_user
             %td.admin
-              = check_box_tag "user-#{account_user.user.id}", 1, account_user.admin?, :title => 'Click to toggle admin rights', :class => 'admin vtip'
-              = label_tag "user-#{account_user.user.id}", (account_user.admin? ? 'Yes' : 'No'), :id => "label-user-#{account_user.user.id}", :title => 'Click to toggle admin rights', :class => 'vtip'
+              = check_box_tag "user-#{account_user.user.id}", 1, account_user.admin?, :title => 'Account administrators can manage this account, invite new users and view and edit all backlogs', :class => 'admin vtip'
             %td.action
               = link_to account_user_path(current_account, account_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
                 %span.ui-icon.ui-icon-trash
+            %td.action
+              .progress-icon
           - else
+            %td
+              .admin-access Administrator access to all features
             %td.admin
               %b{ :title => 'You cannot turn off your own admin rights', :class => 'vtip' } Yes
   - unless @invites.empty?
     %br/
+    %h2.divider Invites not yet redeemed
     %p
-      The following people have been invited to join but not yet signed up:
+      The following people have been invited to join but not yet signed up to easyBacklog.
       %table.invites
-        %tr
-          %th Email address
         - @invites.each do |invite|
           %tr
             %td
@@ -46,6 +54,5 @@
             %td.action
               = link_to account_invite_path(current_account, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
                 %span.ui-icon.ui-icon-trash
-
-  %br/
-  = link_to 'Add users', new_account_user_path(current_account), :class => 'button'
+  = link_to 'Invite new users', new_account_user_path(current_account), :class => 'button'
+  = link_to 'cancel', account_path(current_account)

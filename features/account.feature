@@ -3,11 +3,13 @@ Feature: Account
   A visitor
   Should be able to set up and use an account
 
-  Scenario: Create a new account
-    Given a user named "John" is registered
+  Background:
+    Given the database has the necessary lookup tables
+      And a user named "John" is registered
       And I am signed in as "John"
-      And the database has the necessary lookup tables
-      And I am on the new account page
+
+  Scenario: Create a new account
+    Given I am on the new account page
     Then I should see the page title "Create a new account"
     When I press "Create new account"
     Then I should see the following error messages:
@@ -75,10 +77,7 @@ Feature: Account
 
   @javascript
   Scenario: Toggle use of rate and velocity
-    Given the database has the necessary lookup tables
-      And a user named "John" is registered
-      And an account called "Acme" is set up for "John" who should have admin rights
-      And I am signed in as "John"
+    Given an account called "Acme" is set up for "John" who should have account admin rights
       And I am on the accounts page
     When I follow "Manage account"
     Then I should see the page title "Edit account"
@@ -117,10 +116,7 @@ Feature: Account
 
   @javascript
   Scenario: When creating a new account, backlog setting defaults should not be visible
-    Given the database has the necessary lookup tables
-      And a user named "John" is registered
-      And I am signed in as "John"
-      And I am on the new account page
+    Given I am on the new account page
     Then I should see the page title "Create a new account"
       # check that no automatic calculation fields are asked
       And I should not see "automatically calculated"
@@ -131,10 +127,7 @@ Feature: Account
 
   @javascript
   Scenario: When editing an account that is new and does not have any defaults set, the preference should be to use estimation and it should be shown
-    Given the database has the necessary lookup tables
-      And a user named "John" is registered
-      And I am signed in as "John"
-      And I am on the new account page
+    Given I am on the new account page
     Then I should see the page title "Create a new account"
     When I fill in "Name" with "Acme Corporation"
       And I select "British English" from "What is your preferred language setting?"
@@ -148,3 +141,27 @@ Feature: Account
       And the "account rate" should be visible
       And the "Rate (optional)" field should be empty
       And the "Yes, I would like to automatically estimate the days required to deliver my backlog" checkbox should be checked
+
+  Scenario: When user has read only access they should not be able to create new backlogs
+    Given an account called "Acme" is set up for "John" who should have read only rights
+      And I am on the accounts page
+    Then I should see "Your backlogs"
+      And I should not see "Create a new backlog"
+
+  Scenario: When user has none access they should not see any backlogs and should see a notice saying they do not yet have access to any backlogs
+    Given an account called "Acme" is set up for "John" who should have no rights
+      And a backlog named "Backlog uno" assigned to company "Test" for account "Acme" is set up
+      And a backlog named "Backlog duo" assigned to company "Test" for account "Acme" is set up
+      And I am on the accounts page
+    Then I should not see "Backlog uno"
+      And I should not see "Backlog duo"
+      And I should see "You do not have access to any backlogs in this account."
+
+  Scenario: When user has full access they see backlogs and be able to create new backlogs
+    Given an account called "Acme" is set up for "John" who should have full access rights
+      And a backlog named "Backlog 1" assigned to company "Test" for account "Acme" is set up
+      And I am on the accounts page
+    Then I should see "Backlog 1"
+      And I should see "Create a new backlog"
+    When I follow "Create a new backlog"
+      Then I should see the page title "Create a backlog"

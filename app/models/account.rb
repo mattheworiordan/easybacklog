@@ -16,12 +16,16 @@ class Account < ActiveRecord::Base
   before_save :remove_rate_if_velocity_empty
   before_update :enable_defaults_set
 
+  scope :with_backlog_counts, select(sanitize_sql(['accounts.id, accounts.name, (select count(*) from backlogs where account_id = accounts.id and snapshot_master_id is null and snapshot_for_sprint_id is null and archived <> ? and deleted <> ?) as cnt', true, true]))
+
+  can_do :user_privileges => :account_users
+
   def add_first_user(user)
     self.account_users.create!(:user => user, :admin => true)
   end
 
-  def add_user(user)
-    self.account_users.create!(:user => user, :admin => false)
+  def add_user(user, privilege)
+    self.account_users.create!(:user => user, :admin => false, :privilege => (privilege.respond_to?(:privilege) ? privilege.privilege : privilege.to_s) )
   end
 
   def create_company(company_name, options = {})
@@ -31,12 +35,12 @@ class Account < ActiveRecord::Base
       :default_rate => options.has_key?(:default_rate) ? options[:default_rate] : default_rate)
   end
 
-  def active_backlogs_grouped_by_company
-    grouped_backlogs_by_company backlogs.active
+  def active_backlogs_grouped_by_company(current_user)
+    grouped_backlogs_by_company backlogs.active.where_user_has_access(current_user)
   end
 
-  def archived_backlogs_grouped_by_company
-    grouped_backlogs_by_company backlogs.archived
+  def archived_backlogs_grouped_by_company(current_user)
+    grouped_backlogs_by_company backlogs.archived.where_user_has_access(current_user)
   end
 
   # add an example backlog for new accounts
@@ -61,7 +65,7 @@ class Account < ActiveRecord::Base
 
   private
     def grouped_backlogs_by_company(backlog_list)
-      list = backlog_list.order('LOWER(name)').group_by do |backlog|
+      list = backlog_list.order('LOWER(backlogs.name)').group_by do |backlog|
         backlog.company.present? ? backlog.company.name : backlog.account.name
       end
       list.sort_by do |key, val|

@@ -1,14 +1,19 @@
 <div class="backlog-tool-panel">
-  <h2>Delete sprint</h2>
-  <% if (model.get('completed?')) { %>
-    This sprint is no longer editable as it is marked as complete.  If you need to delete this sprint, mark this sprint as incomplete.
-  <% } else if (!model.get('deletable?')) { %>
-    This sprint cannot be deleted as it is not the last sprint.  You must delete all successive sprints before you can delete this sprint.
+  <% if (!model.CanEdit()) { %>
+    <h2>Sprint read-only</h2>
+    You do not have permission to edit any of the settings of this backlog's sprint.
   <% } else { %>
-    Deleting a sprint immediately will remove all stories from this sprint and this sprint will be <b>permanently deleted</b>.
-    <b>There is no undo</b> so make sure you absolutely sure you want to delete this sprint.
-    <div class="button-container">
-      <a href="#delete-sprint" class="delete-sprint">Yes, I understand — delete this sprint</a>
-    </div>
+    <h2>Delete sprint</h2>
+    <% if (model.IsComplete()) { %>
+      This sprint is no longer editable as it is marked as complete.  If you need to delete this sprint, mark this sprint as incomplete.
+    <% } else if (!model.get('deletable?')) { %>
+      This sprint cannot be deleted as it is not the last sprint.  You must delete all successive sprints before you can delete this sprint.
+    <% } else { %>
+      Deleting a sprint immediately will remove all stories from this sprint and this sprint will be <b>permanently deleted</b>.
+      <b>There is no undo</b> so make sure you absolutely sure you want to delete this sprint.
+      <div class="button-container">
+        <a href="#delete-sprint" class="delete-sprint">Yes, I understand — delete this sprint</a>
+      </div>
+    <% } %>
   <% } %>
 </div>

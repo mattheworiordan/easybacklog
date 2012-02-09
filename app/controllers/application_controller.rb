@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
     render :json => { :status => 'notice', :message => notice_message }.merge(payload)
   end
 
+  def send_xml_error(error_message)
+    render :status => 400, :text => { :status => 'error', :message => error_message }.to_xml(:root => 'response')
+  end
+
   # if instance variable for account is set then return it
   def current_account
     if @current_account.blank? && (accounts.count == 1)
@@ -54,7 +58,7 @@ class ApplicationController < ActionController::Base
   # list of all accounts a user has access to
   def accounts
     if user_signed_in?
-      current_user.accounts
+      current_user.accounts.sort_by { |d| d.name.downcase }
     end
   end
   helper_method :accounts

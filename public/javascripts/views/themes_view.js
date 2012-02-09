@@ -154,8 +154,9 @@ App.Views.Themes = {
     },
 
     render: function() {
+      var view, that = this;
       $(this.el).html( JST['themes/show']({ model: this.model }) );
-      var view = new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({ collection: this.model.Stories() }, this.options));
+      view = new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({ collection: this.model.Stories() }, this.options));
       this.$('>.stories').prepend(view.render().el);
 
       this.updateStatistics();
@@ -166,6 +167,16 @@ App.Views.Themes = {
         this.$('ul.stories>li.actions').remove();
         this.$('.re-number-stories a').remove();
         this.$('.delete-theme>a').remove();
+
+        // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
+        if (!this.model.IsLocked()) {
+          // make all editable fields show warning that item is not editable by this user
+          _.each(['.theme-data .name div.data','.theme-data .code div.data'], function(elem) {
+            that.$(elem).click(function() {
+              new App.Views.Warning({ message: 'You do not have permission to edit themes for this backlog' });
+            });
+          });
+        }
       }
       return (this);
     },

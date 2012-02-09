@@ -14,6 +14,8 @@ class SprintStory < ActiveRecord::Base
 
   attr_accessible :position, :sprint_story_status_id, :sprint_id, :story_id
 
+  can_do :inherited_privilege => :sprint
+
   include ActiveRecordExceptions
 
   def theme_id

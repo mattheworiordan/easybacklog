@@ -49,7 +49,7 @@ App.Routers.Backlog = Backbone.Router.extend({
 
   showSprintsHelp: function() {
     this.cleanUpOldView();
-    this.oldView = new App.Views.Sprints.Help({ sprintTabsView: this.sprintTabsView, el: this.replaceWithNew('#sprints-help-container') });
+    this.oldView = new App.Views.Sprints.Help({ model: App.Collections.Backlogs.at(0), sprintTabsView: this.sprintTabsView, el: this.replaceWithNew('#sprints-help-container') });
     this.showContainer('#sprints-help-container');
     this.oldView.render();
     this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration('Sprints'));

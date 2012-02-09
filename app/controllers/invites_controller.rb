@@ -8,7 +8,7 @@ class InvitesController < ApplicationController
       render :action => 'invalid_security_code'
     else
       @invite_account = invited_user.account
-      # user is signed in, so just give them access
+      # user is signed in, just give them access
       if user_signed_in?
         if @invite_account.users.include?(current_user) then
           render :action => 'already_have_access'
@@ -37,9 +37,15 @@ class InvitesController < ApplicationController
   private
     # user has now registered, so let's assign them access
     def assign_user_access(invited_user)
-      # don't add if user already has access
-      unless invited_user.account.account_users.find_by_user_id(current_user.id)
-        invited_user.account.add_user current_user
+      # if user already has access
+      existing_account_user = invited_user.account.account_users.find_by_user_id(current_user.id)
+      if existing_account_user.present?
+        # assign user the higher of the two privileges
+        highest = existing_account_user.privilege.highest(invited_user.privilege)
+        existing_account_user.update_attributes! :privilege => highest.privilege
+      else
+        # assign user to account with appropriate privileges
+        invited_user.account.add_user current_user, invited_user.privilege
       end
       invited_user.destroy # delete the invite as now used
     end

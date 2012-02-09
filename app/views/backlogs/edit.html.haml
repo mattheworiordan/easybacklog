@@ -26,14 +26,14 @@
       = link_to raw('← Back to backlog'), account_backlog_path(@backlog.account, @backlog), :id => 'back-to-backlog'
 
 - content_for :side_panel do
-  - unless @backlog.is_snapshot?
+  - unless @backlog.is_snapshot? || cannot?(:full)
     .backlog-tool-panel
       %h2 Duplicate backlog
       Create a duplicate copy of this backlog including all stories and acceptance criteria.  Sprints will not be copied however.
       .button-container
         = link_to 'Duplicate backlog', duplicate_account_backlog_path(@backlog.account, @backlog), :class => 'button'
 
-  - if @backlog.snapshot_master.present?
+  - if @backlog.snapshot_master.present? && can?(:full)
     .backlog-tool-panel
       %h2 Delete snapshot
       Deleting a snapshot immediately and
@@ -43,10 +43,14 @@
       so make sure you're absolutely sure you want to delete this snapshot.
       .button-container
         = link_to 'Yes, I understand — delete this snapshot', snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :method => 'delete', :title => 'Delete snapshot', :confirm => 'This snapshot will be permanently deleted and cannot be recovered. Are you sure?', :class => 'delete-backlog'
-  - elsif @backlog.snapshot_for_sprint.present?
+  - elsif @backlog.snapshot_for_sprint.present? && can?(:full)
     .backlog-tool-panel
       %h2 Delete sprint snapshot?
       You cannot delete a sprint snapshot as snapshots are needed to calculate your burn up progress.
+  - elsif cannot?(:full)
+    .backlog-tool-panel
+      %h2 Backlog read only
+      You do not have permission to edit any of the settings of this backlog.
   - else
     .backlog-tool-panel
       %h2 Delete backlog
@@ -82,13 +86,15 @@
           = label_tag 'backlog_archived_true', raw('Archived <span class="detail">— This backlog is locked: it can be viewed but not edited</span>')
 
     %br/
-    - if @backlog.archived?
+    - if @backlog.archived? && can?(:full)
       = f.submit "Update backlog archive status"
       = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
     - elsif @backlog.snapshot_master.present?
       = link_to "← Back to snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :class => 'button'
     - elsif @backlog.snapshot_for_sprint.present?
       = link_to "← Back to sprint snapshot", sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root, @backlog), :class => 'button'
+    - elsif cannot?(:full)
+      = link_to "← Back to backlog", account_backlog_path(@backlog.account, @backlog), :class => 'button'
     - else
       = f.submit "Update backlog settings"
       = link_to "cancel", account_backlog_path(@backlog.account, @backlog), :id => 'cancel_backlog_update'
@@ -107,7 +113,7 @@
 
       var router = new App.Routers.BacklogSettings();
 
-      var backlog = new Backlog({ id: #{@backlog.id}, velocity: #{@backlog.velocity.blank? ? 'null' : @backlog.velocity} });
+      var backlog = new Backlog({ id: #{@backlog.id}, velocity: #{@backlog.velocity.blank? ? 'null' : @backlog.velocity}, is_editable: #{@backlog.editable? && can?(:full)} });
       App.Collections.SprintStoryStatuses = new SprintStoryStatusesCollection(#{embedded_json_safe sprint_story_statuses_json});
       App.Collections.Sprints = new SprintsCollection(#{embedded_json_safe sprints_json(@backlog)}, { backlog: backlog });
 

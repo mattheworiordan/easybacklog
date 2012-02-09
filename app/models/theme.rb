@@ -16,6 +16,8 @@ class Theme < ActiveRecord::Base
 
   attr_accessible :name, :code, :position
 
+  can_do :inherited_privilege => :backlog
+
   include ScoreStatistics
 
   def editable?

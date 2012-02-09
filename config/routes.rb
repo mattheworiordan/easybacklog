@@ -40,7 +40,7 @@ Ibacklog::Application.routes.draw do
       end
     end
     member do
-      get 'archives' => 'backlogs#archives_index', :as => 'archives'
+      get 'archives' => 'accounts#archives', :as => 'archives'
     end
     collection do
       get 'name_available' => 'accounts#name_available'

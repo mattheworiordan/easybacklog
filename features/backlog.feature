@@ -163,6 +163,10 @@ Feature: Backlog
     # ensure it's not editable
     When I click on the "first theme's name"
     Then there should be 0 "editable text fields"
+    When I click on "Sprints backlog tab"
+    Then I should not see "Create new sprint"
+      And I should not see "add sprint button"
+      And I should see "Sprints locked"
     When I follow "Settings"
     Then I should see "This backlog is archived and is not editable." within the "non editable notice"
       And the "text input fields" should be disabled

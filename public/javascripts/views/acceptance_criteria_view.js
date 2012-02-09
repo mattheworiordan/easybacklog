@@ -123,15 +123,21 @@ App.Views.AcceptanceCriteria = {
     },
 
     render: function() {
+      var that = this;
+
       $(this.el).html( JST['acceptance_criteria/show']({ model: this.model }) );
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
       } else {
-        // make all editable fields show warning that item is not editable
-        $(this.el).find('>div.data').click(function() {
-          new App.Views.Warning({ message: 'You cannot edit a story that is marked as done'});
-        });
+        // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
+        if (!this.model.IsLocked()) {
+          // make all editable fields show warning that item is not editable
+          $(this.el).find('>div.data').click(function() {
+            var message = that.model.CanEdit() ? 'You cannot edit a story that is marked as done' : 'You do not have permission to edit story criteria for this backlog';
+            new App.Views.Warning({ message: message });
+          });
+        }
       }
 
       return (this);

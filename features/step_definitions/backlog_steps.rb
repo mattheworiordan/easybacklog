@@ -203,6 +203,15 @@ Then /^the "([^"]+)" should (not )?allow the values "([^"]+)"$/ do |field, negat
   end
 end
 
+Then /^the "([^"]+)" should (|not )be editable to this user$/ do |field, negation|
+  step %{I click on the "#{field}"}
+  if negation == 'not '
+    step %{I should see the warning "You do not have permission to edit"}
+  else
+    step %{the focussed element should be an editable text field}
+  end
+end
+
 ##
 # Drag and drop
 #

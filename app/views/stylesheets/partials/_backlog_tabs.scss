@@ -42,6 +42,12 @@ section.main-content-pod {
     }
   }
 }
+section.for-backlog {
+  section.side-panel {
+    margin-right: 15px;
+    padding-left: 5px;
+  }
+}
 
 section.showing-sprints {
   .all-stories {
@@ -105,9 +111,12 @@ section.showing-sprints {
   .unassigned-stories-container {
     min-height: 100px; /* for increased drop target when empty */
     padding-bottom: 15px;
-    .notice {
+    .notice, .read-only {
       text-align: center;
-      color: #555;
+      color: #333;
+      background-color: #FFC;
+      padding: 5px;
+      @include border-radius(5px)
     }
   }
   .stories-container {

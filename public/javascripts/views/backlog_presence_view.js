@@ -16,8 +16,11 @@ App.Views.BacklogPresence = {
       $.support.cors = true;
 
       if (App.environment !== 'test') {
-        that.startPolling();
-        that.closeConnectionOnUnload();
+        // only open a connection if the user has edit rights to the backlog
+        if (this.model.IsEditable()) {
+          that.startPolling();
+          that.closeConnectionOnUnload();
+        }
       }
 
       return (this);

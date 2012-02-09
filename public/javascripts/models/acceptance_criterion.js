@@ -7,7 +7,23 @@ var AcceptanceCriterion = Backbone.Model.extend({
 
   // editable if no snapshot master
   IsEditable: function() {
-    return (this.collection.story.IsEditable());
+    return this.CanEdit();
+  },
+
+  IsLocked: function() {
+    return this.collection.story.IsLocked();
+  },
+
+  CanEdit: function() {
+    return this.collection.story.CanEdit();
+  },
+
+  CanEditStatus: function() {
+    return this.collection.story.CanEditStatus();
+  },
+
+  IsDone: function() {
+    return (this.collection.story.IsDone());
   },
 
   // a method callback invoked only by App.Views.BaseView

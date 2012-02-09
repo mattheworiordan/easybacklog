@@ -1,11 +1,11 @@
 #alert-space
   - if flash[:notice]
     %div.notice
-      = flash[:notice]
+      = break_html flash[:notice]
   - if flash[:warning]
     %div.warning
-      = flash[:warning]
+      = break_html flash[:warning]
   - if flash[:error] || flash[:alert]
     %div.error
-      = flash[:error]
-      = flash[:alert]
+      = break_html flash[:error]
+      = break_html flash[:alert]

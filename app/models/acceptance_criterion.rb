@@ -7,6 +7,8 @@ class AcceptanceCriterion < ActiveRecord::Base
   before_destroy :prevent_delete_if_story_not_editable
   attr_accessible :criterion, :position
 
+  can_do :inherited_privilege => :story
+
   include Snapshot
   include ActiveRecordExceptions
 

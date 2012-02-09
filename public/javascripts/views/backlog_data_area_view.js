@@ -141,7 +141,7 @@ App.Views.BacklogDataArea = {
             // iterate through each story that is completed and hide
             backlog.Themes().each(function(theme) {
               theme.Stories().each(function(story) {
-                if (story.SprintStory() && story.SprintStory().Status().isDone()) {
+                if (story.SprintStory() && story.SprintStory().Status().IsDone()) {
                   if (hideCompleted) {
                     $('#story-' + story.get('id')).slideUp();
                   } else {

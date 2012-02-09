@@ -71,17 +71,21 @@
   <label>Sprint Status: This sprint is...</label>
   <div class="form-box">
     <div class="input-row">
-      <input type="radio" name="sprint_status" id="sprint_status_completed"<%=model.isComplete() ? ' checked="checked"' : ''%>>
+      <input type="radio" name="sprint_status" id="sprint_status_completed"<%=model.IsComplete() ? ' checked="checked"' : ''%>>
       <label for="sprint_status_completed">Complete <span class="detail">— All stories are complete</span></label>
     </div>
     <div class="input-row">
-      <input type="radio" name="sprint_status" id="sprint_status_incomplete"<%=!model.isComplete() ? ' checked="checked"' : ''%>>
+      <input type="radio" name="sprint_status" id="sprint_status_incomplete"<%=!model.IsComplete() ? ' checked="checked"' : ''%>>
       <label for="sprint_status_incomplete">Incomplete <span class="detail">— currently a work in progress or being used for planning the next iteration</span></label>
     </div>
   </div>
 
   <div class='label-spacer'></div>
 
-  <a id="sprint_submit" class="button" href="#update">Update sprint settings</a>
-  <a id="sprint_cancel" href="#cancel">cancel</a>
+  <% if (backlog.CanEdit()) { %>
+    <a id="sprint_submit" class="button" href="#update">Update sprint settings</a>
+    <a id="sprint_cancel" href="#cancel">cancel</a>
+  <% } else { %>
+    <a id="sprint_cancel" href="#cancel" class="button">← Back to backlog</a>
+  <% } %>
 </form>

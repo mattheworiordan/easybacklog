@@ -30,6 +30,7 @@ class BacklogsController < ApplicationController
   def show_sprint_snapshot
     begin
       sprint_snapshot = current_account.backlogs.available.find(params[:id]).sprint_snapshots.find { |d| d.id.to_s == params[:snapshot_id] }
+      raise ActiveRecord::RecordNotFound.new('Sprint snapshot was not found') if sprint_snapshot.blank?
       @backlog = Backlog.find(sprint_snapshot.id, :include => BACKLOG_INCLUDES)
       set_locale
     rescue ActiveRecord::RecordNotFound => exception
@@ -41,22 +42,32 @@ class BacklogsController < ApplicationController
   end
 
   def new
-    @backlog = current_account.backlogs.new
-    @backlog.rate = current_account.default_rate if @backlog.rate.blank?
-    @backlog.velocity = current_account.default_velocity if @backlog.velocity.blank?
-    @backlog.use_50_90 = current_account.default_use_50_90 if @backlog.use_50_90.blank?
+    if current_account.can?(:full, current_user)
+      @backlog = current_account.backlogs.new
+      @backlog.rate = current_account.default_rate if @backlog.rate.blank?
+      @backlog.velocity = current_account.default_velocity if @backlog.velocity.blank?
+      @backlog.use_50_90 = current_account.default_use_50_90 if @backlog.use_50_90.blank?
+    else
+      flash[:error] = 'You do not have permission to create backlogs'
+      redirect_to account_path(current_account)
+    end
   end
 
   def create
-    @backlog = current_account.backlogs.new(params[:backlog])
-    @backlog.author = current_user
-    @backlog.last_modified_user = current_user
-    set_or_create_company
-    if @backlog.save
-      flash[:notice] = 'Backlog was successfully created.'
-      redirect_to account_backlog_path(current_account, @backlog)
+    if current_account.can?(:full, current_user)
+      @backlog = current_account.backlogs.new(params[:backlog])
+      @backlog.author = current_user
+      @backlog.last_modified_user = current_user
+      set_or_create_company
+      if @backlog.save
+        flash[:notice] = 'Backlog was successfully created.'
+        redirect_to account_backlog_path(current_account, @backlog)
+      else
+        render :action => "new"
+      end
     else
-      render :action => "new"
+      flash[:error] = 'You do not have permission to create backlogs'
+      redirect_to account_path(current_account)
     end
   end
 
@@ -72,91 +83,99 @@ class BacklogsController < ApplicationController
   # put action to archive a backlog
   def archive
     @backlog = current_account.backlogs.available.find(params[:id])
-    @backlog.mark_archived
-    flash[:notice] = "#{@backlog.name} archived"
-    redirect_to account_path(current_account)
+    enforce_can(:full, 'You do not have permission to archive this backlog') do
+      @backlog.mark_archived
+      flash[:notice] = "#{@backlog.name} archived"
+      redirect_to account_path(current_account)
+    end
   end
 
   # put action to recover from archive
   def recover_from_archive
     @backlog = current_account.backlogs.available.find(params[:id])
-    @backlog.recover_from_archive
-    flash[:notice] = "#{@backlog.name} recovered from archive"
-    redirect_to account_path(current_account)
-  end
-
-  def archives_index
-    @account = current_account
-    @archives = current_account.archived_backlogs_grouped_by_company
-    @your_backlogs = @account.active_backlogs_grouped_by_company
+    enforce_can(:full, 'You do not have permission to recover this backlog from the archives') do
+      @backlog.recover_from_archive
+      flash[:notice] = "#{@backlog.name} recovered from archive"
+      redirect_to account_path(current_account)
+    end
   end
 
   def create_snapshot
     @backlog = current_account.backlogs.available.find(params[:id])
-    name = params[:name]
-    new_snapshot = @backlog.create_snapshot(name)
-    flash[:notice] = "New snapshot created"
-    redirect_to account_backlog_path(@backlog.account, @backlog)
+    enforce_can(:full, 'You do not have permission to create a snapshot for this backlog') do
+      name = params[:name]
+      new_snapshot = @backlog.create_snapshot(name)
+      flash[:notice] = "New snapshot created"
+      redirect_to account_backlog_path(@backlog.account, @backlog)
+    end
   end
 
   # only supports JSON updates
   def update
     @backlog = current_account.backlogs.available.find(params[:id])
-    if @backlog.archived? && params[:backlog][:archived] == 'false'
-      @backlog.recover_from_archive
-      flash[:notice] = 'Backlog has been restored from archive and is now active'
-      redirect_to account_backlog_path(current_account, @backlog)
-    elsif @backlog.archived? && params[:backlog][:archived] == 'true'
-      # do nothing, user updated for no reason as no change
-      redirect_to account_backlog_path(current_account, @backlog)
-    elsif !@backlog.editable?
-      flash[:notice] = 'You cannot edit an archived backlog'
-      redirect_to account_backlog_path(@backlog.account, @backlog)
-    else
-      @backlog.update_attributes(params[:backlog])
-      @backlog.last_modified_user = current_user
-      set_or_create_company
-      if @backlog.save
-        if params[:backlog][:archived] == 'true'
-          update_backlog_metadata
-          @backlog.mark_archived
-          flash[:notice] = 'Backlog is now archived'
-        else
-          flash[:notice] = 'Backlog settings were successfully updated'
-        end
+    enforce_can(:full, 'You do not have permission to update this backlog') do
+      if @backlog.archived? && params[:backlog][:archived] == 'false'
+        @backlog.recover_from_archive
+        flash[:notice] = 'Backlog has been restored from archive and is now active'
         redirect_to account_backlog_path(current_account, @backlog)
+      elsif @backlog.archived? && params[:backlog][:archived] == 'true'
+        # do nothing, user updated for no reason as no change
+        redirect_to account_backlog_path(current_account, @backlog)
+      elsif !@backlog.editable?
+        flash[:notice] = 'You cannot edit an archived backlog'
+        redirect_to account_backlog_path(@backlog.account, @backlog)
       else
-        render :action => "edit"
+        @backlog.update_attributes(params[:backlog])
+        @backlog.last_modified_user = current_user
+        set_or_create_company
+        if @backlog.save
+          if params[:backlog] && params[:backlog][:archived] == 'true'
+            update_backlog_metadata
+            @backlog.mark_archived
+            flash[:notice] = 'Backlog is now archived'
+          else
+            flash[:notice] = 'Backlog settings were successfully updated'
+          end
+          redirect_to account_backlog_path(current_account, @backlog)
+        else
+          render :action => "edit"
+        end
       end
     end
   end
 
   def destroy
     @backlog = current_account.backlogs.available.find(params[:id])
-    @backlog.mark_deleted
-    flash[:notice] = 'Backlog was successfully deleted.'
-    redirect_to account_path(current_account)
+    enforce_can(:full, 'You do not have permission to delete this backlog') do
+      @backlog.mark_deleted
+      flash[:notice] = 'Backlog was successfully deleted.'
+      redirect_to account_path(current_account)
+    end
   end
 
   def destroy_snapshot
     @backlog = Backlog.available.where(:account_id => current_account.id).where(:id => params[:snapshot_id]).first
-    @backlog.mark_deleted
-    flash[:notice] = 'Snapshot was successfully deleted'
-    redirect_to account_backlog_path(current_account, current_account.backlogs.find(params[:id]))
+    enforce_can(:full, 'You do not have permission to delete this snapshot') do
+      @backlog.mark_deleted
+      flash[:notice] = 'Snapshot was successfully deleted'
+      redirect_to account_backlog_path(current_account, current_account.backlogs.find(params[:id]))
+    end
   end
 
   def duplicate
     @backlog = current_account.backlogs.available.find(params[:id])
-    @new_backlog = current_account.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
-    @new_backlog.author = @backlog.author
-    @new_backlog.last_modified_user = current_user
-    if request.post?
-      if @new_backlog.save
-        @backlog.copy_children_to_backlog(@new_backlog)
-        flash[:notice] = 'Backlog was duplicated successfully.'
-        redirect_to account_backlog_path(current_account, @new_backlog)
+    enforce_can(:full, 'You do not have permission to duplicate this backlog') do
+      @new_backlog = current_account.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
+      @new_backlog.author = @backlog.author
+      @new_backlog.last_modified_user = current_user
+      if request.post?
+        if @new_backlog.save
+          @backlog.copy_children_to_backlog(@new_backlog)
+          flash[:notice] = 'Backlog was duplicated successfully.'
+          redirect_to account_backlog_path(current_account, @new_backlog)
+        end
       end
-    end
+    end#
   end
 
   # returns a partial to replace snapshots drop down when a sprint is marked as complete and thus a snapshot is created
@@ -167,7 +186,7 @@ class BacklogsController < ApplicationController
 
   def backlog_json(backlog)
     backlog_fields = [:id, :name, :account_id, :name, :rate, :velocity]
-    backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_editable]
+    backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_locked]
     theme_fields = [:id, :name, :code, :position]
     sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days, :explicit_velocity]
     sprint_story_fields = [:id, :story_id, :sprint_story_status_id, :position]
@@ -181,7 +200,22 @@ class BacklogsController < ApplicationController
       [:score]
     end
 
-    @backlog.to_json(:only => backlog_fields, :methods => backlog_methods,
+    # override the as_json method for backlog_json so that it sends is_editable and is_status_editable based on the current user
+    # if this was in the model, this would violate the fact that the model should not be aware of the current_user
+    def @backlog.as_json(options = {})
+      json = super(options)
+      if options.has_key?(:current_user)
+        current_user = options[:current_user]
+        json['is_editable'] = self.editable? ? self.can?(:full, current_user) : false
+        json['is_status_editable'] = self.editable? ? self.can?(:readstatus, current_user) : false
+      else
+        json['is_editable'] = false
+        json['is_status_editable'] = false
+      end
+      json
+    end
+
+    @backlog.to_json(:only => backlog_fields, :methods => backlog_methods, :current_user => current_user,
       :include =>
       { :themes =>
         { :only => theme_fields,
@@ -226,6 +260,14 @@ class BacklogsController < ApplicationController
   end
   helper_method :is_example_backlog?
 
+  helper_method :can?, :cannot?
+  def can?(method)
+    @backlog.can? method, current_user
+  end
+  def cannot?(method)
+    !can? method
+  end
+
   private
     def update_backlog_metadata
       @backlog.update_meta_data current_user unless @backlog.archived
@@ -233,44 +275,71 @@ class BacklogsController < ApplicationController
 
     def render_backlog_or_snapshot
       respond_to do |format|
-        format.html { render :layout => 'backlog', :action => 'show' }
+        format.html do
+          if can? :read
+            render :layout => 'backlog', :action => 'show'
+          else
+            flash[:error] = 'You are not allowed to view this backlog'
+            redirect_to account_path(current_account)
+          end
+        end
 
         # download an Excel file
         format.xls do
-          filename = "#{@backlog.name.parameterize}.xls"
-          set_download_headers filename
-          render :layout => false, :action => 'show'
+          if can? :read
+            filename = "#{@backlog.name.parameterize}.xls"
+            set_download_headers filename
+            render :layout => false, :action => 'show'
+          else
+            flash[:error] = 'You are not allowed to view this backlog'
+            redirect_to account_path(current_account)
+          end
         end
 
         # download a PDF of the user story cards
         format.pdf do
-          filename = "#{@backlog.name.parameterize}.pdf"
-          set_download_headers filename
-          stories = if params[:print_scope] =~ /sprint-(\d+)/
-            # print_scope has an ID so user has selected a single sprint
-            @backlog.sprints.select { |t| t.id.to_s == $1 }
-          elsif params[:print_scope] =~ /theme-(\d+)/
-            # print_scope has an ID so user has selected a single theme
-            @backlog.themes.select { |t| t.id.to_s == $1 }
+          if can? :read
+            filename = "#{@backlog.name.parameterize}.pdf"
+            set_download_headers filename
+            stories = if params[:print_scope] =~ /sprint-(\d+)/
+              # print_scope has an ID so user has selected a single sprint
+              @backlog.sprints.select { |t| t.id.to_s == $1 }
+            elsif params[:print_scope] =~ /theme-(\d+)/
+              # print_scope has an ID so user has selected a single theme
+              @backlog.themes.select { |t| t.id.to_s == $1 }
+            else
+              # print_scope is blank therefore display all themes
+              @backlog.themes
+            end
+            stories = stories.map { |t| t.stories }.flatten
+            output = StoryCardsReport.new.to_pdf(stories, params[:page_size], params[:fold_side])
+            send_data output, :filename => filename, :type => "application/pdf"
           else
-            # print_scope is blank therefore display all themes
-            @backlog.themes
+            flash[:error] = 'You are not allowed to view this backlog'
+            redirect_to account_path(current_account)
           end
-          stories = stories.map { |t| t.stories }.flatten
-          output = StoryCardsReport.new.to_pdf(stories, params[:page_size], params[:fold_side])
-          send_data output, :filename => filename, :type => "application/pdf"
         end
 
         format.js do
-          render :json => backlog_json(@backlog)
+          if can? :read
+            render :json => backlog_json(@backlog)
+          else
+            send_json_error 'You are not allowed to view this backlog'
+          end
         end
 
-        format.xml
+        format.xml do
+          if can? :read
+            render
+          else
+            send_xml_error 'You are not allowed to view this backlog'
+          end
+        end
       end
     end
 
     def set_or_create_company
-      if params[:backlog][:has_company] == 'true'
+      if params[:backlog] && params[:backlog][:has_company] == 'true'
         if params[:company_name].strip.length > 0
           # we are creating a new company (unless one exists with that name)
           @backlog.company = current_account.create_company(params[:company_name],
@@ -304,5 +373,14 @@ class BacklogsController < ApplicationController
     def set_locale
       # only localise to the language, ignore the country
       I18n.locale = @backlog.account.locale.code.split('-').first.to_sym
+    end
+
+    def enforce_can(rights, message)
+      if can? rights
+        yield
+      else
+        flash[:error] = message
+        redirect_to account_backlog_path(current_account, @backlog)
+      end
     end
 end

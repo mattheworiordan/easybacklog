@@ -14,9 +14,20 @@ var Theme = Backbone.Model.extend({
     return this.collection.backlog;
   },
 
-  // editable if no snapshot master
   IsEditable: function() {
-    return (this.collection.backlog.IsEditable());
+    return this.CanEdit();
+  },
+
+  IsLocked: function() {
+    return this.collection.backlog.IsLocked();
+  },
+
+  CanEdit: function() {
+    return this.collection.backlog.CanEdit();
+  },
+
+  CanEditStatus: function() {
+    return this.collection.backlog.CanEditStatus();
   },
 
   // renumber all the stories by assigning them sequential IDs

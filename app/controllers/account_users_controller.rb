@@ -13,11 +13,12 @@ class AccountUsersController < ApplicationController
   # Param editable is admin only as this is the only attribute on account_users
   def update
     @user = current_account.account_users.find_by_user_id(params[:id])
-    @user.update_attributes(:admin => params[:admin])
+    @user.update_attributes(:admin => params[:admin]) if params.has_key?(:admin)
+    @user.update_attributes(:privilege => params[:privilege]) if params.has_key?(:privilege)
     if @user.save
       render :json => @user
     else
-      send_json_error 'Error'
+      send_json_error 'Error: ' + @user.errors.full_messages
     end
   end
 
@@ -39,22 +40,20 @@ class AccountUsersController < ApplicationController
         end
       end
     end
-    if valid_emails.empty? && flash[:error].empty?
-      flash.now[:error] = "You need to enter at least one email address to add a user to your account."
-    end
+    flash.now[:error] = "You need to enter at least one email address to add a user to your account." if valid_emails.empty? && flash[:error].empty?
+    flash.now[:error] = "#{flash.now[:error].present? ? flash.now[:error] + "\n" : "" }You must choose the account permissions for your invitees" if params[:privileges].blank?
 
     if flash[:error]
       render :action => 'new'
     else
+      valid_emails.each { |email| invite_user email, params[:privileges] }
       flash[:notice] = "#{valid_emails.count} #{valid_emails.count == 1 ? 'person was' : 'people were'} added to your account."
       redirect_to :action => 'index'
     end
-
-    valid_emails.each { |email| invite_user email }
   end
 
   private
-    # before_filter to check that user has correct privilegs
+    # before_filter to check that user has correct privileges
     def check_account_admin
       unless is_account_admin?
         flash[:error] = 'You need admin rights to manage users for this account'
@@ -63,20 +62,27 @@ class AccountUsersController < ApplicationController
     end
 
     # send out the invites
-    def invite_user(email)
+    def invite_user(email, privilege)
       # check if user is a member of easyBacklog already
-      if !User.where('UPPER(email) = ?', email.upcase).empty?
-        # don't do anything if they already have access
-        if current_account.users.where('UPPER(email) = ?', email.upcase).empty?
+      if User.where('UPPER(email) = ?', email.upcase).present?
+        # add user and rights if they already have access
+        account_user = current_account.users.where('UPPER(email) = ?', email.upcase)
+        if account_user.empty?
           invited_user = User.where('UPPER(email) = ?', email.upcase).first
-          current_account.add_user invited_user
+          current_account.add_user invited_user, privilege
           AccountUsersNotifier.access_granted(current_user, current_account, invited_user).deliver
+        else
+          # simply upgrade privileges of user
+          current_account.account_users.find_by_user_id(account_user.first.id).upgrade_privilege privilege
         end
       else # user is not a member
         if (current_account.invited_users.where('UPPER(email) = ?', email.upcase).empty?)
-          invited_user = current_account.invited_users.create!(:email => email, :invitee_user_id => current_user.id)
+          # user has not been previously invited
+          invited_user = current_account.invited_users.create!(:email => email, :invitee_user_id => current_user.id, :privilege => privilege)
         else
+          # user has been previously invited, just update their privileges
           invited_user = current_account.invited_users.where('UPPER(email) = ?', email.upcase).first
+          invited_user.update_attributes! :privilege => privilege
         end
         AccountUsersNotifier.invite_to_join(current_user, current_account, invited_user).deliver
       end

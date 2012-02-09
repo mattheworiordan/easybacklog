@@ -6,6 +6,10 @@
 - elsif @backlog.is_snapshot?
   .not-editable-notice.snapshot
     Please note that you are viewing a snapshot's settings that are not editable
+- elsif cannot? :full
+  .not-editable-notice.no-permission
+    Please note that you do not have permission to edit the settings of this backlog and can only view them
+
 
 = f.label :name, @backlog.is_snapshot? ? 'Snapshot name' : 'Name the backlog'
 .label-hint

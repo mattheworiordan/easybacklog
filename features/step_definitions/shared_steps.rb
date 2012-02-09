@@ -96,9 +96,13 @@ When /^(?:|I )(|un)check the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)
   end
 end
 
-Then /^the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) checkbox should be (|un)checked$/ do |position, negation|
+Then /^the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) (checkbox|toggle box) should be (|un)checked$/ do |position, element_type, negation|
   position = string_quantity_to_numeric(position) - 1
-  page.evaluate_script("$($('input[type=checkbox]')[#{position}]).attr('checked') + ''").should == (negation == 'un' ? 'undefined' : 'checked')
+  if element_type == 'checkbox'
+    page.evaluate_script("$($('input[type=checkbox]')[#{position}]).attr('checked') + ''").should == (negation == 'un' ? 'undefined' : 'checked')
+  else
+    page.evaluate_script("$($('.toggle-switch')[#{position}]).is('.checked')").should == (negation == 'un' ? false : true)
+  end
 end
 
 Then /^(?:|I )there should be (\d+) (?:|elements matching )"([^"]+)"(?:| elements)$/ do |quantity, selector|
@@ -116,23 +120,34 @@ Then /^(?:a |the )(?:|element )"([^"]+)" should (|not )be visible$/ do |selector
   page.evaluate_script("$('#{selector}').is(':visible')").should (negation.strip == "not" ? be_false : be_true)
 end
 
-Then /^(?:the |)"([^"]+)" should be disabled$/ do |field_selector|
+Then /^(?:the |)"([^"]+)" should (|not )be disabled$/ do |field_selector, negation|
   selector = selector_to(field_selector)
-  all_disabled = page.evaluate_script <<-JS
-    (function() {
-      var allDisabled = true;
-      $('#{field_selector}').each(function(index, elem) { if (!$(elem).attr('disabled')) { allDisabled = false; } });
-      return allDisabled;
-    })();
-  JS
-  all_disabled.should == true
+  if negation == 'not '
+    all_enabled = page.evaluate_script <<-JS
+      (function() {
+        var allEnabled = true;
+        $('#{field_selector}').each(function(index, elem) { if ($(elem).attr('disabled')) { allEnabled = false; } });
+        return allEnabled;
+      })();
+    JS
+    all_enabled.should == true
+  else
+    all_disabled = page.evaluate_script <<-JS
+      (function() {
+        var allDisabled = true;
+        $('#{field_selector}').each(function(index, elem) { if (!$(elem).attr('disabled')) { allDisabled = false; } });
+        return allDisabled;
+      })();
+    JS
+    all_disabled.should == true
+  end
 end
 
 Then /^I should see the following data in column (\d+) of "([^"]+)" table:$/ do |data_column, table_path, expected_table|
   table_path = selector_to(table_path)
   actual_table = find(table_path).all('tr').map { |row| row.all("th:nth-child(#{data_column}),td:nth-child(#{data_column})").map { |cell| cell.text.strip } }
   # remove column heading
-  actual_table.shift
+  actual_table.shift if find(table_path).has_css?('th')
   actual_table = table(actual_table)
   expected_table.diff!(actual_table)
 end
@@ -141,7 +156,7 @@ When /^(?:|I )wait (?:|for (?:|AJAX for ))(\d+(?:|\.\d+)) seconds?$/ do |time|
   sleep time.to_f
 end
 
-Then /^(?:I )start (?:the debugger|debugging)$/ do
+Then /^(?:|I )start (?:the debugger|debugging)$/ do
   debugger
   page
 end

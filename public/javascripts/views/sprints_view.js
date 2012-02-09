@@ -57,7 +57,7 @@ App.Views.Sprints = {
       });
 
       // if sprint is complete, all unassigned stories are locked
-      if (this.model.isComplete()) {
+      if (!this.model.IsEditable()) {
         this.$('.unassigned-stories-container .story-card').addClass('locked');
       }
 
@@ -302,9 +302,9 @@ App.Views.Sprints = {
       var that = this;
       event.preventDefault();
 
-      var incompleteStories = this.model.SprintStories().reject(function(story) { return story.Status().isDone(); }),
+      var incompleteStories = this.model.SprintStories().reject(function(story) { return story.Status().IsDone(); }),
           previousIncompleteSprints = _(this.model.Backlog().Sprints().select(function(sprint) {
-            return (sprint.get('iteration') < that.model.get('iteration')) && !sprint.isComplete();
+            return (sprint.get('iteration') < that.model.get('iteration')) && !sprint.IsComplete();
           })).sortBy(function(sprint) { return sprint.get('iteration'); });
 
       if (incompleteStories.length) {
@@ -322,7 +322,7 @@ App.Views.Sprints = {
       event.preventDefault();
 
       var successiveCompleteSprints = _(this.model.Backlog().Sprints().select(function(sprint) {
-            return (sprint.get('iteration') > that.model.get('iteration')) && sprint.isComplete();
+            return (sprint.get('iteration') > that.model.get('iteration')) && sprint.IsComplete();
           })).sortBy(function(sprint) { return sprint.get('iteration'); });
 
       if (successiveCompleteSprints.length) {
@@ -358,7 +358,7 @@ App.Views.Sprints = {
       that.$('.complete-status').replaceWith(completeView.find('.complete-status'));
       // show notice about stories being locked if appropriate, and lock stories
       that.$('.unassigned-stories-container .notice').remove();
-      if (that.model.isComplete()) {
+      if (!that.model.IsEditable()) {
         that.$('.unassigned-stories-container').prepend(completeView.find('.unassigned-stories-container .notice'));
         that.$('.unassigned-stories-container .story-card').addClass('locked');
       } else {
@@ -434,11 +434,12 @@ App.Views.Sprints = {
     },
 
     render: function() {
-      $(this.el).html(JST['sprints/help']());
-      this.pod = $(JST['sprints/help-pod']());
+      $(this.el).html(JST['sprints/help']({ backlog: this.model }));
+      this.pod = $(JST['sprints/help-pod']({ backlog: this.model }));
       this.pod.find('a.add-new-sprint').click(this.addSprint);
       this.$('a.add-new-sprint').click(this.addSprint);
       $('section.main-content-pod').before(this.pod);
+      $('#backlog-data-area .backlog-stats').html(''); // clear the stats
     },
 
     addSprint: function(event) {

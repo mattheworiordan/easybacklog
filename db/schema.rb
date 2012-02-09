@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120115093606) do
+ActiveRecord::Schema.define(:version => 20120208173333) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(:version => 20120115093606) do
     t.boolean  "admin",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "privilege"
   end
 
   add_index "account_users", ["account_id", "user_id"], :name => "index_account_users_on_account_id_and_user_id"
@@ -108,6 +109,7 @@ ActiveRecord::Schema.define(:version => 20120115093606) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "security_code",   :null => false
+    t.string   "privilege"
   end
 
   create_table "locales", :force => true do |t|

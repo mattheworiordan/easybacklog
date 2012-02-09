@@ -52,7 +52,7 @@ header.for-backlog {
   top: 0px;
   width: 100%;
   overflow: hidden;
-  z-index: 5;
+  z-index: 50;
   .padded-container {
     margin-right: $ninesixty-gutter-width * 2;
   }
@@ -63,6 +63,10 @@ header.for-backlog {
       @include opacity(1);
     }
   }
+  /* make the drop downs fixed so that they appear above other fixed items */
+  .account-info .account-dropdown .top-nav-dropdown-overlay {
+    position: fixed;
+  }
 }
 
 /* hide the drop shadow on main content area for backlog as we already have a drop shadow */
@@ -72,7 +76,7 @@ section.for-backlog {
   padding-left: 0;
   section.main-content-pod.showing-backlog {
     @include drop-shadow(0px, 0px);
-    padding: 12px $backlog-horizontal-padding 0 $backlog-horizontal-padding;
+    padding: 6px $backlog-horizontal-padding 0 $backlog-horizontal-padding;
   }
   section.title {
     display: none;
@@ -92,7 +96,7 @@ section.content .not-editable-backlog-notice {
   background-color: #BBB;
   color: black;
   top: 4px;
-  z-index: 10; /* appears on a header of z-index 5 */
+  z-index: 105; /* appears on a header of z-index 100 */
   padding: 1px 10px 1px 10px;
   text-align: center;
   -moz-border-radius: 6px;
@@ -150,7 +154,7 @@ section.content .not-editable-backlog-notice {
   /* when viewing a snapshot, user is given a drop down to change snapshots without having to use the menu */
   #viewing-snapshot-container {
     position: fixed;
-    top: 63px;
+    top: 57px;
     left: 120px;
     overflow: hidden;
     z-index: 9; /* must appear over header and drop down */
@@ -264,7 +268,7 @@ section.content .not-editable-backlog-notice {
 
 #backlog-data-area {
   position: fixed;
-  top: $ninesixty-vertical * 2;
+  top: $ninesixty-vertical * 2 - 4px;
   left: 0;
   overflow: hidden;
   height: 56px;
@@ -474,7 +478,7 @@ section.content .not-editable-backlog-notice {
 #themes-header {
   position: fixed;
   z-index: 5;
-  top: 86px;
+  top: 82px;
   left: 0;
   width: 100%;
   margin: 0;
@@ -862,11 +866,15 @@ ul.themes {
           ul.acceptance-criteria {
             margin: 0;
             list-style: none;
+            /* cross hair only enabled if item is editable */
+            .index.cross-hair-enabled {
+              cursor: move;
+            }
             li:hover {
-              .index {
+              .cross-hair-enabled.index {
                 display: none;
               }
-              .cross-hair-indicator {
+              .cross-hair-enabled.cross-hair-indicator {
                 display: block;
               }
             }
@@ -883,7 +891,6 @@ ul.themes {
             }
             .index {
               width: 1.5em;
-              cursor: move;
               float: left;
               clear: left;
               display: block;

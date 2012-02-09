@@ -2,11 +2,13 @@ class InvitedUser < ActiveRecord::Base
   belongs_to :invitee_user, :class_name => 'User'
   belongs_to :account
 
-  attr_accessible :email, :invitee_user_id
+  attr_accessible :email, :invitee_user_id, :privilege
 
   validates_presence_of :email, :invitee_user_id
 
   before_save :assign_security_code
+
+  include PrivilegeProperty
 
   private
     def assign_security_code

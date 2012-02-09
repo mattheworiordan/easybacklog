@@ -3,7 +3,7 @@
 var SprintStoryStatus = Backbone.Model.extend({
   DoneCode: 'D',
 
-  isDone: function() {
+  IsDone: function() {
     return this.get('code').toUpperCase() == this.DoneCode;
   }
 });

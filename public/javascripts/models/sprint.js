@@ -13,7 +13,23 @@ var Sprint = Backbone.Model.extend({
     return (this._sprint_stories);
   },
 
-  isComplete: function() {
+  IsComplete: function() {
     return this.get('completed?');
+  },
+
+  IsEditable: function() {
+    if (this.IsComplete()) {
+      return false;
+    } else {
+      return this.CanEdit();
+    }
+  },
+
+  CanEdit: function() {
+    return this.collection.backlog.CanEdit();
+  },
+
+  CanEditStatus: function() {
+    return (this.collection.backlog.CanEditStatus());
   }
 });

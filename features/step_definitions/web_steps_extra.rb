@@ -14,9 +14,19 @@ Then /^I should (|not )see (?:|the text )"([^"]+)"(?:| within (?:|the |a )"([^"]
   end
 end
 
-When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^"]*)")?$/ do |value, field, selector|
-  with_scope(selector_to(selector)) do
-    select(value, :from => selector_to(field, :dont_translate_to_css=>true))
+When /^(?:|I )select "([^"]*)" from "([^"]*)"(?: within "([^\"]*)")?$/ do |value, field, selector|
+  supports_javascript = page.evaluate_script('true') rescue false
+  if (supports_javascript)
+    scope = selector_to(selector)
+    field = selector_to(field)
+    field = "select#{field}" unless field =~ /^select/i
+    page.evaluate_script("$('#{scope} #{field}').find('option:contains(#{value})').length").should > 0
+    page.execute_script "$('#{scope} #{field}').find('option:contains(#{value})').attr('selected',true).end().change()"
+  else
+    # found this method to be less reliable than JQuery as the event fired for on('change') was null
+    with_scope(selector_to(selector)) do
+      select(value, :from => selector_to(field, :dont_translate_to_css=>true))
+    end
   end
 end
 

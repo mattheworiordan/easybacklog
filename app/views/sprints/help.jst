@@ -19,4 +19,6 @@
   <li>You can change your sprint settings by clicking on the Settings button in the top right at any point</li>
 </ul>
 
-<a href="#" class="add-new-sprint button">Create new sprint</a>
+<% if (backlog.IsEditable()) { %>
+  <a href="#" class="add-new-sprint button">Create new sprint</a>
+<% } %>

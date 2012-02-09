@@ -59,7 +59,9 @@ App.Views.Helpers = {
     event.preventDefault();
     event.stopPropagation();
 
-    if (this.model.SprintStory().Sprint().isComplete()) {
+    if (!this.model.CanEditStatus()) {
+      new App.Views.Warning({ message: 'You do not have permission to update the status of stories for this backlog'});
+    } else if (this.model.SprintStory().Sprint().IsComplete()) {
       new App.Views.Warning({ message: 'You cannot change the status of this story as it\'s assigned to a completed sprint'});
     } else {
       $('body').find('#sprint-story-status-dropdown').remove();
@@ -74,7 +76,7 @@ App.Views.Helpers = {
 
       // make tabs similar width so they don't look odd when smaller than the selected tab
       if (dropDown.width() < $(this.el).find('.status .tab').outerWidth()) {
-        dropDown.css('width', $(this.el).find('.status .tab').outerWidth() + 'px')
+        dropDown.css('width', $(this.el).find('.status .tab').outerWidth() + 'px');
       }
 
       dropDown.css('position','absolute').position({
@@ -149,7 +151,7 @@ App.Views.Helpers = {
 
       var originalHref = $('<div>').html($(this).attr('href')).text(),
           href = originalHref;
-      if (href.match(/^[-;&=\+\$,\w]+@/)) {
+      if (href.match(/^[\-;&=\+\$,\w]+@/)) {
         href = 'mailto:' + href;
       }
       if (href.match(/^www\./)) {

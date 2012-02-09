@@ -3,38 +3,48 @@ class StoriesController < ApplicationController
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy, :move_to_theme]
 
   def index
-    @stories = @theme.stories.find(:all, :include => [:acceptance_criteria])
-    render :json => @stories.to_json(:include => [:acceptance_criteria], :methods => [:score])
+    enforce_can :read, 'You do not have permission to view this backlog' do
+      @stories = @theme.stories.find(:all, :include => [:acceptance_criteria])
+      render :json => @stories.to_json(:include => [:acceptance_criteria], :methods => [:score])
+    end
   end
 
   def show
     @story = @theme.stories.find(params[:id])
-    render :json => @story.to_json(:methods => [:score])
+    enforce_can :read, 'You do not have permission to view this backlog' do
+      render :json => @story.to_json(:methods => [:score])
+    end
   end
 
   def new
-    @story = @theme.stories.new
-    render :json => @story.to_json(:methods => [:score])
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @story = @theme.stories.new
+      render :json => @story.to_json(:methods => [:score])
+    end
   end
 
   def create
-    config_score_params params
-    @story = @theme.stories.new(params)
-    if @story.save
-      render :json => story_json
-    else
-      send_json_error @theme.errors.full_messages.join(', ')
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      config_score_params params
+      @story = @theme.stories.new(params)
+      if @story.save
+        render :json => story_json
+      else
+        send_json_error @theme.errors.full_messages.join(', ')
+      end
     end
   end
 
   def update
     config_score_params params
     @story = @theme.stories.find(params[:id])
-    @story.update_attributes params
-    if @story.save
-      render :json => story_json
-    else
-      send_json_error @story.errors.full_messages.join(', ')
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @story.update_attributes params
+      if @story.save
+        render :json => story_json
+      else
+        send_json_error @story.errors.full_messages.join(', ')
+      end
     end
   end
 
@@ -43,22 +53,34 @@ class StoriesController < ApplicationController
     @story = @theme.stories.find(params[:id])
     new_theme = Theme.find(params[:new_theme_id])
 
-    # ensure unique ID is empty first as we will need to assign a new one
-    @story.unique_id = nil
-    # assign to new theme, note: using new_theme.stories << self failed
-    new_theme.stories << @story
-    # now move to last item
-    @story.move_to_bottom
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      # ensure unique ID is empty first as we will need to assign a new one
+      @story.unique_id = nil
+      # assign to new theme, note: using new_theme.stories << self failed
+      new_theme.stories << @story
+      # now move to last item
+      @story.move_to_bottom
 
-    render :json => story_json
+      render :json => story_json
+    end
   rescue Exception => e
     send_json_error "Server error trying to move theme #{e}"
   end
 
   def destroy
     @story = @theme.stories.find(params[:id])
-    @story.destroy
-    send_json_notice "Story deleted", :score_statistics => @theme.score_statistics(:force => true)
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @story.destroy
+      send_json_notice "Story deleted", :score_statistics => @theme.score_statistics(:force => true)
+    end
+  end
+
+  helper_method :can?, :cannot?
+  def can?(method)
+    (@story || @theme).can? method, current_user
+  end
+  def cannot?(method)
+    !can? method
   end
 
   private
@@ -85,6 +107,14 @@ class StoriesController < ApplicationController
 
     def update_backlog_metadata
       @theme.backlog.update_meta_data current_user
+    end
+
+    def enforce_can(rights, message)
+      if can? rights
+        yield
+      else
+        send_json_error message
+      end
     end
 
     # depending on whether we are using the 50/90 rule or the straight scoring system

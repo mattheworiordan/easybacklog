@@ -3,54 +3,76 @@ class ThemesController < ApplicationController
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
   def index
-    @themes = @backlog.themes.find(:all, :include => [:stories, { :stories => :acceptance_criteria } ])
-    render :json => @themes.to_json(:include => { :stories => { :include => :acceptance_criteria } })
+    enforce_can :read, 'You do not have permission to view this backlog' do
+      @themes = @backlog.themes.find(:all, :include => [:stories, { :stories => :acceptance_criteria } ])
+      render :json => @themes.to_json(:include => { :stories => { :include => :acceptance_criteria } })
+    end
   end
 
   def show
     @theme = @backlog.themes.find(params[:id])
-    render :json => @theme
+    enforce_can :read, 'You do not have permission to view this backlog' do
+      render :json => @theme
+    end
   end
 
   def new
-    @theme = @backlog.themes.new
-    render :json => @theme
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @theme = @backlog.themes.new
+      render :json => @theme
+    end
   end
 
   def create
-    @theme = @backlog.themes.new(params)
-    if @theme.save
-      render :json => themes_json
-    else
-      send_json_error @theme.errors.full_messages.join(', ')
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @theme = @backlog.themes.new(params)
+      if @theme.save
+        render :json => themes_json
+      else
+        send_json_error @theme.errors.full_messages.join(', ')
+      end
     end
   end
 
   def update
     @theme = @backlog.themes.find(params[:id])
-    @theme.update_attributes params
-    if @theme.save
-      render :json => themes_json
-    else
-      send_json_error @theme.errors.full_messages.join(', ')
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @theme.update_attributes params
+      if @theme.save
+        render :json => themes_json
+      else
+        send_json_error @theme.errors.full_messages.join(', ')
+      end
     end
   end
 
   def destroy
     @theme = @backlog.themes.find(params[:id])
-    @theme.destroy
-    send_json_notice 'Theme deleted', :score_statistics => @backlog.score_statistics(:force => true)
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @theme.destroy
+      send_json_notice 'Theme deleted', :score_statistics => @backlog.score_statistics(:force => true)
+    end
   end
 
   def re_number_stories
     @theme = @backlog.themes.find(params[:id])
-    begin
-      @theme.re_number_stories
-    rescue Theme::StoriesCannotBeRenumbered => e
-      send_json_error 'Stories which are marked as done cannot be re-numbered'
-    else
-      send_json_notice 'Stories re-numbered'
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      begin
+        @theme.re_number_stories
+      rescue Theme::StoriesCannotBeRenumbered => e
+        send_json_error 'Stories which are marked as done cannot be re-numbered'
+      else
+        send_json_notice 'Stories re-numbered'
+      end
     end
+  end
+
+  helper_method :can?, :cannot?
+  def can?(method)
+    (@theme || @backlog).can? method, current_user
+  end
+  def cannot?(method)
+    !can? method
   end
 
   private
@@ -70,5 +92,13 @@ class ThemesController < ApplicationController
 
     def update_backlog_metadata
       @backlog.update_meta_data current_user
+    end
+
+    def enforce_can(rights, message)
+      if can? rights
+        yield
+      else
+        send_json_error message
+      end
     end
 end

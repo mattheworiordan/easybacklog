@@ -26,6 +26,8 @@ class Sprint < ActiveRecord::Base
 
   scope :completed, where('completed_at is not null')
 
+  can_do :inherited_privilege => :backlog
+
   def end_on
     start_on + duration_days.days - 1
   end

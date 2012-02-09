@@ -197,12 +197,16 @@ App.Views.Stories = {
                    '#e06666', '#f6b26b', '#ffd966', '#93c47d']
         });
       } else {
-        // make all editable fields show warning that item is not editable
-        _.each(tabElems, function(elem) {
-          show_view.$(elem).click(function() {
-            new App.Views.Warning({ message: 'You cannot edit a story that is marked as done'});
+        // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
+        if (!this.model.IsLocked()) {
+          // make all editable fields show warning that item is not editable
+          _.each(tabElems, function(elem) {
+            show_view.$(elem).click(function() {
+              var message = show_view.model.CanEdit() ? 'You cannot edit a story that is marked as done' : 'You do not have permission to edit stories for this backlog';
+              new App.Views.Warning({ message: message });
+            });
           });
-        });
+        }
       }
 
       if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }

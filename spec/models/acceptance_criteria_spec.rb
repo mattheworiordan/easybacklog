@@ -30,7 +30,7 @@ describe AcceptanceCriterion do
     expect { @criterion.destroy }.should raise_error AcceptanceCriterion::RecordLocked, /Cannot delete as story is marked as done and therefore locked/
   end
 
-  it 'method index_to_letters should covert an index starting from zero into letters' do
+  it 'method index_to_letters should convert an index starting from zero into letters' do
     @criterion.index_to_letters(0).should == 'a'
     @criterion.index_to_letters(25).should == 'z'
     @criterion.index_to_letters(26).should == 'a1'

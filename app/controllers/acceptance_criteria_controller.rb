@@ -3,43 +3,63 @@ class AcceptanceCriteriaController < ApplicationController
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
   def index
-    @acceptance_criteria = @story.acceptance_criteria.all
-    render :json => @acceptance_criteria.to_json()
+    enforce_can :read, 'You do not have permission to view this backlog' do
+      @acceptance_criteria = @story.acceptance_criteria.all
+      render :json => @acceptance_criteria.to_json()
+    end
   end
 
   def show
-    @acceptance_criteria = @story.acceptance_criteria.all
-    render :json => @acceptance_criteria
+    @acceptance_criteria = @story.acceptance_criteria.find(params[:id])
+    enforce_can :read, 'You do not have permission to view this backlog' do
+      render :json => @acceptance_criteria
+    end
   end
 
   def new
-    @acceptance_criteria = @story.acceptance_criteria.new
-    render :json => @acceptance_criteria
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @acceptance_criteria = @story.acceptance_criteria.new
+      render :json => @acceptance_criteria
+    end
   end
 
   def create
     @acceptance_criteria = @story.acceptance_criteria.new(params)
-    if @acceptance_criteria.save
-      render :json => @acceptance_criteria
-    else
-      send_json_error @acceptance_criteria.errors.full_messages.join(', ')
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      if @acceptance_criteria.save
+        render :json => @acceptance_criteria
+      else
+        send_json_error @acceptance_criteria.errors.full_messages.join(', ')
+      end
     end
   end
 
   def update
     @acceptance_criteria = @story.acceptance_criteria.find(params[:id])
-    @acceptance_criteria.update_attributes params
-    if @acceptance_criteria.save
-      render :json => @acceptance_criteria
-    else
-      send_json_error @acceptance_criteria.errors.full_messages.join(', ')
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @acceptance_criteria.update_attributes params
+      if @acceptance_criteria.save
+        render :json => @acceptance_criteria
+      else
+        send_json_error @acceptance_criteria.errors.full_messages.join(', ')
+      end
     end
   end
 
   def destroy
     @acceptance_criteria = @story.acceptance_criteria.find(params[:id])
-    @acceptance_criteria.destroy
-    send_json_notice "Acceptance Criterion deleted"
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      @acceptance_criteria.destroy
+      send_json_notice "Acceptance Criterion deleted"
+    end
+  end
+
+  helper_method :can?, :cannot?
+  def can?(method)
+    (@acceptance_criteria || @story).can? method, current_user
+  end
+  def cannot?(method)
+    !can? method
   end
 
   private
@@ -55,5 +75,13 @@ class AcceptanceCriteriaController < ApplicationController
 
     def update_backlog_metadata
       @acceptance_criteria.story.theme.backlog.update_meta_data current_user
+    end
+
+    def enforce_can(rights, message)
+      if can? rights
+        yield
+      else
+        send_json_error message
+      end
     end
 end

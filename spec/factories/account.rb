@@ -7,7 +7,19 @@ FactoryGirl.define do
     association :locale, :factory => :locale
   end
 
-  factory :account_with_users, :parent => 'account' do
+  factory :account_with_user, :parent => 'account' do
     after_create { |c| Factory(:account_user, :account => c) }
+  end
+
+  factory :account_with_user_with_no_rights, :parent => 'account' do
+    after_create { |c| Factory(:account_user_with_no_rights, :account => c) }
+  end
+
+  factory :account_with_user_with_read_rights, :parent => 'account' do
+    after_create { |c| Factory(:account_user_with_read_rights, :account => c) }
+  end
+
+  factory :account_with_user_with_full_rights, :parent => 'account' do
+    after_create { |c| Factory(:account_user_with_full_rights, :account => c) }
   end
 end

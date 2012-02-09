@@ -1,8 +1,21 @@
 <section class="side-panel">
-  <div class="button-container">
-    <a href="#" class="add-new-sprint button">Create new sprint</a>
-    <div class="button-help">
-      For future sprints, the Sprints tab above will no longer appear, so you must use the <b>+</b> icon next to the Backlog tab to add further sprints.
+  <% if (backlog.IsEditable()) { %>
+    <div class="button-container">
+      <a href="#" class="add-new-sprint button">Create new sprint</a>
+      <div class="button-help">
+        For future sprints, the Sprints tab above will no longer appear, so you must use the <b>+</b> icon next to the Backlog tab to add further sprints.
+      </div>
     </div>
-  </div>
+  <% } else if (backlog.IsLocked()) { %>
+    <div class="backlog-tool-panel">
+      <h2>Sprints locked</h2>
+      This backlog is not editable and therefore no new sprints can be added.
+    </div>
+  <% } else if (!backlog.CanEdit()) { %>
+    <div class="backlog-tool-panel">
+      <h2>Sprints not editable</h2>
+      You do not have permission to add or edit any sprints.
+    </div>
+  <% } %>
+
 </section>

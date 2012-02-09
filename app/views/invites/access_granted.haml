@@ -7,7 +7,7 @@
   = "As you now have access to the “#{truncate(@invite_account.name, :length => 40)}” account, you can now browse and view the backlogs for this account."
 %p
   The person who invited you can probably answer any questions you have, however feel free to
-  = link_to 'get in touch with the team at easyBacklog.', contact_path
+  = link_to 'get in touch with the team at easyBacklog', contact_path
   if you have any further questions.
 
 = link_to "View the #{truncate(@invite_account.name, :length => 40)} account", account_path(@invite_account), :class => 'button'

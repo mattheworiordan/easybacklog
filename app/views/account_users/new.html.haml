@@ -6,14 +6,31 @@
   %h1= "Add people to the #{truncate(current_account.name, :length => 40)} account"
 
 #new-user
-  %p Enter the email address(s) below of the people you would like to add to your account and give access to the backlogs.  Please use a comma to separate each email address if you would like to invite more than one person.
+  %p Enter the email address(s) below of the people you would like to add to your account.  Please use a comma to separate each email address if you would like to invite more than one person.
 
   = form_tag(account_users_path(current_account)) do
     - if flash[:error]
       .form_errors
-        = flash[:error]
+        = break_html flash[:error]
     %div{:class => (flash[:error] ? 'field_with_errors' : '')}
       = text_area_tag :emails, @emails, :cols => 80, :rows => 6
+
+    .label-spacer
+
+    .input-row
+      %b What account permissions do you want to assign to the people you have invited above?
+    .input-row
+      = radio_button_tag :privileges, :none
+      = label_tag :privileges_none, 'None, I will assign them permission to access individual backlogs afterwards'
+    .input-row
+      = radio_button_tag :privileges, :readonly
+      = label_tag :privileges_readonly, 'View all backlogs in this account'
+    .input-row
+      = radio_button_tag :privileges, :readstatus
+      = label_tag :privileges_readstatus, 'View all backlogs in this account plus update the status of stories and tasks'
+    .input-row
+      = radio_button_tag :privileges, :full
+      = label_tag :privileges_full, 'Full control to view and update all backlogs in this account'
 
     %br/
     = submit_tag "Send invites"

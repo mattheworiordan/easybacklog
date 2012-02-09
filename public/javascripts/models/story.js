@@ -7,19 +7,35 @@ var Story = Backbone.Model.extend({
 
   // editable if no snapshot master, or story is done
   IsEditable: function() {
-    if (!this.collection.theme.IsEditable()) {
-      return false
+    if (!this.CanEdit()) {
+      return false;
     } else {
-      var sprintStory = this.SprintStory();
-      if (sprintStory) {
-        if (sprintStory.Status()) {
-          return !sprintStory.Status().isDone();
-        } else {
-          return false;
-        }
-      }
-      return true;
+      return !this.IsDone();
     }
+  },
+
+  IsLocked: function() {
+    return this.collection.theme.IsLocked();
+  },
+
+  CanEdit: function() {
+    return this.collection.theme.CanEdit();
+  },
+
+  CanEditStatus: function() {
+    return this.collection.theme.CanEditStatus();
+  },
+
+  IsDone: function() {
+    var sprintStory = this.SprintStory();
+    if (sprintStory) {
+      if (sprintStory.Status()) {
+        return sprintStory.Status().IsDone();
+      } else {
+        return false;
+      }
+    }
+    return false;
   },
 
   // access to acceptance criteria child collection

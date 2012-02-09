@@ -143,6 +143,8 @@ module HtmlSelectorHelpers
         '.move-story a'
       when /colou?r picker/
         '.color-picker-icon a'
+      when 'status tab'
+        '.sprint-story-info .status .tab'
       when nil
         # matching the entire story element
         ''
@@ -319,17 +321,14 @@ module HtmlSelectorHelpers
     when /^account user table$/
       'table.users'
 
-    when /^account user table$/
-      'table.users'
-
     when /^invite user table$/
       'table.invites'
 
     when /^revoke invite icon for (.+)$/
-      "table.invites tr:contains(#{$1}) td:last-child a"
+      "table.invites tr:contains(#{$1}) td.action:first a"
 
     when /^delete user icon for (.+)$/
-      "table.users tr:contains(#{$1}) td:last-child a"
+      "table.users tr:contains(#{$1}) td.action:first a"
 
     when /^sign up form$/
       '.sign-up form'
@@ -373,6 +372,13 @@ module HtmlSelectorHelpers
     when /^(un)checked checkboxes$/
       "input[type=checkbox]:#{$1 == 'un' ? ':not(:checked)' : ':checked'}"
 
+    when /^(un)checked toggle boxes$/
+      "a.toggle-switch#{$1 == 'un' ? ':not(.checked)' : '.checked'}"
+
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) toggle box$/
+      position = string_quantity_to_numeric($1)
+      "a.toggle-switch:eq(#{position - 1})"
+
     when /^drop down options with the text .+$/
       "select option:contains($1)"
 
@@ -402,7 +408,7 @@ module HtmlSelectorHelpers
             } catch (e) { true; }
             ret;
           JS
-          if label_selector.present? && page.evaluate_script("$('form ##{label_selector}').length") >= 1
+          if label_selector.present? && page.evaluate_script("$('##{label_selector}').length") >= 1
             location = "##{label_selector}"
           end
         end

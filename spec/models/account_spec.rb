@@ -52,7 +52,7 @@ describe Account do
     Factory.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
     Factory.create(:sprint_story_status, :status => 'Testing', :code => SprintStoryStatus::TESTING)
 
-    account = Factory.create(:account_with_users)
+    account = Factory.create(:account_with_user)
     account.add_example_backlog account.users.first
     account.backlogs.first.name.should match(/Example/i)
     account.backlogs.first.themes.count.should > 1
@@ -75,5 +75,23 @@ describe Account do
 
     account = Factory.create(:account, :default_rate => 50, :default_velocity => 5)
     account.default_rate.should == 50
+  end
+
+  context "Adding a user" do
+    before(:each) do
+      @account = Factory.create(:account)
+      @user = Factory.create(:user)
+    end
+
+    it 'should add user with privilege string' do
+      @account.add_user @user, Privilege.highest
+      @account.account_users.first.user_id.should == @user.id
+      @account.account_users.first.privilege.should == Privilege.highest
+    end
+
+    it 'should add user with privilege object' do
+      @account.add_user @user, Privilege.none.privilege
+      @account.account_users.first.privilege.should == Privilege.none
+    end
   end
 end

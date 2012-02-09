@@ -80,6 +80,39 @@ $(document).ready(function() {
     return (false);
   });
 
+  // Enable the drop down menus for the very top nav
+  var topDropdowns = $('#user-account-dropdown, #account-dropdown');
+  topDropdowns.on('click', function(e) {
+    var dropdown = this,
+        alreadyActive = $(dropdown).hasClass('active');
+
+    // align drop down menus with nav
+    if ($(this).is('#account-dropdown')) {
+      $('#account-dropdown .top-nav-dropdown-overlay').css('left', ($('#account-dropdown').offset().left - 30) + 'px').css('right', '10px').width('auto');
+    }
+
+    topDropdowns.removeClass('active'); // remove all other drop downs first
+    // toggle drop down menus
+    if (alreadyActive) {
+      $(dropdown).removeClass('active');
+    } else {
+      $(dropdown).addClass('active');
+    }
+    e.preventDefault();
+    e.stopPropagation();
+
+    // hide the drop down if clicked anywhere else
+    $(document).on('click.user-account', function(e) {
+      $(dropdown).removeClass('active');
+      $(this).off('click.user-account');
+    });
+  }).on('click', '.top-nav-dropdown-overlay a', function(e) {
+    // allow links in the drop downs to work
+    topDropdowns.off('click');
+    $(document).off('click.user-account');
+    e.stopPropagation();
+  });
+
   // hide notices & alerts after some time
   alertNotice = $('#alert-space .notice, #alert-space .error, #alert-space .warning');
   alertNotice.css('display','none').slideDown(function() {

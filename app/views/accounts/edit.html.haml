@@ -5,7 +5,16 @@
   = include_javascripts :register
 
 - content_for :title do
+  = link_to "← Back to account dashboard", account_path(current_account), :class => 'back'
   %h1 Edit account
+
+- if is_account_admin?
+  - content_for :side_panel do
+    .side-panel
+      %h2 Manage users
+      Invite and manage users who have access to this account
+      .button-container
+        = link_to 'Manage and invite users', account_users_path(current_account), :class => 'button'
 
 = form_for(@account) do |f|
   - unless @account.errors.blank?

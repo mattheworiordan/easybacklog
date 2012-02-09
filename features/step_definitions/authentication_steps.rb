@@ -1,5 +1,5 @@
 Given /^a user named "([^\"]+)" is registered$/ do |name|
-  Factory.create(:user, :email => "#{name}@acme.com", :password => 'password', :password_confirmation => 'password')
+  Factory.create(:user, :name => name, :email => "#{name}@acme.com", :password => 'password', :password_confirmation => 'password')
 end
 
 Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|

@@ -19,4 +19,9 @@ module ApplicationHelper
   def use_base_css?
     @dont_use_base_css.blank? || !@dont_use_base_css
   end
+
+  # converts line breaks to <br> tags safely
+  def break_html(flash_message)
+    raw h(flash_message).gsub(/[\n\r]+/, '<br/>')
+  end
 end

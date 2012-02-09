@@ -3,10 +3,13 @@
 != render :partial => 'generic_account_info'
 
 %h2.divider
-  = "Latest activity across your backlogs"
+  Latest activity across your backlogs
 - if @backlogs.empty?
   %p
-    There are no backlogs yet in this account.
+    - if can? :read
+      There are no backlogs in this account yet.
+    - else # assume user does not have access to backlogs but there may be backlogs that exist not for this user
+      You do not have access to any backlogs in this account.
 - else
   - @backlogs.group_by { |backlog| backlog.company.present? ? backlog.company.name : backlog.account.name }.each do |company, backlogs|
     .dash-board-company= truncate(company, :length => 60)
@@ -19,4 +22,5 @@
           - if backlogs.length == 1 && backlog.name =~ /^Example.*backlog$/
             = render :partial => '/accounts/first_project_bubble'
 
-= link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }
+- if can? :full
+  = link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }

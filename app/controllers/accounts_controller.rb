@@ -4,7 +4,13 @@ class AccountsController < ApplicationController
 
   def index
     redirect_to account_path(current_user.accounts.first) if current_user.accounts.length == 1
-    @accounts = current_user.accounts.order('LOWER(name)')
+    @accounts = current_user.accounts.with_backlog_counts.order('LOWER(name)')
+  end
+
+  def archives
+    @account = Account.where(:id => params[:id]).first
+    @archives = @account.archived_backlogs_grouped_by_company(current_user)
+    @your_backlogs = @account.active_backlogs_grouped_by_company(current_user)
   end
 
   def show
@@ -15,24 +21,34 @@ class AccountsController < ApplicationController
       flash[:error] = 'You do not have permission to view this account'
       redirect_to accounts_path
     else
-      @backlogs = @account.backlogs.active.order('updated_at desc').limit(15)
-      @your_backlogs = @account.active_backlogs_grouped_by_company
-      @archive_exists = !@account.backlogs.archived.empty?
+      @backlogs = @account.backlogs.active.order('updated_at desc').where_user_has_access(current_user).limit(15)
+      @your_backlogs = @account.active_backlogs_grouped_by_company(current_user)
+      @archive_exists = !@account.backlogs.archived.where_user_has_access(current_user).empty?
     end
   end
 
   def edit
     @account = Account.find(params[:id])
+    @current_account = @account # so that nav is shown correctly
+    if cannot?(:full)
+      flash[:error] = 'You do not have permission to edit this account'
+      redirect_to account_path(@account)
+    end
   end
 
   def update
     @account = Account.find(params[:id])
-    @account.update_attributes(params[:account])
-    if @account.save
-      flash[:notice] = "Account for #{@account.name} updated successfully"
+    if cannot?(:full)
+      flash[:error] = 'You do not have permission to edit this account'
       redirect_to account_path(@account)
     else
-      render :action => 'edit'
+      @account.update_attributes(params[:account])
+      if @account.save
+        flash[:notice] = "Account for #{@account.name} updated successfully"
+        redirect_to account_path(@account)
+      else
+        render :action => 'edit'
+      end
     end
   end
 
@@ -65,5 +81,13 @@ class AccountsController < ApplicationController
     else
       render :text => 'false'
     end
+  end
+
+  helper_method :can?, :cannot?
+  def can?(method)
+    @account.can? method, current_user
+  end
+  def cannot?(method)
+    !can? method
   end
 end

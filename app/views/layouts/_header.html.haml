@@ -10,7 +10,9 @@
       .divider
       .account
         - if current_account.blank?
-          .jump-to-account Jump to Account
+          .jump-to-account
+            Jump to Account
+            %span.down-arrow.lighter
         - else
           = link_to truncate(current_account.name, :length => 35), account_path(current_account)
         %ul
@@ -21,16 +23,38 @@
 
 .account-info
   - if user_signed_in?
-    %div= link_to 'Sign out', destroy_user_session_path
+    .account-dropdown#user-account-dropdown
+      = link_to current_user.name, edit_user_registration_path
+      %span.down-arrow
+      .top-nav-dropdown-overlay
+        .name= current_user.name
+        %div= current_user.email
+        .link= link_to 'My settings', edit_user_registration_path
+        .nav-divider
+        .link= link_to 'Sign out', destroy_user_session_path
     .divider
-    %div= link_to 'My info', edit_user_registration_path
-    .divider
-    - if is_account_admin?
-      %div= link_to 'Account Users', account_users_path(current_account)
+    - # only show the account tab if user is an account admin, has enough rights to edit the account details or has access to multiple accounts
+    - if is_account_admin? || current_account.present? && current_account.can?(:full, current_user) || (!accounts.blank? && accounts.count > 1)
+      .account-dropdown#account-dropdown
+        = link_to 'Account', current_account.blank? ? accounts_path : edit_account_path(current_account)
+        %span.down-arrow
+        .top-nav-dropdown-overlay
+          - if current_account.blank?
+            - accounts.each do |account|
+              %div.link= link_to account.name, account_path(account)
+          - else
+            .name= current_account.name
+            - if is_account_admin?
+              .link= link_to 'Manage Users', account_users_path(current_account)
+            - if current_account.can? :full, current_user
+              .link= link_to 'Manage Account', edit_account_path(current_account)
+            - if !accounts.blank? && accounts.count > 1
+              .nav-divider
+              .link= link_to 'Switch accounts', accounts_path
       .divider
     %div= link_to 'Support', contact_path
     .divider
-    %div= link_to 'Our Blog', 'http://blog.easybacklog.com/'
+    %div= link_to 'Blog', 'http://blog.easybacklog.com/'
     .divider
   - else
     -# %div= link_to 'Sign up', new_user_registration_url(:protocol => link_protocol)
@@ -40,5 +64,5 @@
     .divider
     %div= link_to 'Support', contact_path
     .divider
-    %div= link_to 'Our Blog', 'http://blog.easybacklog.com/'
+    %div= link_to 'Blog', 'http://blog.easybacklog.com/'
     .divider

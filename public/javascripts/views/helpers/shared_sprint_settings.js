@@ -89,7 +89,7 @@ App.Views.SharedSprintSettings = {
         expectedVelocity = parseFloat(target.find('#number-team-members').val()) * parseFloat(target.find('#duration-days').val()) * backlogVelocity;
         target.find('#expected-velocity').text(expectedVelocity === 1 ? niceNum(expectedVelocity) + ' point' : niceNum(expectedVelocity) + ' points');
       }
-    }
+    };
 
     // set default position to calculated if we have a backlog velocity
     if (backlogVelocity && !target.find('#explicit-velocity').val()) {
@@ -104,4 +104,4 @@ App.Views.SharedSprintSettings = {
     target.find('#duration-days, #number-team-members').keyup(teamSizeChanged);
     teamSizeChanged();
   }
-}
+};

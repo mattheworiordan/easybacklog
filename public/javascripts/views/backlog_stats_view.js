@@ -54,7 +54,7 @@ App.Views.BacklogStats = {
 
     showCharts: function() {
       var that = this;
-      if (this.model.Sprints().select(function(sprint) { return sprint.isComplete(); }).length > 0) {
+      if (this.model.Sprints().select(function(sprint) { return sprint.IsComplete(); }).length > 0) {
         // load data and then...
         $.getJSON('/backlogs/' + this.model.get('id') + '/backlog-stats')
           .success(function(data) {

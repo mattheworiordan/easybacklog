@@ -107,8 +107,7 @@ ul.your-backlog-list {
     margin-left: 480px;
     padding: 10px;
     background-color: #D6D6D6;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+    @include border-radius(10px);
     input[type=submit] {
       @include grey-button-style;
     }
@@ -137,18 +136,44 @@ table.users, table.invites {
     background-color: #CCC;
     padding: 4px;
     font-weight: bold;
+    &:first-child {
+      border-left: 1px solid #CCC;
+    }
+    &:last-child {
+      border-right: 1px solid #CCC;
+    }
   }
   td {
-    border: 1px solid white;
-    background-color: #EEE;
+    border: 1px solid #EEE;
+    background-color: #FFF;
     padding: 4px;
     height: 1.2em;
     &.action {
       background-color: white;
+      border: none;
+      .progress-icon {
+        display: none;
+      }
     }
-    &.admin {
-      padding-left: 2em;
+    &.privilege, &.admin {
+      text-align: center;
     }
+    .toggle-switch {
+      margin: 0 auto 0 auto;
+    }
+  }
+  select.privilege {
+    background-color: #FFF;
+    border: 1px solid #AAA;
+    font-size: 12px;
+  }
+  .admin-access {
+    background-color: rgba(0,0,0,0.075);
+    padding: 1px;
+    text-align: center;
+    @include border-radius(3px);
+    font-weight: bold;
+    color: #000;
   }
 }
 
@@ -341,5 +366,19 @@ form.new_account, form.edit_account, form.user_new {
     background-color: #E9E9E9;
     padding: 3px;
     font-family: courier;
+  }
+}
+
+/* Accounts index page for users who have multiple accounts */
+.accounts-index {
+  ul {
+    list-style: none;
+    li {
+      margin-left: 1em;
+      a {
+        font-size: 110%;
+      }
+      color: #666;
+    }
   }
 }

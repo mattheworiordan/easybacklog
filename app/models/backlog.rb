@@ -20,11 +20,16 @@ class Backlog < ActiveRecord::Base
   before_save :check_can_modify, :remove_rate_if_velocity_empty, :update_sprint_estimation_method
   after_save :update_account_scoring_rule_if_empty
 
+  can_do :inherited_privilege => :account
+
   scope :available, where(:deleted => false)
   scope :active, where(:archived => false).where(:deleted => false)
   scope :deleted, where(:deleted => true)
   scope :archived, where(:archived => true).where(:deleted => false)
   scope :masters, where('snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL')
+  scope :where_user_has_access, lambda { |user|
+    joins(:account).where("accounts.id in (select account_id from account_users as au where au.user_id = ? and (au.privilege in ('read','readstatus','full') OR au.admin = ?))", user.id, true)
+  }
 
   include ScoreStatistics
 
@@ -117,6 +122,12 @@ class Backlog < ActiveRecord::Base
   def is_snapshot?
     self.snapshot_master.present? || self.snapshot_for_sprint.present?
   end
+
+  # useful flag to indicate whether backlog is locked because it's a snapshot or an archive or deleted
+  def locked?
+    !editable?
+  end
+  alias_method :is_locked, :locked?
 
   # independent backlog master link regardless of whether sprint snapshot or normal snapshot
   def backlog_root
