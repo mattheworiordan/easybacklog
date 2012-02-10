@@ -16,9 +16,11 @@ $(document).ready(function() {
       },
       error:        function(jqXHR, textStatus, errorThrown) {
         $(event.target).parents('tr').find('.progress-icon').hide();
-        if (window.console) { console.log(textStatus); }
-        if (window.console) { console.log(errorThrown); }
-        var errorView = new App.Views.Error({ message: 'The user could not be updated, please refresh your browser'});
+        if (window.console) {
+          console.log(textStatus);
+          console.log(errorThrown);
+        }
+        new App.Views.Error({ message: 'An internal error occurred. The user\'s permissions could not be updated, please refresh your browser'});
       }
     };
 

@@ -110,9 +110,14 @@ Then /^(?:|I )there should be (\d+) (?:|elements matching )"([^"]+)"(?:| element
   page.evaluate_script("$('#{selector.gsub(/'/,'"')}').length").to_i.should == quantity.to_i
 end
 
-Then /^within (?:|the )"([^"]*)" there should be a clickable element with the text "([^"]*)"$/ do |selector, text|
+Then /^within (?:|the )"([^"]*)" there should (|not )be a clickable element with the text "([^"]*)"$/ do |selector, negation, text|
   selector = selector_to(selector)
-  page.evaluate_script(%{$('#{selector}').find('input[value="#{text}"],button:contains("#{text}"),a:contains("#{text}")').length}).should > 0
+  jquery_selector = %{$('#{selector}').find('input[value="#{text}"],button:contains("#{text}"),a:contains("#{text}")').length}
+  if negation == 'not '
+    page.evaluate_script(jquery_selector).should == 0
+  else
+    page.evaluate_script(jquery_selector).should > 0
+  end
 end
 
 Then /^(?:a |the )(?:|element )"([^"]+)" should (|not )be visible$/ do |selector, negation|

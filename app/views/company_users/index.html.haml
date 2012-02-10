@@ -1,0 +1,43 @@
+- title 'Users'
+- content_for :head do
+  = include_javascripts :users
+- content_for :title do
+  = link_to "← Back to company settings", edit_account_company_path(@company.account, @company), :class => 'back'
+
+- content_for :title do
+  %h1= "Users for #{@company.name}"
+
+- if @account_users.blank?
+  .page-notice
+    There is an internal error as no users are registered for this account.
+- else
+  %h2.divider Permissions for users accessing this company and its backlogs
+  %p
+    Listed below are the users with access to this company, either set explicitly or inherited from the account permissions.
+    = link_to "Change account permissions →", account_users_path(current_account)
+
+  %form
+    %table.users
+      %tr
+        %th Name
+        %th Email address
+        %th Permission
+      - @account_users.each do |account_user|
+        - select_id = "user-privilege-#{account_user.user.id}"
+        %tr
+          %td
+            = label_tag select_id, account_user.user.name
+          %td
+            = label_tag select_id, account_user.user.email
+          - if account_user.user == current_user || account_user.admin?
+            %td
+              .admin-access Administrator access to all features
+          - else
+            %td.privilege
+              %select.privilege{ :id => select_id, :name => select_id }
+                = raw privilege_options account_user, @company_users, 'this company'
+            %td.action
+              .progress-icon
+
+%br
+= link_to '← Back to company settings', edit_account_company_path(@company.account, @company), :class => 'button'

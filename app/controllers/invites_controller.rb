@@ -42,7 +42,7 @@ class InvitesController < ApplicationController
       if existing_account_user.present?
         # assign user the higher of the two privileges
         highest = existing_account_user.privilege.highest(invited_user.privilege)
-        existing_account_user.update_attributes! :privilege => highest.privilege
+        existing_account_user.update_attributes! :privilege => highest.code
       else
         # assign user to account with appropriate privileges
         invited_user.account.add_user current_user, invited_user.privilege

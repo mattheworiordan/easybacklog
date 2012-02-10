@@ -14,10 +14,10 @@ class ApplicationController < ActionController::Base
         if current_account
           account_path current_account
         else
-          if accounts.length > 0
-            root_path
+          if accounts.length == 1
+            account_path accounts.first
           else
-            accounts_path
+            dashboard_path
           end
         end
       else

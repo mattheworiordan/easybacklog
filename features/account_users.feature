@@ -97,16 +97,33 @@ Feature: Account Users
       And I should not see "Acme" within "primary page heading"
       And I should see "You do not have an account" within "primary page heading"
 
-  Scenario: User who has rights to more than one account should be shown the Dashboard after logging in
+  Scenario: User who has rights to more than one account should be shown the all accounts dashboard after logging in
     Given a user named "John" is registered
       And the database has the necessary lookup tables
       And an account called "Acme" is set up for "John"
       And an account called "Big Co" is set up for "John"
       And I am signed in as "John"
-    Then I should see "Latest activity across all backlogs"
+    Then I should see "Latest activity across all accounts"
       And I should see "easyBacklog" within "primary page heading"
       And I should see "Acme" within "top nav"
       And I should see "Big Co" within "top nav"
+      And I should see "Your accounts" within "side panel"
+      And I should see "Acme" within "side panel"
+      And I should see "Big Co" within "side panel"
     When I follow "Big Co"
     Then I should see "Big Co" within "primary page heading"
       And I should see "Switch accounts" within "top nav"
+    # going back to home should take user to all accounts dashboard page
+    When I am on the home page
+    Then I should see "Latest activity across all accounts"
+
+  Scenario: User who has rights to one account should be shown the single account dashboard after logging in
+    Given a user named "John" is registered
+      And the database has the necessary lookup tables
+      And an account called "Acme" is set up for "John"
+      And I am signed in as "John"
+    Then I should see "Latest activity across your backlogs"
+      And I should see "Acme" within "primary page heading"
+    When I am on the home page
+    Then I should see "Latest activity across your backlogs"
+      And I should not see "Switch accounts" within "top nav"

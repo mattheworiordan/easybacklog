@@ -57,7 +57,14 @@ class << ActiveRecord::Base
     private
       def can_inherited_privilege?(action, current_user)
         if self.class.inherited_privilege.present?
-          inherited_privilege_model = self.send self.class.inherited_privilege
+          inherited_privilege_model = if self.class.inherited_privilege.kind_of?(Symbol)
+            self.class.inherited_privilege
+          else
+            # an array of symbols has been passed in, use the first match
+            self.class.inherited_privilege.detect { |sym| self.send(sym).respond_to?(:can?) }
+          end
+
+          inherited_privilege_model = self.send inherited_privilege_model
           inherited_privilege_model.can? action, current_user
         end
       end

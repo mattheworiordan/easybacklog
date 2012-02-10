@@ -3,21 +3,23 @@
     easyBacklog
     .description : Makes agencies agile
 
-#home
-  %p.beta-notice
-    You are currently participating in an invite only BETA of easyBacklog.
-    %br/
-    We welcome your
-    = link_to 'suggestions and feedback.', contact_path
+- if user_signed_in?
+  - content_for :side_panel do
+    %h2 Your accounts
+    .your-list-side-panel
+      - current_user.accounts.sort_by { |a| a.name.downcase }.each do |account|
+        .account
+          = link_to account.name, account_path(account)
 
-  - if user_signed_in?
-    %h2.divider Latest activity across all backlogs
+  #home
+    %h2.divider Latest activity across all accounts
     - if @recent_backlogs.empty?
-      %p You have not created any backlogs yet so there is no recent activity.
+      %p You do not have access to any backlogs yet.
       %br/
     - else
-      - @recent_backlogs.group_by { |backlog| backlog.company.present? ? backlog.company.name : backlog.account.name }.each do |company, backlogs|
-        .company= truncate(company, :length => 60)
+      - @recent_backlogs.each do |company_or_account, backlogs|
+        .company
+          = company_or_account_header company_or_account, 60
         %ul.backlog-list
           - backlogs.each do |backlog|
             %li
@@ -26,9 +28,8 @@
               .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
               - if @recent_backlogs.length == 1 && backlogs.length == 1 && backlog.name =~ /^Example.*backlog$/
                 = render :partial => '/accounts/first_project_bubble'
-
-    = link_to "View Account Dashboard", accounts_path, { :class => 'button' }
-  - else
+- else
+  #home
     .sign-up
       %h2 Create an account
       %p
@@ -36,8 +37,9 @@
       %p
         Features of easyBacklog include:
       %ul
-        %li Rich application interface for managing your backlogs
-        %li Versioning of your backlogs
+        %li Rich application interface for managing your backlogs quickly
+        %li Sprint planning and management
+        %li Versioning and snapshots of your backlogs
         %li Export to Excel for sharing
         %li Print user story cards to share with your team
       = link_to "Create an account now", new_user_registration_url, { :class => 'button', :protocol => link_protocol }

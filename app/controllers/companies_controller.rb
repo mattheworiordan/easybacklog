@@ -10,16 +10,20 @@ class CompaniesController < ApplicationController
 
   def edit
     @company = current_account.companies.find(params[:id])
+    enforce_can(:full, 'You do not have permission to edit this company')
   end
 
   def update
     @company = current_account.companies.find(params[:id])
-    @company.update_attributes(params[:company])
-    if @company.save
-      flash[:notice] = 'Company defaults were successfully updated.'
-      redirect_to account_path(current_account)
-    else
-      render :action => "edit"
+    enforce_can(:full, 'You do not have permission to edit this company') do
+      @company.update_attributes(params[:company])
+      if @company.save
+        flash[:notice] = 'Company defaults were successfully updated'
+        redirect_to account_path(current_account)
+      else
+        flash[:error] = "You have not completed the form correctly.\n#{@company.errors.full_messages.join("\n")}"
+        render :action => "edit"
+      end
     end
   end
 
@@ -33,4 +37,22 @@ class CompaniesController < ApplicationController
       render :text => 'false'
     end
   end
+
+  helper_method :can?, :cannot?
+  def can?(method)
+    @company.can? method, current_user
+  end
+  def cannot?(method)
+    !can? method
+  end
+
+  private
+    def enforce_can(rights, message)
+      if can?(rights)
+        yield if block_given?
+      else
+        flash[:error] = message
+        redirect_to account_path(current_account)
+      end
+    end
 end

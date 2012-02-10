@@ -6,7 +6,11 @@ class BetaSignupsController < ApplicationController
   def index
     if user_signed_in?
       flash.keep
-      redirect_to dashboard_path
+      if current_user.accounts.length == 1
+        redirect_to account_path(current_user.accounts.first)
+      else
+        redirect_to dashboard_path
+      end
     else
       @beta_signup = BetaSignup.new
       unless params[:unique_code].blank?

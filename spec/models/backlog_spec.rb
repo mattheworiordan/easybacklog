@@ -418,4 +418,89 @@ describe Backlog do
     backlog.should_not be_days_estimatable
     backlog.should_not be_cost_estimatable
   end
+
+  describe '#where_user_has_access' do
+    subject { account.backlogs.where_user_has_access(user) }
+    let(:account) { Factory.create(:account) }
+    let(:company) { Factory.create(:company, :account => account) }
+    let(:backlog) { Factory.create(:backlog, :account => account) }
+    let(:backlog_for_company) { Factory.create(:backlog, :account => account, :company => company) }
+    let(:user) { Factory.create(:user) }
+
+    context 'user is an administrator and should always have access to all backlogs' do
+      before (:each) do
+        # set user as admin
+        account.add_first_user user
+      end
+
+      it 'should return backlogs where the admin user has read privileges at account level' do
+        account.account_users.first.update_attribute :privilege, 'read'
+        subject.should include(backlog)
+      end
+
+      it 'should return backlogs where the admin user has none privileges at account level' do
+        account.account_users.first.update_attribute :privilege, 'none'
+        subject.should include(backlog)
+      end
+
+      it 'should return backlogs where the admin user has inherited privileges at company level' do
+       subject.should include(backlog_for_company)
+      end
+
+      it 'should return backlogs where the admin user has none privileges at company level' do
+        company.add_or_update_user user, :none
+        subject.should include(backlog_for_company)
+      end
+    end
+
+    context 'account no level permissions are set' do
+      before (:each) { account.add_user user, 'none' }
+
+      context 'and no company permissions are set' do
+        it 'should not return any backlogs' do
+          subject.should be_blank
+        end
+      end
+
+      context 'and company none permissions are set' do
+        before (:each) { company.add_or_update_user user, :none }
+        it 'should not return any backlogs' do
+          subject.should be_blank
+        end
+      end
+
+      context 'and company read permissions are set' do
+        before (:each) { company.add_or_update_user user, :read }
+        it 'should not return any backlogs' do
+          subject.should include(backlog_for_company)
+          subject.should_not include(backlog)
+        end
+      end
+    end
+
+    context 'account read level permissions are set' do
+      before (:each) { account.add_user user, 'read' }
+
+      context 'and no company permissions are set' do
+        it 'should not return any backlogs' do
+          subject.should include(backlog, backlog_for_company)
+        end
+      end
+
+      context 'and company none permissions are set' do
+        before (:each) { company.add_or_update_user user, :none }
+        it 'should not return backlog with explicit company none permissions' do
+          subject.should include(backlog)
+          subject.should_not include(backlog_for_company)
+        end
+      end
+
+      context 'and company read permissions are set' do
+        before (:each) { company.add_or_update_user user, :read }
+        it 'should return all backlogs' do
+          subject.should include(backlog, backlog_for_company)
+        end
+      end
+    end
+  end
 end

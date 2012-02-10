@@ -25,10 +25,15 @@
             = label_tag select_id, account_user.user.name
           %td
             = label_tag select_id, account_user.user.email
-          - unless account_user.user == current_user
+          - if account_user.user == current_user
+            %td
+              .admin-access Administrator access to all features
+            %td.admin
+              %b{ :title => 'You cannot turn off your own admin rights', :class => 'vtip' } Yes
+          - else
             %td.privilege
               %select.privilege{ :id => select_id, :name => select_id }
-                = privilege_options account_user
+                = raw privilege_options account_user
             %td.admin
               = check_box_tag "user-#{account_user.user.id}", 1, account_user.admin?, :title => 'Account administrators can manage this account, invite new users and view and edit all backlogs', :class => 'admin vtip'
             %td.action
@@ -36,11 +41,6 @@
                 %span.ui-icon.ui-icon-trash
             %td.action
               .progress-icon
-          - else
-            %td
-              .admin-access Administrator access to all features
-            %td.admin
-              %b{ :title => 'You cannot turn off your own admin rights', :class => 'vtip' } Yes
   - unless @invites.empty?
     %br/
     %h2.divider Invites not yet redeemed

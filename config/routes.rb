@@ -33,6 +33,7 @@ Ibacklog::Application.routes.draw do
       collection do
         get 'name_available' => 'companies#name_available'
       end
+      resources :users, :controller => 'company_users'
     end
     resources :invites, :only => [:destroy] do
       member do

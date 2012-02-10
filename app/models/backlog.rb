@@ -7,6 +7,7 @@ class Backlog < ActiveRecord::Base
 
   has_many :themes, :dependent => :destroy, :order => 'position'
   has_many :sprints, :dependent => :destroy, :order => 'iteration'
+  has_many :backlog_users, :dependent => :destroy
 
   # self references for snapshots
   has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
@@ -20,7 +21,7 @@ class Backlog < ActiveRecord::Base
   before_save :check_can_modify, :remove_rate_if_velocity_empty, :update_sprint_estimation_method
   after_save :update_account_scoring_rule_if_empty
 
-  can_do :inherited_privilege => :account
+  can_do :inherited_privilege => [:company, :account]
 
   scope :available, where(:deleted => false)
   scope :active, where(:archived => false).where(:deleted => false)
@@ -28,7 +29,20 @@ class Backlog < ActiveRecord::Base
   scope :archived, where(:archived => true).where(:deleted => false)
   scope :masters, where('snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL')
   scope :where_user_has_access, lambda { |user|
-    joins(:account).where("accounts.id in (select account_id from account_users as au where au.user_id = ? and (au.privilege in ('read','readstatus','full') OR au.admin = ?))", user.id, true)
+    sql = <<-SQL
+    (
+      /* check for users with admin privileges, they can do anything */
+      account_id IN (SELECT account_id FROM account_users AS au WHERE au.user_id = :user_id AND au.admin = :true))
+      OR
+      /* check for users with read-full privileges so long as a company none privilege does not exist */
+      ( account_id IN (SELECT account_id FROM account_users AS au WHERE au.user_id = :user_id AND (au.privilege IN ('read','readstatus','full')))
+        AND (company_ID IS NULL OR (company_ID IS NOT NULL AND company_ID NOT IN (SELECT company_id FROM company_users AS au WHERE au.user_id = :user_id AND au.privilege = 'none'))) )
+      OR
+      /* check if user has read-full privileges for the company if it exists */
+      ( company_id IS NOT NULL AND company_ID IN (select company_id from company_users as au where au.user_id = :user_id and (au.privilege in ('read','readstatus','full')) )
+    )
+    SQL
+    where(sql, { :user_id => user.id, :true => true })
   }
 
   include ScoreStatistics

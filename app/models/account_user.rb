@@ -8,6 +8,6 @@ class AccountUser < ActiveRecord::Base
 
   def upgrade_privilege(new_privilege)
     highest = privilege.highest(new_privilege)
-    update_attributes! :privilege => highest.privilege
+    update_attributes! :privilege => highest.code
   end
 end

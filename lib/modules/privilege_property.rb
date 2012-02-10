@@ -8,6 +8,6 @@ module PrivilegeProperty
   end
 
   def privilege=(new_privilege)
-    write_attribute :privilege, new_privilege.respond_to?(:privilege) ? new_privilege.privilege : new_privilege
+    write_attribute :privilege, new_privilege.to_s
   end
 end

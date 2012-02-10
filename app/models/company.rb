@@ -1,6 +1,7 @@
 class Company < ActiveRecord::Base
   belongs_to :account
   has_many :backlogs, :conditions => 'snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL', :dependent => :destroy
+  has_many :company_users, :dependent => :destroy
 
   validates_uniqueness_of :name, :scope => [:account_id], :message => 'has already been taken for another company'
   validates_presence_of :name
@@ -10,8 +11,24 @@ class Company < ActiveRecord::Base
 
   before_save :remove_rate_if_velocity_empty
 
+  can_do :user_privileges => :company_users, :inherited_privilege => :account
+
   def days_estimatable?
     default_velocity.present?
+  end
+
+  def add_or_update_user(user, privilege)
+    privilege = Privilege.find(privilege) unless privilege.kind_of?(Privilege)
+    company_user = company_users.where(:user_id => user.id)
+    if company_user.present?
+      company_user.first.update_attributes! :privilege => privilege.code
+    else
+      company_users.create! :user_id => user.id, :privilege => privilege.code
+    end
+  end
+
+  def delete_user(user)
+    company_users.where(:user_id => user.id).each { |cu| cu.delete }
   end
 
   private

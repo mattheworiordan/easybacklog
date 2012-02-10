@@ -1,14 +1,22 @@
-- title 'Edit Company Defaults'
+- title 'Company settings'
 
 - content_for :head do
   = include_javascripts :validation
   = include_javascripts :company
 
 - content_for :title do
-  %h1 Edit Company Defaults
+  %h1 Company settings
+
+- if is_account_admin?
+  - content_for :side_panel do
+    .side-panel
+      %h2 Manage users
+      Manage the users who have access to this company and it's backlogs
+      .button-container
+        = link_to 'Manage company users', account_company_users_path(current_account, @company), :class => 'button'
 
 %p
-  All settings for this company will automatically be used for new backlogs for this company.
+  The settings for this company will automatically be used for new backlogs for this company.
 
 = form_for(@company, :url => account_company_path(current_account, @company)) do |f|
   - unless @company.errors.blank?

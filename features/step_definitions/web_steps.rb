@@ -25,7 +25,7 @@ When /^(?:|I )go to (.+)$/ do |page_name|
 end
 
 When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
-  with_scope(selector) do
+  with_scope(selector_to(selector)) do
     click_link(link)
   end
 end

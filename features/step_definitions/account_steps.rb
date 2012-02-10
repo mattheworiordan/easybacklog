@@ -21,8 +21,20 @@ Given /^an account called "([^\"]+)" is set up for "([^\"]+)"(?:| who should hav
   au = Factory.create(:account_user, account_user_options)
 end
 
-Given /^a user named "([^\"]+)" is created and assigned to account "([^\"]+)"$/ do |user_name, account_name|
+Given /^a user named "([^\"]+)" is created (?:with (read only|read only and status update|full access|no) rights )?and assigned to account "([^\"]+)"$/ do |user_name, rights, account_name|
   account = Account.find_by_name(account_name)
   raise "Account #{account_name} does not exist." if account.blank?
-  au = Factory.create(:account_user, :user => Factory.create(:user, :name => user_name, :email => "#{user_name}@acme.com"), :account => account, :admin => false )
+  account_user_type = case rights
+    when 'read only'
+      :account_user_with_read_rights
+    when 'read only and status updates'
+      :account_user_with_read_status_rights
+    when 'full access'
+      :account_user_with_full_rights
+    when 'no'
+      :account_user_with_no_rights
+    else
+      :account_user
+  end
+  au = Factory.create(account_user_type, :user => Factory.create(:user, :name => user_name, :email => "#{user_name.gsub(/ /, '')}@acme.com"), :account => account, :admin => false)
 end

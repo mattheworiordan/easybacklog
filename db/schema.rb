@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120208173333) do
+ActiveRecord::Schema.define(:version => 20120210071733) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -31,6 +31,10 @@ ActiveRecord::Schema.define(:version => 20120208173333) do
   end
 
   add_index "account_users", ["account_id", "user_id"], :name => "index_account_users_on_account_id_and_user_id"
+  add_index "account_users", ["account_id"], :name => "index_account_users_on_account_id"
+  add_index "account_users", ["admin"], :name => "index_account_users_on_admin"
+  add_index "account_users", ["privilege"], :name => "index_account_users_on_privilege"
+  add_index "account_users", ["user_id"], :name => "index_account_users_on_user_id"
 
   create_table "accounts", :force => true do |t|
     t.string   "name"
@@ -43,6 +47,18 @@ ActiveRecord::Schema.define(:version => 20120208173333) do
     t.integer  "scoring_rule_id"
     t.boolean  "defaults_set"
   end
+
+  create_table "backlog_users", :force => true do |t|
+    t.integer  "backlog_id", :null => false
+    t.integer  "user_id",    :null => false
+    t.string   "privilege"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "backlog_users", ["backlog_id", "user_id"], :name => "index_backlog_users_on_backlog_id_and_user_id"
+  add_index "backlog_users", ["backlog_id"], :name => "index_backlog_users_on_backlog_id"
+  add_index "backlog_users", ["user_id"], :name => "index_backlog_users_on_user_id"
 
   create_table "backlogs", :force => true do |t|
     t.string   "name",                                      :null => false
@@ -92,6 +108,19 @@ ActiveRecord::Schema.define(:version => 20120208173333) do
   end
 
   add_index "companies", ["account_id"], :name => "index_companies_on_account_id"
+
+  create_table "company_users", :force => true do |t|
+    t.integer  "company_id", :null => false
+    t.integer  "user_id",    :null => false
+    t.string   "privilege"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "company_users", ["company_id", "user_id"], :name => "index_company_users_on_company_id_and_user_id"
+  add_index "company_users", ["company_id"], :name => "index_company_users_on_company_id"
+  add_index "company_users", ["privilege"], :name => "index_company_users_on_privilege"
+  add_index "company_users", ["user_id"], :name => "index_company_users_on_user_id"
 
   create_table "cron_logs", :force => true do |t|
     t.string   "message"

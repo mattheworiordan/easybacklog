@@ -165,3 +165,51 @@ Feature: Account
       And I should see "Create a new backlog"
     When I follow "Create a new backlog"
       Then I should see the page title "Create a backlog"
+
+  @javascript
+  Scenario: Admin user should be presented with edit links in account dash board for company and account
+    Given an account called "Acme" is set up for "John" who should have account admin rights
+      And a standard backlog named "Backlog uno" is set up for "Acme"
+      And a backlog named "Backlog duo" assigned to company "Editable company" for account "Acme" is set up
+    When I am on the accounts page
+    Then within the "dashboard company or account fields" there should be a clickable element with the text "Acme"
+      And within the "dashboard company or account fields" there should be a clickable element with the text "Editable company"
+      And within "your side panel" there should be a clickable element with the text "Acme"
+      And within "your side panel" there should be a clickable element with the text "Editable company"
+
+  @javascript
+  Scenario: User with full acces rights should be presented with edit links in account dash board for company and account
+    Given an account called "Acme" is set up for "John" who should have full access rights
+      And a standard backlog named "Backlog uno" is set up for "Acme"
+      And a backlog named "Backlog duo" assigned to company "Editable company" for account "Acme" is set up
+    When I am on the accounts page
+    Then within the "dashboard company or account fields" there should be a clickable element with the text "Acme"
+      And within the "dashboard company or account fields" there should be a clickable element with the text "Editable company"
+      And within "your side panel" there should be a clickable element with the text "Acme"
+      And within "your side panel" there should be a clickable element with the text "Editable company"
+
+  @javascript
+  Scenario: User with read rights should not be presented with edit links in account dash board for company and account
+    Given an account called "Acme" is set up for "John" who should have read only rights
+      And a standard backlog named "Backlog uno" is set up for "Acme"
+      And a backlog named "Backlog duo" assigned to company "Editable company" for account "Acme" is set up
+    When I am on the accounts page
+    Then I should see the text "Acme" within "your side panel"
+      And I should see the text "Editable company" within "your side panel"
+      And within the "dashboard company or account fields" there should not be a clickable element with the text "Acme"
+      And within the "dashboard company or account fields" there should not be a clickable element with the text "Editable company"
+      And within "your side panel" there should not be a clickable element with the text "Acme"
+      And within "your side panel" there should not be a clickable element with the text "Editable company"
+
+  @javascript
+  Scenario: User with no privileges to an account but read only privileges to a company should see that company's backlogs on the multiple accounts dashboard page
+    Given an account called "Acme" is set up for "John" who should have no rights
+      And an account called "Microsoft" is set up for "John" who should have read only rights
+      And a standard backlog named "Backlog uno" is set up for "Acme"
+      And a backlog named "Backlog duo" assigned to company "Company with access" for account "Acme" is set up
+      And "John" is given full access rights for company "Company with access"
+      And I am on the home page
+    Then I should see "Latest activity across all accounts"
+      And I should not see "Backlog uno"
+      And I should see "Backlog duo"
+      And within the "dashboard company or account fields" there should be a clickable element with the text "Company with access"

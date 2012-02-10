@@ -131,4 +131,31 @@ describe 'Can Do Module' do
       @backlog.can?(:full, @user).should be_false
     end
   end
+
+  context 'instance methods for an object with preferenced inherited parent privileges and no local privileges' do
+    before (:each) do
+      @account = Factory.create(:account)
+      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @backlog = Factory.create(:backlog, :account => @account)
+      @backlog.class.can_do :inherited_privilege => [:company, :account] # force re-initialise so we don't depend on Account specification
+      @user = @backlog.account.users.first
+    end
+
+    it 'should provide read privileges from the account parent and ignore company if blank' do
+      @account.stub(:company) { nil }
+      @backlog.can?(:read, @user).should be_true
+      @backlog.can?(:full, @user).should be_false
+    end
+
+    it 'should provide full privileges from the company parent as not blank' do
+      company = Factory.create(:company, :account => @account)
+      company_user = Factory.create(:company_user_with_full_rights, :company => company, :user => @user)
+      @backlog.company = company
+      @backlog.save!
+
+      @backlog.company.can?(:full, @user).should be_true
+      @backlog.can?(:read, @user).should be_true
+      @backlog.can?(:full, @user).should be_true
+    end
+  end
 end

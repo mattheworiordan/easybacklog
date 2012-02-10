@@ -90,7 +90,7 @@ describe Account do
     end
 
     it 'should add user with privilege object' do
-      @account.add_user @user, Privilege.none.privilege
+      @account.add_user @user, Privilege.none.code
       @account.account_users.first.privilege.should == Privilege.none
     end
   end

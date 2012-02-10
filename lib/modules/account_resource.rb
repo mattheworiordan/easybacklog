@@ -9,7 +9,7 @@ module AccountResource
     def set_account_and_protect
       @current_account = Account.find(params[:account_id] || params[:id])
       if @current_account.users.find(current_user.id).blank?
-        flash[:error] = 'You do not have permission to view this backlog'
+        flash[:error] = 'You do not have permission to view this account'
         redirect_to accounts_path
       end
     end

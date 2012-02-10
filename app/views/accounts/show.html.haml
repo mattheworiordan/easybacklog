@@ -11,8 +11,9 @@
     - else # assume user does not have access to backlogs but there may be backlogs that exist not for this user
       You do not have access to any backlogs in this account.
 - else
-  - @backlogs.group_by { |backlog| backlog.company.present? ? backlog.company.name : backlog.account.name }.each do |company, backlogs|
-    .dash-board-company= truncate(company, :length => 60)
+  - @backlogs.group_by { |backlog| backlog.company.present? ? backlog.company : backlog.account }.each do |company_or_account, backlogs|
+    .dash-board-company
+      = company_or_account_header company_or_account, 60
     %ul.backlog-list
       - backlogs.each do |backlog|
         %li

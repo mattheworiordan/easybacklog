@@ -25,7 +25,7 @@ class Account < ActiveRecord::Base
   end
 
   def add_user(user, privilege)
-    self.account_users.create!(:user => user, :admin => false, :privilege => (privilege.respond_to?(:privilege) ? privilege.privilege : privilege.to_s) )
+    self.account_users.create!(:user => user, :admin => false, :privilege => privilege.to_s )
   end
 
   def create_company(company_name, options = {})
@@ -66,11 +66,11 @@ class Account < ActiveRecord::Base
   private
     def grouped_backlogs_by_company(backlog_list)
       list = backlog_list.order('LOWER(backlogs.name)').group_by do |backlog|
-        backlog.company.present? ? backlog.company.name : backlog.account.name
+        backlog.company.present? ? backlog.company : backlog.account
       end
       list.sort_by do |key, val|
         # order by company with account company at top (i.e. no company)
-        key == name ? '0' : key
+        key == self ? '0' : key.name
       end
     end
 

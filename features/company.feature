@@ -6,15 +6,15 @@ Feature: Company
   # Creation of companies is tested in backlog.features as integral to backlog functionality
   Background:
     Given a user named "John" is registered
-      And I am signed in as "John"
       And the database has the necessary lookup tables
-      And an account called "Acme" is set up for "John"
+      And I am signed in as "John"
+      And an account called "Acme" is set up for "John" who should have account admin rights
       And a backlog named "Backlog 1" assigned to company "Microsoft" for account "Acme" is set up
       And I am on the accounts page
 
   Scenario: Manage Company
     When I follow "Microsoft"
-    Then I should see the page title "Edit Company Defaults"
+    Then I should see the page title "Company settings"
       And the "Company Name" field should contain "Microsoft"
       And the "Rate (optional)" field should contain "800"
       And the "Velocity" field should contain "3"
@@ -43,7 +43,7 @@ Feature: Company
     Given a backlog named "Backlog 2" assigned to company "Google" for account "Acme" is set up
     When I am on the accounts page
     When I follow "Microsoft"
-    Then I should see the page title "Edit Company Defaults"
+    Then I should see the page title "Company settings"
 
     # check company name validation is working
     When I fill in "Company Name" with "Google"
@@ -86,3 +86,59 @@ Feature: Company
       And the "company rate" should be visible
       And the "Velocity" field should contain "2.0"
       And the "Rate (optional)" field should contain "55"
+
+  @javascript
+  Scenario: No access user is given read privileges for the company so should see the company backlogs but not change the company settings
+    Given a user named "Mike no access" is created with no rights and assigned to account "Acme"
+      And a user named "Z at bottom" is created with no rights and assigned to account "Acme"
+    When I follow "Microsoft"
+      And I follow "Manage company users"
+    Then I should see "Users for Microsoft"
+      And I should see the following data in column 1 of "account user table" table:
+        | John            |
+        | Mike no access  |
+        | Z at bottom     |
+      And I should see the following data in column 3 of "account user table" table:
+        | Administrator access to all features |
+        |                                      |
+        |                                      |
+      And "No access (inherited)" should be selected for "Mike no access"
+      And "No access (inherited)" should be selected for "Z at bottom"
+    When I select "Read only access to this company" from "Mike no access"
+      And I wait 1 second
+      And I follow "John" within "top nav"
+      And I follow "Sign out" within "top nav"
+      And I am signed in as "Mike no access"
+    # Mike no access should see the company and its backlogs, but not be able to edit them
+    Then I should see "Microsoft" within "your side panel"
+      And I should see "Backlog 1"
+      And within the "dashboard company or account fields" there should not be a clickable element with the text "Microsoft"
+      And within "your side panel" there should not be a clickable element with the text "Microsoft"
+      And I should not see "Create a new backlog"
+    When I follow "Mike no access" within "top nav"
+      And I follow "Sign out" within "top nav"
+      And I am signed in as "Z at bottom"
+    Then I should not see "Microsoft"
+      And I should not see "Backlog 1"
+
+  @javascript
+  Scenario: No access user is given full privileges for the company so should see the company backlogs and be allowed to edit the company settings
+    Given a user named "Mike no access" is created with no rights and assigned to account "Acme"
+    When I follow "Microsoft"
+      And I follow "Manage company users"
+    Then I should see "Users for Microsoft"
+      And "No access (inherited)" should be selected for "Mike no access"
+    When I select "Full access to this company" from "Mike no access"
+      And I wait 1 second
+      And I follow "John" within "top nav"
+      And I follow "Sign out" within "top nav"
+      And I am signed in as "Mike no access"
+    # Mike no access should see the company and its backlogs, but not be able to edit them
+    Then I should see "Microsoft" within "your side panel"
+      And I should see "Backlog 1"
+      And within the "dashboard company or account fields" there should be a clickable element with the text "Microsoft"
+      And within "your side panel" there should be a clickable element with the text "Microsoft"
+      And I should not see "Create a new backlog"
+    When I follow "Microsoft"
+      Then I should see "Company settings"
+      And I should not see "Manage company users"

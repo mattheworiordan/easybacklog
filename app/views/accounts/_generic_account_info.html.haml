@@ -10,10 +10,10 @@
     .button-container
       = link_to "Create a new backlog", new_account_backlog_path(@account), { :class => 'button' }
   %h2 Your backlogs
-  .your-back-list-side-panel
-    - @your_backlogs.each do |company, backlogs|
+  .your-list-side-panel
+    - @your_backlogs.each do |company_or_account, backlogs|
       .company
-        = link_to truncate(company, :length => 33), backlogs.first.company.present? ? edit_account_company_path(@account, backlogs.first.company) : edit_account_path(@account)
+        = company_or_account_header company_or_account, 33
       %ul.your-backlog-list
         - backlogs.each do |backlog|
           %li

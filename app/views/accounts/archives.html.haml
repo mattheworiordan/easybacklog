@@ -9,8 +9,9 @@
   %p
     There are no archives in this account.
 - else
-  - @archives.each do |company, backlogs|
-    .dash-board-company= truncate(company, :length => 65)
+  - @archives.each do |company_or_account, backlogs|
+    .dash-board-company
+      = company_or_account_header company_or_account, 60
     %ul.backlog-list
       - backlogs.each do |backlog|
         %li
@@ -18,4 +19,4 @@
             = link_to truncate(backlog.name, :length => 50), account_backlog_path(@account, backlog)
           .last-update= "last updated #{time_ago_in_words(backlog.updated_at)} ago by #{backlog.last_modified_user.name}"
 
-= link_to '← Back to Dashboard', account_path(@account), { :class => 'button' }
+= link_to '← Back to account dashboard', account_path(@account), { :class => 'button' }

@@ -19,11 +19,17 @@ module HtmlSelectorHelpers
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) company heading in your backlog list$/
       position = string_quantity_to_numeric($1) * 2 - 1
-      ".your-back-list-side-panel .company:nth-child(#{position})"
+      ".your-list-side-panel .company:nth-child(#{position})"
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) backlog list in your backlog list$/
       position = string_quantity_to_numeric($1) * 2
-      ".your-back-list-side-panel .your-backlog-list:nth-child(#{position})"
+      ".your-list-side-panel .your-backlog-list:nth-child(#{position})"
+
+    when /^dashboard company or account fields?$/
+      'section.main-content-pod .dash-board-company, section.main-content-pod .company'
+
+    when /^your side panel$/
+      'section.side-panel .your-list-side-panel'
 
     ##
     # New Backlog page
@@ -393,6 +399,9 @@ module HtmlSelectorHelpers
 
     when /^date picker$/
       '#ui-datepicker-div'
+
+    when /^side panel$/
+      "section.side-panel"
 
     else
       unless params.has_key?(:dont_translate_to_css)

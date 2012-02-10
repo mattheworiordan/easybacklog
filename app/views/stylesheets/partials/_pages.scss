@@ -4,22 +4,43 @@
   font-weight: bold;
   margin-left: -5px;
   margin-right: 5px;
+  a {
+    &:hover {
+      color: #000;
+      text-decoration: none;
+      .name {
+        text-decoration: underline;
+      }
+      &:after {
+        font-weight: normal;
+        color: #555;
+      };
+    };
+    color: #000;
+    &.account:hover:after {
+      content: " (manage account)";
+    };
+    &.company:hover:after {
+      content: " (manage company)";
+    };
+  }
 }
 
 @mixin within-content-notice {
   font-size: 16px;
   margin-bottom: 2em;
-  color: #FFF;
-  background-color: $title-area-color;
+  color: #000;
+  background-color: #ffaa40;
   -moz-border-radius: 10px;
   border-radius: 10px;
   padding: 5px;
   text-align: center;
   a {
-    color: #fff;
-    text-decoration: underline;
+    color: #833300;
+    text-decoration: none;
     &:hover {
-      color: $light-text-on-title-area-color;
+      color: #000;
+      text-decoration: underline;
     };
   }
 }
@@ -58,17 +79,20 @@ ul.your-backlog-list {
     }
   }
 }
-.dash-board-company {
+section .dash-board-company {
   @include dash-board-company;
 }
 
-.your-back-list-side-panel {
-  .company {
+.your-list-side-panel {
+  .company, .account {
     font-weight: bold;
     color: #000;
     a {
       color: black;
     }
+  }
+  .account {
+    padding-bottom: 0.5em;
   }
 }
 
@@ -118,9 +142,6 @@ ul.your-backlog-list {
 
   .company {
     @include dash-board-company
-  }
-  .beta-notice {
-    @include within-content-notice;
   }
 }
 
