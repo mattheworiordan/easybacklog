@@ -2,12 +2,19 @@
 - if @accounts.blank?
   - content_for :title do
     %h1 You do not have an account
+  %h2.divider No account access
   %p
-    You do not have access to an account yet.  If you would like to get access to an existing account, please contact the person who manages the account and request an invite for access.
+    You do not have access to an account.
+    This could be because your account has been deleted, or perhaps you have been removed by an adminstrator of the account you were joined to.
   %p
-    Or alternatively you may set up a new account below.
+    If you would like to get access to an existing account, please contact the person who manages the account and request an invite for access.
   %p
-    = link_to 'Create an account', new_account_path, :class => 'button'
+    If you think this is an error, please
+    = link_to 'contact us for help.', contact_path
+  %p
+    Or alternatively, if you would like to set up a new account for yourself, please click on the button below.
+  %p
+    = link_to 'Create a new account', new_account_path, :class => 'button'
 - else
   - content_for :title do
     %h1 Multiple accounts

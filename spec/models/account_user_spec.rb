@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe AccountUser do
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
 
   it 'should upgrade privileges' do
     account = Factory.create(:account)
@@ -55,7 +57,7 @@ describe AccountUser do
     example_backlog = account.add_example_backlog(old_user)
 
     new_user = Factory.create(:user)
-    account.add_user old_user, :read
+    account.add_user new_user, :read
 
     example_backlog.can?(:read, old_user).should be_false
     example_backlog.can?(:full, new_user).should be_true

@@ -14,9 +14,14 @@ class ApplicationController < ActionController::Base
         if current_account
           account_path current_account
         else
-          if accounts.length == 1
+          if accounts.length == 0
+            # let the accounts index page deal with a user without an account
+            accounts_path
+          elsif accounts.length == 1
+            # show only the backlogs for this users only account
             account_path accounts.first
           else
+            # show all accounts
             dashboard_path
           end
         end
