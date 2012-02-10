@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe InvitesController do
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
 
   before(:each) do
     @account = Factory.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
@@ -71,5 +73,24 @@ describe InvitesController do
       InvitedUser.exists?(@invite).should be_false
       @account.account_users.find_by_user_id(signed_in_user.id).privilege.should == 'full'
     end
+  end
+
+  it "New user should be given explicit full access to the Example backlog" do
+    @account.add_example_backlog(@account.users.first)
+    @other_backlog = Factory.create(:backlog, :account => @account)
+    # set privileges to none for new user
+    @invite.update_attributes! :privilege => 'none'
+
+    # sign in a user with read rights
+    signed_in_user = Factory.create(:user)
+    sign_in signed_in_user
+
+    get :show, @params
+
+    response.should render_template("access_granted")
+
+    @account.backlogs.last.name.should == 'Example corporate website backlog'
+    @account.backlogs.last.can?(:full, signed_in_user) == true
+    @other_backlog.can?(:full, signed_in_user).should == false
   end
 end

@@ -111,3 +111,45 @@ Feature: Invite and Sign Up
       And "jim@acme.com" opens the email with subject "Invite to join easyBacklog"
     When they click the first link in the email
     Then I should see "Invalid invite" within the "primary page heading"
+
+  @javascript
+  Scenario: Check that new users are given full access rights to the example backlog if it exists
+    Given the database has the necessary lookup tables
+      And no emails have been sent
+      And a user named "John" is registered
+      And I am signed in as "John"
+      And an account called "Acme" is set up for "John" who should have account admin rights
+      And the example backlog is set up for account "Acme"
+      And I am on the accounts page
+    When I follow "Account"
+      And I follow "Manage Users"
+      And I follow "Invite new users"
+      And I fill in "emails" with "no_rights@test.com"
+      And I choose "None, I will assign them permission to access individual backlogs afterwards"
+      And I press "Send invites"
+    Then I should see the notice "1 person was added to your account."
+
+    # now log in as no_rights@test.com
+    When I follow "Sign out"
+      And "no_rights@test.com" opens the email with subject "Invite to join easyBacklog"
+    When they click the first link in the email
+    Then I should see "Get access to account" within the "primary page heading"
+      And I should see "Acme" within the "primary page heading"
+    When I fill in "Full name" with "Matt"
+      And I fill in "Sign Up Email" using Javascript with "no_rights@test.com"
+      And I fill in "Password" with "password"
+      And I fill in "Password confirmation" with "password"
+      And I press "Register"
+    Then I should see "You've now got access to “Acme”" within the "primary page heading"
+    When I follow "View the Acme account"
+    # user has no access so should see not account management features
+    Then I should see "Acme" within the "primary page heading"
+      And I should not see "Account" within the "top nav"
+      And I should see "Example corporate website backlog"
+    When I follow "Example corporate website backlog"
+    Then I should see the page title "Example corporate website backlog"
+    # check that user has full rights
+    When I follow "Settings"
+    Then the "text input fields" should not be disabled
+      And the "checkboxes" should not be disabled
+      And the "radio buttons" should not be disabled

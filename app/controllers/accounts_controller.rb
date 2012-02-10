@@ -59,8 +59,7 @@ class AccountsController < ApplicationController
   def create
     @account = Account.new(params[:account])
     if @account.save
-      @account.add_first_user current_user
-      @account.add_example_backlog current_user
+      @account.setup_account_for_user current_user
       flash[:notice] = 'Account was successfully created.'
       redirect_to(@account)
     else

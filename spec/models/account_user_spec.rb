@@ -47,4 +47,17 @@ describe AccountUser do
     au.save!
     account.account_users.first.privilege.should == Privilege.find(:full)
   end
+
+  it 'should automatically assign full access privileges to the example backlog for new account users' do
+    account = Factory.create(:account)
+    old_user = Factory.create(:user)
+    account.add_user old_user, :none
+    example_backlog = account.add_example_backlog(old_user)
+
+    new_user = Factory.create(:user)
+    account.add_user old_user, :read
+
+    example_backlog.can?(:read, old_user).should be_false
+    example_backlog.can?(:full, new_user).should be_true
+  end
 end

@@ -20,10 +20,6 @@ class Account < ActiveRecord::Base
 
   can_do :privileges => :account_users
 
-  def add_first_user(user)
-    self.account_users.create!(:user => user, :admin => true)
-  end
-
   def add_user(user, privilege)
     self.account_users.create!(:user => user, :admin => false, :privilege => privilege.to_s )
   end
@@ -43,11 +39,23 @@ class Account < ActiveRecord::Base
     grouped_backlogs_by_company backlogs.archived.where_user_has_access(current_user)
   end
 
+  # new account set up, add example backlog and set up user as admin
+  def setup_account_for_user(user)
+    add_first_user user
+    # add example backlog and ensure user has explicit read permissions
+    example_backlog = add_example_backlog(user)
+    example_backlog.add_or_update_user user, :full
+  end
+
   # add an example backlog for new accounts
   def add_example_backlog(author)
     example_data = XMLObject.new(Rails.root.join('db/samples/new_account_backlog.xml'))
     backlog_builder = Creators::BacklogCreator.new
     backlog_builder.create example_data, self, author
+  end
+
+  def add_first_user(user)
+    self.account_users.create!(:user => user, :admin => true)
   end
 
   # if no scoring rule exists, use default

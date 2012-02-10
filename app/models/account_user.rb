@@ -8,10 +8,19 @@ class AccountUser < ActiveRecord::Base
   has_many :backlog_users, :foreign_key => 'user_id', :primary_key => 'user_id', :dependent => :destroy
   has_many :company_users, :foreign_key => 'user_id', :primary_key => 'user_id', :dependent => :destroy
 
+  after_create :add_full_privileges_for_example_backlog
+
   include PrivilegeProperty
 
   def upgrade_privilege(new_privilege)
     highest = privilege.highest(new_privilege)
     update_attributes! :privilege => highest.code
   end
+
+  private
+    def add_full_privileges_for_example_backlog
+      account.backlogs.where("name ilike '%xample corporate website backlo%'").each do |backlog|
+        backlog.add_or_update_user user, :full
+      end
+    end
 end
