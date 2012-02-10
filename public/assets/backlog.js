@@ -1,5 +1,9 @@
 var AcceptanceCriterion=Backbone.Model.extend({Story:function(){return this.collection.story
-},IsEditable:function(){return(this.collection.story.IsEditable())
+},IsEditable:function(){return this.CanEdit()
+},IsLocked:function(){return this.collection.story.IsLocked()
+},CanEdit:function(){return this.collection.story.CanEdit()
+},CanEditStatus:function(){return this.collection.story.CanEditStatus()
+},IsDone:function(){return(this.collection.story.IsDone())
 },beforeSave:function(callback){if(this.collection.story.isNew()){if(window.console){console.log("Saving parent Story first")
 }this.collection.story.save({},{error:function(model,response){var errorMessage="Unable to save changes...  Please refresh.";
 try{errorMessage=$.parseJSON(response.responseText).message
@@ -10,7 +14,10 @@ try{errorMessage=$.parseJSON(response.responseText).message
 }else{callback()
 }}});
 var Backlog=Backbone.Model.extend({url:function(){return(this.collection.url()+(this.isNew()?"":"/"+(this.get("snapshot_master_id")?this.get("snapshot_master_id")+"/snapshots/":"")+this.id)+"?cache-buster"+Math.floor(Math.random()*1000000))
-},IsEditable:function(){return(this.get("is_editable")?true:false)
+},IsEditable:function(){return this.CanEdit()
+},IsLocked:function(){return this.get("is_locked")
+},CanEdit:function(){return this.get("is_editable")?true:false
+},CanEditStatus:function(){return this.get("is_status_editable")?true:false
 },Themes:function(){if(!this._themes){this._themes=new ThemesCollection(this.get("themes"),{backlog:this});
 this.unset("themes")
 }return(this._themes)
@@ -23,7 +30,11 @@ var Sprint=Backbone.Model.extend({Backlog:function(){return this.collection.back
 },SprintStories:function(){if(!this._sprint_stories){this._sprint_stories=new SprintStoriesCollection(this.get("sprint_stories"),{sprint:this});
 this.unset("sprint_stories")
 }return(this._sprint_stories)
-},isComplete:function(){return this.get("completed?")
+},IsComplete:function(){return this.get("completed?")
+},IsEditable:function(){if(this.IsComplete()){return false
+}else{return this.CanEdit()
+}},CanEdit:function(){return this.collection.backlog.CanEdit()
+},CanEditStatus:function(){return(this.collection.backlog.CanEditStatus())
 }});
 var SprintStory=Backbone.Model.extend({initialize:function(){if(!App.Collections.SprintStoryStatuses){App.Collections.SprintStoryStatuses=new SprintStoryStatusesCollection();
 App.Collections.SprintStoryStatuses.fetch()
@@ -42,15 +53,19 @@ if(story){that._story=story
 }}return this._story
 },Status:function(){return App.Collections.SprintStoryStatuses.get(this.get("sprint_story_status_id"))
 }});
-var SprintStoryStatus=Backbone.Model.extend({DoneCode:"D",isDone:function(){return this.get("code").toUpperCase()==this.DoneCode
+var SprintStoryStatus=Backbone.Model.extend({DoneCode:"D",IsDone:function(){return this.get("code").toUpperCase()==this.DoneCode
 }});
 var Story=Backbone.Model.extend({Theme:function(){return this.collection.theme
-},IsEditable:function(){if(!this.collection.theme.IsEditable()){return false
-}else{var sprintStory=this.SprintStory();
-if(sprintStory){if(sprintStory.Status()){return !sprintStory.Status().isDone()
+},IsEditable:function(){if(!this.CanEdit()){return false
+}else{return !this.IsDone()
+}},IsLocked:function(){return this.collection.theme.IsLocked()
+},CanEdit:function(){return this.collection.theme.CanEdit()
+},CanEditStatus:function(){return this.collection.theme.CanEditStatus()
+},IsDone:function(){var sprintStory=this.SprintStory();
+if(sprintStory){if(sprintStory.Status()){return sprintStory.Status().IsDone()
 }else{return false
-}}return true
-}},AcceptanceCriteria:function(){if(!this._acceptance_criteria){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
+}}return false
+},AcceptanceCriteria:function(){if(!this._acceptance_criteria){this._acceptance_criteria=new AcceptanceCriteriaCollection(this.get("acceptance_criteria"),{story:this});
 this.unset("acceptance_criteria")
 }return(this._acceptance_criteria)
 },MoveToTheme:function(newThemeId,options){var story=this;
@@ -74,7 +89,10 @@ var Theme=Backbone.Model.extend({Stories:function(){if(!this._stories){this._sto
 this.unset("stories")
 }return(this._stories)
 },Backlog:function(){return this.collection.backlog
-},IsEditable:function(){return(this.collection.backlog.IsEditable())
+},IsEditable:function(){return this.CanEdit()
+},IsLocked:function(){return this.collection.backlog.IsLocked()
+},CanEdit:function(){return this.collection.backlog.CanEdit()
+},CanEditStatus:function(){return this.collection.backlog.CanEditStatus()
 },ReNumberStories:function(options){var theme=this;
 $.post(this.collection.url()+"/"+this.get("id")+"/re-number-stories").success(function(ajaxResult,status,response){theme.Stories().each(function(story){story.fetch()
 });
@@ -194,7 +212,8 @@ if(currentPosition<scrollAmount+bufferTop){newScrollPosition=currentPosition-buf
 },statusChangeClick:function(event){var that=this,dropDown=$(JST["stories/status-drop-down"]({model:this.model}));
 event.preventDefault();
 event.stopPropagation();
-if(this.model.SprintStory().Sprint().isComplete()){new App.Views.Warning({message:"You cannot change the status of this story as it's assigned to a completed sprint"})
+if(!this.model.CanEditStatus()){new App.Views.Warning({message:"You do not have permission to update the status of stories for this backlog"})
+}else{if(this.model.SprintStory().Sprint().IsComplete()){new App.Views.Warning({message:"You cannot change the status of this story as it's assigned to a completed sprint"})
 }else{$("body").find("#sprint-story-status-dropdown").remove();
 $("body").append(dropDown);
 dropDown.find("li").hover(function(){$(this).addClass("hover")
@@ -213,7 +232,7 @@ $("body").find("#sprint-story-status-dropdown").remove();
 $("html").unbind("click.status-drop-down");
 App.Views.Helpers.statusDropDownChanged.call(that,id,code,name)
 })
-}},statusDropDownChanged:function(id,code,name){var that=this;
+}}},statusDropDownChanged:function(id,code,name){var that=this;
 $(this.el).find(".status .tab").attr("class","tab status-code-"+code).removeClass("hover").find("span").text(name);
 if(code===this.model.SprintStory().Status().DoneCode){$(this.el).addClass("locked")
 }else{$(this.el).removeClass("locked")
@@ -229,7 +248,7 @@ try{errorMessage=$.parseJSON(response.responseText).message
 $(target).find("a.urlified").live("mouseover",function(event){if(that.linkHelper){that.linkHelper.remove()
 }if(that.linkRolloutTimeout){clearTimeout(that.linkRolloutTimeout)
 }var originalHref=$("<div>").html($(this).attr("href")).text(),href=originalHref;
-if(href.match(/^[-;&=\+\$,\w]+@/)){href="mailto:"+href
+if(href.match(/^[\-;&=\+\$,\w]+@/)){href="mailto:"+href
 }if(href.match(/^www\./)){href="http://"+href
 }var anchor=$("<a>").attr("href",href).text(originalHref);
 if(!href.match(/^mailto:/i)){anchor.attr("target","_blank")
@@ -356,11 +375,13 @@ this.$("li.criterion").each(function(index,elem){$(elem).find(".index").html(Str
 }}}),Show:App.Views.BaseView.extend({tagName:"li",className:"criterion",events:{},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
 this.parentView=options.parentView;
 _.bindAll(this,"navigateEvent")
-},render:function(){$(this.el).html(JST["acceptance_criteria/show"]({model:this.model}));
+},render:function(){var that=this;
+$(this.el).html(JST["acceptance_criteria/show"]({model:this.model}));
 if(this.model.IsEditable()){this.makeFieldsEditable()
-}else{$(this.el).find(">div.data").click(function(){new App.Views.Warning({message:"You cannot edit a story that is marked as done"})
+}else{if(!this.model.IsLocked()){$(this.el).find(">div.data").click(function(){var message=that.model.CanEdit()?"You cannot edit a story that is marked as done":"You do not have permission to edit story criteria for this backlog";
+new App.Views.Warning({message:message})
 })
-}return(this)
+}}return(this)
 },changeEvent:function(eventName,model){if(eventName=="change:id"){$(this.el).attr("id","acceptance-criteria-"+model.get("id"))
 }},makeFieldsEditable:function(){var ac_view=this;
 var contentUpdatedFunc=function(newVal){var that=this,model_collection=ac_view.model.collection;
@@ -464,7 +485,7 @@ if(hideCompleted){$(".filter-notifier").slideDown();
 $.cookie("filter_completed_stories",true)
 }else{$(".filter-notifier").slideUp();
 $.cookie("filter_completed_stories",null)
-}backlog.Themes().each(function(theme){theme.Stories().each(function(story){if(story.SprintStory()&&story.SprintStory().Status().isDone()){if(hideCompleted){$("#story-"+story.get("id")).slideUp()
+}backlog.Themes().each(function(theme){theme.Stories().each(function(story){if(story.SprintStory()&&story.SprintStory().Status().IsDone()){if(hideCompleted){$("#story-"+story.get("id")).slideUp()
 }else{$("#story-"+story.get("id")).slideDown()
 }}})
 })
@@ -550,9 +571,9 @@ App.Views.BacklogPresence={Show:App.Views.BaseView.extend({presenceServerUrl:win
 this.name=options.name
 },render:function(){var that=this;
 $.support.cors=true;
-if(App.environment!=="test"){that.startPolling();
+if(App.environment!=="test"){if(this.model.IsEditable()){that.startPolling();
 that.closeConnectionOnUnload()
-}return(this)
+}}return(this)
 },ajaxRequest:function(options){var that=this,ajaxOptions={url:that.presenceServerUrl+options.path,data:options.data,crossDomain:true,async:options.async===false?false:true,success:function(response){if(options.success){options.success(response)
 }},error:function(jqXHR){if(options.error){options.error(jqXHR)
 }}};
@@ -601,7 +622,7 @@ if(!counter){counter=1
 },nextRequestIn)
 }}else{callback()
 }},showCharts:function(){var that=this;
-if(this.model.Sprints().select(function(sprint){return sprint.isComplete()
+if(this.model.Sprints().select(function(sprint){return sprint.IsComplete()
 }).length>0){$.getJSON("/backlogs/"+this.model.get("id")+"/backlog-stats").success(function(data){that.$(".loading").hide();
 that.$(".no-stats").hide();
 if(data.zero_points){that.$(".no-points").show();
@@ -705,22 +726,6 @@ this.$(".stats .average .notice").html("The expected velocity is based on the ve
 }this.$("#velocity-per-sprint-average").text(Math.round(actualSprint*10)/10);
 this.$("#velocity-per-sprint-expected").text(Math.round(expectedSprint*10)/10)
 }})};
-App.Views.Notice=Backbone.View.extend({className:"notice",displayLength:5000,defaultMessage:"",initialize:function(){_.bindAll(this,"render");
-this.message=this.options.message||this.defaultMessage;
-this.render()
-},render:function(){var view=this;
-$(this.el).html(this.message);
-$(this.el).hide();
-$("#alert-space").html(this.el);
-$(this.el).slideDown();
-_.delay(function(){$(view.el).slideUp();
-_.delay(function(){view.remove()
-},100)
-},(this.className=="notice"?this.displayLength:this.displayLength*2));
-return this
-}});
-App.Views.Error=App.Views.Notice.extend({className:"error",defaultMessage:"Uh oh! Something went wrong. Please try again."});
-App.Views.Warning=App.Views.Notice.extend({className:"warning",defaultMessage:"Unfortunately we could not perform that action."});
 App.Views.Sprints={Show:App.Views.BaseView.extend({childId:function(model){return"sprint-story-"+model.get("id")
 },persistOrderActions:0,events:{"click .stories-divider .change-size":"toggleUnassignedStoriesSize","click a.mark-sprint-as-incomplete":"markSprintAsIncomplete","click a.mark-sprint-as-complete":"markSprintAsComplete","click a.bulk-move-stories":"bulkMoveStories"},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
 this.sprintTabsView=options.sprintTabsView;
@@ -743,7 +748,7 @@ _(this.model.Backlog().Themes().sortBy(sortFn)).each(function(theme){_(theme.Sto
 $(that.el).find(".unassigned-stories-container").append(view.render().el)
 }})
 });
-if(this.model.isComplete()){this.$(".unassigned-stories-container .story-card").addClass("locked")
+if(!this.model.IsEditable()){this.$(".unassigned-stories-container .story-card").addClass("locked")
 }this.$(".stories-container .cards, .unassigned-stories-container").sortable({connectWith:".story-droppable",stop:that.persistSprintStories,placeholder:"story-card-place-holder",cancel:".locked"}).disableSelection();
 $(window).bind("scroll.sprints",this.positionStoriesContainerOnScroll).bind("resize.sprints",this.positionStoriesContainerOnScroll);
 if(!App.Views.MouseTracker){App.Views.MouseTracker=new MouseTracker(jQuery)
@@ -830,8 +835,8 @@ if((scrollAmount>maxScroll)&&(storyContainer.height()<unassignedContainer.height
 }},cleanUp:function(){$(window).unbind(".sprints")
 },markSprintAsComplete:function(event){var that=this;
 event.preventDefault();
-var incompleteStories=this.model.SprintStories().reject(function(story){return story.Status().isDone()
-}),previousIncompleteSprints=_(this.model.Backlog().Sprints().select(function(sprint){return(sprint.get("iteration")<that.model.get("iteration"))&&!sprint.isComplete()
+var incompleteStories=this.model.SprintStories().reject(function(story){return story.Status().IsDone()
+}),previousIncompleteSprints=_(this.model.Backlog().Sprints().select(function(sprint){return(sprint.get("iteration")<that.model.get("iteration"))&&!sprint.IsComplete()
 })).sortBy(function(sprint){return sprint.get("iteration")
 });
 if(incompleteStories.length){new App.Views.Warning({message:"All stories must be marked as Done before marking this sprint as complete"})
@@ -840,7 +845,7 @@ if(incompleteStories.length){new App.Views.Warning({message:"All stories must be
 this.updatedSprintCompletedStatus()
 }}},markSprintAsIncomplete:function(event){var that=this;
 event.preventDefault();
-var successiveCompleteSprints=_(this.model.Backlog().Sprints().select(function(sprint){return(sprint.get("iteration")>that.model.get("iteration"))&&sprint.isComplete()
+var successiveCompleteSprints=_(this.model.Backlog().Sprints().select(function(sprint){return(sprint.get("iteration")>that.model.get("iteration"))&&sprint.IsComplete()
 })).sortBy(function(sprint){return sprint.get("iteration")
 });
 if(successiveCompleteSprints.length){new App.Views.Warning({message:"Sprint "+_(successiveCompleteSprints).first().get("iteration")+" is complete. Please mark as incomplete first"})
@@ -859,7 +864,7 @@ var completeView=$("<div>"+JST["sprints/show"]({model:that.model})+"</div>");
 that.$("h2").replaceWith(completeView.find("h2"));
 that.$(".complete-status").replaceWith(completeView.find(".complete-status"));
 that.$(".unassigned-stories-container .notice").remove();
-if(that.model.isComplete()){that.$(".unassigned-stories-container").prepend(completeView.find(".unassigned-stories-container .notice"));
+if(!that.model.IsEditable()){that.$(".unassigned-stories-container").prepend(completeView.find(".unassigned-stories-container .notice"));
 that.$(".unassigned-stories-container .story-card").addClass("locked")
 }else{that.$(".unassigned-stories-container .story-card").removeClass("locked")
 }},bulkMoveStories:function(event){var that=this,eligibleSprints=this.model.Backlog().Sprints().filter(function(sprint){return sprint.get("iteration")>that.model.get("iteration")
@@ -889,11 +894,12 @@ $(this).dialog("close")
 }}),Help:App.Views.BaseView.extend({pod:false,initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
 this.sprintTabsView=options.sprintTabsView;
 _.bindAll(this,"addSprint")
-},render:function(){$(this.el).html(JST["sprints/help"]());
-this.pod=$(JST["sprints/help-pod"]());
+},render:function(){$(this.el).html(JST["sprints/help"]({backlog:this.model}));
+this.pod=$(JST["sprints/help-pod"]({backlog:this.model}));
 this.pod.find("a.add-new-sprint").click(this.addSprint);
 this.$("a.add-new-sprint").click(this.addSprint);
-$("section.main-content-pod").before(this.pod)
+$("section.main-content-pod").before(this.pod);
+$("#backlog-data-area .backlog-stats").html("")
 },addSprint:function(event){this.sprintTabsView.createNew(event)
 },cleanUp:function(){this.pod.remove()
 }}),SprintStory:App.Views.BaseView.extend({tagName:"div",className:"story-card",contractedHeight:90,heightBuffer:10,events:{"click .more .tab":"toggleMore","click .move":"moveStory","click .status .tab":"statusChangeClick"},initialize:function(options){App.Views.BaseView.prototype.initialize.call(this);
@@ -943,7 +949,7 @@ this.router=this.options.router;
 _.bindAll(this,"showNew","getModelFromIteration","restoreTab")
 },render:function(){var view=this;
 this.isSettingsPage=$("#backlog-data-area").length==0;
-this.isSnapshot=$(".not-editable-backlog-notice").length>=1?true:false;
+this.isSnapshot=$(".not-editable-backlog-notice.snapshot").length>=1?true:false;
 var addTabView=function(model){var tabView=new App.Views.SprintTabs.Show({model:model,id:view.childId(model),router:view.router});
 view.$("ul.infinite-tabs").append(tabView.render().el);
 view.models[model.get("iteration")]=model
@@ -1136,10 +1142,11 @@ if(!App.Views.Stories.Index.stopMoveEvent){show_view.moveToThemeDialog()
 }});
 this.$(".color-picker-icon a").simpleColorPicker({onChangeColor:function(col){show_view.changeColor(col)
 },colorsPerLine:4,colors:["#ffffff","#dddddd","#bbbbbb","#999999","#ff0000","#ff9900","#ffff00","#00ff00","#00ffff","#6666ff","#9900ff","#ff00ff","#f4cccc","#d9ead3","#cfe2f3","#ead1dc","#ffe599","#b6d7a8","#b4a7d6","#d5a6bd","#e06666","#f6b26b","#ffd966","#93c47d"]})
-}else{_.each(tabElems,function(elem){show_view.$(elem).click(function(){new App.Views.Warning({message:"You cannot edit a story that is marked as done"})
+}else{if(!this.model.IsLocked()){_.each(tabElems,function(elem){show_view.$(elem).click(function(){var message=show_view.model.CanEdit()?"You cannot edit a story that is marked as done":"You do not have permission to edit stories for this backlog";
+new App.Views.Warning({message:message})
 })
 })
-}if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
+}}if(this.model.get("color")){this.changeColor(this.model.get("color"),{silent:true})
 }App.Views.Helpers.activateUrlify(this.el);
 this.setStatusHover()
 },updateViewWithModelData:function(attributes){var that=this;
@@ -1320,15 +1327,19 @@ if(window.console){console.log("Order changed and saving - "+JSON.stringify(orde
 }this.collection.saveOrder(orderIndexesWithIds)
 }}),Show:App.Views.BaseView.extend({tagName:"li",className:"theme",deleteDialogTemplate:"themes/delete-dialog",events:{"click .delete-theme>a":"remove","click .re-number-stories a":"reNumberStories"},initialize:function(){App.Views.BaseView.prototype.initialize.call(this);
 _.bindAll(this,"navigateEvent","reNumberStoriesAction")
-},render:function(){$(this.el).html(JST["themes/show"]({model:this.model}));
-var view=new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({collection:this.model.Stories()},this.options));
+},render:function(){var view,that=this;
+$(this.el).html(JST["themes/show"]({model:this.model}));
+view=new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({collection:this.model.Stories()},this.options));
 this.$(">.stories").prepend(view.render().el);
 this.updateStatistics();
 if(this.model.IsEditable()){this.makeFieldsEditable()
 }else{this.$("ul.stories>li.actions").remove();
 this.$(".re-number-stories a").remove();
-this.$(".delete-theme>a").remove()
-}return(this)
+this.$(".delete-theme>a").remove();
+if(!this.model.IsLocked()){_.each([".theme-data .name div.data",".theme-data .code div.data"],function(elem){that.$(elem).click(function(){new App.Views.Warning({message:"You do not have permission to edit themes for this backlog"})
+})
+})
+}}return(this)
 },makeFieldsEditable:function(){var show_view=this;
 var contentUpdatedFunc=function(value,settings){var newVal=show_view.contentUpdated(value,settings,this);
 var fieldId=$(this).parent().attr("class").replace(/\-/g,"_");
@@ -1424,7 +1435,7 @@ this.showContainer("#stats-container")
 this.showContainer("#stats-container")
 }this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Stats"))
 },showSprintsHelp:function(){this.cleanUpOldView();
-this.oldView=new App.Views.Sprints.Help({sprintTabsView:this.sprintTabsView,el:this.replaceWithNew("#sprints-help-container")});
+this.oldView=new App.Views.Sprints.Help({model:App.Collections.Backlogs.at(0),sprintTabsView:this.sprintTabsView,el:this.replaceWithNew("#sprints-help-container")});
 this.showContainer("#sprints-help-container");
 this.oldView.render();
 this.sprintTabsView.select(this.sprintTabsView.getModelFromIteration("Sprints"))

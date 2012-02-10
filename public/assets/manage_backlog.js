@@ -30,7 +30,6 @@ $("input#backlog_has_company_false, input#backlog_has_company_true").change(func
 $("a#add_new_company").click(function(event){event.preventDefault();
 $(".client-select .existing").hide();
 $(".client-select .new").show();
-return;
 setAccountDefaults();
 $("input#company_name").focus()
 });
@@ -44,8 +43,9 @@ $("select#backlog_company_id").focus()
 if($(".client-select .existing select option").length===0){$(".client-select .new .select-existing").hide()
 }if($(".not-editable-notice").length){$('input[type=text],input[type=checkbox],input[name="backlog[scoring_rule_id]"],select').attr("disabled",true);
 $("#backlog_has_company_false, #backlog_has_company_true").attr("disabled",true);
-$(".client-select .new-company").hide()
-}setCompanyVisibility(true);
+$(".client-select .new-company").hide();
+if($(".not-editable-notice").is(".no-permission")){$("input[type=radio]").attr("disabled",true)
+}}setCompanyVisibility(true);
 $("select#backlog_company_id").change(function(){getCompanyDefaults()
 })
 }function setCompanyVisibility(firstCall){if($("input#backlog_has_company_false").is(":checked")){$(".client-select, .client-select .existing, .client-select .new").hide();

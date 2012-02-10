@@ -12,7 +12,7 @@ this.el=$("section.content .backlog-settings-body").html(JST["sprints/edit-sprin
 this.$("#start-on").datepicker().datepicker("setDate",parseRubyDate(this.model.get("start_on")));
 this.$("a#sprint_submit").click(this.updateSprint);
 this.$("a#sprint_cancel").click(this.cancel);
-this.disableFieldsIfComplete();
+this.disableFieldsIfNotEditable();
 this.$("form").validate(App.Views.SharedSprintSettings.formValidationConfig);
 App.Views.SharedSprintSettings.addFormBehaviour(this.$("form"),this.model.Backlog().get("velocity"))
 }this.storeState();
@@ -45,7 +45,7 @@ $(dialog).dialog("close")
 },updateSprint:function(event){var view=this;
 event.preventDefault();
 if(!this.$("form").valid()){view.$("#form-errors").addClass("form_errors").html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly.  Please correct the fields marked in red to continue.").hide().slideDown()
-}else{if(this.model.isComplete()){if(this.$("#sprint_status_completed").is(":checked")){new App.Views.Warning({message:"Nothing has changed so nothing has been updated"})
+}else{if(this.model.IsComplete()){if(this.$("#sprint_status_completed").is(":checked")){new App.Views.Warning({message:"Nothing has changed so nothing has been updated"})
 }else{this.model.set({completed:"false"});
 this.saveSprintFields()
 }}else{this.model.set({start_on:$.datepicker.formatDate("yy-mm-dd",this.$("#start-on").datepicker("getDate")),duration_days:this.$("#duration-days").val()});
@@ -61,14 +61,16 @@ this.model.save(false,{success:function(){if(_.isFunction(callbackOnSuccess)){ca
 }else{new App.Views.Notice({message:"Sprint number "+view.model.get("iteration")+" has been updated"});
 view.$("#form-errors").removeClass("form_errors");
 view.storeState();
-view.disableFieldsIfComplete()
-}},error:function(model,error){if(window.console){console.log(JSON.stringify(error))
+view.disableFieldsIfNotEditable()
+}},error:function(model,error){var errorView;
+if(window.console){console.log(JSON.stringify(error))
 }if(JSON.parse(error.responseText).message){view.$("#form-errors").addClass("form_errors").html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly:<br/>"+JSON.parse(error.responseText).message.replace("Validation failed: Completed at ","")).hide().slideDown();
-var errorView=new App.Views.Warning({message:"Sprint was not updated.  Please address problems and try again"})
-}else{var errorView=new App.Views.Error({message:"An internal error occured and the sprint was not updated.  Please refresh your browser"})
+errorView=new App.Views.Warning({message:"Sprint was not updated.  Please address problems and try again"})
+}else{errorView=new App.Views.Error({message:"An internal error occured and the sprint was not updated.  Please refresh your browser"})
 }}})
-},disableFieldsIfComplete:function(){this.$("#number-team-members, #start-on, #duration-days, #explicit-velocity, input[name=calculation_method]").attr("disabled",this.model.isComplete())
-},cancel:function(event){event.preventDefault();
+},disableFieldsIfNotEditable:function(){if(!this.model.IsEditable()){this.$("#number-team-members, #start-on, #duration-days, #explicit-velocity, input[name=calculation_method]").attr("disabled",true);
+if(!this.model.CanEdit()){this.$("input[type=radio][name=sprint_status]").attr("disabled",true)
+}}},cancel:function(event){event.preventDefault();
 document.location.href=$("#back-to-backlog").attr("href")
 }})};
 App.Routers.BacklogSettings=Backbone.Router.extend({currentIteration:false,defaultTab:"Backlog",routes:{"":"defaultRoute",":iteration":"viewSprintOrBacklog"},initialize:function(options){_.bindAll(this,"setTabsReference","confirmDiscardChanges")
