@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe CompanyUsersController do
-  include Devise::TestHelpers
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   context 'when updating privileges' do

@@ -32,6 +32,9 @@ require 'shared_helper'
     # examples within a transaction, remove the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
+
+    # https://github.com/plataformatec/devise/wiki/How-To%3a-Controllers-and-Views-tests-with-Rails-3-%28and-rspec%29
+    config.include Devise::TestHelpers, :type => :controller
   end
 # end
 

@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe ThemesController do
-  include Devise::TestHelpers
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
   let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
