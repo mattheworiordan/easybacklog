@@ -3,6 +3,7 @@ Ibacklog::Application.routes.draw do
 
   resources :accounts, :only => [:index, :show, :new, :create, :edit, :update] do
     resources :backlogs, :only => [:show, :new, :create, :update, :destroy] do
+      resources :users, :controller => 'backlog_users', :only => [:index, :update]
       member do
         match 'duplicate' => 'backlogs#duplicate', :via => [:get, :post], :as => 'duplicate'
         get 'edit' => 'backlogs#edit', :as => 'edit'
@@ -28,12 +29,12 @@ Ibacklog::Application.routes.draw do
         get 'compare/:base/:target' => 'snapshots#compare_snapshots', :as => 'compare_snapshots'
       end
     end
-    resources :users, :controller => 'account_users'
+    resources :users, :controller => 'account_users', :only => [:index, :create, :new, :update, :destroy]
     resources :companies, :only => [:show, :edit, :update] do
       collection do
         get 'name_available' => 'companies#name_available'
       end
-      resources :users, :controller => 'company_users'
+      resources :users, :controller => 'company_users', :only => [:index, :update]
     end
     resources :invites, :only => [:destroy] do
       member do

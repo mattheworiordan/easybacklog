@@ -21,7 +21,7 @@ class Backlog < ActiveRecord::Base
   before_save :check_can_modify, :remove_rate_if_velocity_empty, :update_sprint_estimation_method
   after_save :update_account_scoring_rule_if_empty
 
-  can_do :inherited_privilege => [:company, :account]
+  can_do :privileges => :backlog_users, :inherited_privilege => [:company, :account]
 
   scope :available, where(:deleted => false)
   scope :active, where(:archived => false).where(:deleted => false)
@@ -34,12 +34,39 @@ class Backlog < ActiveRecord::Base
       /* check for users with admin privileges, they can do anything */
       account_id IN (SELECT account_id FROM account_users AS au WHERE au.user_id = :user_id AND au.admin = :true))
       OR
-      /* check for users with read-full privileges so long as a company none privilege does not exist */
+      /* check for users with read-full privileges so long as a company/backlog none privilege does not exist */
       ( account_id IN (SELECT account_id FROM account_users AS au WHERE au.user_id = :user_id AND (au.privilege IN ('read','readstatus','full')))
-        AND (company_ID IS NULL OR (company_ID IS NOT NULL AND company_ID NOT IN (SELECT company_id FROM company_users AS au WHERE au.user_id = :user_id AND au.privilege = 'none'))) )
+        AND (
+          (company_ID IS NULL OR
+            (
+              /* backlog belongs to company, check company permissions */
+              company_ID IS NOT NULL AND (
+                /* ensure company none privilege not set */
+                company_ID NOT IN (SELECT company_id FROM company_users AS au WHERE au.user_id = :user_id AND au.privilege = 'none')
+                OR
+                /* however if read-full set for account level let this supercede */
+                backlogs.ID IN (SELECT backlog_id FROM backlog_users AS bu WHERE bu.user_id = :user_id AND bu.privilege IN ('read','readstatus','full'))
+              )
+            )
+          )
+        )
+        AND (
+          /* if backlog privilege set to none then we can't show this backlog */
+          backlogs.ID NOT IN (SELECT backlog_id FROM backlog_users AS bu WHERE bu.user_id = :user_id AND bu.privilege = 'none')
+        )
+      )
       OR
       /* check if user has read-full privileges for the company if it exists */
-      ( company_id IS NOT NULL AND company_ID IN (select company_id from company_users as au where au.user_id = :user_id and (au.privilege in ('read','readstatus','full')) )
+      ( company_id IS NOT NULL AND (
+          company_ID IN (select company_id from company_users as au where au.user_id = :user_id and (au.privilege in ('read','readstatus','full'))
+          AND
+          /* ensure company permission not overwritten by backlog permission */
+          backlogs.ID NOT IN (SELECT backlog_id FROM backlog_users AS bu WHERE bu.user_id = :user_id AND bu.privilege = 'none')
+        )
+      )
+      OR
+      /* user has backlog specific permission to view this backlog */
+      backlogs.ID IN (SELECT backlog_id FROM backlog_users AS bu WHERE bu.user_id = :user_id AND bu.privilege IN ('read','readstatus','full'))
     )
     SQL
     where(sql, { :user_id => user.id, :true => true })
@@ -237,6 +264,20 @@ class Backlog < ActiveRecord::Base
     update_attribute :deleted, true
     update_attribute :archived, true # archived & deleted backlogs are editable (special workaround)
     destroy
+  end
+
+  def add_or_update_user(user, privilege)
+    privilege = Privilege.find(privilege) unless privilege.kind_of?(Privilege)
+    backlog_user = backlog_users.where(:user_id => user.id)
+    if backlog_user.present?
+      backlog_user.first.update_attributes! :privilege => privilege.code
+    else
+      backlog_users.create! :user_id => user.id, :privilege => privilege.code
+    end
+  end
+
+  def delete_user(user)
+    backlog_users.where(:user_id => user.id).each { |cu| cu.delete }
   end
 
   private

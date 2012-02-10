@@ -2,19 +2,22 @@
 - content_for :head do
   = include_javascripts :users
 - content_for :title do
-  = link_to "← Back to company settings", edit_account_company_path(@company.account, @company), :class => 'back'
+  = link_to "← Back to backlog settings", edit_account_backlog_path(@backlog.account, @backlog), :class => 'back'
 
 - content_for :title do
-  %h1= "Users for #{@company.name}"
+  %h1= "Users for backlog #{@backlog.name}"
 
 - if @account_users.blank?
   .page-notice
     There is an internal error as no users are registered for this account.
 - else
-  %h2.divider Permissions for users accessing this company and its backlogs
+  %h2.divider Permissions for users accessing this backlog
   %p
-    Listed below are the users with access to this company, either set explicitly or inherited from the account permissions.
-    = link_to "Change account permissions →", account_users_path(current_account)
+    Listed below are the users with access to this backlog, either set explicitly or inherited from the
+    = link_to "account permissions", account_users_path(current_account)
+    - if @backlog.company.present?
+      or
+      = link_to "or company permissions", account_company_users_path(current_account, @backlog.company)
 
   %form
     %table.users
@@ -35,9 +38,9 @@
           - else
             %td.privilege
               %select.privilege{ :id => select_id, :name => select_id }
-                = raw privilege_options account_user, @company_users, 'this company'
+                = raw privilege_options account_user, @backlog_users, 'this backlog'
             %td.action
               .progress-icon
 
 %br
-= link_to '← Back to company settings', edit_account_company_path(@company.account, @company), :class => 'button'
+= link_to '← Back to backlog settings', edit_account_backlog_path(@backlog.account, @backlog), :class => 'button'

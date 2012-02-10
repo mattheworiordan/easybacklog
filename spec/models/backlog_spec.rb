@@ -451,6 +451,11 @@ describe Backlog do
         company.add_or_update_user user, :none
         subject.should include(backlog_for_company)
       end
+
+      it 'should return backlogs where the admin user has none privileges at backlog level' do
+        backlog.add_or_update_user user, :none
+        subject.should include(backlog)
+      end
     end
 
     context 'account no level permissions are set' do
@@ -471,9 +476,40 @@ describe Backlog do
 
       context 'and company read permissions are set' do
         before (:each) { company.add_or_update_user user, :read }
-        it 'should not return any backlogs' do
+        it 'should return the backlog for the company' do
           subject.should include(backlog_for_company)
           subject.should_not include(backlog)
+        end
+      end
+
+      context 'and company read permissions are set and backlog none permissions are set' do
+        before (:each) do
+          company.add_or_update_user user, :read
+          backlog_for_company.add_or_update_user user, :none
+        end
+        it 'should not return any backlogs' do
+          subject.should be_blank
+        end
+      end
+
+      context 'and company none permissions are set and backlog read permissions are set for backlog within company' do
+        before (:each) do
+          company.add_or_update_user user, :none
+          backlog_for_company.add_or_update_user user, :read
+        end
+        it 'should return the backlog with company' do
+          subject.should include(backlog_for_company)
+          subject.should_not include(backlog)
+        end
+      end
+
+      context 'and backlog read permissions are set for backlog without company' do
+        before (:each) do
+          backlog.add_or_update_user user, :read
+        end
+        it 'should return the backlog with company' do
+          subject.should include(backlog)
+          subject.should_not include(backlog_for_company)
         end
       end
     end
@@ -500,6 +536,64 @@ describe Backlog do
         it 'should return all backlogs' do
           subject.should include(backlog, backlog_for_company)
         end
+      end
+
+      context 'and backlog without company none permissions are set' do
+        before (:each) { backlog.add_or_update_user user, :none }
+        it 'should not return backlog with company without explicit none permissions set' do
+          subject.should include(backlog_for_company)
+          subject.should_not include(backlog)
+        end
+      end
+
+      context 'and backlog with company read permissions has backlog none permissions set' do
+        before (:each) do
+          company.add_or_update_user user, :read
+          backlog_for_company.add_or_update_user user, :none
+        end
+        it 'should not return backlog with company' do
+          subject.should include(backlog)
+          subject.should_not include(backlog_for_company)
+        end
+      end
+    end
+  end
+
+  context 'backlog_users' do
+    let(:account) { Factory.create(:account) }
+    let(:user) { Factory.create(:user) }
+    subject { Factory.create(:backlog, :account => account) }
+
+    describe '#delete_user' do
+      it 'should delete the backlog user that exists' do
+        Factory.create(:backlog_user, :backlog => subject, :user => user)
+        subject.backlog_users.map(&:user).should include(user)
+        subject.delete_user user
+        subject.reload
+        subject.backlog_users.map(&:user).should_not include(user)
+      end
+
+      it 'should not fail if delete is called without any backlog user' do
+        subject.delete_user user
+        subject.backlog_users.map(&:user).should_not include(user)
+      end
+    end
+
+    describe '#add_or_update_user' do
+      it 'should update the existing user when one exists' do
+        Factory.create(:backlog_user_with_no_rights, :backlog => subject, :user => user)
+        subject.backlog_users.map(&:user).should include(user)
+        subject.add_or_update_user user, :full
+        subject.reload
+        subject.backlog_users.map(&:user).should include(user)
+        subject.backlog_users.first.privilege.should == Privilege.find(:full)
+      end
+
+      it 'should add a new user when one does not exist' do
+        subject.add_or_update_user user, :read
+        subject.reload
+        subject.backlog_users.map(&:user).should include(user)
+        subject.backlog_users.first.privilege.should == Privilege.find(:read)
       end
     end
   end

@@ -18,8 +18,8 @@
         %th Email address
         %th Permission
         %th Account Administrator
-      - @users.each do |account_user|
-        - select_id = "user-privilege-#{account_user.user.id}"
+      - @users.each do |user_id, account_user|
+        - select_id = "user-privilege-#{user_id}"
         %tr
           %td
             = label_tag select_id, account_user.user.name
@@ -35,7 +35,7 @@
               %select.privilege{ :id => select_id, :name => select_id }
                 = raw privilege_options account_user
             %td.admin
-              = check_box_tag "user-#{account_user.user.id}", 1, account_user.admin?, :title => 'Account administrators can manage this account, invite new users and view and edit all backlogs', :class => 'admin vtip'
+              = check_box_tag "user-#{user_id}", 1, account_user.admin?, :title => 'Account administrators can manage this account, invite new users and view and edit all backlogs', :class => 'admin vtip'
             %td.action
               = link_to account_user_path(current_account, account_user.user), :method => 'delete', :title => 'Remove user?', :confirm => 'Are you sure you want to remove this user from your account?' do
                 %span.ui-icon.ui-icon-trash

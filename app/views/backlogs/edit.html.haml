@@ -26,6 +26,13 @@
       = link_to raw('← Back to backlog'), account_backlog_path(@backlog.account, @backlog), :id => 'back-to-backlog'
 
 - content_for :side_panel do
+  - if is_account_admin?
+    .backlog-tool-panel
+      %h2 Manage users
+      Manage the users who have access to this backlog
+      .button-container
+        = link_to 'Manage backlog users', account_backlog_users_path(current_account, @backlog), :class => 'button'
+
   - unless @backlog.is_snapshot? || cannot?(:full)
     .backlog-tool-panel
       %h2 Duplicate backlog

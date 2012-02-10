@@ -5,7 +5,7 @@ class AccountUsersController < ApplicationController
   before_filter :check_account_admin
 
   def index
-    @users = current_account.account_users.sort_by { |d| d.user.name }
+    @users = current_account.account_users.sort_by { |d| d.user.name }.index_by(&:user_id)
     @invites = current_account.invited_users.sort_by(&:email)
   end
 

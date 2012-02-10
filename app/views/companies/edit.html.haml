@@ -5,6 +5,7 @@
   = include_javascripts :company
 
 - content_for :title do
+  = link_to "← Back to account dashboard", account_path(current_account), :class => 'back'
   %h1 Company settings
 
 - if is_account_admin?

@@ -139,3 +139,77 @@ Feature: Backlog Permissions
     Then I should see "Create new sprint"
       And the "add sprint button" should be visible
       And I should not see "Sprints not editable"
+
+  @javascript
+  Scenario: No access user is given read privileges for the company so should see the company backlogs but not change the company settings
+    Given an account called "Acme" is set up for "John" who should have account admin rights
+      And a backlog named "Backlog for test" assigned to company "Microsoft" for account "Acme" is set up
+      And a user named "Mike company read access" is created with no rights and assigned to account "Acme"
+      And a user named "Z no company access" is created with no rights and assigned to account "Acme"
+      And I am on the accounts page
+    When I follow "Microsoft"
+      And I follow "Manage company users"
+      And I select "Read only access to this company" from "Mike company read access"
+      And I wait 1 second
+      And I follow "Acme" within "top nav"
+      And I follow "Backlog for test"
+      And I follow "Settings"
+      And I follow "Manage backlog users"
+    Then I should see "Users for backlog Backlog for test"
+      And I should see the following data in column 1 of "account user table" table:
+        | John                      |
+        | Mike company read access  |
+        | Z no company access               |
+      And I should see the following data in column 3 of "account user table" table:
+        | Administrator access to all features |
+        |                                      |
+        |                                      |
+      And "Read only access (inherited)" should be selected for "Mike company read access"
+      And "No access (inherited)" should be selected for "Z no company access"
+    When I select "No access to this backlog" from "Mike company read access"
+      And I select "Read only access to this backlog" from "Z no company access"
+      And I follow "John" within "top nav"
+      And I follow "Sign out" within "top nav"
+      And I am signed in as "Mike company read access"
+    # Mike company read access should not see anything as his company rights have been explicitly overwritten
+    Then I should not see "Microsoft"
+      And I should not see "Backlog for test"
+    When I follow "Mike company read access" within "top nav"
+      And I follow "Sign out" within "top nav"
+      And I am signed in as "Z no company access"
+    Then I should see "Microsoft" within "your side panel"
+      And I should see "Backlog for test"
+    When I follow "Backlog for test"
+      And I follow "Settings"
+    Then the "text input fields" should be disabled
+      And the "checkboxes" should be disabled
+      And the "radio buttons" should be disabled
+
+  @javascript
+  Scenario: No access user is given full privileges for the backlog so should see the backlogs and be allowed to edit the settings
+    Given an account called "Acme" is set up for "John" who should have account admin rights
+      And a backlog named "Backlog for test" assigned to company "Microsoft" for account "Acme" is set up
+      And a user named "Mike no access" is created with no rights and assigned to account "Acme"
+      And I am on the accounts page
+    When I follow "Backlog for test"
+      And I follow "Settings"
+      And I follow "Manage backlog users"
+    Then I should see "Users for backlog Backlog for test"
+      And "No access (inherited)" should be selected for "Mike no access"
+    When I select "Full access to this backlog" from "Mike no access"
+      And I wait 1 second
+      And I follow "John" within "top nav"
+      And I follow "Sign out" within "top nav"
+      And I am signed in as "Mike no access"
+    # Mike no access should see the company and its backlog
+    Then I should see "Microsoft" within "your side panel"
+      And I should see "Backlog for test"
+      # whilst he can edit the backlog, he should not be able to edit the company
+      And within the "dashboard company or account fields" there should not be a clickable element with the text "Microsoft"
+      And within "your side panel" there should not be a clickable element with the text "Microsoft"
+      And I should not see "Create a new backlog"
+    When I follow "Backlog for test"
+      And I follow "Settings"
+    Then the "text input fields" should not be disabled
+      And the "checkboxes" should not be disabled
+      And the "radio buttons" should not be disabled

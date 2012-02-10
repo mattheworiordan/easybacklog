@@ -44,10 +44,10 @@
               %div.link= link_to account.name, account_path(account)
           - else
             .name= current_account.name
-            - if is_account_admin?
-              .link= link_to 'Manage Users', account_users_path(current_account)
             - if current_account.can? :full, current_user
               .link= link_to 'Manage Account', edit_account_path(current_account)
+            - if is_account_admin?
+              .link= link_to 'Manage Users', account_users_path(current_account)
             - if !accounts.blank? && accounts.count > 1
               .nav-divider
               .link= link_to 'Switch accounts', accounts_path
