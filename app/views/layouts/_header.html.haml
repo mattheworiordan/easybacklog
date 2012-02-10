@@ -40,6 +40,8 @@
         %span.down-arrow
         .top-nav-dropdown-overlay
           - if current_account.blank?
+            Select an account
+            .nav-divider
             - accounts.each do |account|
               %div.link= link_to account.name, account_path(account)
           - else
