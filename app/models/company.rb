@@ -11,7 +11,7 @@ class Company < ActiveRecord::Base
 
   before_save :remove_rate_if_velocity_empty
 
-  can_do :user_privileges => :company_users, :inherited_privilege => :account
+  can_do :privileges => :company_users, :inherited_privilege => :account
 
   def days_estimatable?
     default_velocity.present?

@@ -16,7 +16,7 @@ describe 'Can Do Module' do
   context 'instance methods for an object without inherited parent privileges' do
     before (:each) do
       @account = Factory.create(:account)
-      @account.class.can_do :user_privileges => :account_users # force re-initialise so we don't depend on Account specification
+      @account.class.can_do :privileges => :account_users # force re-initialise so we don't depend on Account specification
     end
 
     it 'should provide appropriate responses to can? method for a regular user with read rights' do
@@ -62,13 +62,13 @@ describe 'Can Do Module' do
   context 'instance methods for an object with inherited parent privileges' do
     before (:each) do
       @account = Factory.create(:account)
-      @account.class.can_do :user_privileges => :account_users, :inherited_privilege => :parent_account # force re-initialise so we don't depend on Account specification
+      @account.class.can_do :privileges => :account_users, :inherited_privilege => :parent_account # force re-initialise so we don't depend on Account specification
       @account.stub(:parent_account ) { @account_parent } # set up reference to @account_parent for psuedo method parent_account
 
       # create a new class based on Account that does not share the same class methods and properties as Account as CanDo uses class properties
       class AccountParent < ActiveRecord::Base
         set_table_name 'accounts'
-        can_do :user_privileges => :account_users
+        can_do :privileges => :account_users
         has_many :account_users, :dependent => :destroy, :foreign_key => 'account_id'
       end
       @account_parent = AccountParent.create!(:name => 'Account parent', :locale_id => @account.locale_id)
@@ -77,14 +77,14 @@ describe 'Can Do Module' do
     end
 
     it 'should provide read privileges from the parent when no privileges are set for this user' do
-      @account.stub_chain(:user_privileges, :where) { nil } # return no privileges for this child account
+      @account.stub_chain(:privileges, :where) { nil } # return no privileges for this child account
 
       @account.can?(:read, @user).should be_true
       @account.can?(:full, @user).should be_false
     end
 
     it 'should provide all (admin) privileges from the parent when no privileges are set for this user but use has admin rights in parent' do
-      @account.stub_chain(:user_privileges, :where) { nil } # return no privileges for this child account
+      @account.stub_chain(:privileges, :where) { nil } # return no privileges for this child account
       @account_parent_account_user.update_attributes! :admin => true
       @account.reload
       @user.reload
@@ -94,7 +94,7 @@ describe 'Can Do Module' do
     end
 
     it 'should provide read privileges from the parent when nil (inherit) privileges are set for this user' do
-      @account.stub_chain(:user_privileges, :where, :first, :privilege) { nil } # return nil privilege for the user_account record for this child account indicating inheritance
+      @account.stub_chain(:privileges, :where, :first, :privilege) { nil } # return nil privilege for the user_account record for this child account indicating inheritance
 
       @account.can?(:read, @user).should be_true
       @account.can?(:full, @user).should be_false

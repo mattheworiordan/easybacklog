@@ -18,7 +18,7 @@ class Account < ActiveRecord::Base
 
   scope :with_backlog_counts, select(sanitize_sql(['accounts.id, accounts.name, (select count(*) from backlogs where account_id = accounts.id and snapshot_master_id is null and snapshot_for_sprint_id is null and archived <> ? and deleted <> ?) as cnt', true, true]))
 
-  can_do :user_privileges => :account_users
+  can_do :privileges => :account_users
 
   def add_first_user(user)
     self.account_users.create!(:user => user, :admin => true)
