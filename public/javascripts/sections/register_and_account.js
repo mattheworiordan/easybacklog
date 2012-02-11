@@ -84,6 +84,9 @@ $(document).ready(function() {
     }
   });
 
-  // set up backlog settings, if not editing the backlog, then default to show points if no preference yet exists
-  App.Views.Shared.EnableBacklogEstimationPreferences(frm, 'account');
+  // if estimation fields are visible
+  if ($('#account_days_estimatable_false').length) {
+    // set up backlog settings, if not editing the backlog, then default to show points if no preference yet exists
+    App.Views.Shared.EnableBacklogEstimationPreferences(frm, 'account');
+  }
 });
