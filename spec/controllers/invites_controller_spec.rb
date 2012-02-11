@@ -89,8 +89,8 @@ describe InvitesController do
 
     response.should render_template("access_granted")
 
-    @account.backlogs.last.name.should == 'Example corporate website backlog'
-    @account.backlogs.last.can?(:full, signed_in_user) == true
+    backlog = @account.backlogs.where(:name => 'Example corporate website backlog').first
+    backlog.can?(:full, signed_in_user) == true
     @other_backlog.can?(:full, signed_in_user).should == false
   end
 end

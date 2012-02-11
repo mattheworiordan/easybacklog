@@ -3,6 +3,25 @@
 require 'spec_helper'
 
 describe 'Can Do Module' do
+  # the changes we make to the account, backlog and company classes effect other tests so lets ensure we restore the classes back to their original state
+  before(:all) do
+    @class_state = {}
+    [Account,Backlog,Company].each do |cls|
+      @class_state[cls] = {
+        :privileges => cls.privileges,
+        :inherited_privilege => cls.inherited_privilege
+      }
+    end
+  end
+
+  # restore class state so that this test does not have side effects on other tests
+  after(:all) do
+    [Account,Backlog,Company].each do |cls|
+      cls.privileges = @class_state[cls][:privileges]
+      cls.inherited_privilege = @class_state[cls][:inherited_privilege]
+    end
+  end
+
   context 'Class methods' do
     it 'should create provide a class method can_do' do
       class AccountTest < ActiveRecord::Base
