@@ -168,14 +168,12 @@ Feature: Backlog Permissions
       And "No access (inherited)" should be selected for "Z no company access"
     When I select "No access to this backlog" from "Mike company read access"
       And I select "Read only access to this backlog" from "Z no company access"
-      And I follow "John" within "top nav"
-      And I follow "Sign out" within "top nav"
+      And I sign out
       And I am signed in as "Mike company read access"
     # Mike company read access should not see anything as his company rights have been explicitly overwritten
     Then I should not see "Microsoft"
       And I should not see "Backlog for test"
-    When I follow "Mike company read access" within "top nav"
-      And I follow "Sign out" within "top nav"
+    When I sign out
       And I am signed in as "Z no company access"
     Then I should see "Microsoft" within "your side panel"
       And I should see "Backlog for test"
@@ -198,8 +196,7 @@ Feature: Backlog Permissions
       And "No access (inherited)" should be selected for "Mike no access"
     When I select "Full access to this backlog" from "Mike no access"
       And I wait 1 second
-      And I follow "John" within "top nav"
-      And I follow "Sign out" within "top nav"
+      And I sign out
       And I am signed in as "Mike no access"
     # Mike no access should see the company and its backlog
     Then I should see "Microsoft" within "your side panel"

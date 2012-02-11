@@ -403,6 +403,9 @@ module HtmlSelectorHelpers
     when /^side panel$/
       "section.side-panel"
 
+    when /^user account dropdown$/
+      ".account-info #user-account-dropdown a:first"
+
     else
       unless params.has_key?(:dont_translate_to_css)
         supports_javascript = page.evaluate_script('true') rescue false

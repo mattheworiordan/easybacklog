@@ -49,8 +49,7 @@ Feature: Account Users
         |                                      |
         |                                      |
 
-    When I follow "Account"
-      And I follow "Sign out"
+    When I sign out
       And I am signed in as "ChangedToAdmin"
       And I follow "Account"
     Then I should see "Manage Users" within "top nav"
@@ -75,24 +74,24 @@ Feature: Account Users
       | NoAccess        |
       | ReadOnly        |
 
-    When I follow "Sign out"
+    When I sign out
       And I am signed in as "Full"
       And I follow "Account"
     Then I should not see "Manage Users" within "top nav"
       And I should see "Manage Account" within "top nav"
       And I should see "Acme" within "primary page heading"
 
-    When I follow "Sign out"
+    When I sign out
       And I am signed in as "ReadOnly"
     Then I should not see "Account" within "top nav"
       And I should see "Website backlog"
 
-    When I follow "Sign out"
+    When I sign out
       And I am signed in as "NoAccess"
     Then I should not see "Account" within "top nav"
       And I should not see "Website backlog"
 
-    When I follow "Sign out"
+    When I sign out
       And I am signed in as "ToBeDeleted"
       And I should not see "Acme" within "primary page heading"
       And I should see "You do not have an account" within "primary page heading"

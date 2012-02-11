@@ -55,7 +55,7 @@ Feature: Invite and Sign Up
     Then I should see the notice "1 person was added to your account."
 
     # now check that James's revoked invite is no longer valid
-    When I follow "Sign out"
+    When I sign out
       And "james@acme.com" opens the email with subject "Invite to join easyBacklog"
     Then they should see "John from Acme has invited you" in the email body
       And they should see "Hi james@acme.com" in the email body
@@ -92,7 +92,7 @@ Feature: Invite and Sign Up
     And I should see "Website backlog"
 
     # now test a registered user receiving an invite link with no rights to another account
-    When I follow "Sign out"
+    When I sign out
     Given a user named "Jim" is registered
       And I am signed in as "Jim"
     When "jim@acme.com" opens the email with subject "Invite to join easyBacklog"
@@ -107,7 +107,7 @@ Feature: Invite and Sign Up
     Then I should see "Access already granted" within the "primary page heading"
 
     # then check the links no longer work
-    When I follow "Sign out"
+    When I sign out
       And "jim@acme.com" opens the email with subject "Invite to join easyBacklog"
     When they click the first link in the email
     Then I should see "Invalid invite" within the "primary page heading"
@@ -130,7 +130,7 @@ Feature: Invite and Sign Up
     Then I should see the notice "1 person was added to your account."
 
     # now log in as no_rights@test.com
-    When I follow "Sign out"
+    When I sign out
       And "no_rights@test.com" opens the email with subject "Invite to join easyBacklog"
     When they click the first link in the email
     Then I should see "Get access to account" within the "primary page heading"

@@ -106,8 +106,7 @@ Feature: Company
       And "No access (inherited)" should be selected for "Z at bottom"
     When I select "Read only access to this company" from "Mike no access"
       And I wait 1 second
-      And I follow "John" within "top nav"
-      And I follow "Sign out" within "top nav"
+      And I sign out
       And I am signed in as "Mike no access"
     # Mike no access should see the company and its backlogs, but not be able to edit them
     Then I should see "Microsoft" within "your side panel"
@@ -115,8 +114,7 @@ Feature: Company
       And within the "dashboard company or account fields" there should not be a clickable element with the text "Microsoft"
       And within "your side panel" there should not be a clickable element with the text "Microsoft"
       And I should not see "Create a new backlog"
-    When I follow "Mike no access" within "top nav"
-      And I follow "Sign out" within "top nav"
+    When I sign out
       And I am signed in as "Z at bottom"
     Then I should not see "Microsoft"
       And I should not see "Backlog 1"
@@ -130,8 +128,7 @@ Feature: Company
       And "No access (inherited)" should be selected for "Mike no access"
     When I select "Full access to this company" from "Mike no access"
       And I wait 1 second
-      And I follow "John" within "top nav"
-      And I follow "Sign out" within "top nav"
+      And I sign out
       And I am signed in as "Mike no access"
     # Mike no access should see the company and its backlogs, but not be able to edit them
     Then I should see "Microsoft" within "your side panel"

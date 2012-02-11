@@ -10,3 +10,8 @@ Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|
   step %{I press "Log in"}
   step %{I should see the notice "Signed in successfully."}
 end
+
+When /^(?:|I )sign out$/ do
+  step %{I click on the "user account dropdown" within "top nav"}
+  step %{I follow "Sign out" within "top nav"}
+end
