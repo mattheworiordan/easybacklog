@@ -9,32 +9,33 @@ class ApplicationController < ActionController::Base
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
-    if resource_or_scope.is_a?(User)
-      if session[:after_register_redirect_to].blank?
-        if current_account
-          account_path current_account
-        else
-          if accounts.length == 0
-            # let the accounts index page deal with a user without an account
-            accounts_path
-          elsif accounts.length == 1
-            # show only the backlogs for this users only account
-            account_path accounts.first
+    stored_location_for(resource_or_scope) ||
+      if resource_or_scope.is_a?(User)
+        if session[:after_register_redirect_to].blank?
+          if current_account
+            account_path current_account
           else
-            # show all accounts
-            dashboard_path
+            if accounts.length == 0
+              # let the accounts index page deal with a user without an account
+              accounts_path
+            elsif accounts.length == 1
+              # show only the backlogs for this users only account
+              account_path accounts.first
+            else
+              # show all accounts
+              dashboard_path
+            end
           end
+        else
+          # redirect after register/sign in path was set, used by invite process where someone registers
+          #  and effectively signs in, so we need to redirect them back to the invite page
+          path = session[:after_register_redirect_to]
+          session[:after_register_redirect_to] = nil
+          path
         end
       else
-        # redirect after register/sign in path was set, used by invite process where someone registers
-        #  and effectively signs in, so we need to redirect them back to the invite page
-        path = session[:after_register_redirect_to]
-        session[:after_register_redirect_to] = nil
-        path
+        super
       end
-    else
-      super
-    end
   end
 
   def send_json_error(error_message)
