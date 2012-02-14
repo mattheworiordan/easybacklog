@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: git://github.com/thoughtbot/capybara-webkit.git
-  revision: 73a3082ea494d01ccf828b2b9ea00fd747b07d74
+  revision: 2fef84403173c8c789efae911dff380034bbca81
   specs:
     capybara-webkit (0.9.0)
       capybara (>= 1.0.0, < 1.2)
@@ -29,7 +29,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     Ascii85 (1.0.1)
-    ZenTest (4.5.0)
+    ZenTest (4.6.2)
     actionmailer (3.2.1)
       actionpack (= 3.2.1)
       mail (~> 2.4.0)
@@ -64,8 +64,8 @@ GEM
     autotest (4.4.6)
       ZenTest (>= 4.4.1)
     autotest-growl (0.2.16)
-    autotest-rails (4.1.1)
-      ZenTest (= 4.5)
+    autotest-rails (4.1.2)
+      ZenTest (~> 4.5)
     bcrypt-ruby (3.0.1)
     builder (3.0.0)
     capybara (1.1.2)
