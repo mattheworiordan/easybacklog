@@ -6,21 +6,15 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
+if defined?(Bundler)
+  # If you precompile assets before deploying to production, use this line
+  Bundler.require *Rails.groups(:assets => %w(development test))
+end
+
 module Ibacklog
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
-
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{Rails.root}/lib/modules #{Rails.root}/lib/classes #{Rails.root}/app/reports)
-
-    # Only load the plugins named here, in the order given (default is alphabetical).
-    # :all can be used as a placeholder for all plugins not explicitly named.
-    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
-
-    # Activate observers that should always be running.
-    # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -30,14 +24,11 @@ module Ibacklog
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', 'framework', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
 
-    # JavaScript files you want as :defaults (application.js is always included).
-    # config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
-
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    config.filter_parameters += [:password, :password_confirmation]
 
     config.middleware.use Rack::ForceDomain, ENV["DOMAIN"]
 
@@ -48,11 +39,9 @@ module Ibacklog
     # pre-compile all javascript/scss files in assets/stylesheets, assets/javascripts, assets/javascripts/sections
     ['stylesheets','javascripts','javascripts/sections'].each do |path|
       Rails.root.join('app','assets',path).each_child do |d|
-        config.assets.precompile += [d.basename.to_s] if d.basename.to_s =~ /\.(scss|js|js\.erb)$/
+        prefix_path = path.split('/')
+        config.assets.precompile += ["#{prefix_path.length > 1 ? prefix_path[1] : ''}/#{d.basename.to_s}"] if d.basename.to_s =~ /\.(scss|js|js\.erb)$/
       end
     end
-
-    # ensure MD5 fingerprinting is on
-    config.assets.digest = true
   end
 end

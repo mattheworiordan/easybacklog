@@ -35,5 +35,7 @@ Ibacklog::Application.configure do
 
   # don't compress javascript & css into one file
   config.assets.debug = true
+  config.assets.compress = false
+  config.serve_static_assets = false # fix for sprockets serving static compressed files http://stackoverflow.com/questions/8158987/rails-3-1-asset-pipeline-css-caching-in-development
 end
 

@@ -3,7 +3,7 @@
     = (yield(:page_title).length > 0 ? yield(:page_title) : 'Makes agencies agile') + ' : easyBacklog'
 
   %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
-  %link{ :rel=>'icon', :type=>'image/png', :href=>image_path('/favicon.png') }
+  %link{ :rel => 'icon', :type => 'image/png', :href => image_path('favicon.png') }
 
   = stylesheet_link_tag 'application', :media => 'all' if use_base_css?
   /[if lt IE 9]
