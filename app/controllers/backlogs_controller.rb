@@ -55,7 +55,7 @@ class BacklogsController < ApplicationController
 
   def create
     if current_account.can?(:full, current_user)
-      @backlog = current_account.backlogs.new(params[:backlog])
+      @backlog = current_account.backlogs.new(safe_backlog_params)
       @backlog.author = current_user
       @backlog.last_modified_user = current_user
       set_or_create_company
@@ -125,7 +125,7 @@ class BacklogsController < ApplicationController
         flash[:notice] = 'You cannot edit an archived backlog'
         redirect_to account_backlog_path(@backlog.account, @backlog)
       else
-        @backlog.update_attributes(params[:backlog])
+        @backlog.update_attributes(safe_backlog_params)
         @backlog.last_modified_user = current_user
         set_or_create_company
         if @backlog.save
@@ -165,7 +165,7 @@ class BacklogsController < ApplicationController
   def duplicate
     @backlog = current_account.backlogs.available.find(params[:id])
     enforce_can(:full, 'You do not have permission to duplicate this backlog') do
-      @new_backlog = current_account.backlogs.new(@backlog.attributes.merge(params[:backlog] || {}))
+      @new_backlog = current_account.backlogs.new(@backlog.safe_attributes.merge(params[:backlog] || {}))
       @new_backlog.author = @backlog.author
       @new_backlog.last_modified_user = current_user
       if request.post?
@@ -382,5 +382,9 @@ class BacklogsController < ApplicationController
         flash[:error] = message
         redirect_to account_backlog_path(current_account, @backlog)
       end
+    end
+
+    def safe_backlog_params
+      safe_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived
     end
 end

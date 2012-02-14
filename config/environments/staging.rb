@@ -49,7 +49,12 @@ Ibacklog::Application.configure do
 
   config.action_mailer.default_url_options = { :host => 'easybacklog-staging.heroku.com' }
 
-  ActionController::Base.asset_host = "staging-easybacklog.netdna-ssl.com"
+  # Heroku support
+  config.assets.initialize_on_precompile = false
 
-  Vanity.playground.collecting = true
+  ActionController::Base.asset_host = "staging-easybacklog.netdna-ssl.com"
+  config.assets.compress = true
+
+  # bug with Vanity, disable for now
+  Vanity.playground.collecting = false
 end

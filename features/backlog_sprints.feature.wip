@@ -1,0 +1,80 @@
+@javascript
+Scenario: Sprints placeholder is shown
+  Given a standard backlog named "Acme Backlog" is set up for "Acme"
+  When I am on the accounts page
+    And I follow "Acme Backlog"
+  Then the "Sprints backlog tab" should be visible
+
+Add new sprint (check defaults)
+Add another sprint (check defaults with working day assumptions and weekends)
+Add another sprint (check that rules from previous 2 sprints works)
+Add another sprint (check that rules from previous 2 sprints works)
+Add another sprint (check that rules from previous 2 sprints works)
+Add another sprint (check that rules from previous 2 sprints works) /* had strange issues whereby it worked for a while */
+Check that tabs have appeared
+
+Add new sprint (check defaults), sprint length 1 day
+Add another sprint to make sure rules work without weekend assumption
+
+Add new sprint with errors
+Check that error catching is working
+Add new sprint with date clash
+Check that error catching is working
+
+Backlog settings
+> Remove sprints, check that Tab has disappeared
+> Check that remove only exists for the last sprint
+> Change settings
+> Mark as complete, check that delete option no longer visible, check that fields are not editable
+> Mark as incomplete, check that delete option visible again
+
+> Update backlog settings and check that changes are reflected when exit and reload
+> Try mark a sprint is compelte that you can't
+> Try modify a sprint so it overlaps with another
+
+> Check that values persist in Backlog settings, along with check boxes (IE9 JQuery issue) when tabbing between
+> Check that user is prompted when changes are made
+
+Drag & drop stories
+* Check that user can drag a story back & forther
+* Check data to ensure database has been updated
+* Check that statistics update
+* Check that tabs appear on main backlog for each story
+* Change story status to complete, return to Sprint and make sure stats have updated correctly
+* Check that story scores are showing correctly based on what was added, check for a 50/90 backlog, and a single score backlog
+* Check that editing a story that is marked as Done raises an error
+* Drag and drop between list (currently not achievable with jquery simulate drag & drop I believe?)
+
+Done stories are not editable
+Done stories are not draggable in sprint view
+Done stories do not have a Move button in sprint view
+Click on Sprint in Backlog view takes you to Sprint view
+Change story status in backlog view, unlocks item
+
+Story checks
+Tab order works with locked items from theme and from story:
+* Skip over a single item
+* Skip back over a single item
+* Skip over a whole theme of stories
+* Skip back over a whole theme of stories
+Tools are not visible for locked stories
+
+Stories update in the backlog view when changed in the sprint view and vice versa
+
+Moving a batch of incomplete stories works to move them to the backlog, and also to a new sprint
+
+Check that sprint totals at the bottom and and at the top update when you drag a story into a sprint
+Check that sprint date is correct
+
+Check that expand and contract for a backlog works, simply check for the text and the acceptance criteria showing in the right
+
+Create new sprint
+Check that user is asked for a sprint velocity if average velocity is not known
+Ensure user chooses either average velocity or sprint velocity
+Ensure user is shown correct estimated sprint velocity based on number of team members
+
+Edit existing sprint
+Check that user is asked for a sprint velocity if average velocity is not known
+Ensure user chooses either average velocity or sprint velocity
+
+Finish walk through with support for sprints and stats?

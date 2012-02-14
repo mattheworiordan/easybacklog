@@ -1,0 +1,145 @@
+/* 960.gs configuration */
+$ninesixty-columns: 12;
+$ninesixty-gutter-width: 20px;
+$ninesixty-vertical: 15px;
+
+$link-button-color: #001F83; /* links and buttons that are styled */
+$title-area-color: #4070B8; /* area beneath the black toolbar */
+$light-text-on-title-area-color: #88B6EB;
+
+$standard-header-padding-height: 4px;
+$standard-header-padding: ($standard-header-padding-height - 2px) $ninesixty-gutter-width $standard-header-padding-height $ninesixty-gutter-width; /* padding for the black header area */
+$standard-body-margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) $ninesixty-vertical (-$ninesixty-gutter-width);
+$standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-vertical $ninesixty-gutter-width;
+
+@mixin drop-shadow($offset, $size, $color: #888) {
+  -moz-box-shadow: $offset $offset $size $color;
+  -webkit-box-shadow: $offset $offset $size $color;
+  box-shadow: $offset $offset $size $color
+}
+
+/*
+  Button style from http://www.red-team-design.com/just-another-awesome-css3-buttons
+*/
+@mixin button-mixin($link-button-color)
+{
+  $gradient-diff: 8%;
+  $start-btn-color: lighten($link-button-color, 72%);
+  $end-btn-color: lighten($link-button-color, 72% - $gradient-diff);
+  $hover-start-btn-color: lighten($link-button-color, 78%);
+  $hover-end-btn-color: lighten($link-button-color, 78% - $gradient-diff);
+
+  display: inline-block;
+  white-space: nowrap;
+  background-color: mix($start-btn-color, $end-btn-color);
+  background-image: -webkit-gradient(linear, left top, left bottom, from($start-btn-color), to($end-btn-color));
+  background-image: -webkit-linear-gradient(top, $start-btn-color, $end-btn-color);
+  background-image: -moz-linear-gradient(top, $start-btn-color, $end-btn-color);
+  background-image: -ms-linear-gradient(top, $start-btn-color, $end-btn-color);
+  background-image: -o-linear-gradient(top, $start-btn-color, $end-btn-color);
+  background-image: linear-gradient(top, $start-btn-color, $end-btn-color);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#{$start-btn-color}', EndColorStr='#{$end-btn-color}');
+  border: 1px solid desaturate(lighten($link-button-color, 40%), 30%);
+  padding: 0 1.5em;
+  margin: 0 0.5em 0.5em 0;
+  font: bold 1em/2em Arial, Helvetica;
+  text-decoration: none;
+  color: $link-button-color;
+  text-shadow: 0 1px 0 rgba(255,255,255,.8);
+  -moz-border-radius: .2em;
+  -webkit-border-radius: .2em;
+  border-radius: .2em;
+  -moz-box-shadow: 0 0 1px 1px rgba(255,255,255,.8) inset, 0 1px 0 rgba(0,0,0,.3);
+  -webkit-box-shadow: 0 0 1px 1px rgba(255,255,255,.8) inset, 0 1px 0 rgba(0,0,0,.3);
+  box-shadow: 0 0 1px 1px rgba(255,255,255,.8) inset, 0 1px 0 rgba(0,0,0,.3);
+  &:hover
+  {
+    background-color: mix($hover-start-btn-color, $hover-end-btn-color);
+    background-image: -webkit-gradient(linear, left top, left bottom, from($hover-start-btn-color), to($hover-end-btn-color));
+    background-image: -webkit-linear-gradient(top, $hover-start-btn-color, $hover-end-btn-color);
+    background-image: -moz-linear-gradient(top, $hover-start-btn-color, $hover-end-btn-color);
+    background-image: -ms-linear-gradient(top, $hover-start-btn-color, $hover-end-btn-color);
+    background-image: -o-linear-gradient(top, $hover-start-btn-color, $hover-end-btn-color);
+    background-image: linear-gradient(top, $hover-start-btn-color, $hover-end-btn-color);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#{$hover-start-btn-color}', EndColorStr='#{$hover-end-btn-color}');
+  }
+  &:active
+  {
+      -moz-box-shadow: 0 0 4px 2px rgba(0,0,0,.3) inset;
+      -webkit-box-shadow: 0 0 4px 2px rgba(0,0,0,.3) inset;
+      box-shadow: 0 0 4px 2px rgba(0,0,0,.3) inset;
+      position: relative;
+      top: 1px;
+  }
+  &:focus
+  {
+      outline: 0;
+      background: #fafafa;
+      border-color: $link-button-color;
+      @include single-box-shadow(#7BA4DC, 0, 0, 3px, 2px);
+  }
+}
+
+@mixin button-style {
+  @include button-mixin($link-button-color)
+}
+
+@mixin grey-button-style {
+  @include button-mixin(#333)
+}
+
+@mixin large-name-field {
+  font-size: 1.3em;
+  font-weight: bolder;
+}
+
+/* Colours used to indicate progress of a story when assigned to a sprint */
+@mixin status-code-colors($includeHover: yes) {
+  /* to do */
+  &.status-code-T {
+    background-color: #777;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#777, 20%);
+      }
+    }
+  }
+  /* in progress */
+  &.status-code-P {
+    background-color: #A00;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#A00, 15%);
+      }
+    }
+  }
+  /* ready for testing / testing */
+  &.status-code-R {
+    background-color: #FF8000;
+    color: white;
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#FF8000, 20%);
+      }
+    }
+  }
+  /* done */
+  &.status-code-D {
+    @if $includeHover == yes {
+      background: #090 image-url('lock-tiny-fff.png') 10px 2px no-repeat;
+    } @else {
+      background-color: #090;
+    }
+    color: white;
+    span {
+      margin-left: 10px;
+    }
+    @if $includeHover == yes {
+      &.hover {
+        background-color: darken(#090, 20%);
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+<div class="title"><%= I18n.t ('backlog_total') %>:</div>
+<div class="output">
+  <%= JST['templates/_shared/backlog_stats']({ model: model, useDaysEstimates: useDaysEstimates, useCostEstimates: useCostEstimates }) %>
+</div>

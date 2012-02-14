@@ -1,8 +1,8 @@
 - title "#{@backlog.name} – #{@backlog.company.present? ? @backlog.company.name : @backlog.account.name}"
 - content_for :head do
-  = include_javascripts :backlog
+  = javascript_include_tag 'backlog'
   - if is_example_backlog?
-    = include_stylesheets :backlog_walkthrough
+    = stylesheet_link_tag 'backlog_walkthrough', :media => 'all'
 
 - content_for :global_nav_left do
   .logo
@@ -137,9 +137,9 @@
     Backbone.history.start();
 
     // validation only needed for tabs, so load after page is ready
-    $('head').append('#{escape_javascript(include_javascripts :validation, :charts)}');
+    $('head').append('#{j(javascript_include_tag 'validation', 'backlog_async')}');
   });
-  #{render :partial => 'i18n.js.erb'}
+  #{render :partial => 'i18n', :formats => :js}
 
 - if is_example_backlog?
-  =include_javascripts :backlog_walkthrough
+  = javascript_include_tag 'backlog_walkthrough'

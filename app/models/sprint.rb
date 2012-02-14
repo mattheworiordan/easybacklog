@@ -135,7 +135,7 @@ class Sprint < ActiveRecord::Base
   # we create one when a sprint is started so we can keep track of what the backlog looked like at that point
   def create_snapshot_if_missing
     if snapshot.blank?
-      new_backlog = backlog.account.backlogs.new(backlog.attributes.merge({ :name => "Sprint #{iteration}", :created_at => Time.now, :updated_at => Time.now }))
+      new_backlog = backlog.account.backlogs.new(backlog.safe_attributes.merge({ :name => "Sprint #{iteration}" }))
       # these 2 attributes are protected
       new_backlog.author = backlog.author
       new_backlog.last_modified_user = backlog.last_modified_user

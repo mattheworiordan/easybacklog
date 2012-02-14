@@ -1,6 +1,6 @@
 - title 'Add person to account'
 - content_for :head do
-  = include_javascripts :users
+  = javascript_include_tag 'sections/users'
 
 - content_for :title do
   %h1= "Add people to the #{truncate(current_account.name, :length => 40)} account"

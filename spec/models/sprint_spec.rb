@@ -70,9 +70,8 @@ describe Sprint do
     sprint2.iteration = 4
     expect { sprint2.save! }.should raise_error ActiveRecord::RecordInvalid
 
-    sprint1.update_attributes :iteration => 3
-    sprint1.reload
-    sprint1.iteration.should == 1
+    sprint1.iteration = 3
+    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
   end
 
   it 'should not allow you to make changes once marked as completed' do

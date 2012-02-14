@@ -8,23 +8,27 @@ module NavigationHelpers
   def path_to(page_name)
     case page_name
 
-    when /the home\s?page/
+    when /^the home\s?page$/
       root_path
 
-    when /the accounts page/
+    when /^the accounts page$/
       accounts_path
 
-    when /the sign up page/
+    when /^the sign up page$/
       new_user_registration_path :sign_up_code => 'd7g3h2y'
 
-    when /the new account page/
+    when /^the new account page$/
       new_account_path
 
-    when /the backlog "([^"]+)" page/
+    when /^the account "([^"]+)" page$/
+      account = Account.find_by_name($1)
+      account_path(account)
+
+    when /^the backlog "([^"]+)" page$/
       backlog = Backlog.find_by_name($1)
       account_backlog_path(backlog.account, backlog)
 
-    when /the snapshot base "([^"]+)" and backlog "([^"]+)" Excel export page$/
+    when /^the snapshot base "([^"]+)" and backlog "([^"]+)" Excel export page$/
       backlog = Backlog.find_by_name($2)
       base_snapshot = Backlog.find_by_name($1)
       compare_snapshots_account_backlogs_path(backlog.account, base_snapshot, backlog, :format => 'xls')

@@ -1,7 +1,6 @@
 - title 'Create a backlog'
 - content_for :head do
-  = include_javascripts :validation
-  = include_javascripts :manage_backlog
+  = javascript_include_tag 'validation', 'backlog_manage'
 
 - content_for :title do
   %h1 Create a backlog

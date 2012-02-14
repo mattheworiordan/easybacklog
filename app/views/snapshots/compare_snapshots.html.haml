@@ -29,10 +29,9 @@
       br
       {mso-data-placement:same-cell;}
     - if request.format == 'text/html'
-      = include_javascripts :workspace
-      = include_javascripts :snapshots
-      = include_stylesheets :snapshots, :media => 'all'
-      = include_stylesheets :snapshots_print, :media => 'print'
+      = javascript_include_tag 'application', 'snapshots'
+      = stylesheet_link_tag 'snapshots', :media => 'all'
+      = stylesheet_link_tag 'snapshots_print', :media => 'print'
   %body
     #compare-snapshots
       %table

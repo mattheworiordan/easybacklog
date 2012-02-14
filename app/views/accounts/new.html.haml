@@ -1,8 +1,7 @@
 - title 'Create a new account'
 
 - content_for :head do
-  = include_javascripts :validation
-  = include_javascripts :register
+  = javascript_include_tag 'validation', 'register_and_account'
 
 - content_for :title do
   %h1 Create a new account

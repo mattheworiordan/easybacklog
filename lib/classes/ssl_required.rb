@@ -12,8 +12,14 @@ module SslRequired
     # Specifies that the named actions requires an SSL connection
     # to be performed (which is enforced by ensure_proper_protocol).
 
+    @@basic_allowed_actions = nil
+
     def basic_allowed(*actions)
-      write_inheritable_array(:basic_allowed_actions, actions)
+      @@basic_allowed_actions = actions
+    end
+
+    def basic_allowed_actions
+      @@basic_allowed_actions || []
     end
   end
 
@@ -22,7 +28,7 @@ protected
   # Returns true if the current action supports basic authentication
 
   def basic_allowed?
-    (self.class.read_inheritable_attribute(:basic_allowed_actions) || []).include?(action_name.to_sym)
+    self.class.basic_allowed_actions.include?(action_name.to_sym)
   end
 
 private

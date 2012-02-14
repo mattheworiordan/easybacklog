@@ -1,0 +1,11 @@
+//= require_tree ./models
+//= require_tree ./collections
+//= require_tree ./controllers
+//= require_tree ./views/helpers
+//= stub views/backlog_settings_view
+//= stub templates/layouts/confirm-dialog
+//= require_tree ./views/base
+//= require_tree ./views
+//= require routers/backlog_router.js
+//= require_tree ./templates/_shared
+//= require_tree ./templates

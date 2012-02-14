@@ -1,7 +1,7 @@
 class SprintsController < ApplicationController
   before_filter :authenticate_user!, :set_backlog_and_protect
-  after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
   SPRINT_METHODS = [:completed?, :deletable?, :total_allocated_points, :total_expected_points, :total_completed_points]
+  EXCLUDE_FIELDS = [:updated_at, :created_at]
 
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
@@ -10,14 +10,15 @@ class SprintsController < ApplicationController
         :sprint_stories =>
           { :only => [:id, :story_id, :sprint_story_status_id, :position], :methods => :theme_id }
         },
-        :methods => SPRINT_METHODS)
+        :methods => SPRINT_METHODS,
+        :except => EXCLUDE_FIELDS)
     end
   end
 
   def show
     @sprint = @backlog.sprints.find(params[:id])
     enforce_can :read, 'You do not have permission to view this backlog' do
-      render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+      render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
     end
   end
 
@@ -25,7 +26,8 @@ class SprintsController < ApplicationController
     enforce_can :full, 'You do not have permission to edit this backlog' do
       @sprint = @backlog.sprints.new(params.select { |key,val| [:start_on, :duration_days, :explicit_velocity, :number_team_members].include?(key.to_sym) })
       if @sprint.save
-        render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+        update_backlog_metadata
+        render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
       else
         send_json_error @sprint.errors.full_messages.join(', ')
       end
@@ -45,12 +47,14 @@ class SprintsController < ApplicationController
         rescue Exception => e
           send_json_error e.message
         else
-          render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+          update_backlog_metadata
+          render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
         end
       else
-        @sprint.update_attributes params
+        @sprint.update_attributes safe_params(:backlog_id, :iteration, *SPRINT_METHODS)
         if @sprint.save
-          render :json => @sprint.to_json(:methods => SPRINT_METHODS)
+          update_backlog_metadata
+          render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
         else
           send_json_error @sprint.errors.full_messages.join(', ')
         end
@@ -61,8 +65,16 @@ class SprintsController < ApplicationController
   def destroy
     @sprint = @backlog.sprints.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @sprint.destroy
-      send_json_notice 'Sprint deleted'
+      begin
+        @sprint.destroy
+      rescue ActiveRecordExceptions::RecordNotDestroyable => e
+        send_json_error 'This sprint cannot be deleted because it contains stories which are marked as done'
+      rescue Exception => e
+        raise e
+      else
+        update_backlog_metadata
+        send_json_notice 'Sprint deleted'
+      end
     end
   end
 

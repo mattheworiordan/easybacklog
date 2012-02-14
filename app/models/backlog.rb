@@ -122,21 +122,25 @@ class Backlog < ActiveRecord::Base
   # simply copy all themes, stories and acceptance criteria to destination backlog
   def copy_children_to_backlog(destination)
     self.themes.each do |theme|
-      new_theme = theme.clone
+      new_theme = theme.dup
       destination.themes << new_theme
       theme.stories.each do |story|
-        new_story = story.clone
+        new_story = story.dup
         new_theme.stories << new_story
         story.acceptance_criteria.each do |criterion|
-          new_story.acceptance_criteria << criterion.clone
+          new_story.acceptance_criteria << criterion.dup
         end
       end
     end
   end
 
+  def safe_attributes
+    attributes = self.attributes.select { |key, val| self.class.accessible_attributes.include?(key) }
+  end
+
   # snapshot is a non-editable copy of a backlog in time
   def create_snapshot(snapshot_name)
-    new_backlog = account.backlogs.new(self.attributes.merge({ :name => snapshot_name, :created_at => Time.now, :updated_at => Time.now }))
+    new_backlog = account.backlogs.new(safe_attributes.merge({ :name => snapshot_name }))
     # these 2 attributes are protected
     new_backlog.author = self.author
     new_backlog.last_modified_user = self.last_modified_user

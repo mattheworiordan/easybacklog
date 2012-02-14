@@ -2,10 +2,9 @@
 - title page_title
 
 - content_for :head do
-  = include_javascripts :backlog
-  = include_javascripts :validation
-  = include_javascripts :backlog_settings
-  = include_javascripts :manage_backlog
+  = javascript_include_tag 'backlog'
+  = javascript_include_tag 'validation'
+  = javascript_include_tag 'backlog_settings'
 
 - content_for :title do
   .heading

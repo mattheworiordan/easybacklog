@@ -1,5 +1,7 @@
 When /^(?:|I )press "([^"]*)"(?: within (?:|the )"([^"]*)")?$/ do |button, selector|
-  with_scope(selector_to(selector)) do
+  selector_css = selector_to(selector)
+  sleep 0.2 if selector_css.present? && !page.has_css?(selector_css) # https://github.com/thoughtbot/capybara-webkit/issues/36
+  with_scope(selector_css) do
     click_button(selector_to(button, :dont_translate_to_css=>true))
   end
 end

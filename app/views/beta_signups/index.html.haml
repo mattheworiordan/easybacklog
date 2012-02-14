@@ -145,18 +145,18 @@
       .title intro video
       %a.light-box.video-demo{ :href => 'http://player.vimeo.com/video/32169448?title=0&amp;byline=0&amp;portrait=0&amp;autoplay=1&amp;width=854&amp;height=480', :id => 'video-demo', :title => 'A brief introduction to easyBacklog' }
       .title screenshots
-      %a.light-box-group.screenshot-demo{ :href => '/images/beta_signup/screen_shots/complete-backlog-with-calculations.png', :title => "Complete backlog management with automatic points, costs and days calculated", :id => 'screenshot-demo' }
+      %a.light-box-group.screenshot-demo{ :href => image_path('beta_signup/screen_shots/complete-backlog-with-calculations.png'), :title => "Complete backlog management with automatic points, costs and days calculated", :id => 'screenshot-demo' }
       .screen-shots
-        =link_to 'Burn down and burn up charts', '/images/beta_signup/screen_shots/burn-down.png', :title => 'Burn down, burn up, and velocity charts as you complete your sprints'
-        =link_to 'Sprint managemenet', '/images/beta_signup/screen_shots/sprints.png', :title => 'Complete drag and drop sprint management allowing you to maintain the status of each story and sprint'
-        =link_to 'Auto complete', '/images/beta_signup/screen_shots/auto-complete-and-tabs-for-speed.png', :title => 'Automatic completion of fields and full keyboard access for speed'
-        =link_to 'Drag and drop', '/images/beta_signup/screen_shots/drag-and-drop-stories-themes.png', :title => 'Drag and drop prioritisation of stories and themes'
-        =link_to 'Create snapshots', '/images/beta_signup/screen_shots/create-and-view-snapshots.png', :title => 'Create and view snapshots to record the backlog at any point in time'
-        =link_to 'Compare snapshot', '/images/beta_signup/screen_shots/choose-snapshots-to-compare.png', :title => 'Choose which snapshot or the current version to compare with another version'
-        =link_to 'Compare snapshot', '/images/beta_signup/screen_shots/compare-changes-snapshots.png', :title => 'View highlighted changes for each version of the backlog'
-        =link_to 'Print cards', '/images/beta_signup/screen_shots/print-physical-story-cards.png', :title => 'Generate PDFs for double sided printing of story cards and acceptance criteria'
-        =link_to 'Dashboard', '/images/beta_signup/screen_shots/dashboard.png', :title => 'A dashboard is maintained so  you can access all your backlogs and view recent activity'
-        =link_to 'Access control', '/images/beta_signup/screen_shots/user-access-management.png', :title => 'Easily manage who has access to your easyBacklog account, and invite others to join your account'
+        =link_to 'Burn down and burn up charts', image_path('beta_signup/screen_shots/burn-down.png'), :title => 'Burn down, burn up, and velocity charts as you complete your sprints'
+        =link_to 'Sprint managemenet', image_path('beta_signup/screen_shots/sprints.png'), :title => 'Complete drag and drop sprint management allowing you to maintain the status of each story and sprint'
+        =link_to 'Auto complete', image_path('beta_signup/screen_shots/auto-complete-and-tabs-for-speed.png'), :title => 'Automatic completion of fields and full keyboard access for speed'
+        =link_to 'Drag and drop', image_path('beta_signup/screen_shots/drag-and-drop-stories-themes.png'), :title => 'Drag and drop prioritisation of stories and themes'
+        =link_to 'Create snapshots', image_path('beta_signup/screen_shots/create-and-view-snapshots.png'), :title => 'Create and view snapshots to record the backlog at any point in time'
+        =link_to 'Compare snapshot', image_path('beta_signup/screen_shots/choose-snapshots-to-compare.png'), :title => 'Choose which snapshot or the current version to compare with another version'
+        =link_to 'Compare snapshot', image_path('beta_signup/screen_shots/compare-changes-snapshots.png'), :title => 'View highlighted changes for each version of the backlog'
+        =link_to 'Print cards', image_path('beta_signup/screen_shots/print-physical-story-cards.png'), :title => 'Generate PDFs for double sided printing of story cards and acceptance criteria'
+        =link_to 'Dashboard', image_path('beta_signup/screen_shots/dashboard.png'), :title => 'A dashboard is maintained so  you can access all your backlogs and view recent activity'
+        =link_to 'Access control', image_path('beta_signup/screen_shots/user-access-management.png'), :title => 'Easily manage who has access to your easyBacklog account, and invite others to join your account'
 
 
 %section.content-mix
@@ -184,8 +184,8 @@
         It’s a set of guidelines that helps you deliver useful, valuable increments of software to customers at the end of each sprint (like two weeks).  It is done by constantly re-prioritizing the backlog of requirements and reviewing incremental progress with the product owner.
         %br/
         =link_to 'Read the Agile manifesto →', 'http://agilemanifesto.org/'
-      =link_to '/images/beta_signup/screen_shots/agile_process.png', :class => 'light-box', :title => 'Agile Process Diagram' do
-        =image_tag '/images/beta_signup/agile-diagram.png', :alt => 'Agile diagram', :width => 330, :height => 189
+      =link_to image_path('beta_signup/screen_shots/agile_process.png'), :class => 'light-box', :title => 'Agile Process Diagram' do
+        =image_tag 'beta_signup/agile-diagram.png', :alt => 'Agile diagram', :width => 330, :height => 189
 
     .request-access
       %a{:name => 'apply'}

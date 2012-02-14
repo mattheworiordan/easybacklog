@@ -40,7 +40,7 @@ class SprintStory < ActiveRecord::Base
     end
 
     def prevent_delete_when_done_or_sprint_complete
-      raise RecordNotDestroyable, 'Story cannot be unassigend from sprint when story done or sprint is complete' if sprint.completed? || story.done?
+      raise RecordNotDestroyable, 'Story cannot be unassigend from sprint when the story is done or sprint is complete' if sprint.completed? || story.done?
     end
 
     # for reporting purposes, when a story is assigned to a sprint, store the scores at that time so we can report on change during a sprint

@@ -120,7 +120,7 @@ When /^(?:|I )tab (forwards|backwards)(?:| (\d+) times?)$/ do |forward_or_back, 
   quantity.to_i.times do
     shiftKey = forward_or_back == "forwards" ? 'false' : 'true'
     page.execute_script "$(':focus').simulate('keydown', { keyCode: $.simulate.VK_TAB, shiftKey: #{shiftKey} })"
-    sleep 0.275 # 0.25s for an editable text field to be change back after losing focus
+    sleep 0.3 # 0.25s for an editable text field to be change back after losing focus
   end
 end
 
@@ -396,7 +396,7 @@ When /^I follow the PDF link "([^"]+)"$/ do |label|
   temp_pdf << page.source.force_encoding('UTF-8')
   temp_pdf.close
   pdf_text = PDF::PdfToText.new(temp_pdf.path)
-  page.driver.response.instance_variable_set('@body', pdf_text.get_text)
+  page.driver.response.instance_variable_set('@body', [pdf_text.get_text])
 end
 
 ##

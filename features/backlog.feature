@@ -265,11 +265,13 @@ Feature: Backlog
     When I fill in "Rate (optional)" with ""
       And I fill in "Velocity" with "3"
       And I press "Update company"
+      And I wait for 0.2 seconds
     Then I should see the page title "Acme"
     When I follow "Apple"
     Then I should see the page title "Company settings"
     When I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
       And I press "Update company"
+      And I wait for 0.2 seconds
     Then I should see the page title "Acme"
     When I follow "Create a new backlog"
     Then the "Velocity" field should contain "1"

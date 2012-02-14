@@ -171,7 +171,8 @@ describe Story do
     expect { sprint.stories.destroy(story) }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
 
     sprint.mark_as_incomplete
-    story.reload
+    story.sprint_story_status = default_sprint_story_status
+    story.save!
     expect { sprint.stories.destroy(story) }.should_not raise_error
   end
 

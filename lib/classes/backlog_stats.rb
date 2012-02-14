@@ -15,7 +15,7 @@ class BacklogStats
     sprints = @backlog.sprints.order('iteration asc')
 
     # start with sprint zero as nothing burnt down yet
-    sprint = sprints.first.clone
+    sprint = sprints.first.dup
     sprint.iteration = 0
     trend << burn_down_json(sprint, trend_points, 0, sprint.start_on, sprint.duration_days)
     actual << burn_down_json(sprint, actual_points, 0, sprint.start_on, sprint.duration_days) if (sprints.first.completed?)
@@ -94,7 +94,7 @@ class BacklogStats
       last_sprint = sprint
     end
 
-    sprint = last_sprint.clone
+    sprint = last_sprint.dup
     sprint.iteration = 0
     sprint.start_on = last_sprint.assumed_completed_on + 1.day
     total << burn_up_json(sprint, @backlog.points)
@@ -162,7 +162,7 @@ class BacklogStats
 
     def complete_trend(trend_points, lastSprint, useActualAverage=false)
       trend_data = []
-      sprint = lastSprint.clone
+      sprint = lastSprint.dup
       while trend_points > 0
         points_this_sprint = if useActualAverage
           sprint.total_expected_based_on_average_points

@@ -20,7 +20,7 @@ class SnapshotsController < ApplicationController
       respond_format.xls do
         filename = "#{@base.name.parameterize}-#{@target.name.parameterize}.xls"
         set_download_headers filename
-        self.formats = :html
+        self.formats = [:html]
         render
       end
     end

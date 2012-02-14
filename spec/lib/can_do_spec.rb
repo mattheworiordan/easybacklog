@@ -25,7 +25,7 @@ describe 'Can Do Module' do
   context 'Class methods' do
     it 'should create provide a class method can_do' do
       class AccountTest < ActiveRecord::Base
-        set_table_name 'accounts'
+        self.table_name = 'accounts'
       end
       account = AccountTest.new
       account.class.respond_to?(:can_do).should be_true
@@ -86,7 +86,7 @@ describe 'Can Do Module' do
 
       # create a new class based on Account that does not share the same class methods and properties as Account as CanDo uses class properties
       class AccountParent < ActiveRecord::Base
-        set_table_name 'accounts'
+        self.table_name = 'accounts'
         can_do :privileges => :account_users
         has_many :account_users, :dependent => :destroy, :foreign_key => 'account_id'
       end

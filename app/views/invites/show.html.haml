@@ -1,7 +1,6 @@
 - title 'Sign up to easyBacklog'
 - content_for :head do
-  = include_javascripts :validation
-  = include_javascripts :register
+  = javascript_include_tag 'validation', 'register_and_account'
 
 - content_for :title do
   %h1= "Get access to account “#{truncate(@invite_account.name, :length => 40)}”"
@@ -13,7 +12,7 @@
     = "In order to gain access to the “#{truncate(@invite_account.name, :length => 30)}” account you will either need to register for free now, or log in using your existing account if you have previously created one with easyBacklog."
   .sign-up
     %h2 Register a new account
-    = form_for('user', :url => registration_path(@user), :html => { :id => 'user_new'} ) do |f|
+    = form_for('user', :url => registration_path(@user), :html => { :id => 'new_user'} ) do |f|
       != render :partial => '/devise/registrations/form', :locals => { :f => f,  :resource => @user }
       %p= f.submit "Register"
   .or

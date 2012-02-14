@@ -1,13 +1,16 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.10'
+gem 'rails', '~> 3.2'
 gem 'pg'
+gem 'jquery-rails'
 
 gem 'haml'
+# support for JST templates in sprockets
+gem 'ejs'
 
+# authentication
 gem 'devise'
 gem 'acts_as_list' # orderable items
-gem 'jammit'
 
 # pdf generation
 gem 'prawn', '~> 0.12'
@@ -16,16 +19,25 @@ gem 'hoptoad_notifier','>=2.4.8'
 
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
-gem 'compass'
-gem 'compass-960-plugin'
-
 gem 'shortly' # shorten URLs using an external service such as bit.ly
 
 gem 'will_paginate'
 
+# load XML as an object
 gem 'xml-object'
 
-gem 'vanity' # split testing
+# vanity does not support Rails 3.2.1, so using a patched version
+# gem 'vanity', :git => 'https://github.com/freedomsoft/vanity.git', :branch => 'rails3'  # split testing
+# gem 'vanity', :git => 'https://github.com/gamegenetics/vanity.git'
+gem 'vanity'
+
+#group :assets do
+  gem 'sass-rails'
+  gem 'compass'
+  gem 'compass-rails'
+  gem 'compass-960-plugin'
+  gem 'uglifier'
+#end
 
 group :development, :test, :cucumber do
   gem 'ruby-debug-base19', '~> 0.11.26'

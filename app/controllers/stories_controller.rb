@@ -26,7 +26,7 @@ class StoriesController < ApplicationController
   def create
     enforce_can :full, 'You do not have permission to edit this backlog' do
       config_score_params params
-      @story = @theme.stories.new(params)
+      @story = @theme.stories.new(safe_story_params)
       if @story.save
         render :json => story_json
       else
@@ -39,7 +39,7 @@ class StoriesController < ApplicationController
     config_score_params params
     @story = @theme.stories.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @story.update_attributes params
+      @story.update_attributes safe_story_params
       if @story.save
         render :json => story_json
       else
@@ -122,5 +122,9 @@ class StoriesController < ApplicationController
       else
         params.delete(:score)
       end
+    end
+
+    def safe_story_params
+      safe_params :theme_id, :cost_formatted, :days_formatted, :sprint_story_status_id, :sprint_story_id, :score_statistics
     end
 end

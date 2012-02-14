@@ -5,34 +5,25 @@
   %meta{ :"http-equiv"=>"Content-Type", :content=>"text/html, charset=UTF-8" }
   %link{ :rel=>'icon', :type=>'image/png', :href=>image_path('/favicon.png') }
 
-  = # Javascript library to fix :focus pseudo selector not working in Selenium / Capybara-webkit
-  = javascript_include_tag "test/jquery.focus.test-fix.js" if Rails.env.test? || Rails.env.development?
-
-  = include_stylesheets :common, :media => 'all' if use_base_css?
+  = stylesheet_link_tag 'application', :media => 'all' if use_base_css?
   /[if lt IE 9]
-    - if Rails.env.development? || Rails.env.test?
-      = include_stylesheets :ie_compatibility, :media => 'all'
-      = include_javascripts :ie_compatibility
-    - else
-      - # link directly to the files as Jammit gets confused as this is within another conditional IE comment
-      - # https://easybacklog.basecamphq.com/C133653389
-      /if (!IE)|(gte IE 8)
-      = stylesheet_link_tag '/assets/ie_compatibility-datauri.css'
-      /if (let IE 7)
-      = stylesheet_link_tag '/assets/ie_compatibility-mhtml.css'
-      = javascript_include_tag '/assets/ie_compatibility.js'
-  = include_javascripts :workspace
+    = stylesheet_link_tag 'ie_compatibility', :media => 'all'
+    = javascript_include_tag 'ie_compatibility'
+
+  = javascript_include_tag 'application'
 
   = yield(:head)
 
   = hoptoad_javascript_notifier unless Rails.env.test?
 
-  - # Javascript library to simulate drag & drop re-ordering of lists
-  = javascript_include_tag 'test/jquery.simulate.js', 'test/jquery.simulate.drag-sortable.js', 'test/jquery.helpers.js' if Rails.env.test? || Rails.env.development?
-  = javascript_include_tag 'test/test-env.js' if Rails.env.test?
+  - # Javascript library to simulate drag & drop re-ordering of lists and to fix :focus pseudo selector not working in Selenium / Capybara-webkit
+  = javascript_include_tag 'test' if Rails.env.test? || Rails.env.development?
+  - # set a App.environment to test so that RSpec & Cucumber can detect test mode through JS
+  = javascript_include_tag 'test/test-env' if Rails.env.test?
 
   = csrf_meta_tag
   %link{ :rel=>'author', :href=>'/humans.txt' }
+
   - unless Rails.env.test?
     :javascript
       var _gaq = _gaq || [];

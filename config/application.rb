@@ -42,5 +42,17 @@ module Ibacklog
     config.middleware.use Rack::ForceDomain, ENV["DOMAIN"]
 
     Dir["#{Rails.root}/lib/core_extensions/*.rb"].each { |file| require file }
+
+    config.assets.enabled = true
+
+    # pre-compile all javascript/scss files in assets/stylesheets, assets/javascripts, assets/javascripts/sections
+    ['stylesheets','javascripts','javascripts/sections'].each do |path|
+      Rails.root.join('app','assets',path).each_child do |d|
+        config.assets.precompile += [d.basename.to_s] if d.basename.to_s =~ /\.(scss|js|js\.erb)$/
+      end
+    end
+
+    # ensure MD5 fingerprinting is on
+    config.assets.digest = true
   end
 end

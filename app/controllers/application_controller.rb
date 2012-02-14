@@ -112,4 +112,14 @@ class ApplicationController < ActionController::Base
     def set_default_locale
       I18n.locale = I18n.default_locale
     end
+
+    def safe_params_for(index = nil, *filter_fields)
+      filter_fields = filter_fields.map { |d| d.to_s }
+      params_group = index.blank? ? params : params[index]
+      (params_group || {}).select { |key, value| !['action', 'controller', 'id'].include?(key) && !filter_fields.include?(key) }
+    end
+
+    def safe_params(*filter_fields)
+      safe_params_for nil, *filter_fields
+    end
 end

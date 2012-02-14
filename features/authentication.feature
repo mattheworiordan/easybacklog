@@ -39,3 +39,17 @@ Feature: Authentication
       And I fill in "Password" with "password"
       And I press "Log in"
     Then I should see the notice "Signed in successfully."
+
+  Scenario: Login should redirect to the previously viewed page
+    Given the database has the necessary lookup tables
+      And a user named "John" is registered
+      And an account called "Acme" is set up for "John"
+      And a standard backlog named "New backlog" is set up for "Acme"
+    When I am on the account "Acme" page
+    Then I should see "Log in" within the "primary page heading"
+    Then I should see the error "You need to sign in or sign up before continuing."
+    When I fill in "Email" with "John@acme.com"
+      And I fill in "Password" with "password"
+      And I press "Log in"
+    Then I should see the notice "Signed in successfully."
+    And I should be on the account "Acme" page

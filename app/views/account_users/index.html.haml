@@ -1,6 +1,6 @@
 - title 'Users'
 - content_for :head do
-  = include_javascripts :users
+  = javascript_include_tag 'sections/users'
 - content_for :title do
   = link_to "← Back to account dashboard", account_path(current_account), :class => 'back'
 

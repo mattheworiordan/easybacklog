@@ -3,28 +3,29 @@ class SprintStoriesController < ApplicationController
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
   METHODS = [:theme_id, :sprint_statistics]
+  INCLUDE_FIELDS = [:id, :story_id, :sprint_story_status_id, :position]
 
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
       @sprint_stories = @sprint.sprint_stories.find(:all)
-      render :json => @sprint_stories.to_json(:methods => METHODS)
+      render :json => @sprint_stories.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
     end
   end
 
   def show
     @sprint_story = @sprint.sprint_stories.find(params[:id])
     enforce_can :read, 'You do not have permission to view this backlog' do
-      render :json => @sprint_story.to_json(:methods => METHODS)
+      render :json => @sprint_story.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
     end
   end
 
   def create
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
-      @sprint_story = @sprint.sprint_stories.new(params)
+      @sprint_story = @sprint.sprint_stories.new(safe_sprint_story_params)
       @sprint_story.sprint_id = params[:sprint_id]
       @sprint_story.story_id = params[:story_id]
       if @sprint_story.save
-        render :json => @sprint_story.to_json(:methods => METHODS)
+        render :json => @sprint_story.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
       else
         send_json_error @sprint_story.errors.full_messages.join(', ')
       end
@@ -34,11 +35,11 @@ class SprintStoriesController < ApplicationController
   def update
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
       @sprint_story = @sprint.sprint_stories.find(params[:id])
-      @sprint_story.update_attributes params
+      @sprint_story.update_attributes safe_sprint_story_params
       @sprint_story.sprint_id = params[:move_to_sprint_id] if params.has_key?(:move_to_sprint_id)
 
       if @sprint_story.save
-        render :json => @sprint_story.to_json(:methods => METHODS)
+        render :json => @sprint_story.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
       else
         send_json_error @sprint_story.errors.full_messages.join(', ')
       end
@@ -111,5 +112,9 @@ class SprintStoriesController < ApplicationController
       else
         send_json_error message
       end
+    end
+
+    def safe_sprint_story_params
+      safe_params :sprint_id, :story_id, :theme_id, :sprint_statistics
     end
 end

@@ -1,7 +1,7 @@
-class Devise::RegistrationsController < ApplicationController
+class Devise::RegistrationsController < DeviseController
   prepend_before_filter :require_no_authentication, :only => [ :new, :create, :cancel ]
   prepend_before_filter :authenticate_scope!, :only => [:edit, :update, :destroy]
-  include Devise::Controllers::InternalHelpers
+
   use_vanity :current_user
 
   # GET /resource/sign_up
@@ -12,7 +12,7 @@ class Devise::RegistrationsController < ApplicationController
       redirect_to new_session_path(resource)
     else
       @account = Account.new
-      respond_with_navigational(resource){ render_with_scope :new }
+      respond_with resource
     end
   end
 
@@ -23,7 +23,7 @@ class Devise::RegistrationsController < ApplicationController
     # if user has visited sign_up by default they are asked to set up an account
     # if user comes from an embedded form (such as an invite), then account_setup is not shown as they are not setting up an account
     Account.transaction do
-      @account = (params[:show_account_setup] == 'true' ? Account.new(params[:account]) : nil)
+      @account = (params[:show_account_setup] == 'true' ? Account.new(safe_params_for(:account, :defaults_set, :days_estimatable)) : nil)
       @account.save unless @account.blank?
 
       # if valid account created or if not creating an account at all (invited users)
@@ -43,8 +43,8 @@ class Devise::RegistrationsController < ApplicationController
           end
           @account.destroy # clean up the account as user account was not created
         end
-        clean_up_passwords(resource)
-        render_with_scope :new
+        clean_up_passwords resource
+        respond_with resource
       end
     end
   end
@@ -102,38 +102,21 @@ class Devise::RegistrationsController < ApplicationController
       after_sign_in_path_for(resource)
     end
 
-    # Overwrite redirect_for_sign_in so it takes uses after_sign_up_path_for.
-    def redirect_location(scope, resource)
-      stored_location_for(scope) || after_sign_up_path_for(resource)
-    end
-
-    # Returns the inactive reason translated.
-    def inactive_reason(resource)
-      reason = resource.inactive_message.to_s
-      I18n.t("devise.registrations.reasons.#{reason}", :default => reason)
-    end
-
     # The path used after sign up for inactive accounts. You need to overwrite
     # this method in your own RegistrationsController.
     def after_inactive_sign_up_path_for(resource)
-      root_path
+      respond_to?(:root_path) ? root_path : "/"
     end
 
     # The default url to be used after updating a resource. You need to overwrite
     # this method in your own RegistrationsController.
     def after_update_path_for(resource)
-      if defined?(super)
-        ActiveSupport::Deprecation.warn "Defining after_update_path_for in ApplicationController " <<
-          "is deprecated. Please add a RegistrationsController to your application and define it there."
-        super
-      else
-        after_sign_in_path_for(resource)
-      end
+      after_sign_in_path_for(resource)
     end
 
     # Authenticates the current scope and gets the current resource from the session.
     def authenticate_scope!
-      send(:"authenticate_#{resource_name}!", true)
+      send(:"authenticate_#{resource_name}!", :force => true)
       self.resource = send(:"current_#{resource_name}")
     end
 end

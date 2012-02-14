@@ -1,6 +1,6 @@
 - title 'Users'
 - content_for :head do
-  = include_javascripts :users
+  = javascript_include_tag 'sections/users'
 - content_for :title do
   = link_to "← Back to company settings", edit_account_company_path(@company.account, @company), :class => 'back'
 

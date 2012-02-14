@@ -1,8 +1,7 @@
 - content_for :title do
   %h1 Sign up to easyBacklog
 - content_for :head do
-  = include_javascripts :validation
-  = include_javascripts :register
+  = javascript_include_tag 'validation', 'register_and_account'
 
 = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
   %p
