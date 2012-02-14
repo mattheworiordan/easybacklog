@@ -12,6 +12,15 @@ $standard-header-padding: ($standard-header-padding-height - 2px) $ninesixty-gut
 $standard-body-margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) $ninesixty-vertical (-$ninesixty-gutter-width);
 $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-vertical $ninesixty-gutter-width;
 
+$base-brand-font: "ClarendonRoman", "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+$base-pretty-font: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+$roll-over-header-color: #FFF;
+
+/* Firefox and Chrome on Windows don't anti-alias type, so we can "force" a correction of this issue */
+@mixin fix-type {
+  text-shadow: rgba(255, 255, 255, 0.2) 0 0 1px;
+}
+
 @mixin drop-shadow($offset, $size, $color: #888) {
   -moz-box-shadow: $offset $offset $size $color;
   -webkit-box-shadow: $offset $offset $size $color;
