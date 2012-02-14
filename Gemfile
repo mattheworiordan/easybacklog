@@ -15,7 +15,7 @@ gem 'acts_as_list' # orderable items
 # pdf generation
 gem 'prawn', '~> 0.12'
 
-gem 'hoptoad_notifier','>=2.4.8'
+gem 'airbrake'
 
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 

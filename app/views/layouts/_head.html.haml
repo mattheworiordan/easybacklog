@@ -14,7 +14,7 @@
 
   = yield(:head)
 
-  = hoptoad_javascript_notifier unless Rails.env.test?
+  = airbrake_javascript_notifier unless Rails.env.test?
 
   - # Javascript library to simulate drag & drop re-ordering of lists and to fix :focus pseudo selector not working in Selenium / Capybara-webkit
   = javascript_include_tag 'test' if Rails.env.test? || Rails.env.development?
