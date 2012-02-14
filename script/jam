@@ -6,4 +6,4 @@ bundle exec rake assets:precompile
 
 echo "--- Committing ---"
 git add public/assets/*
-git commit -m "Jammit assets compiled and added"
+git commit -m "Assets compiled and added"
