@@ -40,7 +40,10 @@ module Ibacklog
     ['stylesheets','javascripts','javascripts/sections'].each do |path|
       Rails.root.join('app','assets',path).each_child do |d|
         prefix_path = path.split('/')
-        config.assets.precompile += ["#{prefix_path.length > 1 ? prefix_path[1] : ''}/#{d.basename.to_s}"] if d.basename.to_s =~ /\.(scss|js|js\.erb)$/
+        if d.basename.to_s =~ /\.(scss|js|js\.erb)$/
+          file_name = d.basename.to_s.gsub(/\.(scss|erb)$/, '') # remove preprocessor extensions
+          config.assets.precompile += ["#{prefix_path.length > 1 ? "#{prefix_path[1]}/" : ''}#{file_name}"]
+        end
       end
     end
   end
