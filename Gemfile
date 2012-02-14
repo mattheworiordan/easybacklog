@@ -31,13 +31,13 @@ gem 'xml-object'
 # gem 'vanity', :git => 'https://github.com/gamegenetics/vanity.git'
 gem 'vanity'
 
-#group :assets do
+group :assets do
   gem 'sass-rails'
   gem 'compass'
   gem 'compass-rails'
   gem 'compass-960-plugin'
   gem 'uglifier'
-#end
+end
 
 group :development, :test, :cucumber do
   gem 'ruby-debug-base19', '~> 0.11.26'
