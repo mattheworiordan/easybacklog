@@ -16,12 +16,12 @@ class CreateCompanyUsers < ActiveRecord::Migration
   end
 
   def self.down
-    drop_index :account_users, :user_id
-    drop_index :account_users, :account_id
+    remove_index :account_users, :user_id
+    remove_index :account_users, :account_id
 
-    drop_index :company_users, [:company_id, :user_id]
-    drop_index :company_users, :user_id
-    drop_index :company_users, :company_id
+    remove_index :company_users, [:company_id, :user_id]
+    remove_index :company_users, :user_id
+    remove_index :company_users, :company_id
 
     drop_table :company_users
   end

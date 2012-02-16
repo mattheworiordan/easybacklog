@@ -6,8 +6,8 @@ class AddIndexesForPrivileges < ActiveRecord::Migration
   end
 
   def self.down
-    drop_index :account_users, :privilege
-    drop_index :account_users, :admin
-    drop_index :company_users, :privilege
+    remove_index :account_users, :privilege
+    remove_index :account_users, :admin
+    remove_index :company_users, :privilege
   end
 end

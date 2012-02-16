@@ -22,9 +22,9 @@ class AddBacklogUsers < ActiveRecord::Migration
   end
 
   def self.down
-    drop_index :backlog_users, [:backlog_id, :user_id]
-    drop_index :backlog_users, :user_id
-    drop_index :backlog_users, :backlog_id
+    remove_index :backlog_users, [:backlog_id, :user_id]
+    remove_index :backlog_users, :user_id
+    remove_index :backlog_users, :backlog_id
 
     drop_table :backlog_users
   end
