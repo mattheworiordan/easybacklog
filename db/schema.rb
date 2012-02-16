@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120211204351) do
+ActiveRecord::Schema.define(:version => 20120216064803) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
