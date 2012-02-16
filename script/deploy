@@ -8,18 +8,84 @@
 # ./deploy staging
 # which simply does: git push staging staging:master
 
+require 'optparse'
+
 # supported environments
 ENVIRONMENTS = ['ci','staging','production']
 
-if ARGV.length == 0
-  puts "Error: Usage: deploy [environment]"
-  exit false
-elsif (!ENVIRONMENTS.include?(ARGV[0]))
-  puts "Error: Environment '#{ARGV[0]}' is not valid.  Please use: #{ENVIRONMENTS.join(', ')}"
+options = {}
+
+optparse = OptionParser.new do |opts|
+  # Set a banner, displayed at the top
+  # of the help screen.
+  opts.banner = "Usage: deploy [environment] [--rebase]"
+
+  # Define the options, and what they do
+  options[:rebase] = false
+  opts.on('-r', '--rebase', 'Rebase the environment branch onto the current branch (use when assets have not changed but repository has)') do
+    options[:rebase] = true
+  end
+
+  opts.on('-h', '--help', 'Display this help screen') do
+    puts opts
+    exit
+  end
+
+  if ARGV.length == 0
+    puts opts
+    exit false
+  end
+end.parse!
+
+environment = ARGV.first
+if (!ENVIRONMENTS.include?(environment))
+  puts "Error: Environment '#{environment}' is not valid.  Please use: #{ENVIRONMENTS.join(', ')}"
   exit false
 else
-  environment = ARGV[0]
-  ENV['RAILS_ENV'] = environment
+  current_branch = %x[git branch].match(/\*\s(.*)/)
+
+  # rebase the environment branch onto the current branch and then deploy
+  if options[:rebase]
+    if current_branch
+      current_branch = current_branch[1]
+    else
+      puts "Error: You are not on a current rebranch so we cannot rebase"
+      exit false
+    end
+
+    if current_branch == environment
+      puts "Error: Cannot rebase #{environment} onto #{current_branch} as already on #{current_branch} branch"
+      exit false
+    end
+
+    unless system('git stash save "changes from before deploy"') && system("git checkout #{environment}")
+      puts "Error: Unable to stash and checkout branch #{environment}."
+      puts "It is possible that you have changes in a stash now.  Use git stash list & git stash pop."
+      exit false
+    end
+
+    unless system("git rebase #{current_branch}")
+      puts "Error: Could not rebase #{environment} onto #{current_branch}."
+      puts "It is likely that you have changes in a stash now.  Use git stash list & git stash pop."
+      exit false
+    end
+
+    unless system("git checkout #{current_branch}")
+      puts "Error: Could not revert back to branch #{current_branch}"
+      puts "It is likely that you have changes in a stash now.  Use git stash list & git stash pop."
+      exit false
+    end
+
+    stashes = %x[git stash list]
+    this_stash = stashes.match(/^(stash@\{\d+\}):.*changes from before deploy$/m)
+    if this_stash
+      unless system("git stash pop #{this_stash[1]}")
+        puts "Error: Could not retrieve your local changes from the stash."
+        puts "If files or changes are missing check `git stash list`"
+        exit false
+      end
+    end
+  end
 
   remotes = %x[git remote].split(/[\n\r]/).map { |d| d.strip }
 
@@ -29,7 +95,7 @@ else
     exit false
   end
 
-  puts "\n--- Pushing application with assets for '#{environment}' to Heroku ---"
+  puts "--- Pushing application with assets for '#{environment}' to Heroku ---"
   unless system "git push #{environment} #{environment}:master --force"
     puts "Error: Unable to push changes to Heroku"
     exit false

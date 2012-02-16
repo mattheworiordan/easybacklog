@@ -41,7 +41,8 @@ else
     end
 
     unless system('git stash save "changes from before compile run"') && system("git checkout -b #{environment}")
-      puts "Error: Unable to stash and checkout new branch #{environment}"
+      puts "Error: Unable to stash and checkout new branch #{environment}."
+      puts "You may need to git stash pop."
       exit false
     end
   else
