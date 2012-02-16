@@ -14,7 +14,7 @@ class AddBacklogUsers < ActiveRecord::Migration
     Backlog.masters.where('name ilike ?', 'example corporate website backlog').each do |backlog|
       execute 'delete from backlog_users'
       backlog.account.account_users.each do |account_user|
-        execute "insert into backlog_users (backlog_id, user_id, privilege) VALUES (#{backlog.id}, #{account_user.user_id}, 'full')"
+        execute "insert into backlog_users (backlog_id, user_id, privilege, created_at, updated_at) VALUES (#{backlog.id}, #{account_user.user_id}, 'full', now(), now())"
       end
     end
   end
