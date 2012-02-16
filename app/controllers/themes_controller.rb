@@ -67,6 +67,23 @@ class ThemesController < ApplicationController
     end
   end
 
+  def add_existing_story
+    @theme = @backlog.themes.find(params[:id])
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      begin
+        @story = @theme.backlog.themes.map { |t| t.stories.find { |s| s.id.to_s == params[:story_id] } }.compact.first
+        if @story.blank?
+          send_json_error 'Internal error. Could not find the story to be moved.  Please refresh your browser'
+        else
+          @theme.add_existing_story @story
+          send_json_notice 'Story moved'
+        end
+      rescue Exception => e
+        send_json_error "Internal error: '#{e.message}'.  Please refresh your browser."
+      end
+    end
+  end
+
   helper_method :can?, :cannot?
   def can?(method)
     (@theme || @backlog).can? method, current_user

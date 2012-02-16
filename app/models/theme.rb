@@ -67,6 +67,13 @@ class Theme < ActiveRecord::Base
     end
   end
 
+  def add_existing_story(story)
+    raise StoryCannotbeMoved if story.theme.backlog != backlog
+    story.theme_id = id
+    story.unique_id = nil
+    story.save!
+  end
+
   private
     def assign_code_if_blank
       if code.blank?

@@ -48,8 +48,30 @@ App.Views.Stories = {
             $('.color-picker').hide();
           },
           stop: function(event, ui) {
+            var themeId, newTheme, storyId;
             App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
             orderChangedEvent();
+            if ($(view.el).parents('li.theme')[0] !== $(event.target).parents('li.theme')[0]) {
+              // user has dragged story to a new a theme
+              themeId = $(event.target).parents('li.theme').attr('id').replace('theme-','');
+              storyId = $(event.target).parents('li.story').attr('id').replace('story-','');
+              newTheme = view.collection.theme.Backlog().Themes().get(Number(themeId));
+              newTheme.AddExistingStory(storyId, {
+                success: function() {
+                  view.orderChanged($(event.target).parents('ul.stories').find('>li.story'), newTheme.Stories());
+                },
+                error: function(event) {
+                  var errorView, errorMessage = 'Server error trying to move story to new theme. Please reload this page.';
+                  try {
+                    errorMessage = $.parseJSON(event.responseText).message;
+                    errorView = new App.Views.Error({ message: errorMessage});
+                  } catch (e) {
+                    if (window.console) { console.log(e); }
+                    errorView = new App.Views.Error({ message: errorMessage});
+                  }
+                }
+              });
+            }
             // show the new story button again
             $(view.el).append(actionsElem);
             // add the tips back in to work around jQuery UI and vTip conflict on Firefox
@@ -57,7 +79,8 @@ App.Views.Stories = {
           },
           placeholder: 'target-order-highlight',
           axis: 'y',
-          items: 'li.story'
+          items: 'li.story',
+          connectWith: 'ul.themes li.theme>.stories>ul.stories'
         }).find('.move-story').disableSelection();
 
         // not using standard view events as they fire too late, we need this to fire before colorPicker catches the event
@@ -123,16 +146,18 @@ App.Views.Stories = {
     },
 
     // method is called after JQuery UI re-ordering
-    orderChanged: function() {
+    orderChanged: function(storyList, storyCollection) {
       var orderIndexesWithIds = {};
-      this.$('li.story').each(function(index, elem) {
+      if (!storyList) { storyList = this.$('li.story'); }
+      if (!storyCollection) { storyCollection = this.collection; }
+      storyList.each(function(index, elem) {
         var elemId = _.last($(elem).attr('id').split('-'));
         if (!isNaN(parseInt(elemId, 10))) { // unless story is new and not saved yet
           orderIndexesWithIds[elemId] = index + 1;
         }
       });
       if (window.console) { console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds)); }
-      this.collection.saveOrder(orderIndexesWithIds);
+      storyCollection.saveOrder(orderIndexesWithIds);
     }
   }),
 
@@ -275,7 +300,7 @@ App.Views.Stories = {
         commentsBeforeChangeFunc = function(value) {
           unUrlify(this);
           return beforeChangeFunc.call(this, $(this).text());
-        }
+        };
       var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
@@ -349,7 +374,7 @@ App.Views.Stories = {
               this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
             } else {
               // move onto next view as we're at the last element
-              var sibling = $(this.el).nextAll('li:not(.locked):first');
+              sibling = $(this.el).nextAll('li:not(.locked):first');
               if (sibling.find('a.new-story').length) {
                 // just a new story button
                 App.Views.Helpers.scrollIntoBacklogView(sibling.find('a.new-story'), function(elem) {
@@ -364,10 +389,10 @@ App.Views.Stories = {
           } else { // moving <--
             if (dataElem != _.first(viewElements)) {
               // move to previous element
-              var previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
+              previousSelector = viewElements[_.indexOf(viewElements, dataElem) - 1];
               if (previousSelector.indexOf('acceptance-criteria') === 0) {
                 // exception, we need to move to acceptance criteria
-                var lastCriterion = this.$('.acceptance-criteria ul.acceptance-criteria li:visible:last>*');
+                lastCriterion = this.$('.acceptance-criteria ul.acceptance-criteria li:visible:last>*');
                 App.Views.Helpers.scrollIntoBacklogView(lastCriterion, function(elem) {
                   elem.click();
                 });

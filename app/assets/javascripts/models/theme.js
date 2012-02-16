@@ -37,16 +37,55 @@ var Theme = Backbone.Model.extend({
       theme.Stories().each(function(story) {
         story.fetch();
       });
-      if (_.isFunction(options.success)) {
+      if (options && _.isFunction(options.success)) {
         // callback for success
         options.success(theme, response);
       }
     }).error(function(event) {
       if (window.console) { console.log('Renumber stories failed'); }
-      if (_.isFunction(options.error)) {
+      if (options && _.isFunction(options.error)) {
         // callback for error
         options.error(event);
       }
     });
+  },
+
+  AddExistingStory: function(storyId, options) {
+    var theme = this,
+        story,
+        stories,
+        errorCallback = function(event) {
+          if (window.console) { console.log('Renumber stories failed'); }
+          if (options && _.isFunction(options.error)) {
+            // callback for error
+            options.error(event);
+          }
+        };
+
+    $.post(this.collection.url() + '/' + this.get('id') + '/add-existing-story/' + storyId).success(function(ajaxResult, status, response) {
+      // find the story within the themes
+      stories = theme.Backlog().Themes().map(function(theme) {
+        return theme.Stories().get(Number(storyId));
+      });
+      story = _.compact(stories)[0];
+
+      // move the story out of the old theme and into the new collection models
+      story.set({ theme_id: theme.get('id') });
+      story.Theme().Stories().remove(story, { silent: true });
+      theme.Stories().add(story, { silent: true });
+
+      // now get the latest version of this model from the server before we call the success callback
+      // as this model needs to have the new ID assigned to it from the server
+      story.fetch({
+        success: function() {
+          if (options && _.isFunction(options.success)) {
+            // callback for success
+            options.success(theme, response);
+          }
+        },
+        error: errorCallback
+      }); // update the story
+
+    }).error(errorCallback);
   }
 });

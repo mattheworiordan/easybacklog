@@ -91,4 +91,25 @@ describe Theme do
     theme.code.should == 'SHU'
     theme.name.should == 'Safe hands users tests'
   end
+
+  it 'should allow stories from an existing theme to be moved to this theme' do
+    story_theme1 = Factory.create(:story)
+    theme1 = story_theme1.theme
+    theme2 = Factory.create(:theme, :backlog => theme1.backlog)
+    story_theme2 = Factory.create(:story, :theme => theme2)
+
+    story_theme1.unique_id.should == 1
+    story_theme2.unique_id.should == 1
+    theme1.add_existing_story story_theme2
+    story_theme2.reload
+    story_theme2.theme.should == theme1
+    story_theme2.unique_id.should == 2
+  end
+
+  it 'should not allow stories from another backlog to be moved to this theme' do
+    story_theme1 = Factory.create(:story)
+    story_theme2 = Factory.create(:story)
+
+    expect { story_theme1.theme.add_existing_story story_theme2 }.to raise_error Theme::StoryCannotbeMoved
+  end
 end

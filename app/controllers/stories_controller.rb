@@ -5,21 +5,21 @@ class StoriesController < ApplicationController
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
       @stories = @theme.stories.find(:all, :include => [:acceptance_criteria])
-      render :json => @stories.to_json(:include => [:acceptance_criteria], :methods => [:score])
+      render :json => @stories.to_json(:include => [:acceptance_criteria], :methods => [:score], :except => [:created_at, :updated_at])
     end
   end
 
   def show
     @story = @theme.stories.find(params[:id])
     enforce_can :read, 'You do not have permission to view this backlog' do
-      render :json => @story.to_json(:methods => [:score])
+      render :json => @story.to_json(:methods => [:score], :except => [:created_at, :updated_at])
     end
   end
 
   def new
     enforce_can :full, 'You do not have permission to edit this backlog' do
       @story = @theme.stories.new
-      render :json => @story.to_json(:methods => [:score])
+      render :json => @story.to_json(:methods => [:score], :except => [:created_at, :updated_at])
     end
   end
 

@@ -128,7 +128,11 @@ class Story < ActiveRecord::Base
     end
 
     def prevent_changes_when_done
-      errors.add :base, 'Changes to a completed story are not allowed' if changed? && done? && (changed != ['position']) # allow position changes only
+      if changed? && done?
+        if (changed != ['position']) && (changed != ['theme_id']) && (changed != ['theme_id','unique_id']) # if changed column is anything other than position or theme_id don't allow changes
+          errors.add :base, 'Changes to a completed story are not allowed' # allow position changes and reassign to new theme only
+        end
+      end
     end
 
     # check that score 50 and score 90 adhere to scoring rule

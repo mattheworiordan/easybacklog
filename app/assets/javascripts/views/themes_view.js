@@ -347,10 +347,10 @@ App.Views.Themes = {
           $(dialog).dialog("close");
         },
         error: function(event) {
-          var errorMessage = 'Server error trying to renumber stories';
+          var errorMessage = 'Server error trying to renumber stories. Please reload this page.';
           try {
             errorMessage = $.parseJSON(event.responseText).message;
-            var errorView = new App.Views.Warning({ message: errorMessage});
+            var errorView = new App.Views.Error({ message: errorMessage});
           } catch (e) {
             if (window.console) { console.log(e); }
             var errorView = new App.Views.Error({ message: errorMessage});
