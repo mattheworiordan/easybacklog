@@ -12,6 +12,7 @@ class Devise::RegistrationsController < DeviseController
       redirect_to new_session_path(resource)
     else
       @account = Account.new
+      resource = build_resource({})
       respond_with resource
     end
   end
@@ -51,7 +52,7 @@ class Devise::RegistrationsController < DeviseController
 
   # GET /resource/edit
   def edit
-    render_with_scope :edit
+    render :edit
   end
 
   # PUT /resource
@@ -65,7 +66,7 @@ class Devise::RegistrationsController < DeviseController
       respond_with resource, :location => after_update_path_for(resource)
     else
       clean_up_passwords(resource)
-      respond_with_navigational(resource){ render_with_scope :edit }
+      respond_with resource
     end
   end
 
