@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+##
+# Deployment script for Heroku that pushes an [environment] branch
+# to that environment target in git
+# For example, if you have set up a remote called staging, and a branch named staging
+# then you can deploy to the remote staging by executing
+# ./deploy staging
+# which simply does: git push staging staging:master
+
+# supported environments
+ENVIRONMENTS = ['ci','staging','production']
+
+if ARGV.length == 0
+  puts "Error: Usage: deploy [environment]"
+  exit false
+elsif (!ENVIRONMENTS.include?(ARGV[0]))
+  puts "Error: Environment '#{ARGV[0]}' is not valid.  Please use: #{ENVIRONMENTS.join(', ')}"
+  exit false
+else
+  environment = ARGV[0]
+  ENV['RAILS_ENV'] = environment
+
+  remotes = %x[git remote].split(/[\n\r]/).map { |d| d.strip }
+
+  if !remotes.include?(environment)
+    puts "Error: You must have Git set up with the remote #{environment} pointing to the relevant Heroku environment repository"
+    puts "Example: git remote add staging git@heroku.com:staging-yourapp.git"
+    exit false
+  end
+
+  puts "\n--- Pushing application with assets for '#{environment}' to Heroku ---"
+  unless system "git push #{environment} #{environment}:master --force"
+    puts "Error: Unable to push changes to Heroku"
+    exit false
+  end
+end

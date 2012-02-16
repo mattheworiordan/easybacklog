@@ -1,0 +1,93 @@
+#!/usr/bin/env ruby
+
+##
+# Compile script for Rails assets that puts the assets into their [environment] branch
+# thus not polluting the master branch with the files in public/assets that only
+# apply to that environment.  See https://github.com/rails/sass-rails/issues/93#issuecomment-3982582
+#
+# Usage: ./compile [environment]
+
+# supported environments
+ENVIRONMENTS = ['ci','staging','production']
+
+if ARGV.length == 0
+  puts "Error: Usage: compile [environment]"
+  exit false
+elsif (!ENVIRONMENTS.include?(ARGV[0]))
+  puts "Error: Environment '#{ARGV[0]}' is not valid.  Please use: #{ENVIRONMENTS.join(', ')}"
+  exit false
+else
+  environment = ARGV[0]
+  ENV['RAILS_ENV'] = environment
+
+  branch_list = %x[git branch]
+  branches = branch_list.gsub(/\*\s/, '').split(/[\n\r]/).map { |d| d.strip }
+  current_branch = branch_list.match(/\*\s(.*)/)
+
+  if !current_branch || current_branch[1] == '(no branch)'
+    puts "Error: Current branch not selected.  You must have a branch selected before compiling assets."
+    exit false
+  else
+    current_branch = current_branch[1]
+  end
+
+  if current_branch != environment
+    puts "--- Current branch #{current_branch}, saving current changes ---"
+    if branches.include?(environment)
+      unless system("git branch -D #{environment}")
+        puts "Error: Branch could not be deleted"
+        exit false
+      end
+    end
+
+    unless system('git stash save "changes from before compile run"') && system("git checkout -b #{environment}")
+      puts "Error: Unable to stash and checkout new branch #{environment}"
+      exit false
+    end
+  else
+    puts "\n--- Already on branch #{environment} ---"
+  end
+
+  puts "\n--- Compiling assets for #{environment}---"
+  unless system 'bundle exec rake assets:precompile'
+    puts "Error: Compilation failed"
+    exit false
+  end
+
+  puts "\n--- Committing ---"
+  asset_path = File.join(File.dirname(__FILE__), '../public/assets')
+  branch_specified = current_branch != environment ? " from branch #{current_branch}" : ' (original branch unknown)'
+  unless system("git add #{asset_path}/*") && system("git commit -m \"Assets compiled and added#{branch_specified}\"")
+    puts "Error: Could not commit assets to repository"
+    exit false
+  end
+
+  if current_branch != environment
+    puts "\n--- Reverting back to branch #{current_branch} and cleaning up assets ---"
+    unless system("git checkout #{current_branch}")
+      puts "Error: Could not revert back to branch #{current_branch} and retrieve your local changes from the stash."
+      puts "Check your local branch and working files.  If files or changes are missing check `git stash list`"
+      puts "Finally ensure no residual asset files exist in #{asset_path}"
+      exit false
+    end
+
+    unless system("rm -fr public/assets")
+      puts "Error: Could not delete residual asset files from #{asset_path}"
+      puts "If files or changes are missing check `git stash list`"
+      puts "Finally ensure no residual asset files exist in #{asset_path}"
+    end
+
+    stashes = %x[git stash list]
+    this_stash = stashes.match(/^(stash@\{\d+\}):.*changes from before compile run$/m)
+    if this_stash
+      puts "\n--- Retrieving changes from stash ---"
+      unless system("git stash pop #{this_stash[1]}")
+        puts "Error: Could not retrieve your local changes from the stash."
+        puts "If files or changes are missing check `git stash list`"
+        exit false
+      end
+    end
+  end
+
+  puts "\n--- Compile done ---"
+end
