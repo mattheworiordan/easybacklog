@@ -15,9 +15,11 @@
   = f.text_field :email
 %p
   = f.label :password
+  %i (leave blank if you do not wish to change your password)
   %br/
   = f.password_field :password
 %p
   = f.label :password_confirmation
+  %i (required if changing your password)
   %br/
   = f.password_field :password_confirmation

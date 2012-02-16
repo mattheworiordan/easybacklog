@@ -1,13 +1,15 @@
+- title 'Edit My Settings'
+
 - content_for :title do
   %h1
-    Edit Account
+    Edit My Settings
 
 = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
   != render :partial => 'form', :locals => { :f => f }
 
   %p
     = f.label :current_password
-    %i (we need your current password to confirm your changes)
+    %i (we need your current password to make changes)
     %br/
     = f.password_field :current_password
   %p= f.submit "Update"

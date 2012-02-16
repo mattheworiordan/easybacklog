@@ -12,6 +12,9 @@ Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|
 end
 
 When /^(?:|I )sign out$/ do
-  step %{I click on the "user account dropdown" within "top nav"}
+  supports_javascript = page.evaluate_script('true') rescue false
+  if supports_javascript
+    step %{I click on the "user account dropdown" within "top nav"}
+  end
   step %{I follow "Sign out" within "top nav"}
 end

@@ -213,3 +213,36 @@ Feature: Account
       And I should not see "Backlog uno"
       And I should see "Backlog duo"
       And within the "dashboard company or account fields" there should be a clickable element with the text "Company with access"
+
+  Scenario: User updates their settings
+    Given an account called "Acme" is set up for "John" who should have no rights
+    When I am on the home page
+      And I follow "John"
+      And I follow "My settings"
+    Then I should see "Edit My Settings" within the "primary page heading"
+      And I should see the page title "Edit My Settings"
+      And the "Full name" field should contain "John"
+      And the "Email" field should contain "john@acme.com"
+    When I fill in "Email" with ""
+      And I press "Update"
+    Then I should see the following error messages:
+      | Email can't be blank              |
+      | Current password can't be blank   |
+    When I fill in "Full name" with "Michael"
+      And I fill in "Email" with "michael@acme.com"
+      And I fill in "Password" with "new_password"
+      And I fill in "Current password" with "password"
+      And I press "Update"
+    Then I should see the following error messages:
+      | Password doesn't match confirmation |
+    When I fill in "Password" with "new_password"
+      And I fill in "Password confirmation" with "new_password"
+      And I fill in "Current password" with "password"
+      And I press "Update"
+    Then I should see "Your settings have been updated"
+    When I sign out
+      And I follow "Log In"
+      And I fill in "Email" with "michael@acme.com"
+      And I fill in "Password" with "new_password"
+      And I press "Log in"
+    Then I should see the notice "Signed in successfully"
