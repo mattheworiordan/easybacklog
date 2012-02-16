@@ -100,6 +100,8 @@ class AdminController < ApplicationController
 
   def export
     data = case params[:data]
+    when 'all_users'
+      [['full name','first name','email']].concat(User.all.map { |d| [d.name, d.name.split(' ').first.titleize, d.email] }).map{ |d| d.join(',') }.join("\n")
     when 'beta_signup'
       [['name','email']].concat(BetaSignup.all.map { |d| ['beta tester', d.email] }).map{ |d| d.join(',') }.join("\n")
     when 'not_signed_up_7_days'
