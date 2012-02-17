@@ -759,6 +759,10 @@ ul.themes {
             left: 0px;
             margin: 2px 0 2px 0;
           }
+          /* place holder is shown when a list is empty and dragging across lists */
+          &.placeholder {
+            height: 1px;
+          }
           &>.unique-id {
             @include table-col($col-unique-id-width);
             >.data {

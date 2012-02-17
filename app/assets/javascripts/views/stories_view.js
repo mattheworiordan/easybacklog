@@ -37,7 +37,7 @@ App.Views.Stories = {
           start: function(event, ui) {
             // hide the new story button when dragging
             actionsElem = view.$('>.actions').clone();
-            view.$('>.actions').remove();
+            $('ul.stories li.actions').remove();
             view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
             // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip
             //  won't do anything until dragging is over
@@ -46,10 +46,17 @@ App.Views.Stories = {
             view.$('.move-story').removeClass('vtip');
             // because drag does not let events propogage the color picker remains, so manually hide
             $('.color-picker').hide();
+            // add a place holder into empty themes
+            $('ul.themes li.theme>.stories>ul.stories').each(function(index, stories) {
+              if ($(stories).find('li.story').length === 0) {
+                $(stories).prepend('<li class="story placeholder"></li>');
+              }
+            });
           },
           stop: function(event, ui) {
             var themeId, newTheme, storyId, storyLi;
             App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
+            $('ul.themes li.story.placeholder').remove(); // clear placeholders
             if ($(view.el).parents('li.theme')[0] !== $(event.target).parents('li.theme')[0]) {
               // user has dragged story to a new a theme
               themeId = $(event.target).parents('li.theme').attr('id').replace('theme-','');
@@ -76,7 +83,9 @@ App.Views.Stories = {
               orderChangedEvent();
             }
             // show the new story button again
-            $(view.el).append(actionsElem);
+            $('ul.stories').each(function(index, stories) {
+              $(stories).append(actionsElem);
+            });
             // add the tips back in to work around jQuery UI and vTip conflict on Firefox
             view.$('.move-story').addClass('vtip');
           },
