@@ -4,4 +4,7 @@
 # Mime::Type.register "text/richtext", :rtf
 # Mime::Type.register_alias "text/html", :iphone
 Mime::Type.register "application/msexcel", :xls
-# Mime::Type.register "application/pdf", :pdf
+
+# specify TTF mime type at Rack level as Sprockets uses Rack to resolve mime types
+Mime::Type.register "font/truetype", :ttf
+Rack::Mime::MIME_TYPES[".ttf"] = "font/truetype"
