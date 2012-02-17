@@ -34,6 +34,8 @@ module Ibacklog
 
     Dir["#{Rails.root}/lib/core_extensions/*.rb"].each { |file| require file }
 
+    config.fonts_domain = ""
+
     config.assets.enabled = true
 
     # pre-compile all javascript/scss files in assets/stylesheets, assets/javascripts, assets/javascripts/sections
