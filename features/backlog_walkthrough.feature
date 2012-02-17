@@ -59,7 +59,7 @@ Feature: Backlog
     # get the user to filter the completed stories using the roll over menu
     Then I should see the text "Filtering Done Stories" within the visible guider
     When I hover over the "filter menu"
-      And I check "Hide completed stories in the backlog"
+      And I check "Hide completed stories"
     # get the user to filter the completed stories using the roll over menu
     Then I should see the text "Filtered view" within the visible guider
     When I follow "Remove filter"

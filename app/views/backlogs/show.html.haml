@@ -39,8 +39,12 @@
 
 .filter-container
   %form
-    = check_box_tag 'filter_completed'
-    = label_tag 'filter_completed', 'Hide completed stories in the backlog'
+    %div
+      = check_box_tag 'filter_completed'
+      = label_tag 'filter_completed', 'Hide completed stories'
+    %div
+      = check_box_tag 'filter_assigned'
+      = label_tag 'filter_assigned', 'Hide stories assigned to sprints'
 
 #backlog-data-area
   .actions

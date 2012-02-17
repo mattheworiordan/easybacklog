@@ -177,6 +177,9 @@ module HtmlSelectorHelpers
     when /^done stor(?:y|ies)$/
       'ul.themes li.theme li.story.locked:visible'
 
+    when /^assigned to sprint stor(?:y|ies)$/
+      'ul.themes li.theme li.story:has(.sprint-story-info .status .tab):visible'
+
     ##
     # Acceptance criteria
     when /^edit acceptance criteria field within (?:the )?(.*)$/

@@ -154,7 +154,7 @@ $(function() {
     buttons: [],
     title: 'Filtering Done Stories',
     description: 'When stories are assigned to sprints, they will be assigned a status such as To Do, In Progress or Done.  When viewing and editing the backlog, it is often useful to filter out all Done stories so that you can see which stories are still remaining.' +
-      "<br><br><b>Now roll over 'Filter' above, and click on 'Hide completed stories in the backlog' to filter out all Done stories</b>",
+      "<br><br><b>Now roll over 'Filter' above, and click on 'Hide completed stories' to filter out all Done stories</b>",
     id: 'backlog.filter',
     next: 'backlog.filtered',
     attachTo: '#backlog-data-area .actions a:contains(Filter)',

@@ -99,6 +99,7 @@ App.Views.BacklogDataArea = {
       });
     },
 
+    // Need this roll over code simply because a CSS solution would not work as div gets hidden beneath fixed position items
     enableFilterMenu: function() {
       var overEitherNode = false,
           selectIsOpen = false,
@@ -125,24 +126,32 @@ App.Views.BacklogDataArea = {
           },
           filterChangeEvent = function(event) {
             var backlog = App.Collections.Backlogs.at(0),
-                hideCompleted = ($(event.target).is(':checked'));
+                isHiding = ($(event.target).is(':checked')),
+                filterType = $(event.target).attr('id').replace(/^filter_/, '');
+
+            // uncheck other boxes
+            $('section.for-backlog .filter-container input[type=checkbox]:not(#' + $(event.target).attr('id') + ')').removeAttr('checked');
 
             // show filtering notice if filtering
-            if (hideCompleted) {
+            if (isHiding) {
               $('.filter-notifier').slideDown();
               // store filtering preference for session
-              $.cookie('filter_completed_stories', true);
+              $.cookie('filter_stories', filterType);
             } else {
               $('.filter-notifier').slideUp();
               // delete the cookie preference
-              $.cookie('filter_completed_stories', null);
+              $.cookie('filter_stories', null);
             }
 
             // iterate through each story that is completed and hide
             backlog.Themes().each(function(theme) {
               theme.Stories().each(function(story) {
-                if (story.SprintStory() && story.SprintStory().Status().IsDone()) {
-                  if (hideCompleted) {
+                if (story.SprintStory())
+                {
+                  if (isHiding && (
+                        ((filterType === 'completed') && story.SprintStory().Status().IsDone()) ||
+                        (filterType === 'assigned')
+                      ) ) {
                     $('#story-' + story.get('id')).slideUp();
                   } else {
                     $('#story-' + story.get('id')).slideDown();
@@ -168,12 +177,13 @@ App.Views.BacklogDataArea = {
       $('.filter-notifier a').click(filterNoticeClicked)
 
       // keep preference in session of whether to show completed stories or not
-      if ($.cookie('filter_completed_stories')) {
+      if ($.cookie('filter_stories')) {
         // wait until the page has rendered
         _.delay(function() {
-          var filterCheckbox = $('.filter-container input[type=checkbox]').attr('checked', 'checked');
+          var filterType = $.cookie('filter_stories'),
+              filterCheckbox = $('.filter-container input#filter_' + filterType + '[type=checkbox]').attr('checked', 'checked');
           filterChangeEvent({ target: filterCheckbox });
-          // interface has moved, so blur the selected item, and show the editable text again
+          // interface has moved because the notice is showing at the top of the page, so blur the selected item, and show the editable text again
           var focus = $('input[name=value]').parents('.data');
           if (focus) {
             $('input[name=value]').blur();
