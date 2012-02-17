@@ -59,6 +59,25 @@ $handwritten-font: 'DakotaRegular', Arial, Helvetica, sans-serif;
     font-style: normal;
 }
 
+/* firefox needs fonts from the same domain */
+@-moz-document url-prefix() {
+  @font-face {
+    font-family: 'ClarendonRoman';
+    src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
+  }
+
+  @font-face {
+      font-family: 'DakotaRegular';
+      src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.woff') format('woff'),
+         url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.ttf')  format('truetype'),
+         url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.svg#svgFontName') format('svg');
+  }
+}
+
 body {
   background-color: #E9E9E9;
   font-family: "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
