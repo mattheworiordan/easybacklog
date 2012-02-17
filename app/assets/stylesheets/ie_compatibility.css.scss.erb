@@ -1,0 +1,33 @@
+@mixin ie-hack-transparency-hack {
+  background: transparent;
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorStr=#99FFFFFF,endColorStr=#99FFFFFF);
+  zoom: 1;
+}
+
+ul.stories {
+  li.story {
+    &>.unique-id {
+      &>div.data { @include ie-hack-transparency-hack }
+    }
+    &>.user-story, &>.acceptance-criteria, &>.comments { @include ie-hack-transparency-hack }
+    &>.score-50, &>.score-90 {
+      &>div { @include ie-hack-transparency-hack }
+    }
+  }
+}
+
+@font-face {
+    font-family: 'ClarendonRoman';
+    src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
+}
+
+@font-face {
+    font-family: 'DakotaRegular';
+    src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.woff') format('woff'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.ttf')  format('truetype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.svg#svgFontName') format('svg');
+}
