@@ -20,10 +20,14 @@ optparse = OptionParser.new do |opts|
   # of the help screen.
   opts.banner = "Usage: deploy [environment] [--rebase]"
 
-  # Define the options, and what they do
   options[:rebase] = false
   opts.on('-r', '--rebase', 'Rebase the environment branch onto the current branch (use when assets have not changed but repository has)') do
     options[:rebase] = true
+  end
+
+  options[:compile] = false
+  opts.on('-c', '--compile', 'Compile the assets first using compile script)') do
+    options[:compile] = true
   end
 
   opts.on('-h', '--help', 'Display this help screen') do
@@ -42,6 +46,14 @@ if (!ENVIRONMENTS.include?(environment))
   puts "Error: Environment '#{environment}' is not valid.  Please use: #{ENVIRONMENTS.join(', ')}"
   exit false
 else
+  if options[:compile]
+    compile_path = File.join(File.dirname(__FILE__), '../script')
+    unless system("#{compile_path}/compile #{environment}")
+      puts "Error: Unable to pre-compile assets for environment #{environment} so aborting."
+      exit false
+    end
+  end
+
   current_branch = %x[git branch].match(/\*\s(.*)/)
 
   # rebase the environment branch onto the current branch and then deploy
