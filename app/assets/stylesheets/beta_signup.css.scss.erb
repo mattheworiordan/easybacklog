@@ -38,44 +38,25 @@ $handwritten-font: 'DakotaRegular', Arial, Helvetica, sans-serif;
 
 /* fonts generated from http://www.fontsquirrel.com/ */
 /* revised format basedd on http://www.fontspring.com/blog/the-new-bulletproof-font-face-syntax */
-/* IE must load fonts from application domain, so this font-face declaration is overwritten in ie_compatibility */
+/* IE and Firefox must load fonts from application domain, so just load all fonts from there */
 @font-face {
-    font-family: 'ClarendonRoman';
-    src: url('/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
-       url('/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
-       url('/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'ClarendonRoman';
+  src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
+     url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
+     url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
+     url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
     font-family: 'DakotaRegular';
-    src: url('/assets/fonts/dakota-regular-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/assets/fonts/dakota-regular-webfont.woff') format('woff'),
-       url('/assets/fonts/dakota-regular-webfont.ttf')  format('truetype'),
-       url('/assets/fonts/dakota-regular-webfont.svg#svgFontName') format('svg');
-    font-weight: normal;
-    font-style: normal;
-}
-
-/* firefox needs fonts from the same domain */
-@-moz-document url-prefix() {
-  @font-face {
-    font-family: 'ClarendonRoman';
-    src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
-       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
-       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
-       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
-  }
-
-  @font-face {
-      font-family: 'DakotaRegular';
-      src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.woff') format('woff'),
-         url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.ttf')  format('truetype'),
-         url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.svg#svgFontName') format('svg');
-  }
+    src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.eot?#iefix') format('embedded-opentype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.woff') format('woff'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.ttf')  format('truetype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/dakota-regular-webfont.svg#svgFontName') format('svg');
+  font-weight: normal;
+  font-style: normal;
 }
 
 body {

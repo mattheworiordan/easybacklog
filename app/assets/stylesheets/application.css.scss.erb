@@ -9,23 +9,12 @@
 /* IE must load fonts from application domain, so this font-face declaration is overwritten in ie_compatibility */
 @font-face {
     font-family: 'ClarendonRoman';
-    src: url('/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
-       url('/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
-       url('/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
-       url('/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
+    src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
+       url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
     font-weight: normal;
     font-style: normal;
-}
-
-/* firefox needs fonts from the same domain */
-@-moz-document url-prefix() {
-    @font-face {
-        font-family: 'ClarendonRoman';
-        src: url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.eot?#iefix') format('embedded-opentype'),
-           url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.woff') format('woff'),
-           url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.ttf')  format('truetype'),
-           url('<%=Rails.configuration.fonts_domain%>/assets/fonts/clarendon-bt-webfont.svg#svgFontName') format('svg');
-    }
 }
 
 @import 'partials/extensions';
