@@ -68,9 +68,11 @@ class Theme < ActiveRecord::Base
   end
 
   def add_existing_story(story)
+    # don't allow a story to be moved to another backlog for security reasons
     raise StoryCannotbeMoved if story.theme.backlog != backlog
     story.theme_id = id
-    story.unique_id = nil
+    # don't change the unique ID unless there is a conflict
+    story.unique_id = nil unless stories.where(:unique_id => story.unique_id).blank?
     story.save!
   end
 
