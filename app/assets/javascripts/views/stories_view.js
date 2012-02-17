@@ -84,7 +84,7 @@ App.Views.Stories = {
             }
             // show the new story button again
             $('ul.stories').each(function(index, stories) {
-              $(stories).append(actionsElem);
+              $(stories).append(actionsElem.clone());
             });
             // add the tips back in to work around jQuery UI and vTip conflict on Firefox
             view.$('.move-story').addClass('vtip');
