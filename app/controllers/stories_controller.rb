@@ -40,6 +40,7 @@ class StoriesController < ApplicationController
     @story = @theme.stories.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
       @story.update_attributes safe_story_params
+      @story.ensure_send_statistics if params[:force_send_statistics] # allow stats to be force sent with this update, needed when a story is moved to a new theme
       if @story.save
         render :json => story_json
       else
@@ -125,6 +126,6 @@ class StoriesController < ApplicationController
     end
 
     def safe_story_params
-      safe_params :theme_id, :cost_formatted, :days_formatted, :sprint_story_status_id, :sprint_story_id, :score_statistics
+      safe_params :theme_id, :cost_formatted, :days_formatted, :sprint_story_status_id, :sprint_story_id, :score_statistics, :force_send_statistics
     end
 end

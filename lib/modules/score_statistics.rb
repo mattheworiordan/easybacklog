@@ -10,7 +10,7 @@ module ScoreStatistics
   # returns score stats for backlog & child themes if relevant model fields have changed
   #   option :force => true to force return of stats even if nothing in model has changed
   def score_statistics(options = {})
-    if options.include?(:force) || (@score_changed && !@score_changed.empty?)
+    if options.include?(:force) || (@score_changed && !@score_changed.empty?) || @ensure_send_statistics
       backlog = case
         when self.kind_of?(Backlog) then self
         when self.kind_of?(Theme) then self.backlog
@@ -36,6 +36,11 @@ module ScoreStatistics
       stats[:days] = backlog.days if backlog.days_estimatable?
       stats
     end
+  end
+
+  # allow the sending of statistics even if score has not changed
+  def ensure_send_statistics
+    @ensure_send_statistics = true
   end
 
   private

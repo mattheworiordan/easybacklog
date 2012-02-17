@@ -48,17 +48,18 @@ App.Views.Stories = {
             $('.color-picker').hide();
           },
           stop: function(event, ui) {
-            var themeId, newTheme, storyId;
+            var themeId, newTheme, storyId, storyLi;
             App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
-            orderChangedEvent();
             if ($(view.el).parents('li.theme')[0] !== $(event.target).parents('li.theme')[0]) {
               // user has dragged story to a new a theme
               themeId = $(event.target).parents('li.theme').attr('id').replace('theme-','');
-              storyId = $(event.target).parents('li.story').attr('id').replace('story-','');
+              storyLi = $(event.target).is('li.story') ? $(event.target) : $(event.target).parents('li.story');
+              storyId = storyLi.attr('id').replace('story-','');
               newTheme = view.collection.theme.Backlog().Themes().get(Number(themeId));
               newTheme.AddExistingStory(storyId, {
                 success: function() {
-                  view.orderChanged($(event.target).parents('ul.stories').find('>li.story'), newTheme.Stories());
+                  orderChangedEvent({ reloadStatistics: true });
+                  orderChangedEvent({ reloadStatistics: true }, $(event.target).parents('ul.stories').find('>li.story'), newTheme.Stories());
                 },
                 error: function(event) {
                   var errorView, errorMessage = 'Server error trying to move story to new theme. Please reload this page.';
@@ -71,6 +72,8 @@ App.Views.Stories = {
                   }
                 }
               });
+            } else {
+              orderChangedEvent();
             }
             // show the new story button again
             $(view.el).append(actionsElem);
@@ -146,7 +149,7 @@ App.Views.Stories = {
     },
 
     // method is called after JQuery UI re-ordering
-    orderChanged: function(storyList, storyCollection) {
+    orderChanged: function(options, storyList, storyCollection) {
       var orderIndexesWithIds = {};
       if (!storyList) { storyList = this.$('li.story'); }
       if (!storyCollection) { storyCollection = this.collection; }
@@ -157,7 +160,7 @@ App.Views.Stories = {
         }
       });
       if (window.console) { console.log('Order changed and saving - ' + JSON.stringify(orderIndexesWithIds)); }
-      storyCollection.saveOrder(orderIndexesWithIds);
+      storyCollection.saveOrder(orderIndexesWithIds, options);
     }
   }),
 

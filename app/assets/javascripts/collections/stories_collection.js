@@ -16,12 +16,13 @@ var StoriesCollection = Backbone.Collection.extend({
     this.theme = options ? options.theme : null;
   },
 
-  saveOrder: function(idOrderCollection) {
+  saveOrder: function(idOrderCollection, options) {
     var thisCollection = this;
     _.each(idOrderCollection, function(index, key) {
       var story = thisCollection.get(key);
       if (story) { // might not exist as not yet saved
         story.set({ 'position': idOrderCollection[key] });
+        if (options && options.reloadStatistics) { story.set({ 'force_send_statistics': true }); } // allow stats to be force reloaded even if points has not changed
         story.save();
       }
     });
