@@ -1,6 +1,7 @@
 - title "#{@backlog.name} – #{@backlog.company.present? ? @backlog.company.name : @backlog.account.name}"
 - content_for :head do
   = javascript_include_tag 'backlog'
+  = stylesheet_link_tag 'backlog'
   - if is_example_backlog?
     = stylesheet_link_tag 'backlog_walkthrough', :media => 'all'
 

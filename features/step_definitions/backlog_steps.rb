@@ -288,6 +288,22 @@ Then /^the "([^"]*)" tab should be selected$/ do |tab|
 end
 
 ##
+# Action menus
+When /^I (re-number|delete) the (.*) theme$/ do |action, index|
+  step %{I click "action menu icon of the #{index} theme"}
+  step %{I click "#{action} of the #{index} theme"}
+  # allow enough time for event to propagate and dialog to appear
+  sleep 0.1
+end
+
+When /^I (move|delete|duplicate) the (.*) story(| within the .*)$/ do |action, index, within|
+  step %{I click "#{index} story's action menu icon#{within}"}
+  step %{I click "#{index} story's #{action}#{within}"}
+  # allow enough time for event to propagate and dialog to appear
+  sleep 0.1
+end
+
+##
 # Server communication and verification
 #
 

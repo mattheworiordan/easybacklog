@@ -78,15 +78,15 @@ Feature: Backlog Stories
       | first   |
       | second  |
       | third   |
-    When I click on the "first story's duplicate"
+    When I duplicate the first story
       And I wait for 0.5 seconds
     Then there should be 4 "story" elements
 
-    When I click on the "second story's delete"
+    When I delete the second story
       And I press "Cancel" within "the dialog"
       And I wait for 0.5 seconds
     Then there should be 4 "story" elements
-    When I click on the "second story's delete"
+    When I delete the second story
       And I press "Delete" within "the dialog"
       And I wait for 0.5 seconds
     Then there should be 3 "story" elements
@@ -95,7 +95,7 @@ Feature: Backlog Stories
     When the focus is on the "first theme's add story button"
     And I press enter and wait for AJAX
     Then there should be 4 "story" elements
-    When I click on the "fourth story's delete"
+    When I delete the fourth story
       And I wait for 0.5 seconds
     Then there should be 3 "story" elements
 
@@ -148,7 +148,7 @@ Feature: Backlog Stories
     Then story with as equal to "third" should be in position 1
       And the story with as equal to "second" should be in position 2
       And the story with as equal to "first" should be in position 3
-    When I click on the "second story's drag handle" within the "second theme"
+    When I move the second story within the second theme
     Then I should see "Move story" within "the dialog"
       And "Theme 2" should be selected for the "move story dialog theme drop down"
     When I select "Theme 1" from "#theme-target"
@@ -229,7 +229,7 @@ Feature: Backlog Stories
     Then the "first story's 50 score" should allow the values "0,0.3,5,27.6"
       And the "first story's 90 score" should not allow the values "-1,-0.5"
 
-  @javascript
+  @selenium
   Scenario: Check that single score configuration works (not using 50/90 rules, so only one score field)
     When I follow "Settings"
       And I uncheck "Use the 50/90 estimation method"
@@ -244,7 +244,7 @@ Feature: Backlog Stories
     When I change the current editable text to "as"
       And I tab forwards and wait for AJAX
     # the story should have been persisted to the database now
-    Then I should see "0" within the "first story's days"
+    Then I should see "0.0" within the "first story's days"
     # skip straight to single score field
     When I tab forwards 4 times
       And I change the current editable text to "3"

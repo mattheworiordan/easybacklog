@@ -3,8 +3,16 @@
     <div class="data"><%= htmlEncode(model.get('name')) %></div>
   </div>
   <div class="theme-actions">
-    <div class="delete-theme"><a href="#delete-theme" class="ui-icon ui-icon-trash vtip" title="Delete this theme"></a></div>
-    <div class="re-number-stories"><a href="#re-number-stories" class="ui-icon ui-icon-shuffle vtip" title="Re-number the stories in this theme"></a></div>
+    <div class="action-menu-icon">
+      <ul class="action-menu-menu">
+        <li class="delete-theme">
+          <a class="ui-icon ui-icon-trash"></a><a class="title">Delete this theme</a>
+        </li>
+        <li class="re-number-stories">
+          <a class="ui-icon ui-icon-shuffle"></a><a class="title">Reset ID numbers of stories within this theme</a>
+        </li>
+      </ul>
+    </div>
   </div>
   <div class="code">
     <div class="heading"><%= I18n.t('code', 'Code') %>:</div>

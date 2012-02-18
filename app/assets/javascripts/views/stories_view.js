@@ -233,6 +233,8 @@ App.Views.Stories = {
                    '#ffe599', '#b6d7a8', '#b4a7d6', '#d5a6bd',
                    '#e06666', '#f6b26b', '#ffd966', '#93c47d']
         });
+
+        App.Views.Helpers.enableActionMenu(this, '.story-actions');
       } else {
         // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
         if (!this.model.IsLocked()) {

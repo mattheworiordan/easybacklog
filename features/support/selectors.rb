@@ -97,10 +97,17 @@ module HtmlSelectorHelpers
       position = string_quantity_to_numeric_pseudo_selector($1)
       "li.theme:#{position}"
 
-    when /^(re-number|delete) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
-      selector = $1 == 're-number' ? '.re-number-stories' : '.delete-theme'
+    when /^(action menu icon|re-number|delete) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
+      selector = case $1
+        when 're-number'
+          '.re-number-stories a:first-child'
+        when 'delete'
+          '.delete-theme a:first-child'
+        when 'action menu icon'
+          '.action-menu-icon'
+      end
       position = string_quantity_to_numeric_pseudo_selector($2)
-      "li.theme:#{position} .theme-actions #{selector} a"
+      "li.theme:#{position} .theme-actions #{selector}"
 
     when /^backlog data area$/
       '#backlog-container'
@@ -142,11 +149,13 @@ module HtmlSelectorHelpers
       when 'score'
         '.score .data'
       when 'duplicate'
-        '.story-actions .duplicate-story a'
+        '.story-actions .duplicate-story a:first-child'
       when 'delete'
-        '.story-actions .delete-story a'
-      when 'drag handle'
-        '.move-story a'
+        '.story-actions .delete-story a:first-child'
+      when 'move'
+        '.move-story a:first-child'
+      when 'action menu icon'
+        '.action-menu-icon'
       when /colou?r picker/
         '.color-picker-icon a'
       when 'status tab'

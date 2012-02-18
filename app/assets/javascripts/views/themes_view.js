@@ -163,10 +163,10 @@ App.Views.Themes = {
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
+        App.Views.Helpers.enableActionMenu(this, '.theme-actions');
       } else {
         this.$('ul.stories>li.actions').remove();
-        this.$('.re-number-stories a').remove();
-        this.$('.delete-theme>a').remove();
+        this.$('.theme-actions').remove();
 
         // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
         if (!this.model.IsLocked()) {

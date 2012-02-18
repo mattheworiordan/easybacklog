@@ -219,5 +219,44 @@ App.Views.Helpers = {
       $(target).css('box-shadow', boxShadowCss).css('-moz-box-shadow', boxShadowCss).css('-webkit-box-shadow', boxShadowCss).css('-o-box-shadow', boxShadowCss);
     }
     return colorWithoutHex;
+  },
+
+  enableActionMenu: function(view, actionsContainer) {
+    // because the li is using overflow:hidden we have to clone the menu and add it to the #backlog-container instead
+    // events have to be relayed up to the original menu so that the view events are triggered
+    var container = view.$(actionsContainer);
+    container.find('.action-menu-icon').on('click', function() {
+      var originalMenu = container.find('.action-menu-icon .action-menu-menu'),
+          menu = originalMenu.clone().css('position', 'absolute').attr('id', 'action-menu-menu'),
+          source = this,
+          visibleActionMenu = $(source).hasClass('selected'),
+          hideCallBack = function() {
+            $(document).off('click.actionMenu');
+            $('#backlog-container #action-menu-menu').remove();
+            $(source).removeClass('selected');
+          };
+
+      if (visibleActionMenu) {
+        hideCallBack();
+      } else {
+        $(source).addClass('selected');
+        // show the menu
+        $('#backlog-container').append(menu);
+        menu.position({
+            of: container.find('.action-menu-icon'),
+            my: 'left top',
+            at: 'left bottom',
+            offset: "0 0"
+          });
+        // click anywhere else and hide
+        _.delay(function () {
+          $(document).on('click.actionMenu', hideCallBack);
+        });
+        // relay events up to original
+        menu.on('click', 'a', function(event) {
+          originalMenu.find('li.' + $(this).parent('li').attr('class') + ' a').trigger(event);
+        });
+      }
+    });
   }
 }

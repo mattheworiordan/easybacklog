@@ -38,8 +38,8 @@ Feature: Backlog Themes
     # we now have 3 themes
     Then there should be 3 "theme" elements
 
-    # delete the middle theme by clicking the icon
-    When I click "delete of the second theme"
+    # delete the middle theme
+    When I delete the second theme
       # and then the dialog
       And I press "Delete" within "a dialog"
       And I wait 0.50 seconds
@@ -170,7 +170,7 @@ Feature: Backlog Themes
       | first   | 5         |
       | second  | 10        |
       | third   | 15        |
-    When I click "re-number of the first theme"
+    When I re-number the first theme
       And I press "Re-number" within "the dialog"
       And I wait for 2 seconds
     Then I should see "TH11" within the "first story's unique ID"
