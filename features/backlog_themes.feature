@@ -8,11 +8,8 @@ Feature: Backlog Themes
       And a user named "John" is registered
       And I am signed in as "John"
       And an account called "Acme" is set up for "John"
-      And I am on the accounts page
-      And I follow "Create a new backlog"
-      And I fill in "Name the backlog" with "My First Backlog"
-      And I press "Create new backlog"
-    Then I should see the notice "Backlog was successfully created."
+      And a standard backlog named "My First Backlog" is set up for "Acme"
+      And I am on the backlog "My First Backlog" page
 
   @javascript
   Scenario: Add a new theme and check codes
@@ -183,4 +180,51 @@ Feature: Backlog Themes
         | first   | 1         |
         | second  | 2         |
         | third   | 3         |
+
+  @javascript
+  Scenario: Show a user a warning when trying to assign stories to a sprint when no sprints exist
+    When I assign stories to a sprint for the first theme
+    Then I should see the warning "You have not created any sprints yet"
+    When I click on the "add sprint button"
+      And I press "Create"
+      And I follow "Mark sprint as complete"
+      And I click on "Backlog backlog tab"
+      And I assign stories to a sprint for the first theme
+    Then I should see the warning "All sprints are marked as complete"
+
+  @javascript
+  Scenario: Allow user to assign all stories within a theme to a sprint
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    # set up another incomplete sprint
+    When I click on the "add sprint button"
+      And I press "Create"
+      And I click on "Backlog backlog tab"
+    When I assign stories to a sprint for the first theme
+    Then I should see the warning "All stories are already assigned to a sprint"
+    When I assign stories to a sprint for the second theme
+    Then a "assign story dialog box" should be visible
+      And "Select a sprint" should be selected for "Assign stories"
+    When I select "Sprint 4" from "Assign stories"
+      And I press "Assign"
+      And I wait for 1 second
+    Then I should see the notice "3 stories have been assigned to sprint 4"
+      And the first story within the second theme should be assigned to sprint 4
+      And the third story within the second theme should be assigned to sprint 4
+    # now unassign just one story so that we can reassign and ensure only one story is assigned
+    When I assign to a sprint the first story within the first theme
+    Then "Sprint 3" should be selected for "Assign story"
+    When I select "None - remove from sprint 3" from "Assign story"
+      And I press "Assign"
+      And I wait for 0.5 seconds
+    Then the first story within the first theme should not be assigned to a sprint
+    When I assign stories to a sprint for the first theme
+    Then a "assign story dialog box" should be visible
+    When I select "Sprint 3" from "Assign stories"
+      And I press "Assign"
+      And I wait for 1 second
+    Then I should see the notice "1 story has been assigned to sprint 3"
+      And the first story within the first theme should be assigned to sprint 3
+      And the second story within the first theme should be assigned to sprint 1
+      And the third story within the first theme should be assigned to sprint 2
 

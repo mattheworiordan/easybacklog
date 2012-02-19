@@ -1,0 +1,23 @@
+<div id="dialog-assign-sprint" title="Assign stories to sprint">
+  <div class="error-message"></div>
+  <p>
+    <span class="ui-icon ui-icon-tag" style="float:left; margin:0 7px 20px 0;" />
+    The <%= unassignedStories.length %> stor<%= (unassignedStories.length == 1 ? 'y that is not' : 'ies that are not') %> assigned to a sprint will be assigned when you click Apply.
+    <br>
+    <br>
+    <label for="sprint-target">
+      Assign stories to sprint:
+    </label>
+  </p>
+  <p>
+    <form>
+    <select id="sprint-target">
+      <option value="">Select a sprint ...</option>
+      <% _(sprints).each(function(sprint) { %>
+        <option value="<%=sprint.get('id')%>">Sprint <%=sprint.get('iteration')%></option>
+      <% }); %>
+    </select>
+    </form>
+  </p>
+  <p class="progress-placeholder"></p>
+</div>

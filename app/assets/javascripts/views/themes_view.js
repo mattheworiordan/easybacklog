@@ -146,7 +146,8 @@ App.Views.Themes = {
     events: {
       "click .delete-theme>a": 'remove',
       "click .re-number-stories a": 'reNumberStories',
-      "click .re-order-themes a": 'reOrderThemes'
+      "click .re-order-themes a": 'reOrderThemes',
+      "click .assign-stories-sprint a": 'assignStoriesToSprint'
     },
 
     initialize: function() {
@@ -363,6 +364,79 @@ App.Views.Themes = {
 
     reOrderThemes: function() {
       $('ul.themes .actions a.reorder-themes:first').trigger('click');
+    },
+
+    assignStoriesToSprint: function() {
+      var view = this,
+          sprints = this.model.Backlog().Sprints(),
+          incompleteSprints = sprints.reject(function(sprint) { return sprint.IsComplete(); }),
+          stories = this.model.Stories(),
+          unassignedStories = stories.reject(function(story) { return story.SprintStory(); });
+
+      if (sprints.length === 0) {
+        new App.Views.Warning({ message: 'You have not created any sprints yet.<br>Click on the Sprints tab to add a sprint first.'});
+      } else if (incompleteSprints.length === 0) {
+        new App.Views.Warning({ message: 'All sprints are marked as complete.<br>You need to add a new sprint before you can assign this story.'});
+      } else if (unassignedStories.length === 0) {
+        new App.Views.Warning({ message: 'All stories are already assigned to a sprint.<br>Batch assigning can only be done on stories not assigned to sprints.'});
+      } else {
+        $('#dialog-assign-sprint').remove(); // ensure old dialog HTML is not still in the DOM
+        $('body').append(JST['templates/themes/assign-sprint-dialog']({ theme: this.model, unassignedStories: unassignedStories, sprints: _(incompleteSprints).sortBy(function(sprint) { return sprint.get('iteration'); }).reverse() }));
+        $('#dialog-assign-sprint').dialog({
+          resizable: false,
+          height:240,
+          modal: true,
+          buttons: {
+            Assign: function() {
+              var sprintId = $(this).find('#sprint-target').val(),
+                  assignedStories = 0,
+                  sprint,
+                  dialog = this,
+                  sprintStory;
+
+              if (!sprintId) {
+                $(this).find('div.error-message').html('<p>You must select a sprint first.</p>');
+              } else {
+                $(this).find('div.error-message').html('');
+                $(this).find('.progress-placeholder').html('<p>Please wait while we assign the stories...</p>');
+                $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Working...');
+                $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').hide();
+
+                sprint = view.model.Backlog().Sprints().get(Number(sprintId));
+
+                _(unassignedStories).each(function(story) {
+                  sprintStory = new SprintStory({
+                    story_id: story.get('id'),
+                    sprint_id: sprintId
+                  });
+                  sprint.SprintStories().add(sprintStory);
+                  sprintStory.save(false, {
+                    success: function(model, response) {
+                      assignedStories += 1;
+                      if (assignedStories == unassignedStories.length) {
+                        new App.Views.Notice({ message: assignedStories + (assignedStories == 1 ? ' story has' : ' stories have') + ' been assigned to sprint ' + sprint.get('iteration') });
+                        $(dialog).dialog('close');
+                      }
+                    },
+                    error: function(model, response) {
+                      var errorMessage = "something has gone wrong and we were unable to update the story";
+                      try {
+                        errorMessage = $.parseJSON(response.responseText).message;
+                      } catch (e) { if (window.console) { console.log(e); } }
+                      var errorView = new App.Views.Error({ message: 'Oops, ' + errorMessage + '.<br>Please refresh your browser.' });
+                      $(dialog).dialog('close');
+                    }
+                  });
+                });
+              }
+            },
+
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          }
+        });
+      }
     }
   })
 };
