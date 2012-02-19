@@ -102,13 +102,13 @@ $(function() {
 
   guiders.createGuider({
     title: "Story tools",
-    description: "Each story has a set of tools you can click on to do one of the following<ul><li>Assign a colour to a story</li><li>Delete a story</li><li>Duplicate a story</li><li>Move a story</li></ul>Note: Story tools are only visible on editable stories (ones that are not marked as Done).",
+    description: "Each story has a set of tools you can click on to do one of the following<ul><li>Assign a colour to a story</li><li>Delete a story</li><li>Duplicate a story</li><li>Move a story</li><li>Assign a story to a sprint</li></ul>Note: Story tools are only visible on editable stories (ones that are not marked as Done).",
     id: "story.tools",
     next: 'story.drag',
     attachTo: "li.theme:first li.story:not(.locked):first .story-actions",
     position: 3,
     overlay: true,
-    offset: { left: -15, top: 0 }
+    offset: { left: -50, top: 0 }
   });
 
   guiders.createGuider({
