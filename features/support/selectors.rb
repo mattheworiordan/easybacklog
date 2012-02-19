@@ -97,6 +97,10 @@ module HtmlSelectorHelpers
       position = string_quantity_to_numeric_pseudo_selector($1)
       "li.theme:#{position}"
 
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's stories$/
+      position = string_quantity_to_numeric_pseudo_selector($1)
+      "li.theme:#{position} ul.stories"
+
     when /^(action menu icon|re-number|delete) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
       selector = case $1
         when 're-number'

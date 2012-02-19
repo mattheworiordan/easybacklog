@@ -163,6 +163,28 @@ Feature: Backlog Stories
         | fifth   |
         | fourth  |
 
+  @selenium
+  Scenario: Re-order stories by dragging cross themes
+    # to identify stories we set the "as" field and use that find stories when dragging
+    Given the following stories are created in the first theme:
+      | first   |
+      | second  |
+      | third   |
+    And the following stories are created in the second theme:
+      | fourth  |
+      | fifth   |
+    When I drag story with as equal to "first" to the second theme position 1
+    Then story with as equal to "first" should be in position 3
+    When I drag story with as equal to "fourth" to the first theme position 1
+    Then story with as equal to "fourth" should be in position 1
+      And the server should return story JSON as follows:
+        | as_a    |
+        | fourth  |
+        | second  |
+        | third   |
+        | first   |
+        | fifth   |
+
   @javascript
   Scenario: Colour coding of stories should be working
     Given I create a story with as set to "first" in the first theme

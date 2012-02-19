@@ -241,9 +241,20 @@ When /^I drag story with as equal to "([^"]+)" (down|up) by (\d+) positions?$/ d
   sleep 0.1
 end
 
+When /^I drag story with as equal to "([^"]+)" to the (.+) theme position (\d+)?$/ do |story_as, theme_position, position|
+  page.evaluate_script(%{ $('ul.stories li.story:has(".user-story .as-a .data:contains(#{story_as})")').length }).should > 0
+  theme_position = selector_to("#{theme_position} theme's stories")
+  page.evaluate_script(%{ $('#{theme_position}').length }).should > 0
+  page.execute_script %{
+    $('li.story:has(".user-story .as-a .data:contains(#{story_as})")').
+      simulateDragSortable({ move: #{position.to_i - 1}, listItem: '.story', placeHolder: '.target-order-highlight', dropOn: '#{theme_position}' });
+  }
+  sleep 0.5
+end
+
 Then /^(?:|the )story with as equal to "([^"]+)" should be in position (\d+)$/ do |story_as, position|
   page.evaluate_script(%{$('li.story:has(".user-story .as-a .data:contains(#{story_as})")').attr('id') ===
-    $('li.story:nth-child(#{position})').attr('id')}).should be_true
+    $('li.story:eq(#{position.to_i-1})').attr('id')}).should be_true
 end
 
 Then /^story with as equal to "([^"]*)" should(| not) be in theme "([^"]*)"$/ do |story_as, negation, theme_name|
