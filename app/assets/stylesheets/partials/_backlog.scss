@@ -720,6 +720,7 @@ ul.themes {
       }
       &.selected {
         background: #000 asset-data-url('story-tool-icon-white.png') no-repeat center center;
+        height: 10px;
         border-bottom: 1px solid #666;
         @include single-box-shadow(#333, 0, 0, 4px, 0, false);
       }
