@@ -254,7 +254,7 @@ App.Views.Helpers = {
         });
         // relay events up to original
         menu.on('click', 'a', function(event) {
-          originalMenu.find('li.' + $(this).parent('li').attr('class') + ' a').trigger(event);
+          originalMenu.find('li.' + $(this).parent('li').attr('class') + ' a:first').trigger(event);
         });
       }
     });
