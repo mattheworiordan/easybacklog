@@ -319,7 +319,6 @@ Feature: Backlog Stories
     # set up another incomplete sprint
     When I click on the "add sprint button"
       And I press "Create"
-      And I follow "Mark sprint as complete"
       And I click on "Backlog backlog tab"
     When I assign to a sprint the first story within the first theme
     Then a "assign story dialog box" should be visible

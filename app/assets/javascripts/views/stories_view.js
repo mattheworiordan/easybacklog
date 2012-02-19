@@ -580,10 +580,8 @@ App.Views.Stories = {
     assignToSprint: function(event) {
       var view = this,
           sprints = this.model.Theme().Backlog().Sprints(),
-          incompleteSprints = sprints.reject(function(sprint) { return sprint.IsComplete(); }),
-          errorCallback,
-          successCallback,
-          sprintStory;
+          incompleteSprints = sprints.reject(function(sprint) { return sprint.IsComplete(); });
+
 
       if (sprints.length === 0) {
         new App.Views.Warning({ message: 'You have not created any sprints yet.<br>Click on the Sprints tab to add a sprint first.'});
@@ -602,7 +600,8 @@ App.Views.Stories = {
                   dialog = this,
                   sprint,
                   reassigned = false,
-                  sprintStories;
+                  sprintStories,
+                  sprintStory;
 
               if (!sprintId) {
                 $(this).find('div.error-message').html('<p>You must select a sprint first.</p>');
