@@ -140,6 +140,10 @@ Feature: Backlog Themes
     When I follow "Reorder themes"
     # drag handles are now visible
     Then the "move theme handle" should be visible
+    When I follow "Stop ordering"
+    Then the "move theme handle" should not be visible
+    When I reorder the first theme
+    Then the "move theme handle" should be visible
     When I drag theme "Theme 2" down by 2 positions
     Then theme "Theme 2" should be in position 4
     When I drag theme "Theme 3" up by 1 position

@@ -145,7 +145,8 @@ App.Views.Themes = {
 
     events: {
       "click .delete-theme>a": 'remove',
-      "click .re-number-stories a": 'reNumberStories'
+      "click .re-number-stories a": 'reNumberStories',
+      "click .re-order-themes a": 'reOrderThemes'
     },
 
     initialize: function() {
@@ -358,6 +359,10 @@ App.Views.Themes = {
           $(dialog).dialog("close"); // hide the dialog
         }
       });
+    },
+
+    reOrderThemes: function() {
+      $('ul.themes .actions a.reorder-themes:first').trigger('click');
     }
   })
 };
