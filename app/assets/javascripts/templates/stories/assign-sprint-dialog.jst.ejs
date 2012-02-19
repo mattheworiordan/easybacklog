@@ -1,0 +1,25 @@
+<div id="dialog-assign-sprint" title="Assign story to sprint">
+  <div class="error-message"></div>
+  <p>
+    <span class="ui-icon ui-icon-tag" style="float:left; margin:0 7px 20px 0;" />
+    <label for="sprint-target">
+      Assign story '<%=story.Theme().get('code') + story.get('unique_id')%>' to which sprint?
+    </label>
+  </p>
+  <p>
+    <form>
+    <select id="sprint-target">
+      <% if (!story.SprintStory()) { %>
+        <option value="">Select a sprint ...</option>
+      <% } %>
+      <% _(sprints).each(function(sprint) { %>
+        <option value="<%=sprint.get('id')%>"<% if (story.SprintStory() && (story.SprintStory().Sprint().get('id') === sprint.get('id'))) { %> selected=""<% } %>>Sprint <%=sprint.get('iteration')%></option>
+      <% }); %>
+      <% if (story.SprintStory()) { %>
+        <option value="none">None - remove from sprint <%=story.SprintStory().Sprint().get('iteration')%></option>
+      <% } %>
+    </select>
+    </form>
+  </p>
+  <p class="progress-placeholder"></p>
+</div>

@@ -298,3 +298,39 @@ Feature: Backlog Stories
     Then I should not see the notice "You cannot edit a story that is marked as done"
     When I click on the "second story's as field"
     Then I should see the warning "You cannot edit a story that is marked as done"
+
+  @javascript
+  Scenario: Show a user a warning when trying to assign a story to a sprint when no sprints exist
+    Given the following stories are created in the first theme:
+      | first   |
+    When I assign to a sprint the first story
+    Then I should see the warning "You have not created any sprints yet"
+    When I click on the "add sprint button"
+      And I press "Create"
+      And I follow "Mark sprint as complete"
+      And I click on "Backlog backlog tab"
+      And I assign to a sprint the first story
+    Then I should see the warning "All sprints are marked as complete"
+
+  @javascript
+  Scenario: Allow user to assign, reassign and remove assignment of a story to a sprint
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    # set up another incomplete sprint
+    When I click on the "add sprint button"
+      And I press "Create"
+      And I follow "Mark sprint as complete"
+      And I click on "Backlog backlog tab"
+    When I assign to a sprint the first story within the first theme
+    Then a "assign story dialog box" should be visible
+      And "Sprint 3" should be selected for "Assign story"
+    When I select "Sprint 4" from "Assign story"
+      And I press "Assign"
+      And I wait for 0.5 seconds
+    Then the first story within the first theme should be assigned to sprint 4
+    When I assign to a sprint the first story within the first theme
+    Then "Sprint 4" should be selected for "Assign story"
+    When I select "None - remove from sprint 4" from "Assign story"
+      And I press "Assign"
+      And I wait for 0.5 seconds
+    Then the first story within the first theme should not be assigned to a sprint

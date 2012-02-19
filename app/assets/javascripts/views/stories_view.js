@@ -181,6 +181,7 @@ App.Views.Stories = {
     events: {
       "click .delete-story>a": "remove",
       "click .duplicate-story>a": "duplicate",
+      "click .assign-sprint>a": "assignToSprint",
       "click .status .tab": 'statusChangeClick'
     },
 
@@ -574,6 +575,102 @@ App.Views.Stories = {
       _.delay(function() {
         newStoryDomElem.find('.user-story .as-a>.data').click(); // focus on as_a after enough time for DOM to update
       }, 400);
+    },
+
+    assignToSprint: function(event) {
+      var view = this,
+          sprints = this.model.Theme().Backlog().Sprints(),
+          incompleteSprints = sprints.reject(function(sprint) { return sprint.IsComplete(); }),
+          errorCallback,
+          successCallback,
+          sprintStory;
+
+      if (sprints.length === 0) {
+        new App.Views.Warning({ message: 'You have not created any sprints yet.<br>Click on the Sprints tab to add a sprint first.'});
+      } else if (incompleteSprints.length === 0) {
+        new App.Views.Warning({ message: 'All sprints are marked as complete.<br>You need to add a new sprint before you can assign this story.'});
+      } else {
+        $('#dialog-assign-sprint').remove(); // ensure old dialog HTML is not still in the DOM
+        $('body').append(JST['templates/stories/assign-sprint-dialog']({ story: this.model, sprints: _(incompleteSprints).sortBy(function(sprint) { return sprint.get('iteration'); }).reverse() }));
+        $('#dialog-assign-sprint').dialog({
+          resizable: false,
+          height:170,
+          modal: true,
+          buttons: {
+            Assign: function() {
+              var sprintId = $(this).find('#sprint-target').val(),
+                  dialog = this,
+                  sprint,
+                  reassigned = false,
+                  sprintStories;
+
+              if (!sprintId) {
+                $(this).find('div.error-message').html('<p>You must select a sprint first.</p>');
+              } else {
+                $(this).find('div.error-message').html('');
+                $(this).find('.progress-placeholder').html('<p>Please wait while we update this story...</p>');
+                $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Preparing...');
+                $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').hide();
+
+                if (sprintId === 'none') {
+                  sprintStories = view.model.SprintStory().Sprint().SprintStories();
+                  view.model.SprintStory().destroy({
+                    success: function(model, response) {
+                      sprintStories.remove(sprintStory);
+                      $(dialog).dialog('close');
+                    },
+                    error: function(model, response) {
+                      var errorMessage = 'Oops, we\'ve been unable to unassign that story from the sprint.<br>Please refresh your browser.';
+                      try {
+                        errorMessage = $.parseJSON(response.responseText).message;
+                      } catch (e) { if (window.console) { console.log(e); } }
+                      var errorView = new App.Views.Error({ message: errorMessage});
+                      $(dialog).dialog('close');
+                    }
+                  });
+                } else {
+                  sprint = view.model.Theme().Backlog().Sprints().get(Number(sprintId));
+                  if (view.model.SprintStory()) {
+                    sprintStory = view.model.SprintStory();
+                    sprintStory.set({ move_to_sprint_id: sprintId });
+                    reassigned = true;
+                  } else {
+                    sprintStory = new SprintStory({
+                      story_id: view.model.get('id'),
+                      sprint_id: sprintId
+                    });
+                    sprint.SprintStories().add(sprintStory);
+                  }
+                  sprintStory.save(false, {
+                    success: function(model, response) {
+                      if (reassigned) {
+                        view.model.SprintStory().Sprint().SprintStories().remove(sprintStory);
+                        sprint.SprintStories().add(sprintStory);
+                      }
+                      $(dialog).dialog('close');
+                    },
+                    error: function(model, response) {
+                      if (!reassigned) {
+                        sprint.SprintStories().remove(sprintStory);
+                      }
+                      var errorMessage = "something has gone wrong and we were unable to update the story";
+                      try {
+                        errorMessage = $.parseJSON(response.responseText).message;
+                      } catch (e) { if (window.console) { console.log(e); } }
+                      var errorView = new App.Views.Error({ message: 'Oops, ' + errorMessage + '.<br>Please refresh your browser.' });
+                      $(dialog).dialog('close');
+                    }
+                  });
+                }
+              }
+            },
+
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          }
+        });
+      }
     }
   })
 };

@@ -307,11 +307,24 @@ When /^I (re-number|delete) the (.*) theme$/ do |action, index|
   sleep 0.1
 end
 
-When /^I (move|delete|duplicate) the (.*) story(| within the .*)$/ do |action, index, within|
+When /^I (move|delete|duplicate|assign to a sprint) the (.*) story(| within the .*)$/ do |action, index, within|
   step %{I click "#{index} story's action menu icon#{within}"}
   step %{I click "#{index} story's #{action}#{within}"}
   # allow enough time for event to propagate and dialog to appear
   sleep 0.1
+end
+
+##
+# Sprints
+
+When /^the (.* story)(| within the .* theme) should (not be assigned to a sprint|be assigned to sprint (\d+))/ do |story_path, theme_info, negation, sprint_iteration|
+  story_selector = selector_to("#{story_path}'s sprint tab#{theme_info}")
+  if negation == 'not be assigned to a sprint'
+    script = %{$('#{story_selector}').length == 0}
+  else
+    script = %{$('#{story_selector} a[href="##{sprint_iteration}"]').length > 0}
+  end
+  page.evaluate_script(script).should be_true
 end
 
 ##

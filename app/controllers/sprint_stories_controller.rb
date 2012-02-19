@@ -3,7 +3,7 @@ class SprintStoriesController < ApplicationController
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
 
   METHODS = [:theme_id, :sprint_statistics]
-  INCLUDE_FIELDS = [:id, :story_id, :sprint_story_status_id, :position]
+  INCLUDE_FIELDS = [:id, :story_id, :sprint_story_status_id, :position, :sprint_id]
 
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
@@ -115,6 +115,6 @@ class SprintStoriesController < ApplicationController
     end
 
     def safe_sprint_story_params
-      safe_params :sprint_id, :story_id, :theme_id, :sprint_statistics
+      safe_params :sprint_id, :story_id, :theme_id, :sprint_statistics, :move_to_sprint_id
     end
 end

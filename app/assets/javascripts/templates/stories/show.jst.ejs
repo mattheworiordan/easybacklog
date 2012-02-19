@@ -17,6 +17,9 @@
           <li class="move-story">
             <a class="ui-icon ui-icon-arrow-4"></a><a class="title">Move this story</a>
           </li>
+          <li class="assign-sprint">
+            <a class="ui-icon ui-icon-tag"></a><a class="title">Assign to sprint</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -26,8 +29,6 @@
       <div class="status">
         <div class="tab status-code-<%= model.SprintStory().Status().get('code') %>"><span><%= model.SprintStory().Status().get('status').replace(' ', '&nbsp;') %></span></div>
       </div>
-    <% } %>
-    <% if (model.SprintStory()) { %>
       <div class="sprint"><div class="tab"><a href="#<%= model.SprintStory().Sprint().get('iteration')%>"><%= I18n.t('sprint_lower','sprint')%>&nbsp;<%= model.SprintStory().Sprint().get('iteration')%></a></div></div>
     <% } %>
   </div>

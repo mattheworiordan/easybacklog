@@ -157,13 +157,17 @@ module HtmlSelectorHelpers
       when 'delete'
         '.story-actions .delete-story a:first-child'
       when 'move'
-        '.move-story a:first-child'
+        '.story-actions .move-story a:first-child'
+      when 'assign to a sprint'
+        '.story-actions .assign-sprint a:first-child'
       when 'action menu icon'
         '.action-menu-icon'
       when /colou?r picker/
         '.color-picker-icon a'
       when 'status tab'
         '.sprint-story-info .status .tab'
+      when 'sprint tab'
+        '.sprint-story-info .sprint .tab'
       when nil
         # matching the entire story element
         ''
@@ -192,6 +196,9 @@ module HtmlSelectorHelpers
 
     when /^assigned to sprint stor(?:y|ies)$/
       'ul.themes li.theme li.story:has(.sprint-story-info .status .tab):visible'
+
+    when /^assign story dialog box$/
+      '.ui-dialog #dialog-assign-sprint'
 
     ##
     # Acceptance criteria

@@ -11,18 +11,20 @@ var SprintStory = Backbone.Model.extend({
     // when changes occur to sprint story, relay the changes to the story model
     //  so that we can update the view
     // This is needed when status is changed and we need to update the view accordingly in the Backlog
-    this.bind('change', function(model) {
+    var changesCallback = function(model) {
       if (this.Story()) {
         this.Story().set({ sprint_story_status_id: this.get('sprint_story_status_id'), sprint_story_id: this.get('id') });
       }
-    });
+    };
+    this.bind('change', changesCallback);
+    this.bind('add', changesCallback);
 
     this.bind('remove', function(model) {
       if (this.Story()) {
         // set to minus one instead of null as not used for anything other than tracking changes and null returns false
         this.Story().set({ sprint_story_status_id: -1, sprint_story_id: -1 });
       }
-    })
+    });
   },
 
   Sprint: function() {
