@@ -1032,13 +1032,17 @@ ul.action-menu-menu {
     margin: 0;
     border-top: 1px solid #666;
     padding: 2px 6px;
+    overflow: hidden;
     &:first-child {
       border-top: none;
-    };
+    }
     &:hover {
       background-color: #666;
-    };
-    overflow: hidden;
+    }
+    a:hover {
+      color: #FFF;
+      text-decoration: none;
+    }
   }
   a {
     color: #FFF;
