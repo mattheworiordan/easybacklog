@@ -49,7 +49,7 @@ Feature: Backlog
     When I press the next button within the visible guider
     # asks user to reorder a story (drag & drop), as we're using JS driver and not Selenium it will register the mouse events but not the drag which is fine
     Then I should see the text "Reordering stories" within the visible guider
-    When I drag story with as equal to "investor" up by 1 position
+    When I drag story with as equal to "investor" within the first theme up by 1 position
     # show totals area
     Then I should see the text "Backlog totals" within the visible guider
     When I press the next button within the visible guider

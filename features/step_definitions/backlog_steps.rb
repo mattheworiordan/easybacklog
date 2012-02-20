@@ -231,11 +231,12 @@ Then /^(?:|the )theme "([^"]+)" should be in position (\d+)$/ do |theme_name, po
     $('ul.themes li.theme:nth-child(#{position})').attr('id')}).should be_true
 end
 
-When /^I drag story with as equal to "([^"]+)" (down|up) by (\d+) positions?$/ do |story_as, direction, positions|
+When /^I drag story with as equal to "([^"]+)"(?:| within the (.* theme)) (down|up) by (\d+) positions?$/ do |story_as, theme, direction, positions|
   move_by = direction == 'up' ? -positions.to_i : positions.to_i
-  page.evaluate_script(%{ $('ul.stories li.story:has(".user-story .as-a .data:contains(#{story_as})")').length }).should > 0
+  theme = selector_to(theme) if theme
+  page.evaluate_script(%{ $('ul.themes #{theme} li.story:has(".user-story .as-a .data:contains(#{story_as})")').length }).should > 0
   page.execute_script %{
-    $('li.story:has(".user-story .as-a .data:contains(#{story_as})")').
+    $('ul.themes #{theme} li.story:has(".user-story .as-a .data:contains(#{story_as})")').
       simulateDragSortable({ move: #{move_by}, listItem: '.story', placeHolder: '.target-order-highlight' });
   } # old drag used handle: '.move-story a'
   sleep 0.1
