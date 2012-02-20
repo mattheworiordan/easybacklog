@@ -6,8 +6,8 @@ App.Views.Themes = {
     tagName: "div",
     className: "themes",
 
-    /* list of items that are hidden whilst re-ordering */
-    reorderSlideUpElements: 'ul.stories,.theme-stats,ul.themes .theme-actions,ul.themes .theme-data .code,ul.themes>li.actions',
+    /* list of items that are hidden whilst re-ordering, don't slide up already collapsed theme elements */
+    reorderSlideUpElements: 'ul.stories:not(.collapsed),.theme-stats,ul.themes li.theme:not(.collapsed) .theme-actions,ul.themes li.theme:not(.collapsed) .theme-data .code,ul.themes>li.actions',
 
     childId: function(model) { return 'theme-' + model.get('id'); },
 
@@ -64,17 +64,19 @@ App.Views.Themes = {
       } else {
         var that = this;
         this.$(this.reorderSlideUpElements).slideUp(250, function() {
-          that.$('.move-theme').css('display', 'block');
-          that.$('.stop-ordering').css('display', 'block');
+          that.$('li.theme').addClass('being-ordered');
+          that.$('.stop-ordering').css('display', 'block'); // show the stop ordering button
         });
       }
     },
 
     stopReorder: function(event) {
       event.preventDefault();
-      this.$('.move-theme').css('display', 'none');
-      this.$('.stop-ordering').css('display', 'none');
-      this.$(this.reorderSlideUpElements).slideDown(250);
+      this.$('li.theme').removeClass('being-ordered');
+      this.$('.stop-ordering').css('display', 'none'); // hide the stop ordering button
+      this.$(this.reorderSlideUpElements).slideDown(250, function() {
+        $(this).css('display','');
+      });
     },
 
     createNew: function(event) {
