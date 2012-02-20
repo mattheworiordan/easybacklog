@@ -8,8 +8,11 @@ Feature: Backlog Themes
       And a user named "John" is registered
       And I am signed in as "John"
       And an account called "Acme" is set up for "John"
-      And a standard backlog named "My First Backlog" is set up for "Acme"
-      And I am on the backlog "My First Backlog" page
+      And I am on the accounts page
+      And I follow "Create a new backlog"
+      And I fill in "Name the backlog" with "My First Backlog"
+      And I press "Create new backlog"
+    Then I should see the notice "Backlog was successfully created."
 
   @javascript
   Scenario: Add a new theme and check codes
@@ -128,7 +131,6 @@ Feature: Backlog Themes
       Then I should see the warning "You need more than one theme to reorder"
     Given the following themes are created:
       | Theme 1 |
-    Given the following themes are created:
       | Theme 2 |
       | Theme 3 |
       | Theme 4 |
@@ -143,14 +145,12 @@ Feature: Backlog Themes
     Then the "move theme handle" should be visible
     When I drag theme "Theme 2" down by 2 positions
     Then theme "Theme 2" should be in position 4
-    When I drag theme "Theme 3" up by 1 position
-    Then theme "Theme 3" should be in position 1
     When I follow "Stop ordering"
       And I wait for AJAX for 2 seconds
     Then the server should return theme JSON as follows:
       | name    | code  |
-      | Theme 3 | TH3   |
       | Theme 1 | TH1   |
+      | Theme 3 | TH3   |
       | Theme 4 | TH4   |
       | Theme 2 | TH2   |
 
@@ -183,6 +183,8 @@ Feature: Backlog Themes
 
   @javascript
   Scenario: Show a user a warning when trying to assign stories to a sprint when no sprints exist
+    Given a standard backlog named "Prefilled backlog" is set up for "Acme"
+      And I am on the backlog "Prefilled backlog" page
     When I assign stories to a sprint for the first theme
     Then I should see the warning "You have not created any sprints yet"
     When I click on the "add sprint button"
@@ -230,6 +232,8 @@ Feature: Backlog Themes
 
   @javascript
   Scenario: Show a user a warning when trying to move a theme to another sprint and no other backlog exists
+    Given the following themes are created:
+      | Theme 1 |
     When I move to a backlog for the first theme
       And I wait 0.5 seconds
     Then I should see the warning "There are no editable backlogs that you can move this theme to"
@@ -252,7 +256,7 @@ Feature: Backlog Themes
       And I should see "17.0 points" within the "backlog totals"
     When I move to a backlog for the second theme
     Then a "move theme dialog box" should be visible
-    When I wait for 0.5 seconds
+    When I wait for 1 second
     Then "Select a backlog" should be selected for "Select the target backlog"
     When I select "My First Backlog" from "Select the target backlog"
       And I press "Yes, move this theme"
@@ -260,4 +264,5 @@ Feature: Backlog Themes
       And I should see the notice "My First Backlog"
       And I should see "11.0 points" within the "backlog totals"
     When I am on the backlog "My First Backlog" page
-      Then I should see the text "Theme to be moved" within the "third theme's name"
+      And I tab forwards and wait for AJAX to update
+      Then I should see the text "Theme to be moved" within the "first theme's name"
