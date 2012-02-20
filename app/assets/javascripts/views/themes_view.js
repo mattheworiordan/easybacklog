@@ -148,7 +148,8 @@ App.Views.Themes = {
       "click .re-number-stories a": 'reNumberStories',
       "click .re-order-themes a": 'reOrderThemes',
       "click .assign-stories-sprint a": 'assignStoriesToSprint',
-      "click .move-theme a": 'moveToAnotherBacklog'
+      "click .move-theme a": 'moveToAnotherBacklog',
+      "click .theme-collapse-icon a, .container .collapsed-title": 'expandCollapse'
     },
 
     initialize: function() {
@@ -219,7 +220,7 @@ App.Views.Themes = {
         if (!event.shiftKey) { // going -->
           $(event.target).blur();
           // currently on theme name field
-          storyElem = $(this.el).find('li.story:not(.locked):first');
+          storyElem = $(this.el).find('li.story:not(.locked,.collapsed):first');
           if (storyElem.length) {
             // move to story item
             App.Views.Helpers.scrollIntoBacklogView(storyElem.find('.unique-id .data'), function(elem) {
@@ -228,7 +229,7 @@ App.Views.Themes = {
           } else {
             // focus on next theme button if next theme li holds add theme & reorder theme buttons
             $(this.el).next().find('a.new-theme').focus();
-            thisThemeAddStory = $(this.el).find('ul.stories li a.new-story');
+            thisThemeAddStory = $(this.el).find('ul.stories li.actions:not(.locked,.collapsed) a.new-story');
             if (thisThemeAddStory.length) {
               // and if a new story button exists move focus to that, takes precedence over new theme button from above
               App.Views.Helpers.scrollIntoBacklogView(thisThemeAddStory, function(elem) {
@@ -246,7 +247,7 @@ App.Views.Themes = {
           if (dataField.parent().hasClass('name')) { // on theme name field
             prev = $(this.el).prev(); // previous theme
             if (prev.length) { // previous theme exists
-              target = prev.find('ul.stories li.actions a.new-story');
+              target = prev.find('ul.stories li.actions:not(.locked,.collapsed) a.new-story');
               if (target.length) {
                 $(event.target).blur();
                 App.Views.Helpers.scrollIntoBacklogView(target, function(elem) {
@@ -517,6 +518,22 @@ App.Views.Themes = {
             dialog.dialog('close');
             new App.Views.Error({ message: 'Oops, something has gone wrong.<br>We could not retrieve a list of target backlogs.' });
           });
+      }
+    },
+
+    expandCollapse: function() {
+      var isCollapsed = $(this.el).is('.collapsed'),
+          storyLis = this.$('ul.stories>li'),
+          stories = this.$('ul.stories>li.story');
+
+      if (!isCollapsed) {
+        storyLis.slideUp().addClass('collapsed');
+        $(this.el).addClass('collapsed');
+        this.$('.theme-stats .container .collapsed-title').html(stories.length === 1 ? '1 story collapsed' : stories.length + ' stories collapsed');
+      } else {
+        storyLis.removeClass('collapsed').slideDown();
+        $(this.el).removeClass('collapsed');
+        this.$('.theme-stats .container .collapsed-title').html('');
       }
     }
   })

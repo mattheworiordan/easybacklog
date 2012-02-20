@@ -151,6 +151,7 @@ end
 # Focus manipulation
 #
 
+# only works for fields that are not form fields
 Then /^the focussed element should have the text "([^"]*)"$/ do |text|
   # ensure we have not incorrectly focussed on the body meaning it will contain the text anyway
   page.evaluate_script(%{$(':focus').is('body, header')}).should be_false
@@ -301,6 +302,8 @@ end
 
 ##
 # Action menus
+
+# Theme
 When /^I (re-number|delete|reorder|assign stories to a sprint|move to a backlog)(?:| for) the (.*) theme$/ do |action, index|
   step %{I click "action menu icon of the #{index} theme"}
   step %{I click "#{action} of the #{index} theme"}
@@ -308,6 +311,12 @@ When /^I (re-number|delete|reorder|assign stories to a sprint|move to a backlog)
   sleep 0.1
 end
 
+When /^I (expand|collapse) the (.*) theme$/ do |action, position|
+  step %{I click "#{action} of the #{position} theme"}
+  sleep 1
+end
+
+# story
 When /^I (move|delete|duplicate|assign to a sprint) the (.*) story(| within the .*)$/ do |action, index, within|
   step %{I click "#{index} story's action menu icon#{within}"}
   step %{I click "#{index} story's #{action}#{within}"}

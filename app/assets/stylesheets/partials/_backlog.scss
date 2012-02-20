@@ -653,7 +653,7 @@ ul.themes {
         color: #666;
         font-size: 80%;
         border: none;
-        padding: 2px 0 0 0;
+        padding: 0;
         .heading {
           float: left;
           padding: 2px 0.4em 2px 0.5em;
@@ -706,6 +706,25 @@ ul.themes {
       }
     }
 
+    .theme-collapse-icon {
+      float: left;
+      padding: 3px;
+      cursor: pointer;
+      a {
+        background: asset-data-url('collapsed-icon.png');
+        width: 11px;
+        height: 11px;
+        display: block;
+      }
+    }
+
+    // hide the theme collapse icon on the left of the theme until collapsed
+    .theme-data > .theme-collapse-icon {
+      display: none;
+      border: none;
+      padding: 5px 8px 3px 8px;
+    }
+
     .action-menu-icon {
       background: asset-data-url('story-tool-icon-black.png') no-repeat center center;
       width: 11px;
@@ -743,6 +762,59 @@ ul.themes {
         div.metrics {
           padding: 5px;
           float: right;
+        }
+        .collapsed-title {
+          padding: 5px;
+          float: left;
+          color: #999;
+          display: none;
+          cursor: pointer;
+          &:hover {
+            color: #333;
+          };
+          &:hover:after {
+            content: " (click to expand)";
+          };
+        }
+      }
+    }
+
+    /* theme is now collapsed */
+    &.collapsed {
+      &:nth-child(1n+2) {
+        padding-top: 0;
+      }
+      border: 1px solid rgba(0,0,0,0.15);
+      @include border-radius(6);
+      margin: 3px 0;
+      .theme-stats {
+        margin: 0;
+        .container {
+          background-color: #FFF;
+          margin-left: 0;
+          .title {
+            display: none;
+          }
+          .collapsed-title {
+            display: block;
+          }
+        }
+      }
+      .theme-collapse-icon {
+        a {
+          background: asset-data-url('expanded-icon.png');
+        }
+      }
+      .theme-data {
+        > .theme-collapse-icon {
+          display: block;
+        }
+        .name {
+          border: none;
+          padding-top: 4px;
+        }
+        .theme-actions, .code {
+          display: none;
         }
       }
     }

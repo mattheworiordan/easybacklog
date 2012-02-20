@@ -4,6 +4,7 @@
       <%= I18n.t('theme_total', "Total for theme '%{name}'").replace('%{name}', htmlEncode(model.get('name'))) %>
     </div>
   <% } %>
+  <div class="collapsed-title"></div>
   <div class="metrics">
     <%= JST['templates/_shared/backlog_stats']({ model: model, useDaysEstimates: useDaysEstimates, useCostEstimates: useCostEstimates }) %>
   </div>

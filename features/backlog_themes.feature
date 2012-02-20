@@ -266,3 +266,33 @@ Feature: Backlog Themes
     When I am on the backlog "My First Backlog" page
       And I tab forwards and wait for AJAX to update
       Then I should see the text "Theme to be moved" within the "first theme's name"
+
+  @javascript
+  Scenario: Collapse and expand stories
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I collapse the first theme
+    Then I should see the text "4 stories collapsed" within the "first theme"
+      And the "first story element within the first theme" should not be visible
+      And the "fourth story element within the first theme" should not be visible
+      And the "first story element within the second theme" should be visible
+    When I click on the "first theme's name"
+      And I tab forwards
+    Then the editable text value should be "Theme 2"
+    When I expand the first theme
+    Then I should not see the text "4 stories collapsed" within the "first theme"
+    When I collapse the second theme
+    Then I should see the text "3 stories collapsed" within the "second theme"
+      And the "first story element within the second theme" should not be visible
+    When I click on the "first story's score within the first theme"
+      # tab to add story
+      And I tab forwards
+      # tab to theme
+      And I tab forwards
+    Then the editable text value should be "Theme 2"
+    When I tab forwards
+    Then the focussed element should have the text "Add theme"
+    When I click on the "expand text of the second theme"
+    Then I should not see the text "3 stories collapsed" within the "second theme"
+      And the "first story element within the second theme" should be visible
+

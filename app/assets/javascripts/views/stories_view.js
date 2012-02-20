@@ -127,7 +127,7 @@ App.Views.Stories = {
         if (event.shiftKey) { // <-- moving back
           event.preventDefault();
           thisTheme = $(this.el).parents('li.theme');
-          lastStory = thisTheme.find('li.story:not(.locked):last .score-90 .data, li.story:not(.locked):last .score .data');
+          lastStory = thisTheme.find('li.story:not(.locked,.collapsed):last .score-90 .data, li.story:not(.locked,.collapsed):last .score .data');
           if (lastStory.length) {
             App.Views.Helpers.scrollIntoBacklogView(lastStory, function() {
               lastStory.click();
@@ -389,7 +389,7 @@ App.Views.Stories = {
               this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
             } else {
               // move onto next view as we're at the last element
-              sibling = $(this.el).nextAll('li:not(.locked):first');
+              sibling = $(this.el).nextAll('li:not(.locked,.collapsed):first');
               if (sibling.find('a.new-story').length) {
                 // just a new story button
                 App.Views.Helpers.scrollIntoBacklogView(sibling.find('a.new-story'), function(elem) {
@@ -416,7 +416,7 @@ App.Views.Stories = {
               }
             } else {
               // user is at first field in story, so jump back to theme or previous story
-              previousUnlocked = $(this.el).prevAll('li:not(.locked):first');
+              previousUnlocked = $(this.el).prevAll('li:not(.locked,.collapsed):first');
               if (previousUnlocked.length) {
                 // jump to end of previous story
                 App.Views.Helpers.scrollIntoBacklogView(previousUnlocked.find('.score-90 .data, .score .data'), function(elem) {

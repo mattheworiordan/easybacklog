@@ -101,23 +101,29 @@ module HtmlSelectorHelpers
       position = string_quantity_to_numeric_pseudo_selector($1)
       "li.theme:#{position} ul.stories"
 
-    when /^(action menu icon|re-number|delete|reorder|assign stories to a sprint|move to a backlog) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
+    when /^(action menu icon|re-number|delete|reorder|assign stories to a sprint|move to a backlog|expand|collapse|expand text) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
       selector = case $1
         when 'reorder'
-          '.re-order-themes a:first-child'
+          '.theme-actions .re-order-themes a:first-child'
         when 're-number'
-          '.re-number-stories a:first-child'
+          '.theme-actions .re-number-stories a:first-child'
         when 'delete'
-          '.delete-theme a:first-child'
+          '.theme-actions .delete-theme a:first-child'
         when 'assign stories to a sprint'
-          '.assign-stories-sprint a:first-child'
+          '.theme-actions .assign-stories-sprint a:first-child'
         when 'move to a backlog'
-          '.move-theme a:first-child'
+          '.theme-actions .move-theme a:first-child'
+        when 'expand'
+          '.theme-actions .theme-collapse-icon a:first-child'
+        when 'collapse'
+          '.theme-data>.theme-collapse-icon a:first-child'
+        when 'expand text'
+          '.theme-stats .collapsed-title'
         when 'action menu icon'
-          '.action-menu-icon'
+          '.theme-actions .action-menu-icon'
       end
       position = string_quantity_to_numeric_pseudo_selector($2)
-      "li.theme:#{position} .theme-actions #{selector}"
+      "li.theme:#{position} #{selector}"
 
     when /^backlog data area$/
       '#backlog-container'
@@ -134,7 +140,7 @@ module HtmlSelectorHelpers
 
     ##
     # Backlog stories
-    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story(?:'s )?(.+?)?(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story(?:'s | )?(.+?)?(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
       position = string_quantity_to_numeric_pseudo_selector($1)
       theme_scope = $3.blank? ? '' : "li.theme:#{string_quantity_to_numeric_pseudo_selector($3)} "
       selector = case $2
@@ -174,6 +180,9 @@ module HtmlSelectorHelpers
         '.sprint-story-info .status .tab'
       when 'sprint tab'
         '.sprint-story-info .sprint .tab'
+      when 'element'
+        # matching the entire story element
+        ''
       when nil
         # matching the entire story element
         ''
