@@ -137,7 +137,8 @@ $(function() {
     id: 'backlog.total',
     next: 'backlog.export',
     attachTo: '#backlog-data-area .backlog-stats',
-    position: 9
+    position: 6,
+    width: 330
   });
 
   guiders.createGuider({
