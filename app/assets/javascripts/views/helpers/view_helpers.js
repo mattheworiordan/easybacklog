@@ -232,14 +232,15 @@ App.Views.Helpers = {
           visibleActionMenu = $(source).hasClass('selected'),
           hideCallBack = function() {
             $(document).off('click.actionMenu');
-            $('#backlog-container #action-menu-menu').remove();
+            menu.remove();
             $(source).removeClass('selected');
           };
 
       if (visibleActionMenu) {
-        hideCallBack();
+        $(source).data('hide-menu-callback')();
       } else {
         $(source).addClass('selected');
+        $(source).data('hide-menu-callback', hideCallBack);
         // show the menu
         $('#backlog-container').append(menu);
         menu.position({
