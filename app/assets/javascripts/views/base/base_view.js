@@ -63,7 +63,7 @@ App.Views.BaseView = Backbone.View.extend({
             } catch (e) { if(window.console) { console.log(e); } }
             var errorView = new App.Views.Error({ message: errorMessage});
             // exception to deal with unique-id showing code from parent model in value
-            fieldWithValue.text(_.isEmpty(beforeChangeValue) ? '[edit]' : beforeChangeValue);
+            fieldWithValue.html(_.isEmpty(beforeChangeValue) ? view.defaultEditableOptions.placeHolder : multiLineHtmlEncode(beforeChangeValue));
             var valBack = {};
             valBack[fieldId] = _.isEmpty(beforeChangeValue) ? null : beforeChangeValue;
             this_model.set(valBack); // reset model value back as well
