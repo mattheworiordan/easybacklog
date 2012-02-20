@@ -190,7 +190,9 @@ class BacklogsController < ApplicationController
     json_result = current_account.backlogs.masters.active.where_user_has_access(current_user).order(:name).reject do |backlog|
       backlog.name =~ /Example corporate website backlog/i
     end.map do |backlog|
-      { :id => backlog.id, :name => truncate(backlog.name, :length => 40) }
+      target_name = truncate(backlog.name, :length => 35)
+      target_name = "#{target_name} (#{truncate(backlog.company.name, :length => 20)})" if backlog.company.present?
+      { :id => backlog.id, :name => target_name }
     end
     render :json => json_result
   end

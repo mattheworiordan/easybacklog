@@ -457,6 +457,7 @@ App.Views.Themes = {
         dialog.dialog({
           resizable: false,
           height:220,
+          width: 400,
           modal: true,
           buttons: {
             'Yes, move this theme': function() {
