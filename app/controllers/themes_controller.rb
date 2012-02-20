@@ -128,7 +128,7 @@ class ThemesController < ApplicationController
     end
 
     def update_backlog_metadata
-      @backlog.update_meta_data current_user if @theme.errors.blank?
+      @backlog.update_meta_data current_user if @theme.present? && @theme.errors.blank?
     end
 
     def enforce_can(rights, message)
