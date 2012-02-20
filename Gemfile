@@ -42,7 +42,7 @@ end
 group :development, :test, :cucumber do
   gem 'ruby-debug-base19', '~> 0.11.26'
   gem 'ruby-debug19', :require => 'ruby-debug'
-  gem 'awesome_print', :git => 'http://github.com/michaeldv/awesome_print.git', :require => 'ap'
+  gem 'awesome_print'
   gem 'watchr'
   gem 'growl'
   gem 'pry'

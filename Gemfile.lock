@@ -14,12 +14,6 @@ GIT
       json
 
 GIT
-  remote: http://github.com/michaeldv/awesome_print.git
-  revision: fea9567eb4562cbacbc135191e96ca58ded60558
-  specs:
-    awesome_print (1.0.2)
-
-GIT
   remote: https://github.com/cwninja/rack-force_domain.git
   revision: ff16ac9b3a527e67ea19f168b6749a91991dc8fb
   specs:
@@ -69,6 +63,7 @@ GEM
     autotest-growl (0.2.16)
     autotest-rails (4.1.2)
       ZenTest (~> 4.5)
+    awesome_print (1.0.2)
     bcrypt-ruby (3.0.1)
     builder (3.0.0)
     capybara (1.1.2)
@@ -299,7 +294,7 @@ DEPENDENCIES
   autotest
   autotest-growl
   autotest-rails
-  awesome_print!
+  awesome_print
   capybara (~> 1.0)
   capybara-screenshot
   capybara-webkit!
