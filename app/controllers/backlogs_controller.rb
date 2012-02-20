@@ -1,5 +1,6 @@
 class BacklogsController < ApplicationController
   include AccountResource
+  include ActionView::Helpers::TextHelper
   after_filter :update_backlog_metadata, :only => [:update]
   BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => :story } } ]
 
@@ -182,6 +183,16 @@ class BacklogsController < ApplicationController
   def snapshots_list_html
     @backlog = current_account.backlogs.available.find(params[:id])
     render :partial => 'snapshot_select'
+  end
+
+  # used by Backlog view to get a list of backlogs that the user can move a theme into
+  def append_targets
+    json_result = current_account.backlogs.masters.active.where_user_has_access(current_user).order(:name).reject do |backlog|
+      backlog.name =~ /Example corporate website backlog/i
+    end.map do |backlog|
+      { :id => backlog.id, :name => truncate(backlog.name, :length => 40) }
+    end
+    render :json => json_result
   end
 
   def backlog_json(backlog)

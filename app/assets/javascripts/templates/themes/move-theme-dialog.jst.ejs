@@ -1,0 +1,27 @@
+<div id="dialog-move-theme" title="Move theme to another backlog">
+  <div class="error-message"></div>
+  <p>
+    <span class="ui-icon ui-icon-extlink" style="float:left; margin:0 7px 20px 0;" />
+    <label for="backlog-target">
+      Select the target backlog:
+    </label>
+  </p>
+  <p>
+    <form>
+    <% if (!backlogs) { %>
+      <select id="backlog-target" disabled="disabled">
+        <option value="">Loading, please wait ...</option>
+      </select>
+    <% } else { %>
+      <select id="backlog-target">
+        <option value="">Select a backlog ...</option>
+        <% _(backlogs).each(function(backlog) { %>
+          <option value="<%=backlog.id%>"><%=htmlEncode(backlog.name)%></option>
+        <% }); %>
+      </select>
+    <% } %>
+    </form>
+  </p>
+  Are you sure you want to move this theme and all it's stories to another backlog?
+  <p class="progress-placeholder"></p>
+</div>

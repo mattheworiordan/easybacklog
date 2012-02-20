@@ -49,11 +49,11 @@ var Story = Backbone.Model.extend({
 
   MoveToTheme: function(newThemeId, options) {
     var story = this;
-    $.post(this.collection.url() + '/' + this.get('id') + '/move-to-theme/' + newThemeId).success(function(ajaxResult, status, response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/move-to-theme/' + newThemeId).success(function(response) {
       var themeCollection = story.Theme().collection;
       story.collection.remove(story); // remove story from this theme
       themeCollection.get(Number(newThemeId)).Stories().add(story); // add story model to new theme
-      story.set(ajaxResult); // update the story with the new fields such as unique ID
+      story.set(response); // update the story with the new fields such as unique ID
       story.trigger('change:unique_id'); // force unique ID to be updated as the theme code has changed
       if (_.isFunction(options.success)) {
         // callback for success

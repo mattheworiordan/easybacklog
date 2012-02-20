@@ -228,3 +228,36 @@ Feature: Backlog Themes
       And the second story within the first theme should be assigned to sprint 1
       And the third story within the first theme should be assigned to sprint 2
 
+  @javascript
+  Scenario: Show a user a warning when trying to move a theme to another sprint and no other backlog exists
+    When I move to a backlog for the first theme
+      And I wait 0.5 seconds
+    Then I should see the warning "There are no editable backlogs that you can move this theme to"
+
+  @javascript
+  Scenario: Show a user a warning when trying to move a theme that has sprint assigned stories within it
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I move to a backlog for the first theme
+    Then I should see the warning "You cannot move stories that are assigned to sprints"
+
+  @javascript
+  Scenario: Allow a user to move a theme into another backlog
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I click on "second theme's name"
+      And I change the current editable text to "Theme to be moved"
+      And I tab forwards and wait for AJAX to update
+    Then I should see the text "Theme to be moved" within the "second theme's name"
+      And I should see "17.0 points" within the "backlog totals"
+    When I move to a backlog for the second theme
+    Then a "move theme dialog box" should be visible
+    When I wait for 0.5 seconds
+    Then "Select a backlog" should be selected for "Select the target backlog"
+    When I select "My First Backlog" from "Select the target backlog"
+      And I press "Yes, move this theme"
+    Then I should see the notice "Theme has been moved to "
+      And I should see the notice "My First Backlog"
+      And I should see "11.0 points" within the "backlog totals"
+    When I am on the backlog "My First Backlog" page
+      Then I should see the text "Theme to be moved" within the "third theme's name"

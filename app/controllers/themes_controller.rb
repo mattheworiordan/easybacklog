@@ -84,6 +84,26 @@ class ThemesController < ApplicationController
     end
   end
 
+  def move_to_backlog
+    enforce_can :full, 'You do not have permission to edit this backlog' do
+      begin
+        @theme = @backlog.themes.find(params[:id])
+        @target_backlog = @backlog.account.backlogs.find(params[:target_backlog_id])
+        if @target_backlog.can? :full, current_user
+          @theme.move_to_backlog @target_backlog
+          @backlog.reload
+          send_json_notice "Theme moved", :score_statistics => @backlog.score_statistics(:force => true)
+        else
+          send_json_error "You do not have permission to add themes to the target backlog"
+        end
+      rescue Theme::ThemeCannotBeMoved => e
+        send_json_error "This theme cannot be moved"
+      rescue Exception => e
+        send_json_error "Internal error: '#{e.message}'.  Please refresh your browser."
+      end
+    end
+  end
+
   helper_method :can?, :cannot?
   def can?(method)
     (@theme || @backlog).can? method, current_user

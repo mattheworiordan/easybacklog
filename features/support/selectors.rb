@@ -101,7 +101,7 @@ module HtmlSelectorHelpers
       position = string_quantity_to_numeric_pseudo_selector($1)
       "li.theme:#{position} ul.stories"
 
-    when /^(action menu icon|re-number|delete|reorder|assign stories to a sprint) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
+    when /^(action menu icon|re-number|delete|reorder|assign stories to a sprint|move to a backlog) of the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme$/
       selector = case $1
         when 'reorder'
           '.re-order-themes a:first-child'
@@ -111,6 +111,8 @@ module HtmlSelectorHelpers
           '.delete-theme a:first-child'
         when 'assign stories to a sprint'
           '.assign-stories-sprint a:first-child'
+        when 'move to a backlog'
+          '.move-theme a:first-child'
         when 'action menu icon'
           '.action-menu-icon'
       end
@@ -203,6 +205,9 @@ module HtmlSelectorHelpers
 
     when /^assign story dialog box$/
       '.ui-dialog #dialog-assign-sprint'
+
+    when /^move theme dialog box$/
+      '.ui-dialog #dialog-move-theme'
 
     ##
     # Acceptance criteria

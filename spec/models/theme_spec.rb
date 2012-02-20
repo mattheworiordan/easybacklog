@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Theme do
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
 
   it 'should create a unique code based on the name' do
     # take 1st of letter of each word
@@ -127,7 +128,64 @@ describe Theme do
       story_theme1 = Factory.create(:story)
       story_theme2 = Factory.create(:story)
 
-      expect { story_theme1.theme.add_existing_story story_theme2 }.to raise_error Theme::StoryCannotbeMoved
+      expect { story_theme1.theme.add_existing_story story_theme2 }.to raise_error Theme::StoryCannotBeMoved
+    end
+  end
+
+  describe '#move_to_backlog' do
+    it 'should not allow a theme to be moved if any of the stories are assigned to a sprint' do
+      backlog_target = Factory.create(:backlog)
+      story = Factory.create(:story)
+      backlog = story.theme.backlog
+      sprint = Factory.create(:sprint, :backlog => backlog)
+      sprint_story = Factory.create(:sprint_story, :sprint => sprint, :story => story)
+
+      expect { story.theme.move_to_backlog backlog_target }.to raise_error Theme::ThemeCannotBeMoved
+    end
+
+    it 'should rename the theme code if one already exists' do
+      backlog_target = Factory.create(:backlog)
+      story = Factory.create(:story)
+      theme = story.theme
+      old_backlog = theme.backlog
+      source_theme_code = story.theme.code
+      theme_conflict = Factory.create(:theme, :backlog => backlog_target, :code => source_theme_code)
+
+      theme.move_to_backlog backlog_target
+
+      old_backlog.reload
+      theme.reload
+
+      old_backlog.themes.count.should == 0
+      backlog_target.themes.count.should == 2
+      theme_conflict.code.should == source_theme_code # target backlog theme should keep it's theme code
+      theme.code.should_not == theme_conflict.code
+    end
+
+    it 'should rename the theme name if one already exists' do
+      backlog_target = Factory.create(:backlog)
+      story = Factory.create(:story)
+      theme = story.theme
+      old_backlog = theme.backlog
+      source_theme_name = story.theme.name
+      theme_conflict = Factory.create(:theme, :backlog => backlog_target, :name => source_theme_name)
+
+      theme.move_to_backlog backlog_target
+
+      old_backlog.reload
+      theme.reload
+
+      old_backlog.themes.count.should == 0
+      backlog_target.themes.count.should == 2
+      theme_conflict.name.should == source_theme_name # target backlog theme should keep it's theme code
+      theme.name.should_not == theme_conflict.name
+    end
+
+    it 'should raise an error if moved to the same backlog' do
+      story = Factory.create(:story)
+      theme = story.theme
+
+      expect { theme.move_to_backlog theme.backlog }.to raise_error Theme::ThemeCannotBeMoved
     end
   end
 end

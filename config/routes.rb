@@ -27,6 +27,7 @@ Ibacklog::Application.routes.draw do
       end
       collection do
         get 'compare/:base/:target' => 'snapshots#compare_snapshots', :as => 'compare_snapshots'
+        get 'append-targets' => 'backlogs#append_targets', :as => 'append_targets'
       end
     end
     resources :users, :controller => 'account_users', :only => [:index, :create, :new, :update, :destroy]
@@ -54,6 +55,7 @@ Ibacklog::Application.routes.draw do
       member do
         match 're-number-stories' => 'themes#re_number_stories', :via => [:post]
         match 'add-existing-story/:story_id' => 'themes#add_existing_story', :via => [:post]
+        match 'move_to_backlog/:target_backlog_id' => 'themes#move_to_backlog', :via => [:post]
       end
     end
     resources :sprints

@@ -301,7 +301,7 @@ end
 
 ##
 # Action menus
-When /^I (re-number|delete|reorder|assign stories to a sprint)(?:| for) the (.*) theme$/ do |action, index|
+When /^I (re-number|delete|reorder|assign stories to a sprint|move to a backlog)(?:| for) the (.*) theme$/ do |action, index|
   step %{I click "action menu icon of the #{index} theme"}
   step %{I click "#{action} of the #{index} theme"}
   # allow enough time for event to propagate and dialog to appear

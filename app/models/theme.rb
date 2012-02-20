@@ -69,11 +69,28 @@ class Theme < ActiveRecord::Base
 
   def add_existing_story(story)
     # don't allow a story to be moved to another backlog for security reasons
-    raise StoryCannotbeMoved if story.theme.backlog != backlog
+    raise StoryCannotBeMoved if story.theme.backlog != backlog
     story.theme_id = id
     # don't change the unique ID unless there is a conflict
     story.unique_id = nil unless stories.where(:unique_id => story.unique_id).blank?
     story.save!
+  end
+
+  def move_to_backlog(new_backlog)
+    # you can't move a theme if any of the stories are assigned to sprints
+    raise ThemeCannotBeMoved if stories.select { |story| story.sprint_story.present? }.present?
+    raise ThemeCannotBeMoved if new_backlog == backlog
+    self.backlog = new_backlog
+    self.code = nil if new_backlog.themes.where(:code => code).present? # just create a new code if that one already exists
+    # ensure name is unique by adding a number to the end
+    name_suffix = nil
+    while new_backlog.themes.where(:name => "#{name}#{name_suffix ? " #{name_suffix}" : ''}").present?
+      name_suffix = 0 if name_suffix.blank?
+      name_suffix += 1
+    end
+    self.name = "#{name}#{name_suffix ? " #{name_suffix}" : ''}"
+    self.position = nil
+    save!
   end
 
   private

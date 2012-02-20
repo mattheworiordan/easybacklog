@@ -33,7 +33,7 @@ var Theme = Backbone.Model.extend({
   // renumber all the stories by assigning them sequential IDs
   ReNumberStories: function(options) {
     var theme = this;
-    $.post(this.collection.url() + '/' + this.get('id') + '/re-number-stories').success(function(ajaxResult, status, response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/re-number-stories').success(function(response) {
       theme.Stories().each(function(story) {
         story.fetch();
       });
@@ -50,19 +50,20 @@ var Theme = Backbone.Model.extend({
     });
   },
 
+  // used when a story is dragged between themes
   AddExistingStory: function(storyId, options) {
     var theme = this,
         story,
         stories,
         errorCallback = function(event) {
-          if (window.console) { console.log('Renumber stories failed'); }
+          if (window.console) { console.log('Add existing stories failed'); }
           if (options && _.isFunction(options.error)) {
             // callback for error
             options.error(event);
           }
         };
 
-    $.post(this.collection.url() + '/' + this.get('id') + '/add-existing-story/' + storyId).success(function(ajaxResult, status, response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/add-existing-story/' + storyId).success(function(response) {
       // find the story within the themes
       stories = theme.Backlog().Themes().map(function(theme) {
         return theme.Stories().get(Number(storyId));
@@ -87,5 +88,22 @@ var Theme = Backbone.Model.extend({
       }); // update the story
 
     }).error(errorCallback);
+  },
+
+  MoveToBacklog: function(backlogId, options) {
+    var theme = this;
+    $.post(this.collection.url() + '/' + this.get('id') + '/move_to_backlog/' + backlogId).success(function(response) {
+      theme.Backlog().Themes().remove(theme);
+      if (options && _.isFunction(options.success)) {
+        // callback for success
+        options.success(theme, response);
+      }
+    }).error(function(event) {
+      if (window.console) { console.log('Move theme to backlog failed'); }
+      if (options && _.isFunction(options.error)) {
+        // callback for error
+        options.error(event);
+      }
+    });
   }
 });

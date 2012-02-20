@@ -147,7 +147,8 @@ App.Views.Themes = {
       "click .delete-theme>a": 'remove',
       "click .re-number-stories a": 'reNumberStories',
       "click .re-order-themes a": 'reOrderThemes',
-      "click .assign-stories-sprint a": 'assignStoriesToSprint'
+      "click .assign-stories-sprint a": 'assignStoriesToSprint',
+      "click .move-theme a": 'moveToAnotherBacklog'
     },
 
     initialize: function() {
@@ -423,7 +424,7 @@ App.Views.Themes = {
                       try {
                         errorMessage = $.parseJSON(response.responseText).message;
                       } catch (e) { if (window.console) { console.log(e); } }
-                      var errorView = new App.Views.Error({ message: 'Oops, ' + errorMessage + '.<br>Please refresh your browser.' });
+                      new App.Views.Error({ message: 'Oops, ' + errorMessage + '.<br>Please refresh your browser.' });
                       $(dialog).dialog('close');
                     }
                   });
@@ -436,6 +437,86 @@ App.Views.Themes = {
             }
           }
         });
+      }
+    },
+
+    moveToAnotherBacklog: function() {
+      var view = this,
+          stories = this.model.Stories(),
+          assignedStories = stories.filter(function(story) { return story.SprintStory(); }),
+          dialogButtons,
+          newDialogHtml;
+
+      if (assignedStories.length) {
+        new App.Views.Warning({ message: 'You cannot move stories that are assigned to sprints.<br>Unassign the ' + assignedStories.length + (assignedStories.length == 1 ? ' story' : 'stories') + ' to proceed.' });
+      } else {
+        $('#dialog-move-theme').remove(); // ensure old dialog HTML is not still in the DOM
+        $('body').append(JST['templates/themes/move-theme-dialog']({ backlogs: false }));
+        var dialog = $('#dialog-move-theme');
+        dialog.dialog({
+          resizable: false,
+          height:220,
+          modal: true,
+          buttons: {
+            'Yes, move this theme': function() {
+              var backlogId = $(this).find('#backlog-target').val(),
+                  backlogName = $(this).find('#backlog-target option:selected').text(),
+                  dialog = this;
+
+              if (!backlogId) {
+                $(this).find('div.error-message').html('<p>You must select a target backlog.</p>');
+              } else {
+                $(this).find('div.error-message').html('');
+                $(this).find('.progress-placeholder').html('<p>Please wait while we move the theme...</p>');
+                $(this).parent().find('.ui-dialog-buttonset button:nth-child(2) span').text('Working...');
+                $(this).parent().find('.ui-dialog-buttonset button:nth-child(1)').hide();
+                view.model.MoveToBacklog(backlogId, {
+                  success: function(model, response) {
+                    $(view.el).remove(); // remove HTML for story
+                    App.Controllers.Statistics.updateStatistics(response.score_statistics);
+                    $(dialog).dialog("close");
+                    new App.Views.Notice({ message: 'Theme has been moved to "' + backlogName + '"'});
+                  },
+                  error: function(event) {
+                    var errorMessage = 'Server error trying to move theme. Please reload this page.';
+                    try {
+                      errorMessage = $.parseJSON(event.responseText).message;
+                      var errorView = new App.Views.Error({ message: errorMessage});
+                    } catch (e) {
+                      if (window.console) { console.log(e); }
+                      new App.Views.Error({ message: errorMessage});
+                    }
+                    $(dialog).dialog("close"); // hide the dialog
+                  }
+                });
+              }
+            },
+
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          }
+        });
+        dialogButtons = dialog.parents('.ui-dialog').find('.ui-dialog-buttonset');
+        dialogButtons.find('button:nth-child(2) span').text('Loading...');
+        dialogButtons.find('button:nth-child(1)').hide();
+        $.getJSON(document.location.href.replace(/^(.*\/accounts\/\d+\/backlogs).*$/, "$1/append-targets"))
+          .success(function(data) {
+            if (data.length <= 1) {
+              new App.Views.Warning({ message: 'There are no editable backlogs that you can move this theme to.<br>Create a new target backlog first.' });
+              dialog.dialog('close');
+            } else {
+              data = _(data).reject(function(b) { return b.id === view.model.Backlog().get('id'); });
+              newDialogHtml = $(JST['templates/themes/move-theme-dialog']({ backlogs: data }));
+              $('#dialog-move-theme').html(newDialogHtml.html());
+              dialogButtons.find(':nth-child(2) span').text('Cancel');
+              dialogButtons.find(':nth-child(1)').show();
+            }
+          })
+          .error(function() {
+            dialog.dialog('close');
+            new App.Views.Error({ message: 'Oops, something has gone wrong.<br>We could not retrieve a list of target backlogs.' });
+          });
       }
     }
   })
