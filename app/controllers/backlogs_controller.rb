@@ -199,7 +199,7 @@ class BacklogsController < ApplicationController
 
   def backlog_json(backlog)
     backlog_fields = [:id, :name, :account_id, :name, :rate, :velocity]
-    backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_locked]
+    backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_locked, :valid_scores]
     theme_fields = [:id, :name, :code, :position]
     theme_methods = [:points, :cost_formatted, :days]
     sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days, :explicit_velocity]
@@ -400,6 +400,6 @@ class BacklogsController < ApplicationController
     end
 
     def filter_backlog_params
-      filter_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived
+      filter_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived, :valid_scores
     end
 end

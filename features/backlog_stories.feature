@@ -220,6 +220,59 @@ Feature: Backlog Stories
     Then I should see "third" within the "first story's as field"
 
   @javascript
+  Scenario: Check that as auto-complete scoring works
+    Given the following stories are created in the first theme:
+      | first   |
+    When I click on the "first story's 90 score"
+      And I change the current editable text to ""
+    Then I should see the following auto-complete options:
+      | 0   |
+      | 0.5 |
+      | 1   |
+      | 2   |
+      | 3   |
+      | 5   |
+      | 8   |
+      | 13  |
+      | 20  |
+      | 21  |
+      | 40  |
+      | 60  |
+      | 100 |
+    When I change the current editable text to "3"
+    Then I should see the following auto-complete options:
+      | 3  |
+      | 13 |
+    When I press the down arrow
+      And I press enter
+    Then I should see "3" within the "first story's 90 score"
+    When I follow "Settings"
+      And I uncheck "Use the 50/90 estimation method"
+      And I choose "Anything"
+      And I press "Update backlog settings"
+    Then I should see the notice "Backlog settings were successfully updated"
+    When I click on the "first story's score"
+      And I change the current editable text to ""
+    Then I should not see an auto-complete option
+    When I follow "Settings"
+      And I choose "Strict Fibonacci"
+      And I press "Update backlog settings"
+    Then I should see the notice "Backlog settings were successfully updated"
+    When I click on the "first story's score"
+      And I change the current editable text to ""
+    Then I should see the following auto-complete options:
+      | 0   |
+      | 0.5 |
+      | 1   |
+      | 2   |
+      | 3   |
+      | 5   |
+      | 8   |
+      | 13  |
+      | 21  |
+      | 34  |
+
+  @javascript
   Scenario: Theme and story added immediately after each other
     # there was a bug where adding a story straight after a theme would result in the scoring not working, this just checks that
     When I follow "Add theme"

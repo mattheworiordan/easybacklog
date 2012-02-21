@@ -293,10 +293,10 @@ App.Views.Stories = {
           defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
             data: beforeChangeFunc,
             onKeyDown: show_view.navigateEvent // make all input and textarea fields respond to Tab/Enter
-          });
+          }),
 
       // for unique ID, we need to remove the code before editing and insert back in after editing
-      var uniqueIdContentUpdatedFunc = function(value) {
+          uniqueIdContentUpdatedFunc = function(value) {
             return show_view.model.Theme().get('code') + contentUpdatedFunc.call(this, value);
           },
         uniqueIdBeforeChangeFunc = function(value) {
@@ -315,11 +315,17 @@ App.Views.Stories = {
         commentsBeforeChangeFunc = function(value) {
           unUrlify(this);
           return beforeChangeFunc.call(this, $(this).text());
-        };
-      var uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 });
+        },
+        uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 }),
+        validScores = this.model.Theme().Backlog().get('valid_scores');
+
       this.$('>div.unique-id .data').editable(uniqueIdContentUpdatedFunc, uniqueIdOptions);
 
-      this.$('>div.score-50 .data, >div.score-90 .data, >div.score .data').editable(scoreContentUpdatedFunc, _.extend(_.clone(defaultOptions), { maxLength: 4 }) );
+      this.$('>div.score-50 .data, >div.score-90 .data, >div.score .data').editable(scoreContentUpdatedFunc, _.extend(_.clone(defaultOptions), {
+        maxLength: 4,
+        autoComplete: validScores ? _(validScores).map(function(score) { return String(score); }) : null
+      }) );
+
       this.$('>div.comments .data').editable(commentsContentUpdatedFunc, _.extend(_.clone(defaultOptions), {
         type: 'textarea', saveonenterkeypress: true, autoResize: true, data: commentsBeforeChangeFunc, noChange: commentsContentUpdatedFunc
       } ) );
@@ -338,12 +344,12 @@ App.Views.Stories = {
         _.defer(function() { // wait until elements have rendered
           var width = show_view.$('>div.user-story .' + elem + ' .heading').outerWidth() + 10;
           var options = _.extend(_.clone(defaultOptions), {
-            type: (elem == 'as-a' ? 'text' : 'textarea'),
+            type: (elem === 'as-a' ? 'text' : 'textarea'),
             maxLength: (elem == 'as-a' ? 100 : 2040),
             saveonenterkeypress: true,
             lesswidth: width,
             autoResize: true,
-            autoComplete: autoCompleteData
+            autoComplete: (elem === 'as-a' ? autoCompleteData : null)
           });
           show_view.$('>div.user-story .' + elem + ' .data').editable(contentUpdatedFunc, options);
         });

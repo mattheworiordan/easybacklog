@@ -111,6 +111,10 @@ Then /^I should see the following auto\-complete options:$/ do |expected_table|
   expected_table.diff!(actual_table)
 end
 
+Then /^I should not see an auto\-complete option$/ do
+  step %{the element "ul.ui-autocomplete" should not be visible}
+end
+
 ##
 # Tabbing and Key Presses
 #

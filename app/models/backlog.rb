@@ -241,6 +241,11 @@ class Backlog < ActiveRecord::Base
     end
   end
 
+  # return an array of valid scores based on scoring rule, or nil if any score is valid
+  def valid_scores
+    scoring_rule.valid_scores
+  end
+
   # it's impossible to destroy a backlog's snapshots as they are not editable and Snapshot module prevents deletion
   # so we mark all snapshots as deleted and no longer as snapshots, and then delete them
   # and then we do the same to this backlog

@@ -1318,3 +1318,11 @@ ul.action-menu-menu {
     margin-bottom: 0;
   }
 }
+
+/* reduce the type size of the auto-complete */
+ul.ui-autocomplete {
+  li.ui-menu-item a {
+    font-size: 12px;
+    padding: 1px;
+  }
+}
