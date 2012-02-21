@@ -39,7 +39,7 @@ Ibacklog::Application.configure do
   config.assets.initialize_on_precompile = false
   config.assets.compile = false # do not live compile assets
 
-  config.asset_host = "assets-easybacklog.netdna-ssl.com"
+  config.asset_host = 'd2n3m6ttt1syhb.cloudfront.net' #"assets-easybacklog.netdna-ssl.com"
   config.assets.compress = true
   config.fonts_domain = "//easybacklog.com"
 
