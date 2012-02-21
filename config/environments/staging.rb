@@ -38,7 +38,7 @@ Ibacklog::Application.configure do
   config.assets.initialize_on_precompile = false
   config.assets.compile = false # do not live compile assets
 
-  config.asset_host = "staging-easybacklog.netdna-ssl.com"
+  config.asset_host = "d2bnjfukjumf2u.cloudfront.net" #"staging-easybacklog.netdna-ssl.com"
   config.assets.compress = true
   config.fonts_domain = "//easybacklog-staging.heroku.com"
 
