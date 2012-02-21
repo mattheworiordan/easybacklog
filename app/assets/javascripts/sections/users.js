@@ -12,7 +12,6 @@ $(document).ready(function() {
       processData:  false,
       success:      function(data) {
         $(event.target).parents('tr').find('.progress-icon').hide();
-        if (window.console) { console.log('Updated user successfully'); }
       },
       error:        function(jqXHR, textStatus, errorThrown) {
         $(event.target).parents('tr').find('.progress-icon').hide();
