@@ -56,7 +56,7 @@ class BacklogsController < ApplicationController
 
   def create
     if current_account.can?(:full, current_user)
-      @backlog = current_account.backlogs.new(safe_backlog_params)
+      @backlog = current_account.backlogs.new(filter_backlog_params)
       @backlog.author = current_user
       @backlog.last_modified_user = current_user
       set_or_create_company
@@ -126,7 +126,7 @@ class BacklogsController < ApplicationController
         flash[:notice] = 'You cannot edit an archived backlog'
         redirect_to account_backlog_path(@backlog.account, @backlog)
       else
-        @backlog.update_attributes(safe_backlog_params)
+        @backlog.update_attributes(filter_backlog_params)
         @backlog.last_modified_user = current_user
         set_or_create_company
         if @backlog.save
@@ -399,7 +399,7 @@ class BacklogsController < ApplicationController
       end
     end
 
-    def safe_backlog_params
-      safe_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived
+    def filter_backlog_params
+      filter_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived
     end
 end

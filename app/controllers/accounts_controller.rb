@@ -42,7 +42,7 @@ class AccountsController < ApplicationController
       flash[:error] = 'You do not have permission to edit this account'
       redirect_to account_path(@account)
     else
-      @account.update_attributes(safe_account_params)
+      @account.update_attributes(filter_account_params)
       if @account.save
         flash[:notice] = "Account for #{@account.name} updated successfully"
         redirect_to account_path(@account)
@@ -57,7 +57,7 @@ class AccountsController < ApplicationController
   end
 
   def create
-    @account = Account.new(safe_account_params)
+    @account = Account.new(filter_account_params)
     if @account.save
       @account.setup_account_for_user current_user
       flash[:notice] = 'Account was successfully created.'
@@ -91,7 +91,7 @@ class AccountsController < ApplicationController
   end
 
   private
-    def safe_account_params
-      safe_params_for :account, :defaults_set, :days_estimatable, :has_company
+    def filter_account_params
+      filter_params_for :account, :defaults_set, :days_estimatable, :has_company
     end
 end

@@ -21,7 +21,7 @@ class SprintStoriesController < ApplicationController
 
   def create
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
-      @sprint_story = @sprint.sprint_stories.new(safe_sprint_story_params)
+      @sprint_story = @sprint.sprint_stories.new(filter_sprint_story_params)
       @sprint_story.sprint_id = params[:sprint_id]
       @sprint_story.story_id = params[:story_id]
       if @sprint_story.save
@@ -35,7 +35,7 @@ class SprintStoriesController < ApplicationController
   def update
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
       @sprint_story = @sprint.sprint_stories.find(params[:id])
-      @sprint_story.update_attributes safe_sprint_story_params
+      @sprint_story.update_attributes filter_sprint_story_params
       @sprint_story.sprint_id = params[:move_to_sprint_id] if params.has_key?(:move_to_sprint_id)
 
       if @sprint_story.save
@@ -114,7 +114,7 @@ class SprintStoriesController < ApplicationController
       end
     end
 
-    def safe_sprint_story_params
-      safe_params :sprint_id, :story_id, :theme_id, :sprint_statistics, :move_to_sprint_id
+    def filter_sprint_story_params
+      filter_params :sprint_id, :story_id, :theme_id, :sprint_statistics, :move_to_sprint_id
     end
 end

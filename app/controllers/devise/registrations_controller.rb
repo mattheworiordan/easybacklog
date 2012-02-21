@@ -24,7 +24,7 @@ class Devise::RegistrationsController < DeviseController
     # if user has visited sign_up by default they are asked to set up an account
     # if user comes from an embedded form (such as an invite), then account_setup is not shown as they are not setting up an account
     Account.transaction do
-      @account = (params[:show_account_setup] == 'true' ? Account.new(safe_params_for(:account, :defaults_set, :days_estimatable)) : nil)
+      @account = (params[:show_account_setup] == 'true' ? Account.new(filter_params_for(:account, :defaults_set, :days_estimatable)) : nil)
       @account.save unless @account.blank?
 
       # if valid account created or if not creating an account at all (invited users)

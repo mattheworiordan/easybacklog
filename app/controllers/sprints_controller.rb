@@ -51,7 +51,7 @@ class SprintsController < ApplicationController
           render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
         end
       else
-        @sprint.update_attributes safe_params(:backlog_id, :iteration, *SPRINT_METHODS)
+        @sprint.update_attributes filter_params(:backlog_id, :iteration, *SPRINT_METHODS)
         if @sprint.save
           update_backlog_metadata
           render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)

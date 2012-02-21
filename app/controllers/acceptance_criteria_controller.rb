@@ -24,7 +24,7 @@ class AcceptanceCriteriaController < ApplicationController
   end
 
   def create
-    @acceptance_criteria = @story.acceptance_criteria.new(safe_criteria_params)
+    @acceptance_criteria = @story.acceptance_criteria.new(filter_criteria_params)
     enforce_can :full, 'You do not have permission to edit this backlog' do
       if @acceptance_criteria.save
         render :json => @acceptance_criteria
@@ -37,7 +37,7 @@ class AcceptanceCriteriaController < ApplicationController
   def update
     @acceptance_criteria = @story.acceptance_criteria.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @acceptance_criteria.update_attributes safe_criteria_params
+      @acceptance_criteria.update_attributes filter_criteria_params
       if @acceptance_criteria.save
         render :json => @acceptance_criteria
       else
@@ -85,7 +85,7 @@ class AcceptanceCriteriaController < ApplicationController
       end
     end
 
-    def safe_criteria_params
-      safe_params :story_id
+    def filter_criteria_params
+      filter_params :story_id
     end
 end

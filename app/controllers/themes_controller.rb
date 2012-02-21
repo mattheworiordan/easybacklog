@@ -25,7 +25,7 @@ class ThemesController < ApplicationController
 
   def create
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @theme = @backlog.themes.new(safe_theme_params)
+      @theme = @backlog.themes.new(filter_theme_params)
       if @theme.save
         render :json => themes_json
       else
@@ -37,7 +37,7 @@ class ThemesController < ApplicationController
   def update
     @theme = @backlog.themes.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @theme.update_attributes safe_theme_params
+      @theme.update_attributes filter_theme_params
       if @theme.save
         render :json => themes_json
       else
@@ -139,7 +139,7 @@ class ThemesController < ApplicationController
       end
     end
 
-    def safe_theme_params
-      safe_params :backlog_id, :score_statistics, :theme_id, :points, :cost_formatted, :days
+    def filter_theme_params
+      filter_params :backlog_id, :score_statistics, :theme_id, :points, :cost_formatted, :days
     end
 end

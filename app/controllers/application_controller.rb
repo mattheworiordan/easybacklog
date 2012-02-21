@@ -113,13 +113,13 @@ class ApplicationController < ActionController::Base
       I18n.locale = I18n.default_locale
     end
 
-    def safe_params_for(index = nil, *filter_fields)
+    def filter_params_for(index = nil, *filter_fields)
       filter_fields = filter_fields.map { |d| d.to_s }
       params_group = index.blank? ? params : params[index]
       (params_group || {}).select { |key, value| !['action', 'controller', 'id'].include?(key) && !filter_fields.include?(key) }
     end
 
-    def safe_params(*filter_fields)
-      safe_params_for nil, *filter_fields
+    def filter_params(*filter_fields)
+      filter_params_for nil, *filter_fields
     end
 end

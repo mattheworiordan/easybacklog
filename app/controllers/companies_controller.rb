@@ -16,7 +16,7 @@ class CompaniesController < ApplicationController
   def update
     @company = current_account.companies.find(params[:id])
     enforce_can(:full, 'You do not have permission to edit this company') do
-      @company.update_attributes(safe_params_for(:company, :days_estimatable, :has_company))
+      @company.update_attributes(filter_params_for(:company, :days_estimatable, :has_company))
       if @company.save
         flash[:notice] = 'Company defaults were successfully updated'
         redirect_to account_path(current_account)
