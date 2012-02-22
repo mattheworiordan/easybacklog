@@ -1,0 +1,34 @@
+ru:
+  backlog:
+    backlog: Бэклог
+    theme: Тема
+    id: ID
+    user_story: История пользователя
+    acceptance_criteria: Критерии приёмки
+    comments: Комментарии
+    points_50: '50'
+    points_90: '90'
+    points_heading: Пункты
+    cost: Затраты
+    days: Дни
+    as_a: Как
+    i_want_to: Я хочу
+    so_i_can: Чтобы
+    rate: Тариф
+    velocity: Скорость
+    sprint: Спринт
+    sprint_lower: спринт
+    code: Код
+    totals:
+      backlog_total: 'Итог бэклога'
+      backlog: "Итого за бэклог '%{name}'"
+      sprint_total: 'Итог спринта'
+      theme: "Итого за тему '%{name}'"
+      points: пунктов
+      days: дней
+      point: поинт
+      day: день
+      pts_allocated: пунктов назначено
+      pts_expected: пунктов ожидается
+      pts_completed: пунктов завершено
+  loading: Загрузка
