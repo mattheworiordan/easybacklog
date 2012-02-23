@@ -37,7 +37,7 @@ App.Views.Stories = {
           start: function(event, ui) {
             // hide the new story button when dragging
             actionsElem = view.$('>.actions').clone();
-            $('ul.stories li.actions').remove();
+            $('ul.stories>li.actions').remove();
             view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
             // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip
             //  won't do anything until dragging is over
