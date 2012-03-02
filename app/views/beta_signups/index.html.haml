@@ -215,7 +215,7 @@
       = link_to 'Log In', new_session_path(User)
   %a.feedback-button{ :href => '#feedback' }
 
-- if !Rails.env.test? && false # && ab_test(:beta_intro_video)
+- if !Rails.env.test? && false # && ab_test(:beta_intro_video), took out split testing as a bit amateur video
   :javascript
     $(function() {
       showIntroVideo();

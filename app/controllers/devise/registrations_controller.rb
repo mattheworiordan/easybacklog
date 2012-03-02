@@ -2,7 +2,7 @@ class Devise::RegistrationsController < DeviseController
   prepend_before_filter :require_no_authentication, :only => [ :new, :create, :cancel ]
   prepend_before_filter :authenticate_scope!, :only => [:edit, :update, :destroy]
 
-  # use_vanity :current_user
+  use_vanity :current_user
 
   # GET /resource/sign_up
   def new

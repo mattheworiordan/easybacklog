@@ -26,10 +26,7 @@ gem 'will_paginate'
 # load XML as an object
 gem 'xml-object'
 
-# vanity does not support Rails 3.2.1, so using a patched version
-# gem 'vanity', :git => 'https://github.com/freedomsoft/vanity.git', :branch => 'rails3'  # split testing
-# gem 'vanity', :git => 'https://github.com/gamegenetics/vanity.git'
-gem 'vanity'
+gem 'vanity', :git => 'https://github.com/assaf/vanity'
 
 group :assets do
   gem 'sass-rails'

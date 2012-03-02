@@ -14,6 +14,14 @@ GIT
       json
 
 GIT
+  remote: https://github.com/assaf/vanity
+  revision: 901a8e51e93e1efb96e13f845e363dbbf1a1903c
+  specs:
+    vanity (1.7.1)
+      redis (~> 2.0)
+      redis-namespace (~> 1.0.0)
+
+GIT
   remote: https://github.com/cwninja/rack-force_domain.git
   revision: ff16ac9b3a527e67ea19f168b6749a91991dc8fb
   specs:
@@ -270,9 +278,6 @@ GEM
     uglifier (1.2.3)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
-    vanity (1.7.1)
-      redis (~> 2.0)
-      redis-namespace (~> 1.0.0)
     warden (1.1.0)
       rack (>= 1.0)
     watchr (0.7)
@@ -333,7 +338,7 @@ DEPENDENCIES
   taps (>= 0.3.23)
   timecop
   uglifier
-  vanity
+  vanity!
   watchr
   webrat
   will_paginate
