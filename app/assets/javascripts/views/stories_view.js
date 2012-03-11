@@ -313,8 +313,10 @@ App.Views.Stories = {
           return contentUpdatedFunc.call(this, value);
         },
         commentsBeforeChangeFunc = function(value) {
+          var html;
           unUrlify(this);
-          return beforeChangeFunc.call(this, $(this).text());
+          html = htmlDecodeWithLineBreaks($(this).html());
+          return beforeChangeFunc.call(this, html);
         },
         uniqueIdOptions = _.extend(_.clone(defaultOptions), { data: uniqueIdBeforeChangeFunc, maxLength: 4 }),
         validScores = this.model.Theme().Backlog().get('valid_scores');

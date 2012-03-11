@@ -36,6 +36,12 @@ function multiLineHtmlEncode(value) {
   }
 }
 
+function htmlDecodeWithLineBreaks(html) {
+  var breakToken = '_______break_______',
+      lineBreakedHtml = html.replace(/<br\s?\/?>/gi, breakToken).replace(/<p\.*?>(.*?)<\/p>/gi, '$1' + breakToken);
+  return $('<div>').html(lineBreakedHtml).text().replace(new RegExp(breakToken, 'g'), '\n');
+}
+
 function urlify(value, maxLength) {
   var urlRegEx = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
   return value.replace(urlRegEx, function(match) {

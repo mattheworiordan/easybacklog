@@ -181,11 +181,13 @@ App.Views.AcceptanceCriteria = {
           }, 25);
           return ac_view.contentUpdated(newVal, this);
         }
-      }
+      };
 
       var beforeChangeFunc = function(value) {
+        var html;
         unUrlify(this);
-        return ac_view.beforeChange($(this).text(), this);
+        html = htmlDecodeWithLineBreaks($(this).html());
+        return ac_view.beforeChange(html, this);
       };
 
       var defaultOptions = _.extend(_.clone(this.defaultEditableOptions), {
