@@ -124,7 +124,7 @@ $roll-over-header-color: #FFF;
       }
     }
   }
-  /* ready for testing / testing */
+  /* completed (was for testing) */
   &.status-code-R {
     background-color: #FF8000;
     color: white;
@@ -134,7 +134,7 @@ $roll-over-header-color: #FFF;
       }
     }
   }
-  /* done */
+  /* accepted (was done) */
   &.status-code-D {
     @if $includeHover == yes {
       background: #090 image-url('lock-tiny-fff.png') 10px 2px no-repeat;

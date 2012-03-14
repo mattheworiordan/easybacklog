@@ -302,13 +302,13 @@ App.Views.Sprints = {
       var that = this;
       event.preventDefault();
 
-      var incompleteStories = this.model.SprintStories().reject(function(story) { return story.Status().IsDone(); }),
+      var incompleteStories = this.model.SprintStories().reject(function(story) { return story.Status().IsAccepted(); }),
           previousIncompleteSprints = _(this.model.Backlog().Sprints().select(function(sprint) {
             return (sprint.get('iteration') < that.model.get('iteration')) && !sprint.IsComplete();
           })).sortBy(function(sprint) { return sprint.get('iteration'); });
 
       if (incompleteStories.length) {
-        new App.Views.Warning({ message: 'All stories must be marked as Done before marking this sprint as complete' });
+        new App.Views.Warning({ message: 'All stories must be marked as Accepted before marking this sprint as complete' });
       } else if (previousIncompleteSprints.length) {
         new App.Views.Warning({ message: 'Sprint ' + _(previousIncompleteSprints).last().get('iteration') + ' is not complete. Please mark as complete first' });
       } else {

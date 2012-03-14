@@ -22,8 +22,8 @@ var AcceptanceCriterion = Backbone.Model.extend({
     return this.collection.story.CanEditStatus();
   },
 
-  IsDone: function() {
-    return (this.collection.story.IsDone());
+  IsAccepted: function() {
+    return (this.collection.story.IsAccepted());
   },
 
   // a method callback invoked only by App.Views.BaseView

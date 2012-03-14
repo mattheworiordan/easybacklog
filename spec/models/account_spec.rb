@@ -48,9 +48,9 @@ describe Account do
 
   it 'should create an example backlog when add_example_backlog is called' do
     Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
-    Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
+    Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
     Factory.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
-    Factory.create(:sprint_story_status, :status => 'Testing', :code => SprintStoryStatus::TESTING)
+    Factory.create(:sprint_story_status, :status => 'Completed', :code => SprintStoryStatus::COMPLETED)
 
     account = Factory.create(:account_with_user)
     account.add_example_backlog account.users.first

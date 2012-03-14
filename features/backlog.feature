@@ -178,22 +178,22 @@ Feature: Backlog
     Then there should be 1 "editable text fields"
 
   @javascript
-  Scenario: Hide completed stories
+  Scenario: Hide accepted stories
     Given an example backlog for testing is set up for the account "Acme"
       And I am on the accounts page
     When I follow "Cucumber example backlog"
     Then I should see the page title "Cucumber example backlog"
-      Then there should be 3 "done stories"
+      Then there should be 3 "accepted stories"
       And there should be 4 "assigned to sprint stories"
     When I hover over the "filter menu"
-      And I check "Hide completed stories"
+      And I check "Hide accepted stories"
       And I wait for AJAX for 1 second
-    Then there should be 0 "done stories"
+    Then there should be 0 "accepted stories"
       And there should be 1 "assigned to sprint story"
       And the "filter notifier" should be visible
     When I follow "Remove filter"
       And I wait for AJAX for 1 second
-    Then there should be 3 "done stories"
+    Then there should be 3 "accepted stories"
       And there should be 4 "assigned to sprint stories"
       And the "filter notifier" should not be visible
 
@@ -203,19 +203,19 @@ Feature: Backlog
       And I am on the accounts page
     When I follow "Cucumber example backlog"
     Then I should see the page title "Cucumber example backlog"
-      Then there should be 3 "done stories"
+      Then there should be 3 "accepted stories"
       And there should be 4 "assigned to sprint stories"
     When I hover over the "filter menu"
       And I check "Hide stories assigned to sprints"
       And I wait for AJAX for 1 second
-    Then there should be 0 "done stories"
+    Then there should be 0 "accepted stories"
       And there should be 0 "assigend to sprint stories"
       And the "filter notifier" should be visible
     When I hover over the "filter menu"
-      And I check "Hide completed stories"
+      And I check "Hide accepted stories"
       And I wait for AJAX for 1 second
     Then the "Hide stories assigned to sprints" checkbox should not be checked
-      And there should be 0 "done stories"
+      And there should be 0 "accepted stories"
       And there should be 1 "assigned to sprint story"
       And the "filter notifier" should be visible
 

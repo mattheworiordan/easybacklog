@@ -343,14 +343,14 @@ Feature: Backlog Stories
         | 2         | as 2nd    |             |           |             | 21.0   |
 
   @javascript
-  Scenario: Check that user is notified when trying to edit a done story
+  Scenario: Check that user is notified when trying to edit an accepted story
     Given an example backlog for testing is set up for the account "Acme"
       And I am on the accounts page
     When I follow "Cucumber example backlog"
     When I click on the "first story's as field"
-    Then I should not see the notice "You cannot edit a story that is marked as done"
+    Then I should not see the notice "You cannot edit a story that is marked as accepted"
     When I click on the "second story's as field"
-    Then I should see the warning "You cannot edit a story that is marked as done"
+    Then I should see the warning "You cannot edit a story that is marked as accepted"
 
   @javascript
   Scenario: Show a user a warning when trying to assign a story to a sprint when no sprints exist

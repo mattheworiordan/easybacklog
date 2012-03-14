@@ -10,7 +10,7 @@ describe Creators::SprintCreator do
   let(:story_1) { Factory.create(:story, :theme => theme_1) }
   let(:story_2) { Factory.create(:story, :theme => theme_2) }
 
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   let(:sprint_data) do
@@ -25,13 +25,13 @@ describe Creators::SprintCreator do
 
     sprint_story = double('SprintStory')
     sprint_story.stub(:code) { "#{story_1.theme.code}#{story_1.unique_id}" }
-    sprint_story.stub(:status_code) { done_sprint_story_status.code }
+    sprint_story.stub(:status_code) { accepted_sprint_story_status.code }
     sprint_story.stub(:score_50_when_assigned) { 3 }
     sprint_story.stub(:score_90_when_assigned) { 5 }
 
     sprint_story_2 = double('SprintStory')
     sprint_story_2.stub(:code) { "#{story_2.theme.code}#{story_2.unique_id}" }
-    sprint_story_2.stub(:status_code) { done_sprint_story_status.code }
+    sprint_story_2.stub(:status_code) { accepted_sprint_story_status.code }
     sprint_story_2.stub(:score_50_when_assigned) { 5 }
     sprint_story_2.stub(:score_90_when_assigned) { 8 }
 
@@ -47,12 +47,12 @@ describe Creators::SprintCreator do
     sprint_stories = backlog.sprints.first.sprint_stories
     sprint_stories.count.should == 2
 
-    sprint_stories.first.sprint_story_status.should == done_sprint_story_status
+    sprint_stories.first.sprint_story_status.should == accepted_sprint_story_status
     sprint_stories.first.story.should == story_1
     sprint_stories.first.sprint_score_50_when_assigned.should == 3
     sprint_stories.first.sprint_score_90_when_assigned.should == 5
 
-    sprint_stories.last.sprint_story_status.should == done_sprint_story_status
+    sprint_stories.last.sprint_story_status.should == accepted_sprint_story_status
     sprint_stories.last.story.should == story_2
     sprint_stories.last.sprint_score_50_when_assigned.should == 5
     sprint_stories.last.sprint_score_90_when_assigned.should == 8

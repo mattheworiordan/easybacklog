@@ -42,12 +42,12 @@ Drag & drop stories
 * Check that tabs appear on main backlog for each story
 * Change story status to complete, return to Sprint and make sure stats have updated correctly
 * Check that story scores are showing correctly based on what was added, check for a 50/90 backlog, and a single score backlog
-* Check that editing a story that is marked as Done raises an error
+* Check that editing a story that is marked as Accepted raises an error
 * Drag and drop between list (currently not achievable with jquery simulate drag & drop I believe?)
 
-Done stories are not editable
-Done stories are not draggable in sprint view
-Done stories do not have a Move button in sprint view
+Accepted stories are not editable
+Accepted stories are not draggable in sprint view
+Accepted stories do not have a Move button in sprint view
 Click on Sprint in Backlog view takes you to Sprint view
 Change story status in backlog view, unlocks item
 

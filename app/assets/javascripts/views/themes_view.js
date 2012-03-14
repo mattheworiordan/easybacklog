@@ -382,7 +382,7 @@ App.Views.Themes = {
       } else if (incompleteSprints.length === 0) {
         new App.Views.Warning({ message: 'All sprints are marked as complete.<br>You need to add a new sprint before you can assign this story.'});
       } else if (unassignedStories.length === 0) {
-        new App.Views.Warning({ message: 'All stories are already assigned to a sprint.<br>Batch assigning can only be done on stories not assigned to sprints.'});
+        new App.Views.Warning({ message: 'All stories are already assigned to a sprint.<br>Batch assigning can only be executed on stories not assigned to sprints.'});
       } else {
         $('#dialog-assign-sprint').remove(); // ensure old dialog HTML is not still in the DOM
         $('body').append(JST['templates/themes/assign-sprint-dialog']({ theme: this.model, unassignedStories: unassignedStories, sprints: _(incompleteSprints).sortBy(function(sprint) { return sprint.get('iteration'); }).reverse() }));

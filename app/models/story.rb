@@ -14,7 +14,7 @@ class Story < ActiveRecord::Base
 
   before_save :assign_unique_id
   before_save :check_can_modify # Snapshot method
-  before_validation :prevent_changes_when_done, :validate_scores_with_score_rule
+  before_validation :prevent_changes_when_accepted, :validate_scores_with_score_rule
 
   attr_accessible :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :score, :position, :color
 
@@ -69,9 +69,9 @@ class Story < ActiveRecord::Base
     self.score_50 = val
   end
 
-  # story is marked as done and assigned to a sprint
-  def done?
-    self.sprint.present? && self.sprint_story_status.present? && self.sprint_story_status.code == SprintStoryStatus::DONE_CODE
+  # story is marked as accepted and assigned to a sprint
+  def accepted?
+    self.sprint.present? && self.sprint_story_status.present? && self.sprint_story_status.code == SprintStoryStatus::ACCEPTED
   end
 
   def sprint_story_status=(status)
@@ -127,8 +127,8 @@ class Story < ActiveRecord::Base
       end
     end
 
-    def prevent_changes_when_done
-      if changed? && done?
+    def prevent_changes_when_accepted
+      if changed? && accepted?
         if (changed != ['position']) && (changed != ['theme_id']) && (changed != ['theme_id','unique_id']) # if changed column is anything other than position or theme_id don't allow changes
           errors.add :base, 'Changes to a completed story are not allowed' # allow position changes and reassign to new theme only
         end

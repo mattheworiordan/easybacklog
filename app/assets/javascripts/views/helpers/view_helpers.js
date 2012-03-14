@@ -114,7 +114,7 @@ App.Views.Helpers = {
     // update the status tab
     $(this.el).find('.status .tab').attr('class', 'tab status-code-' + code).removeClass('hover').find('span').text(name);
     // now update whether the story is locked for moving or not
-    if (code === this.model.SprintStory().Status().DoneCode) {
+    if (code === this.model.SprintStory().Status().AcceptedCode) {
       $(this.el).addClass('locked');
     } else {
       $(this.el).removeClass('locked');

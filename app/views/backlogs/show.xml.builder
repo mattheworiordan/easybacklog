@@ -42,7 +42,7 @@ xml.backlog backlog_attributes do
           sprint.sprint_stories.each do |sprint_story|
             story = sprint_story.story
             xml.story :code => "#{story.theme.code}#{story.unique_id}", :status => sprint_story.sprint_story_status.status,
-              :status_code => sprint_story.sprint_story_status.code, :done => story.done?,
+              :status_code => sprint_story.sprint_story_status.code, :accepted => story.accepted?,
               :score_50_when_assigned => sprint_story.sprint_score_50_when_assigned, :score_90_when_assigned => sprint_story.sprint_score_90_when_assigned
           end
         end

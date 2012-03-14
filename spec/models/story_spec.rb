@@ -134,13 +134,13 @@ describe Story do
     story.score_90.should == 3
   end
 
-  it 'should not allow modification other than position once marked as done' do
-    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
+  it 'should not allow modification other than position once marked as accepted' do
+    accepted = Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
     story = Factory.create(:story, :score_50 => 1)
     sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id)
     sprint.stories << story
 
-    story.sprint_story_status = done
+    story.sprint_story_status = accepted
     story.save!
     story.reload
 
@@ -153,7 +153,7 @@ describe Story do
   end
 
   it 'should not allow to be assigned or removed from a sprint when the sprint is marked as complete' do
-    done = Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE)
+    accepted = Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
     story = Factory.create(:story)
     sprint = Factory.create(:sprint, :backlog_id => story.theme.backlog.id, :completed_at => Time.now)
     sprint.completed?.should == true
@@ -164,7 +164,7 @@ describe Story do
     story.reload
     expect { sprint.stories << story }.should_not raise_error
 
-    story.sprint_story_status = done
+    story.sprint_story_status = accepted
     sprint.reload
     sprint.mark_as_complete
     story.reload

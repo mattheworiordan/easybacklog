@@ -1,8 +1,8 @@
 class SprintStoryStatus < ActiveRecord::Base
-  DONE_CODE = 'D'
+  ACCEPTED = 'D' # was done
   DEFAULT_CODE = 'T' # default to to do
   IN_PROGRESS = 'P'
-  TESTING = 'R' # ready for testing
+  COMPLETED = 'R' # completed / ready for testing
 
   has_many :sprint_stories
 
@@ -11,7 +11,7 @@ class SprintStoryStatus < ActiveRecord::Base
   validates_presence_of :status, :code
   validates_uniqueness_of :status, :code
 
-  def self.done
-    find_by_code(DONE_CODE)
+  def self.accepted
+    find_by_code(ACCEPTED)
   end
 end

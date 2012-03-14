@@ -15,7 +15,7 @@ class Sprint < ActiveRecord::Base
 
   before_validation :restrict_iteration_changes, :assign_iteration
   before_validation :restrict_changes_if_completed, :manage_completeness_amongst_other_sprints
-  after_validation :check_date_overlaps_and_successive, :ensure_all_stories_are_done, :disallow_number_team_members_if_not_estimatable
+  after_validation :check_date_overlaps_and_successive, :ensure_all_stories_are_accepted, :disallow_number_team_members_if_not_estimatable
   before_destroy :ensure_sprint_allows_delete
   after_save :manage_sprint_snapshot
 
@@ -74,7 +74,7 @@ class Sprint < ActiveRecord::Base
   end
 
   def total_completed_points
-    ScoreCalculator.total_points stories.select { |s| s.done? }
+    ScoreCalculator.total_points stories.select { |s| s.accepted? }
   end
 
   # calculate total expected points based on the backlog average velocity as opposed to configured velocity
@@ -229,11 +229,11 @@ class Sprint < ActiveRecord::Base
       end
     end
 
-    # ensure stories are all marked as done if this sprint is marked as complete, you cannot mark a sprint as complete with incomplete stories
-    def ensure_all_stories_are_done
+    # ensure stories are all marked as accepted if this sprint is marked as complete, you cannot mark a sprint as complete with incomplete stories
+    def ensure_all_stories_are_accepted
       if completed_at_changed? && completed_at.present?
-        if stories.reject { |s| s.sprint_story_status.present? && s.sprint_story_status.code == SprintStoryStatus::DONE_CODE }.count > 0
-          errors.add :base, "Sprint cannot be marked as complete when it contains stories that are not done"
+        if stories.reject { |s| s.sprint_story_status.present? && s.sprint_story_status.code == SprintStoryStatus::ACCEPTED }.count > 0
+          errors.add :base, "Sprint cannot be marked as complete when it contains stories that are not accepted"
           return false
         end
       end

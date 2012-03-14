@@ -47,7 +47,7 @@ class Theme < ActiveRecord::Base
 
   def re_number_stories
     ActiveRecord::Base.transaction do
-      raise StoriesCannotBeRenumbered unless stories.select { |s| s.done? }.blank?
+      raise StoriesCannotBeRenumbered unless stories.select { |s| s.accepted? }.blank?
 
       # if stories have unique id greater than 10,000,000 simply make space for up to 10,000 stories
       stories.where('unique_id >= ?', (1000 * 1000 * 10)).each do |story|

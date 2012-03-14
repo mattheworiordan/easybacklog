@@ -68,7 +68,7 @@ class SprintsController < ApplicationController
       begin
         @sprint.destroy
       rescue ActiveRecordExceptions::RecordNotDestroyable => e
-        send_json_error 'This sprint cannot be deleted because it contains stories which are marked as done'
+        send_json_error 'This sprint cannot be deleted because it contains stories which are marked as accepted'
       rescue Exception => e
         raise e
       else

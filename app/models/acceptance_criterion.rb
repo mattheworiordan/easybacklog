@@ -22,10 +22,10 @@ class AcceptanceCriterion < ActiveRecord::Base
 
   private
     def check_story_editable
-      errors.add :base, 'Cannot edit as story is marked as done and therefore locked' if story.done?
+      errors.add :base, 'Cannot edit as story is marked as accepted and therefore locked' if story.accepted?
     end
 
     def prevent_delete_if_story_not_editable
-      raise AcceptanceCriterion::RecordLocked, 'Cannot delete as story is marked as done and therefore locked' if story.done?
+      raise AcceptanceCriterion::RecordLocked, 'Cannot delete as story is marked as accepted and therefore locked' if story.accepted?
     end
 end

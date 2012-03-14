@@ -242,7 +242,7 @@ App.Views.Stories = {
           // make all editable fields show warning that item is not editable
           _.each(tabElems, function(elem) {
             show_view.$(elem).click(function() {
-              var message = show_view.model.CanEdit() ? 'You cannot edit a story that is marked as done' : 'You do not have permission to edit stories for this backlog';
+              var message = show_view.model.CanEdit() ? 'You cannot edit a story that is marked as accepted' : 'You do not have permission to edit stories for this backlog';
               new App.Views.Warning({ message: message });
             });
           });

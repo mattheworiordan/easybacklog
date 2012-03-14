@@ -293,8 +293,8 @@
   <sprints>
     <sprint iteration="1" start_on="2011-01-17" duration_days="5" number_team_members="1" completed="true" completed_at="2011-01-24 19:05:19 UTC" total_completed_points="11.0" total_allocated_points="11.0" total_expected_points_for_this_sprint="15.0">
       <stories>
-        <story code="HOP2" status="Done" status_code="D" done="true" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
-        <story code="HOP3" status="Done" status_code="D" done="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <story code="HOP2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
+        <story code="HOP3" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
       </stories>
       <snapshot name="Sprint 1" velocity="3.0" rate="800" points="71.0" days="23.7" cost="&#163;18,933" use_50_90="false" created_at="2011-01-17 00:00:00 UTC" updated_at="2011-01-17 00:00:00 UTC">
         <themes>
@@ -387,9 +387,9 @@
     </sprint>
     <sprint iteration="2" start_on="2011-01-24" duration_days="5" number_team_members="1" completed="true" completed_at="2011-01-31 12:05:22 UTC" total_completed_points="18.0" total_allocated_points="18.0" total_expected_points_for_this_sprint="15.0">
       <stories>
-        <story code="AUT3" status="Done" status_code="D" done="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-        <story code="AUT1" status="Done" status_code="D" done="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-        <story code="HOP4" status="Done" status_code="D" done="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <story code="AUT3" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+        <story code="AUT1" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+        <story code="HOP4" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
       </stories>
       <snapshot name="Sprint 2" velocity="3.0" rate="800" points="74.0" days="24.7" cost="&#163;19,733" use_50_90="false" created_at="2011-01-24 14:27:00 UTC" updated_at="2011-01-24 14:27:00 UTC">
         <themes>
@@ -487,8 +487,8 @@
     </sprint>
     <sprint iteration="3" start_on="2011-01-31" duration_days="5" number_team_members="1" completed="true" completed_at="2011-02-07 15:05:38 UTC" total_completed_points="13.0" total_allocated_points="13.0" total_expected_points_for_this_sprint="15.0">
       <stories>
-        <story code="INR2" status="Done" status_code="D" done="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-        <story code="NES2" status="Done" status_code="D" done="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <story code="INR2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+        <story code="NES2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
       </stories>
       <snapshot name="Sprint 3" velocity="3.0" rate="800" points="74.0" days="24.7" cost="&#163;19,733" use_50_90="false" created_at="2011-01-31 00:00:00 UTC" updated_at="2011-01-31 00:00:00 UTC">
         <themes>
@@ -586,8 +586,8 @@
     </sprint>
     <sprint iteration="4" start_on="2011-02-07" duration_days="5" number_team_members="1" completed="true" completed_at="2011-02-14 11:13:08 UTC" total_completed_points="21.0" total_allocated_points="21.0" total_expected_points_for_this_sprint="15.0">
       <stories>
-        <story code="AUT2" status="Done" status_code="D" done="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-        <story code="NES1" status="Done" status_code="D" done="true" score_50_when_assigned="13.0" score_90_when_assigned="13.0"/>
+        <story code="AUT2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <story code="NES1" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="13.0" score_90_when_assigned="13.0"/>
       </stories>
       <snapshot name="Sprint 4" velocity="3.0" rate="800" points="89.0" days="29.7" cost="&#163;23,733" use_50_90="false" created_at="2011-02-07 02:00:00 UTC" updated_at="2011-02-07 02:00:00 UTC">
         <themes>
@@ -698,9 +698,9 @@
     </sprint>
     <sprint iteration="5" start_on="2011-02-14" duration_days="5" number_team_members="1" completed="false" completed_at="" total_completed_points="0.0" total_allocated_points="13.0" total_expected_points_for_this_sprint="15.0">
       <stories>
-        <story code="HOP5" status="Testing" status_code="R" done="false" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
-        <story code="INR1" status="In progress" status_code="P" done="false" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-        <story code="INR3" status="Testing" status_code="R" done="false" score_50_when_assigned="2.0" score_90_when_assigned="2.0"/>
+        <story code="HOP5" status="Completed" status_code="R" accepted="false" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
+        <story code="INR1" status="In progress" status_code="P" accepted="false" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <story code="INR3" status="Completed" status_code="R" accepted="false" score_50_when_assigned="2.0" score_90_when_assigned="2.0"/>
       </stories>
     </sprint>
   </sprints>

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe SprintStory do
   # default sprint story status is needed when any story is assigned to a sprint
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   before(:each) do
@@ -45,7 +45,7 @@ describe SprintStory do
 
   it 'should not be allowed to be reassigned from a complete sprint' do
     sprint1 = @sprint
-    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id # must mark as done to assign so that sprint can be marked as completed
+    @story.sprint_story.update_attributes :sprint_story_status_id => accepted_sprint_story_status.id # must mark as accepted to assign so that sprint can be marked as completed
     sprint1.mark_as_complete
     sprint2 = Factory.create(:sprint, :backlog_id => @story.theme.backlog.id)
 
@@ -61,14 +61,14 @@ describe SprintStory do
     @story.sprint_story.sprint_story_status.should == default_sprint_story_status
   end
 
-  it 'should not allow a done story to be deleted (unassigned) from a sprint' do
-    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id
+  it 'should not allow an accepted story to be deleted (unassigned) from a sprint' do
+    @story.sprint_story.update_attributes :sprint_story_status_id => accepted_sprint_story_status.id
     @story.reload
     expect { @story.sprint_story.destroy }.should raise_error SprintStory::RecordNotDestroyable
   end
 
   it 'should not allow a sprint story to be deleted from a complete sprint' do
-    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id
+    @story.sprint_story.update_attributes :sprint_story_status_id => accepted_sprint_story_status.id
     @sprint.reload
     @sprint.mark_as_complete
     # try deleting the sprint story 3 ways, admittedly probably unnecessary, but this is a test after all and it's good to make sure
@@ -78,7 +78,7 @@ describe SprintStory do
   end
 
   it 'should not allow changes to the status or position once the sprint is complete' do
-    @story.sprint_story.update_attributes :sprint_story_status_id => done_sprint_story_status.id
+    @story.sprint_story.update_attributes :sprint_story_status_id => accepted_sprint_story_status.id
     @sprint.reload
     @sprint.mark_as_complete
 

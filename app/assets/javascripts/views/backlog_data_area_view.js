@@ -149,7 +149,7 @@ App.Views.BacklogDataArea = {
                 if (story.SprintStory())
                 {
                   if (isHiding && (
-                        ((filterType === 'completed') && story.SprintStory().Status().IsDone()) ||
+                        ((filterType === 'completed') && story.SprintStory().Status().IsAccepted()) ||
                         (filterType === 'assigned')
                       ) ) {
                     $('#story-' + story.get('id')).slideUp();
@@ -176,7 +176,7 @@ App.Views.BacklogDataArea = {
       // event fired from filter notice shown
       $('.filter-notifier a').click(filterNoticeClicked)
 
-      // keep preference in session of whether to show completed stories or not
+      // keep preference in session of whether to show accepted stories or not
       if ($.cookie('filter_stories')) {
         // wait until the page has rendered
         _.delay(function() {

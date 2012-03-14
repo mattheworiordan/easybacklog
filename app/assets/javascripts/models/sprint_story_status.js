@@ -1,9 +1,9 @@
 /*global Backbone:false, $:false, _:false, JST:false, App:false, window:false */
 
 var SprintStoryStatus = Backbone.Model.extend({
-  DoneCode: 'D',
+  AcceptedCode: 'D',
 
-  IsDone: function() {
-    return this.get('code').toUpperCase() == this.DoneCode;
+  IsAccepted: function() {
+    return this.get('code').toUpperCase() == this.AcceptedCode;
   }
 });

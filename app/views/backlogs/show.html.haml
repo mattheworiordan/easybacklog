@@ -42,7 +42,7 @@
   %form
     %div
       = check_box_tag 'filter_completed'
-      = label_tag 'filter_completed', 'Hide completed stories'
+      = label_tag 'filter_completed', 'Hide accepted stories'
     %div
       = check_box_tag 'filter_assigned'
       = label_tag 'filter_assigned', 'Hide stories assigned to sprints'
@@ -50,7 +50,7 @@
 #backlog-data-area
   .actions
     .filter
-      %a#filter-menu{ :vtip => 'Hide/show completed stories' } Filter
+      %a#filter-menu{ :vtip => 'Filter stories from this view' } Filter
     .divider
     .snapshot
       %a#snapshot-menu Snapshots

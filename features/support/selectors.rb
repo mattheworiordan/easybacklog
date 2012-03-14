@@ -206,7 +206,7 @@ module HtmlSelectorHelpers
     when /^delete theme buttons?$/
       'ul.themes li.theme .theme-actions .delete-theme a'
 
-    when /^done stor(?:y|ies)$/
+    when /^accepted stor(?:y|ies)$/
       'ul.themes li.theme li.story.locked:visible'
 
     when /^assigned to sprint stor(?:y|ies)$/

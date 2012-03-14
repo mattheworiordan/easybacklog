@@ -6,7 +6,7 @@ describe Devise::RegistrationsController do
   let!(:locale) { Factory.create (:locale) }
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   context "new user setting up a new account" do
     it 'should ensure add the example backlog and ensure the user is given explicit permissions to it' do

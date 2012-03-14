@@ -60,7 +60,7 @@ class ThemesController < ApplicationController
       begin
         @theme.re_number_stories
       rescue Theme::StoriesCannotBeRenumbered => e
-        send_json_error 'Stories which are marked as done cannot be re-numbered'
+        send_json_error 'Stories which are marked as accepted cannot be re-numbered'
       else
         send_json_notice 'Stories re-numbered'
       end

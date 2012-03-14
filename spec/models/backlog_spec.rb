@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Backlog do
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   it 'should duplicate backlog along with all related records' do
     # get a backlog set up with at least one story
@@ -290,7 +290,7 @@ describe Backlog do
       sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 1, :number_team_members => 1)
       story = Factory.create(:story, :score_50 => score, :score_90 => score)
       sprint.stories << story
-      story.sprint_story.sprint_story_status = done_sprint_story_status
+      story.sprint_story.sprint_story_status = accepted_sprint_story_status
       story.sprint_story.save!
       sprint.reload
       sprint.mark_as_complete
@@ -373,7 +373,7 @@ describe Backlog do
     [story, story2].each do |story|
       completed_sprint.stories << story
       story.reload
-      story.sprint_story_status = done_sprint_story_status
+      story.sprint_story_status = accepted_sprint_story_status
     end
     completed_sprint.mark_as_complete
     completed_sprint_points = completed_sprint.total_expected_points

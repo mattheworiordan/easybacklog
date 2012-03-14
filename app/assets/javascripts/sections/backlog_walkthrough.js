@@ -102,7 +102,7 @@ $(function() {
 
   guiders.createGuider({
     title: "Story tools",
-    description: "Each story has a set of tools you can click on to do one of the following<ul><li>Assign a colour to a story</li><li>Delete a story</li><li>Duplicate a story</li><li>Move a story</li><li>Assign a story to a sprint</li></ul>Note: Story tools are only visible on editable stories (ones that are not marked as Done).",
+    description: "Each story has a set of tools you can click on to do one of the following<ul><li>Assign a colour to a story</li><li>Delete a story</li><li>Duplicate a story</li><li>Move a story</li><li>Assign a story to a sprint</li></ul>Note: Story tools are only visible on editable stories (ones that are not marked as Accepted).",
     id: "story.tools",
     next: 'story.drag',
     attachTo: "li.theme:first li.story:not(.locked):first .story-actions",
@@ -153,9 +153,9 @@ $(function() {
 
   guiders.createGuider({
     buttons: [],
-    title: 'Filtering Done Stories',
-    description: 'When stories are assigned to sprints, they will be assigned a status such as To Do, In Progress or Done.  When viewing and editing the backlog, it is often useful to filter out all Done stories so that you can see which stories are still remaining.' +
-      "<br><br><b>Now roll over 'Filter' above, and click on 'Hide completed stories' to filter out all Done stories</b>",
+    title: 'Filtering Accepted Stories',
+    description: 'When stories are assigned to sprints, they will be assigned a status such as To do, In progress or Accepted.  When viewing and editing the backlog, it is often useful to filter out all Accepted stories so that you can see which stories are still remaining.' +
+      "<br><br><b>Now roll over 'Filter' above, and click on 'Hide accepted stories' to filter out all Accepted stories</b>",
     id: 'backlog.filter',
     next: 'backlog.filtered',
     attachTo: '#backlog-data-area .actions a:contains(Filter)',
@@ -168,7 +168,7 @@ $(function() {
 
   guiders.createGuider({
     title: 'Filtered view',
-    description: "As you can now see, all the stories that were previously marked as Done are no longer visible in the backlog.<br><br>" +
+    description: "As you can now see, all the stories that were previously marked as Accepted are no longer visible in the backlog.<br><br>" +
       "<b>Now click on the 'Remove filter' link above to remove the filter.</b>",
     id: 'backlog.filtered',
     next: 'backlog.tab',
@@ -264,7 +264,7 @@ $(function() {
     guiders.createGuider({
       title: "Completed sprint",
       description: "As you can see, Sprint 3 is marked as completed indicated by the tick and the green background of the header.<br><br>" +
-        "All stories listed on the left are Done.  Before a sprint can be marked as complete, all stories must first be marked as Done.",
+        "All stories listed on the left are Accepted.  Before a sprint can be marked as complete, all stories must first be marked as Accepted.",
       id: 'sprint.3.overview',
       next: 'sprints.3.totals',
       overlay: true,
@@ -299,7 +299,7 @@ $(function() {
   function setupSprint5Guiders() {
     guiders.createGuider({
       title: "Current sprint",
-      description: "As you can see on the left, Sprint 5 has a number of stories assigned to it which are in progress and not all marked as Done.  As progress on each story is made, the status can be updated from this area.",
+      description: "As you can see on the left, Sprint 5 has a number of stories assigned to it which are in progress and not all marked as Accepted.  As progress on each story is made, the status can be updated from this area.",
       id: 'sprints.5.overview',
       next: 'sprints.5.unassigned-stories',
       overlay: true,

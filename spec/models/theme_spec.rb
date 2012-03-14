@@ -72,14 +72,14 @@ describe Theme do
     story3.reload.unique_id.should eql(1)
   end
 
-  it 'should not allow stories to be renumbered when one or more stories are DONE' do
-    status_done = Factory.create(:sprint_story_status_done)
+  it 'should not allow stories to be renumbered when one or more stories are Accepted' do
+    status_accepted = Factory.create(:sprint_story_status_accepted)
     theme = Factory.create(:theme)
     story1 = Factory.create(:story, :theme => theme)
     story2 = Factory.create(:story, :theme => theme)
 
     sprint = Factory.create(:sprint, :backlog => theme.backlog)
-    sprint.sprint_stories.create! :story_id => story1.id, :sprint_story_status_id => SprintStoryStatus.done.id
+    sprint.sprint_stories.create! :story_id => story1.id, :sprint_story_status_id => SprintStoryStatus.accepted.id
 
     theme.reload
     expect { theme.re_number_stories }.to raise_error Theme::StoriesCannotBeRenumbered

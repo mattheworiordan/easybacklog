@@ -134,7 +134,7 @@ App.Views.AcceptanceCriteria = {
         if (!this.model.IsLocked()) {
           // make all editable fields show warning that item is not editable
           $(this.el).find('>div.data').click(function() {
-            var message = that.model.CanEdit() ? 'You cannot edit a story that is marked as done' : 'You do not have permission to edit story criteria for this backlog';
+            var message = that.model.CanEdit() ? 'You cannot edit a story that is marked as accepted' : 'You do not have permission to edit story criteria for this backlog';
             new App.Views.Warning({ message: message });
           });
         }

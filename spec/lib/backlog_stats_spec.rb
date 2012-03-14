@@ -6,7 +6,7 @@ describe BacklogStats do
 
   let(:backlog) { Factory.create(:backlog, :velocity => 3, :rate => 800) }
   let(:theme) { Factory.create(:theme, :backlog => backlog) }
-  let!(:story_complete) { Factory.create(:sprint_story_status_done) }
+  let!(:story_complete) { Factory.create(:sprint_story_status_accepted) }
   let!(:scoring_rule) { Factory.create(:scoring_rule_default) }
 
   [[:sprint1, '3 Jan 2011', 13], [:sprint2, '10 Jan 2011', 13], [:sprint3, '17 Jan 2011', 21]].each do |sprint, start_on, points|

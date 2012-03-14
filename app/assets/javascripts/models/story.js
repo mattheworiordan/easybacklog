@@ -5,12 +5,12 @@ var Story = Backbone.Model.extend({
     return this.collection.theme;
   },
 
-  // editable if no snapshot master, or story is done
+  // editable if no snapshot master, or story is accepted
   IsEditable: function() {
     if (!this.CanEdit()) {
       return false;
     } else {
-      return !this.IsDone();
+      return !this.IsAccepted();
     }
   },
 
@@ -26,11 +26,11 @@ var Story = Backbone.Model.extend({
     return this.collection.theme.CanEditStatus();
   },
 
-  IsDone: function() {
+  IsAccepted: function() {
     var sprintStory = this.SprintStory();
     if (sprintStory) {
       if (sprintStory.Status()) {
-        return sprintStory.Status().IsDone();
+        return sprintStory.Status().IsAccepted();
       } else {
         return false;
       }

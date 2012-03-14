@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Sprint do
   # default sprint story status is needed when any story is assigned to a sprint
   let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Done', :code => SprintStoryStatus::DONE_CODE) }
+  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
   it 'should create a new iteration automatically for each sprint created' do
@@ -81,7 +81,7 @@ describe Sprint do
 
     sprint1.stories << story1
     story1.reload
-    story1.sprint_story_status = done_sprint_story_status
+    story1.sprint_story_status = accepted_sprint_story_status
 
     # now mark as completed (read-only)
     sprint1.completed_at = Time.now
@@ -99,7 +99,7 @@ describe Sprint do
     expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
   end
 
-  it 'should not allow to be marked as complete if any of the stories are not done' do
+  it 'should not allow to be marked as complete if any of the stories are not accepted' do
     sprint = Factory.create(:sprint, :start_on => Date.today)
     theme = Factory.create(:theme, :backlog_id => sprint.backlog.id)
 
@@ -109,14 +109,14 @@ describe Sprint do
     sprint.mark_as_incomplete
     sprint.stories << Factory.create(:story, :theme_id => theme.id)
     sprint.reload
-    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
+    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not accepted/
 
-    sprint.stories.first.sprint_story_status = done_sprint_story_status
+    sprint.stories.first.sprint_story_status = accepted_sprint_story_status
     expect { sprint.mark_as_incomplete }.should_not raise_error
 
     sprint.stories << Factory.create(:story, :theme_id => theme.id)
     sprint.reload
-    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not done/
+    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not accepted/
   end
 
   it 'should not allow a successive sprint start on or before a previous sprint even if it doesn\'t overlap' do
@@ -158,7 +158,7 @@ describe Sprint do
     sprint.reload
     sprint.total_allocated_points.should == 5 + 1 + 2 + Math.sqrt(2**2 + 1**2)
 
-    story3.sprint_story_status = done_sprint_story_status
+    story3.sprint_story_status = accepted_sprint_story_status
     story3.save
     sprint.reload
     sprint.total_completed_points.should == 2 + Math.sqrt(1**2)
@@ -258,7 +258,7 @@ describe Sprint do
     story = Factory.create(:story, :theme => theme, :score_50 => 21, :score_90 => 21)
     sprint.stories << story
     story.reload
-    story.sprint_story_status = done_sprint_story_status
+    story.sprint_story_status = accepted_sprint_story_status
     sprint.mark_as_complete
 
     sprint2 = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 1)
@@ -280,12 +280,12 @@ describe Sprint do
     sprint.total_expected_based_on_average_points.should == 20
   end
 
-  it 'should return actual velocity completed for completed stories' do
+  it 'should return actual velocity completed for accepted stories' do
     backlog = Factory.create(:backlog, :velocity => 10)
     sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 10, :number_team_members => 5)
     story = Factory.create(:story, :score_50 => 2, :score_90 => 2)
     sprint.stories << story
-    story.sprint_story.sprint_story_status = done_sprint_story_status
+    story.sprint_story.sprint_story_status = accepted_sprint_story_status
     story.sprint_story.save!
     sprint.reload
     sprint.actual_velocity.should == 2.to_f / 10 / 5
