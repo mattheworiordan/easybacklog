@@ -172,7 +172,7 @@ App.Views.Themes = {
         App.Views.Helpers.enableActionMenu(this, '.theme-actions');
       } else {
         this.$('ul.stories>li.actions').remove();
-        this.$('.theme-actions').remove();
+        this.$('.theme-actions .action-menu-icon').remove();
 
         // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
         if (!this.model.IsLocked()) {
