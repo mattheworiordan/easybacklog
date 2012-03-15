@@ -21,7 +21,7 @@ App.Views.BacklogSettings = {
         this.storeBacklogSettings();
         // these 2 areas fall outside the view technically
         $('section.title h1').html('Sprint ' + this.model.get('iteration') + ' settings');
-        $('section.side-panel').html(JST['templates/sprints/sprint-delete-panel']({ model: this.model }));
+        this.showSprintDeletePanel();
         $('section.side-panel a.delete-sprint').click(this.deleteSprint); // outside of the view DOM element
         this.el = $('section.content .backlog-settings-body').html(JST['templates/sprints/edit-sprint']({ model: this.model, backlog: this.model.Backlog() }));
         this.$('#start-on').datepicker().datepicker("setDate", parseRubyDate(this.model.get('start_on')));
@@ -36,6 +36,10 @@ App.Views.BacklogSettings = {
       }
       this.storeState();
       return this;
+    },
+
+    showSprintDeletePanel: function() {
+      $('section.side-panel').html(JST['templates/sprints/sprint-delete-panel']({ model: this.model }));
     },
 
     // store the state of the current tab's HTML so we can check if changes have been made or not
@@ -135,7 +139,9 @@ App.Views.BacklogSettings = {
           } else {
             // set as incomplete
             this.model.set({ completed: 'false' });
-            this.saveSprintFields();
+            this.saveSprintFields(function() {
+              view.showSprintDeletePanel();
+            });
           }
         } else {
           this.model.set({
@@ -161,7 +167,9 @@ App.Views.BacklogSettings = {
               view.saveSprintFields(function() {
                 // now mark as complete and save as all other fields ignored on first save
                 view.model.set({ completed: 'true' });
-                view.saveSprintFields();
+                view.saveSprintFields(function() {
+                  view.showSprintDeletePanel();
+                });
               });
             });
           } else {
@@ -192,7 +200,7 @@ App.Views.BacklogSettings = {
           if (window.console) { console.log(JSON.stringify(error)); }
           try {
             message = JSON.parse(error.responseText).message;
-          } catch(e) { };
+          } catch(e) { }
           if (message) {
             view.$('#form-errors').addClass('form_errors').html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly:<br/>" +
               message.replace('Validation failed: Completed at ', '')).hide().slideDown();
@@ -206,11 +214,16 @@ App.Views.BacklogSettings = {
     },
 
     disableFieldsIfNotEditable: function() {
+      var fields = this.$('#number-team-members, #start-on, #duration-days, #explicit-velocity, input[name=calculation_method]'),
+          inputs = this.$('input[type=radio][name=sprint_status]');
       if (!this.model.IsEditable()) { // might not be editable because sprint is complete
-        this.$('#number-team-members, #start-on, #duration-days, #explicit-velocity, input[name=calculation_method]').attr('disabled', true);
-        if (!this.model.CanEdit()) { // user does not have permission to edit
-          this.$('input[type=radio][name=sprint_status]').attr('disabled', true);
-        }
+        fields.attr('disabled', true);
+      } else {
+        fields.attr('disabled', false);
+      }
+
+      if (!this.model.CanEdit()) { // user does not have permission to edit
+        inputs.attr('disabled', true);
       }
     },
 

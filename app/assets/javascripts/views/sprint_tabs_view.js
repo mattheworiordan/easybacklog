@@ -242,6 +242,9 @@ App.Views.SprintTabs = {
       // check that validation plugin is loaded as it is loaded only when document.ready
       if (_.isFunction($.fn.validate)) {
         dialog.find('form').validate(App.Views.SharedSprintSettings.formValidationConfig);
+      } else {
+        new App.Views.Error({ message: 'Oops, we\'re sorry as we\'ve had an internal problem.\nPlease reload this page' });
+        return;
       }
 
       var dayInMs = 1000 * 60 * 60 * 24,

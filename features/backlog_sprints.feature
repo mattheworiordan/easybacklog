@@ -194,7 +194,7 @@ Feature: Backlog Sprints
     When I fill in "Expected team velocity for this sprint" with "3"
       And I press "Create"
     Then I should see the notice "Sprint number 1 has been added"
-      Then the "Sprint 1" tab should be selected
+      And the "Sprint 1" tab should be selected
     # now edit the settings and make sure validation is working as expected
     When I follow "Settings"
     Then the "Sprint 1" tab should be selected
@@ -212,5 +212,30 @@ Feature: Backlog Sprints
     When I follow "Settings"
     Then the "Team velocity for this sprint" field should contain "3.2"
 
-
+  @javascript
+  Scenario: Check that sprint fields are disabled when sprint is incomplete/completed in sprint settings
+    Given a backlog named "Backlog 1" assigned to company "Microsoft" for account "Acme" is set up
+      And I am on the backlog "Backlog 1" page
+    When I click on the "add sprint button"
+    Then a "new sprint dialog box" should be visible
+    When I press "Create"
+    Then I should see the notice "Sprint number 1 has been added"
+      And the "Sprint 1" tab should be selected
+    When I follow "Settings"
+    Then the "Sprint 1" tab should be selected
+      And I should see the text "Yes, I understand — delete this sprint" within the "side panel"
+      And the "text input fields" should not be disabled
+      And the "radio buttons" should not be disabled
+    When I choose "Complete"
+      And I follow "Update sprint settings"
+    Then I should not see the notice "Sprint number 1 has been updated"
+      And I should not see the text "Yes, I understand — delete this sprint" within the "side panel"
+      And the "text input fields" should be disabled
+      And the "radio buttons" should be disabled
+    When I choose "Incomplete"
+      And I follow "Update sprint settings"
+    Then I should not see the notice "Sprint number 1 has been updated"
+      And I should see the text "Yes, I understand — delete this sprint" within the "side panel"
+      And the "text input fields" should not be disabled
+      And the "radio buttons" should not be disabled
 
