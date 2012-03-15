@@ -213,6 +213,7 @@ Feature: Backlog Sprints
     Then the "Team velocity for this sprint" field should contain "3.2"
 
   @javascript
+  @wip
   Scenario: Check that sprint fields are disabled when sprint is incomplete/completed in sprint settings
     Given a backlog named "Backlog 1" assigned to company "Microsoft" for account "Acme" is set up
       And I am on the backlog "Backlog 1" page
@@ -234,7 +235,7 @@ Feature: Backlog Sprints
       And the "radio buttons" should be disabled
     When I choose "Incomplete"
       And I follow "Update sprint settings"
-    Then I should not see the notice "Sprint number 1 has been updated"
+    Then I should see the notice "Sprint number 1 has been updated"
       And I should see the text "Yes, I understand — delete this sprint" within the "side panel"
       And the "text input fields" should not be disabled
       And the "radio buttons" should not be disabled

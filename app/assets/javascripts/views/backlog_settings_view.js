@@ -127,6 +127,22 @@ App.Views.BacklogSettings = {
       });
     },
 
+    saveSprintError: function(model, error) {
+      var errorView, message;
+      if (window.console) { console.log(JSON.stringify(error)); }
+      try {
+        message = JSON.parse(error.responseText).message;
+      } catch(e) { }
+      if (message) {
+        this.$('#form-errors').addClass('form_errors').html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly:<br/>" +
+          message.replace('Validation failed: Completed at ', '')).hide().slideDown();
+        errorView = new App.Views.Warning({ message: 'Sprint was not updated.  Please address problems and try again'});
+      } else {
+        // dialog has since been closed, show an error in usual notice area
+        errorView = new App.Views.Error({ message: 'An internal error occured and the sprint was not updated.  Please refresh your browser'});
+      }
+    },
+
     updateSprint: function(event) {
       var view = this;
       event.preventDefault();
@@ -162,16 +178,21 @@ App.Views.BacklogSettings = {
           }
 
           if (this.$('#sprint_status_completed').is(':checked')) {
-            this.saveSprintFields(function() {
-              // need to save and then mark as complete as cannot save fields when completed
-              view.saveSprintFields(function() {
-                // now mark as complete and save as all other fields ignored on first save
-                view.model.set({ completed: 'true' });
-                view.saveSprintFields(function() {
-                  view.showSprintDeletePanel();
-                });
-              });
-            });
+            this.model.save(false,
+              {
+                success: function() {
+                  // need to save and then mark as complete as cannot save fields when completed
+                  // now mark as complete and save as all other fields ignored on first save
+                  view.model.set({ completed: 'true' });
+                  view.saveSprintFields(function() {
+                    view.showSprintDeletePanel();
+                  });
+                },
+                error: function(model, error) {
+                  view.saveSprintError(model, error);
+                }
+              }
+            );
           } else {
             // just save the form changes
             this.saveSprintFields();
@@ -186,29 +207,16 @@ App.Views.BacklogSettings = {
 
       this.model.save(false, {
         success: function() {
-          if (_.isFunction(callbackOnSuccess)) {
-            callbackOnSuccess();
-          } else {
-            new App.Views.Notice({ message: 'Sprint number ' + view.model.get('iteration') + ' has been updated'});
+          new App.Views.Notice({ message: 'Sprint number ' + view.model.get('iteration') + ' has been updated'});
             view.$('#form-errors').removeClass('form_errors');
             view.storeState(); // so dialog does not appear asking if we want to save changes as already saved
             view.disableFieldsIfNotEditable();
+          if (_.isFunction(callbackOnSuccess)) {
+            callbackOnSuccess();
           }
         },
         error: function(model, error) {
-          var errorView, message;
-          if (window.console) { console.log(JSON.stringify(error)); }
-          try {
-            message = JSON.parse(error.responseText).message;
-          } catch(e) { }
-          if (message) {
-            view.$('#form-errors').addClass('form_errors').html("Oops, we could not update the sprint as it looks like you haven't filled in everything correctly:<br/>" +
-              message.replace('Validation failed: Completed at ', '')).hide().slideDown();
-            errorView = new App.Views.Warning({ message: 'Sprint was not updated.  Please address problems and try again'});
-          } else {
-            // dialog has since been closed, show an error in usual notice area
-            errorView = new App.Views.Error({ message: 'An internal error occured and the sprint was not updated.  Please refresh your browser'});
-          }
+          view.saveSprintError(model, error);
         }
       });
     },
