@@ -137,7 +137,7 @@ $roll-over-header-color: #FFF;
   /* accepted (was done) */
   &.status-code-D {
     @if $includeHover == yes {
-      background: #090 image-url('lock-tiny-fff.png') 10px 2px no-repeat;
+      background: #090 image-url('lock-tiny-fff.png') 7px 2px no-repeat;
     } @else {
       background-color: #090;
     }

@@ -890,11 +890,11 @@ ul.themes {
               border-top: none;
             }
             .sprint {
-              padding: 5px 0 2px 5px;
+              padding: 5px 0 2px 3px;
               .tab {
                 border: 1px solid rgba(0,0,0,0.5);
                 font-size: 12px;
-                padding: 1px 10px 1px 10px;
+                padding: 1px 8px 1px 8px;
                 @include border-radius(10px);
                 display: inline;
                 a {
@@ -911,7 +911,7 @@ ul.themes {
               }
             }
             .status {
-              padding: 5px 0 0 5px;
+              padding: 5px 0 0 3px;
               position: relative;
               min-height: 16px;
               .tab {
@@ -921,7 +921,7 @@ ul.themes {
                 font-size: 12px;
                 padding: 1px 5px 1px 5px;
                 &.status-code-T, &.status-code-R, &.status-code-D {
-                  padding: 1px 12px 1px 12px;
+                  padding: 1px 8px 1px 8px;
                 }
                 @include border-radius(10px);
                 display: inline;
