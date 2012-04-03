@@ -268,6 +268,13 @@ App.Views.Stories = {
         // sprint story status has changed, lets update the entire HTML as it may or may not be locked now
         $(this.el).html( JST['templates/stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
         this.configureView();
+      } else if (attributes && (('meta_filtered' in attributes) || ('meta_collapsed' in attributes)) ) {
+        // story has been filtered
+        if (this.model.get('meta_filtered') || this.model.get('meta_collapsed')) {
+          $(this.el).slideUp();
+        } else {
+          $(this.el).slideDown();
+        }
       }
 
       // set class so that other elements (mainly for tab order) know if this class is locked or not

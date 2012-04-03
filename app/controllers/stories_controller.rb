@@ -126,6 +126,6 @@ class StoriesController < ApplicationController
     end
 
     def filter_story_params
-      filter_params :theme_id, :cost_formatted, :days_formatted, :sprint_story_status_id, :sprint_story_id, :score_statistics, :force_send_statistics
+      filter_params :theme_id, :cost_formatted, :days_formatted, :sprint_story_status_id, :sprint_story_id, :score_statistics, :force_send_statistics, :meta_filtered, :meta_collapsed
     end
 end

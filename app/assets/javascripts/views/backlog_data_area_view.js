@@ -106,7 +106,7 @@ App.Views.BacklogDataArea = {
           hideMenu = function() {
             overEitherNode = false;
             if (!selectIsOpen) {
-              _.delay(function() {  // give user a change to move mouse onto either of the nodes, menu or menu container
+              _.delay(function() {  // give user a chance to move mouse onto either of the nodes, menu or menu container
                 if (overEitherNode === false) {
                   $('#backlog-data-area .filter').removeClass('hover');
                   $('section.for-backlog .filter-container').hide();
@@ -152,12 +152,13 @@ App.Views.BacklogDataArea = {
                         ((filterType === 'completed') && story.SprintStory().Status().IsAccepted()) ||
                         (filterType === 'assigned')
                       ) ) {
-                    $('#story-' + story.get('id')).slideUp();
+                    story.set({ meta_filtered: true });
                   } else {
-                    $('#story-' + story.get('id')).slideDown();
+                    story.set({ meta_filtered: false });
                   }
                 }
               });
+              theme.trigger('change:meta_story_filter'); // if a story is collapsed, we need to tell the theme that the filtered children have changed so it can update stats
             });
           },
           filterNoticeClicked = function(event) {
@@ -174,7 +175,7 @@ App.Views.BacklogDataArea = {
 
       $('.filter-container input[type=checkbox]').change(filterChangeEvent);
       // event fired from filter notice shown
-      $('.filter-notifier a').click(filterNoticeClicked)
+      $('.filter-notifier a').click(filterNoticeClicked);
 
       // keep preference in session of whether to show accepted stories or not
       if ($.cookie('filter_stories')) {

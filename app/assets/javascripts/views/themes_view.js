@@ -93,7 +93,7 @@ App.Views.Themes = {
     // New or Re-order button press
     themeKeyPress: function(event) {
       var target = $(event.target);
-      if (9 == event.keyCode) { // tab pressed
+      if (9 === event.keyCode) { // tab pressed
         event.preventDefault();
         if (!event.shiftKey) { // --> moving forward
           if (target.is('a.new-theme')) { // user on add theme button
@@ -117,7 +117,7 @@ App.Views.Themes = {
             this.$('a.new-theme').focus();
           }
         }
-      } else if (13 == event.keyCode) { // enter pressed
+      } else if (13 === event.keyCode) { // enter pressed
         if (target.is('a.new-theme')) {
           this.createNew(event);
         } else if (target.is('a.reorder-themes')) {
@@ -156,7 +156,7 @@ App.Views.Themes = {
 
     initialize: function() {
       App.Views.BaseView.prototype.initialize.call(this);
-      _.bindAll(this, 'navigateEvent', 'reNumberStoriesAction');
+      _.bindAll(this, 'navigateEvent', 'reNumberStoriesAction', 'updateThemeViewAfterExpandOrCollapse');
     },
 
     render: function() {
@@ -184,6 +184,11 @@ App.Views.Themes = {
           });
         }
       }
+
+      // if children stories are filtered, a change:meta_story_filter event is fired on the theme so the stats can be updated if necessary
+      this.model.bind('change:meta_story_filter', function() {
+        that.updateThemeViewAfterExpandOrCollapse();
+      });
       return (this);
     },
 
@@ -192,7 +197,7 @@ App.Views.Themes = {
       var contentUpdatedFunc = function(value, settings) {
         var newVal = show_view.contentUpdated(value, settings, this);
         var fieldId = $(this).parent().attr('class').replace(/\-/g, '_');
-        if (fieldId == 'code') { // code needs updating of story views
+        if (fieldId === 'code') { // code needs updating of story views
           show_view.model.Stories().each(function(story, index) {
             story.trigger('change:unique_id'); // trigger unique ID change so field is updated
           });
@@ -275,13 +280,13 @@ App.Views.Themes = {
     },
 
     changeEvent: function(eventName, model) {
-      if (eventName.substring(0,7) == 'change:') {
+      if ((eventName.substring(0,7) === 'change:') && (eventName !== 'change:meta_story_filter')) {
         var fieldChanged = eventName.substring(7);
         this.$('>.theme-data>.' + fieldChanged.replace(/_/gi, '-') + '>div.data').text(this.model.get(fieldChanged));
         this.updateStatistics(); // force update in case name has changed
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
-      if (eventName == 'change:id') {
+      if (eventName === 'change:id') {
         $(this.el).attr('id', 'theme-' + model.get('id'));
         if (!this.$('ul.stories li.actions .new-story').length) {
           // not yet added the Add Story button as theme not created so add now
@@ -319,6 +324,7 @@ App.Views.Themes = {
 
     updateStatistics: function() {
       this.$('.theme-stats div').html( JST['templates/themes/stats'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
+      this.updateThemeViewAfterExpandOrCollapse(); // ensure that if updates occur to the theme then any collapsed or expanded view changes are retained
     },
 
     reNumberStories: function(event) {
@@ -417,8 +423,8 @@ App.Views.Themes = {
                   sprintStory.save(false, {
                     success: function(model, response) {
                       assignedStories += 1;
-                      if (assignedStories == unassignedStories.length) {
-                        new App.Views.Notice({ message: assignedStories + (assignedStories == 1 ? ' story has' : ' stories have') + ' been assigned to sprint ' + sprint.get('iteration') });
+                      if (assignedStories === unassignedStories.length) {
+                        new App.Views.Notice({ message: assignedStories + (assignedStories === 1 ? ' story has' : ' stories have') + ' been assigned to sprint ' + sprint.get('iteration') });
                         $(dialog).dialog('close');
                       }
                     },
@@ -451,7 +457,7 @@ App.Views.Themes = {
           newDialogHtml;
 
       if (assignedStories.length) {
-        new App.Views.Warning({ message: 'You cannot move stories that are assigned to sprints.<br>Unassign the ' + assignedStories.length + (assignedStories.length == 1 ? ' story' : 'stories') + ' to proceed.' });
+        new App.Views.Warning({ message: 'You cannot move stories that are assigned to sprints.<br>Unassign the ' + assignedStories.length + (assignedStories.length === 1 ? ' story' : 'stories') + ' to proceed.' });
       } else {
         $('#dialog-move-theme').remove(); // ensure old dialog HTML is not still in the DOM
         $('body').append(JST['templates/themes/move-theme-dialog']({ backlogs: false }));
@@ -525,17 +531,21 @@ App.Views.Themes = {
     },
 
     expandCollapse: function() {
-      var isCollapsed = $(this.el).is('.collapsed'),
-          storyLis = this.$('ul.stories>li'),
-          stories = this.$('ul.stories>li.story');
+      $(this.el).toggleClass('collapsed');
+      this.updateThemeViewAfterExpandOrCollapse();
+    },
 
-      if (!isCollapsed) {
-        storyLis.slideUp().addClass('collapsed');
-        $(this.el).addClass('collapsed');
-        this.$('.theme-stats .container .collapsed-title').html(stories.length === 1 ? '1 story collapsed' : stories.length + ' stories collapsed');
+    updateThemeViewAfterExpandOrCollapse: function() {
+      var nonStoryListItems = this.$('ul.stories>li:not(.story)'),
+          storyCount = this.model.Stories().select(function(story) { return story.get('meta_filtered') !== true; }).length,
+          isCollapsed = $(this.el).is('.collapsed');
+
+      this.model.Stories().each(function(story) { story.set({ meta_collapsed: isCollapsed }); });
+      if (isCollapsed) {
+        nonStoryListItems.hide();
+        this.$('.theme-stats .container .collapsed-title').html(storyCount === 1 ? '1 story collapsed' : storyCount + ' stories collapsed');
       } else {
-        storyLis.removeClass('collapsed').slideDown();
-        $(this.el).removeClass('collapsed');
+        nonStoryListItems.show();
         this.$('.theme-stats .container .collapsed-title').html('');
       }
     }
