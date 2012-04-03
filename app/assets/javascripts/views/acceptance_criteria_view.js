@@ -204,7 +204,7 @@ App.Views.AcceptanceCriteria = {
 
     // Tab or Enter key pressed so let's move on
     navigateEvent: function(event) {
-      if (_.include([9,13,27], event.keyCode) && (!event.ctrlKey)) { // tab, enter, esc
+      if (_.include([9,13,27], event.keyCode) && !event.ctrlKey && !event.altKey) { // tab, enter, esc
         $(event.target).blur();
         try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
           event.preventDefault();
@@ -242,6 +242,10 @@ App.Views.AcceptanceCriteria = {
             });
           }
         }
+      } else if ( (event.keyCode === 13) && (event.ctrlKey || event.altKey) ) {
+        event.preventDefault();
+        event.stopPropagation();
+        $(event.target).insertAtCaret('\n');
       }
     }
   })

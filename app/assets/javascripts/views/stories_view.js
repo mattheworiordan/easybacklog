@@ -363,7 +363,7 @@ App.Views.Stories = {
       var isInput = $(event.target).is('input'), // ctrl-enter in a textarea creates new line, in input simply move on and assume enter was meant
           viewElements, dataClass, dataElem, sibling, previousSelector, lastCriterion, previousUnlocked;
 
-      if (_.include([9,13,27], event.keyCode) && (isInput || !event.ctrlKey) ) { // tab, enter, esc
+      if (_.include([9,13,27], event.keyCode) && (isInput || (!event.ctrlKey && !event.altKey)) ) { // tab, enter, esc
         $(event.target).blur();
         try { // cannot preventDefault if esc as esc event is triggered manually from jeditable
           event.preventDefault();
@@ -439,6 +439,10 @@ App.Views.Stories = {
             }
           }
         }
+      } else if ( (event.keyCode === 13) && (event.ctrlKey || event.altKey) ) {
+        event.preventDefault();
+        event.stopPropagation();
+        $(event.target).insertAtCaret('\n');
       }
     },
 
