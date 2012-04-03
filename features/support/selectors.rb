@@ -447,6 +447,9 @@ module HtmlSelectorHelpers
     when /^user account dropdown$/
       ".account-info #user-account-dropdown a:first"
 
+    when /^content area$/
+      'section.main-content-pod'
+
     else
       unless params.has_key?(:dont_translate_to_css)
         supports_javascript = page.evaluate_script('true') rescue false

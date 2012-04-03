@@ -13,10 +13,20 @@ App.Views.BacklogSettings = {
     },
 
     render: function() {
+      var changeBackCancelText = function(that, elemSelector) {
+            // if any fields change, then change <- Back link button text to reflect new action
+            that.$('form').find('input,select').on('change', function() {
+              var el = that.$(elemSelector);
+              if (el.text() !== el.data('message')) {
+                el.data('original-text', el.text()).text(el.data('message'));
+              }
+            });
+          };
       if (this.model.get('iteration') === 'Backlog') {
         this.retrieveBacklogSettings();
         App.Views.BacklogCreateUpdateMethods.initializeManageBacklog(); // special non name spaced method to access manage_backlog.js initialize
         this.el = $('section.content .backlog-settings-body');
+        changeBackCancelText(this, '#cancel_backlog_update');
       } else {
         this.storeBacklogSettings();
         // these 2 areas fall outside the view technically
@@ -29,6 +39,7 @@ App.Views.BacklogSettings = {
         this.$('a#sprint_cancel').click(this.cancel);
 
         this.disableFieldsIfNotEditable();
+        changeBackCancelText(this, '#sprint_cancel');
 
         this.$('form').validate(App.Views.SharedSprintSettings.formValidationConfig);
 
@@ -207,10 +218,13 @@ App.Views.BacklogSettings = {
 
       this.model.save(false, {
         success: function() {
+          var cancelButton = view.$('#sprint_cancel');
           new App.Views.Notice({ message: 'Sprint number ' + view.model.get('iteration') + ' has been updated'});
-            view.$('#form-errors').removeClass('form_errors');
-            view.storeState(); // so dialog does not appear asking if we want to save changes as already saved
-            view.disableFieldsIfNotEditable();
+          view.$('#form-errors').removeClass('form_errors');
+          view.storeState(); // so dialog does not appear asking if we want to save changes as already saved
+          view.disableFieldsIfNotEditable();
+          // set the cancel button to just say <- back now as changes have been saved
+          if (cancelButton.data('original-text')) { cancelButton.text(cancelButton.data('original-text')); }
           if (_.isFunction(callbackOnSuccess)) {
             callbackOnSuccess();
           }

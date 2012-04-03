@@ -84,7 +84,7 @@
 
   <% if (backlog.CanEdit()) { %>
     <a id="sprint_submit" class="button" href="#update">Update sprint settings</a>
-    <a id="sprint_cancel" href="#cancel">cancel</a>
+    <a id="sprint_cancel" href="#cancel" data-message="discard changes">← Back</a>
   <% } else { %>
     <a id="sprint_cancel" href="#cancel" class="button">← Back to backlog</a>
   <% } %>

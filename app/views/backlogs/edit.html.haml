@@ -95,7 +95,7 @@
     %br/
     - if @backlog.archived? && can?(:full)
       = f.submit "Update backlog archive status"
-      = link_to "cancel", account_backlog_path(@backlog.account, @backlog)
+      = link_to "← Back", account_backlog_path(@backlog.account, @backlog), :'data-message'=>'discard changes'
     - elsif @backlog.snapshot_master.present?
       = link_to "← Back to snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :class => 'button'
     - elsif @backlog.snapshot_for_sprint.present?
@@ -104,7 +104,7 @@
       = link_to "← Back to backlog", account_backlog_path(@backlog.account, @backlog), :class => 'button'
     - else
       = f.submit "Update backlog settings"
-      = link_to "cancel", account_backlog_path(@backlog.account, @backlog), :id => 'cancel_backlog_update'
+      = link_to "← Back", account_backlog_path(@backlog.account, @backlog), :id => 'cancel_backlog_update', :'data-message'=>'discard changes'
 
 - if @backlog.is_snapshot?
   :javascript

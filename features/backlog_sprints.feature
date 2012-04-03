@@ -107,8 +107,10 @@ Feature: Backlog Sprints
       And the "Number of team members" field should contain "2"
       And I should see "32" within "edit sprint expected velocity"
       And the "Velocity in points" should not be visible
+      And I should see "← Back" within the "content area"
     When I fill in "Sprint start date" with "01/01/2012"
       And I fill in "Duration of sprint in days" with "a"
+      Then I should see "discard changes" within the "content area"
     Then I should see "Enter a value using whole numbers"
       And I should see "(enter duration of sprint)" within "edit sprint expected velocity"
     When I fill in "Duration of sprint in days" with ""
@@ -129,7 +131,7 @@ Feature: Backlog Sprints
     Then I should see the warning "Sprint was not updated. Please address problems and try again"
       And I should see "we could not update the sprint"
       And I should see "Start date and duration overlaps with sprint 2"
-    When I follow "cancel"
+    When I follow "discard changes"
     Then I should see the page title "Backlog 1"
       And the "Sprint 1" tab should be selected
     When I follow "Settings"
