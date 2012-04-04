@@ -1,0 +1,36 @@
+<% if show_totals %>
+  <% if theme.stories.empty? %>
+    <Row>
+      <Cell ss:MergeDown='1' ss:StyleID='theme-cell'>
+        <Data ss:Type='String'><%= theme.name %></Data>
+      </Cell>
+    </Row>
+  <% else %>
+    <Row>
+      <Cell ss:MergeDown='<%= theme.stories.count %>' ss:StyleID='theme-cell'>
+        <Data ss:Type='String'><%= theme.name %></Data>
+      </Cell>
+      <%= render :partial => 'table_story', :locals => { :story => theme.stories.first, :use_50_90 => use_50_90, :include_theme => !show_totals } %>
+    </Row>
+  <% end %>
+<% end %>
+<% unless theme.stories.empty? %>
+  <% theme.stories[1..-1].each do |story| %>
+    <Row>
+      <%= render :partial => 'table_story', :locals => { :story => story, :use_50_90 => use_50_90, :include_theme => !show_totals } %>
+    </Row>
+  <% end %>
+<% end %>
+<% if show_totals %>
+  <Row>
+    <Cell ss:Index='2' ss:MergeAcross='2' ss:StyleID='theme-summary'>
+      <Data ss:Type='String'><%= t 'backlog.totals.theme', :default => "Total for theme '#{theme.name}'", :name => theme.name %></Data>
+    </Cell>
+    <Cell ss:MergeAcross='4' ss:StyleID='theme-total'>
+      <Data ss:Type='String'><%= export_totals(theme)%></Data>
+    </Cell>
+  </Row>
+  <Row ss:AutoFitHeight='0' ss:Height='5'>
+    <Cell ss:MergeAcross='<%= total_columns - 1 %>' />
+  </Row>
+<% end %>

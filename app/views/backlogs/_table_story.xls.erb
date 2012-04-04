@@ -1,0 +1,44 @@
+<% if include_theme %>
+<Cell>
+  <Data ss:Type='String'><%= story.theme.name %></Data>
+</Cell>
+<% end %>
+<Cell ss:Index='2' >
+  <Data ss:Type='String'><%= "#{story.theme.code}#{story.unique_id}" %></Data>
+</Cell>
+<Cell>
+  <Data ss:Type='String'><Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.as_a', :default => 'As a'}"%></Font> <%= excel_xml_breaks "#{story.as_a}"%>
+&#13;<Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.i_want_to', :default => 'I want to'}" %></Font> <%= excel_xml_breaks "#{story.i_want_to}" %>
+&#13;<Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.so_i_can', :default => 'So I can'}" %></Font> <%= excel_xml_breaks "#{story.so_i_can}" %></Data>
+</Cell>
+<Cell>
+  <Data ss:Type='String'><%= raw story.acceptance_criteria.each_with_index.map { |criterion, index| "#{criterion.index_to_letters(index)}) #{excel_xml_breaks criterion.criterion}" }.join("&#13;")%></Data>
+</Cell>
+<Cell>
+  <Data ss:Type='String'><%= excel_xml_breaks story.comments %></Data>
+</Cell>
+<Cell>
+  <Data ss:Type='String'><%= "#{t 'backlog.sprint', :default => 'Sprint'} #{story.sprint_story.sprint.iteration}" if story.sprint_story.present? %></Data>
+</Cell>
+<% if use_50_90 %>
+  <Cell ss:StyleID='numeric'>
+    <Data ss:Type='String'><%= story.score_50 %></Data>
+  </Cell>
+  <Cell ss:StyleID='numeric'>
+    <Data ss:Type='String'><%= story.score_90 %></Data>
+  </Cell>
+<% else %>
+  <Cell ss:StyleID='numeric'>
+    <Data ss:Type='String'><%= story.score %></Data>
+  </Cell>
+<% end %>
+<% if story.theme.backlog.cost_estimatable? %>
+  <Cell ss:StyleID='numeric'>
+    <Data ss:Type='String'><%= story.cost_formatted %></Data>
+  </Cell>
+<% end %>
+<% if story.theme.backlog.days_estimatable? %>
+  <Cell ss:StyleID='numeric'>
+    <Data ss:Type='String'><%= story.days_formatted %></Data>
+  </Cell>
+<% end %>

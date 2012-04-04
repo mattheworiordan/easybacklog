@@ -44,4 +44,13 @@ module BacklogsHelper
     total_columns += 1 if backlog.days_estimatable?
     total_columns
   end
+
+  def excel_xml_breaks(content)
+    if content.blank?
+      content
+    else
+      html_encoded = h(content)
+      raw content.gsub(/[\n\r]/,'&#13;')
+    end
+  end
 end

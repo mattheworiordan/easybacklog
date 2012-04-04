@@ -1,0 +1,73 @@
+<Worksheet ss:Name='Story List'>
+  <Table>
+    <Column ss:AutoFitWidth="1" ss:Width="90" /> <!--Theme-->
+    <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--ID-->
+    <Column ss:AutoFitWidth="1" ss:Width="240" /> <!--User Story-->
+    <Column ss:AutoFitWidth="1" ss:Width="240" /> <!--Acceptance Criteria-->
+    <Column ss:AutoFitWidth="1" ss:Width="240" /> <!--Comments-->
+    <Column ss:AutoFitWidth="1" ss:Width="50" /> <!--Sprint-->
+    <% if backlog.use_50_90? %>
+      <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Score 50-->
+      <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Score 90-->
+    <% else %>
+      <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Score -->
+    <% end %>
+    <% if backlog.cost_estimatable? %>
+      <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Cost-->
+    <% end %>
+    <% if backlog.days_estimatable? %>
+      <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Days-->
+    <% end %>
+    <Row>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.theme', :default => 'Theme' %></Data>
+      </Cell>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.id', :default => 'ID' %></Data>
+      </Cell>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.user_story', :default => 'User Story' %></Data>
+      </Cell>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria' %></Data>
+      </Cell>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.comments', :default => 'Comments' %></Data>
+      </Cell>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.sprint', :default => 'Sprint' %></Data>
+      </Cell>
+      <% if backlog.use_50_90? %>
+        <Cell ss:StyleID='table-header'>
+          <Data ss:Type='String'><%= t 'backlog.points_50', :default => '50' %></Data>
+        </Cell>
+        <Cell ss:StyleID='table-header'>
+          <Data ss:Type='String'><%= t 'backlog.points_90', :default => '90' %></Data>
+        </Cell>
+      <% else %>
+        <Cell ss:StyleID='table-header'>
+          <Data ss:Type='String'><%= t 'backlog.points', :default => 'Points' %></Data>
+        </Cell>
+      <% end %>
+      <% if backlog.cost_estimatable? %>
+        <Cell ss:StyleID='table-header'>
+          <Data ss:Type='String'><%= t 'backlog.cost', :default => 'Cost' %></Data>
+        </Cell>
+      <% end %>
+      <% if backlog.days_estimatable? %>
+        <Cell ss:StyleID='table-header'>
+          <Data ss:Type='String'><%= t 'backlog.days', :default => 'Days' %></Data>
+        </Cell>
+      <% end %>
+    </Row>
+    <%= render :partial => 'table_theme', :collection => backlog.themes, :as => :theme, :locals => { :use_50_90 => backlog.use_50_90?, :total_columns => total_columns, :show_totals => false } %>
+  </Table>
+  <WorksheetOptions xmlns='urn:schemas-microsoft-com:office:excel'>
+    <PageLayoutZoom>0</PageLayoutZoom>
+    <Selected />
+    <Panes />
+    <ProtectObjects>False</ProtectObjects>
+    <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+  <AutoFilter x:Range='R1C1:R1C<%=total_columns%>' xmlns='urn:schemas-microsoft-com:office:excel'></AutoFilter>
+</Worksheet>

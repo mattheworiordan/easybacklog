@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<% # reference http://msdn.microsoft.com/en-us/library/aa140066(v=office.10).aspx %>
+<Workbook xmlns:html='http://www.w3.org/TR/REC-html40'
+          xmlns:o='urn:schemas-microsoft-com:office:office'
+          xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'
+          xmlns:x='urn:schemas-microsoft-com:office:excel'
+          xmlns='urn:schemas-microsoft-com:office:spreadsheet'>
+  <DocumentProperties xmlns='urn:schemas-microsoft-com:office:office'>
+    <LastAuthor><%= @backlog.author.name %></LastAuthor>
+    <Created><%= Time.now.utc %></Created>
+    <LastSaved>%= Time.now.utc %></LastSaved>
+    <Version>1.0</Version>
+  </DocumentProperties>
+  <OfficeDocumentSettings xmlns='urn:schemas-microsoft-com:office:office'>
+    <AllowPNG />
+  </OfficeDocumentSettings>
+  <ExcelWorkbook xmlns='urn:schemas-microsoft-com:office:excel'>
+    <ProtectStructure>False</ProtectStructure>
+    <ProtectWindows>False</ProtectWindows>
+  </ExcelWorkbook>
+  <Styles>
+    <Style ss:ID='Default' ss:Name='Normal'>
+      <Alignment ss:Vertical='Top' ss:WrapText='1' />
+      <Borders />
+      <Font ss:Color='#000000' ss:FontName='Calibri' ss:Size='12' x:Family='Swiss' />
+      <Interior />
+      <NumberFormat />
+      <Protection />
+    </Style>
+    <Style ss:ID='title'>
+      <Alignment ss:Vertical='Bottom' ss:WrapText='1' />
+      <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='15' />
+    </Style>
+    <Style ss:ID='top-base-stats'>
+      <Alignment ss:Horizontal='Right' ss:Vertical='Center' ss:WrapText='1' />
+      <Font ss:Bold='0' ss:Color='#000000' ss:FontName='Calibri' ss:Size='11' />
+    </Style>
+    <Style ss:ID='table-header'>
+      <Alignment ss:Horizontal='Center' ss:Vertical='Center' ss:WrapText='1' />
+      <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='12' />
+      <Interior ss:Color='#CCFFFF' ss:Pattern='Solid' />
+    </Style>
+    <Style ss:ID='numeric'>
+      <Alignment ss:Horizontal='Right' ss:Vertical='Top'/>
+      <Font ss:Bold='0' ss:Color='#000000' ss:FontName='Calibri' ss:Size='12' />
+    </Style>
+    <Style ss:ID='theme-summary'>
+      <Alignment ss:Horizontal='Left' ss:Vertical='Top' ss:WrapText='1' />
+      <Font ss:Color='#000000' ss:FontName='Calibri' ss:Size='12' />
+      <Interior ss:Color='#C0C0C0' ss:Pattern='Solid' />
+    </Style>
+    <Style ss:ID='theme-total'>
+      <Alignment ss:Horizontal='Right' ss:Vertical='Bottom' ss:WrapText='1' />
+      <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='12' />
+      <Interior ss:Color='#C0C0C0' ss:Pattern='Solid' />
+    </Style>
+    <Style ss:ID='theme-cell'>
+      <Alignment ss:Vertical='Top' ss:WrapText='1' />
+      <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='12' />
+    </Style>
+    <Style ss:ID='backlog-summary'>
+      <Alignment ss:Horizontal='Left' ss:Vertical='Top' ss:WrapText='1' />
+      <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='14' />
+      <Interior ss:Color='#CCFFFF' ss:Pattern='Solid' />
+    </Style>
+    <Style ss:ID='backlog-total'>
+      <Alignment ss:Horizontal='Right' ss:Vertical='Bottom' ss:WrapText='1' />
+      <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='14' />
+      <Interior ss:Color='#CCFFFF' ss:Pattern='Solid' />
+    </Style>
+  </Styles>
+  <%= render :partial => 'backlog_report_worksheet', :locals => { :backlog => @backlog, :total_columns => export_to_excel_column_count(@backlog) } %>
+  <%= render :partial => 'story_list_worksheet', :locals => { :backlog => @backlog, :total_columns => export_to_excel_column_count(@backlog) } %>
+</Workbook>

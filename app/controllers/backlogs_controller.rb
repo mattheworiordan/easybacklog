@@ -303,6 +303,7 @@ class BacklogsController < ApplicationController
         format.xls do
           if can? :read
             filename = "#{@backlog.name.parameterize}.xls"
+            headers['Content-Type'] = 'application/vnd.ms-excel'
             set_download_headers filename
             render :layout => false, :action => 'show'
           else
