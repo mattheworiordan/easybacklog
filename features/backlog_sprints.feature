@@ -215,7 +215,6 @@ Feature: Backlog Sprints
     Then the "Team velocity for this sprint" field should contain "3.2"
 
   @javascript
-  @wip
   Scenario: Check that sprint fields are disabled when sprint is incomplete/completed in sprint settings
     Given a backlog named "Backlog 1" assigned to company "Microsoft" for account "Acme" is set up
       And I am on the backlog "Backlog 1" page

@@ -442,6 +442,16 @@ Then /^(?:I |)should( not|) see "([^"]+)" within row (\d+), column (\d+) of the 
 end
 
 ##
+# Find a cell within an XML Excel file
+Then /^(?:I |)should( not|) see "([^"]+)" within row (\d+), cell (\d+) of the ([\w\d]+) worksheet$/ do |negation, text, row, cell, worksheet_position|
+  table_selector = string_quantity_to_numeric(worksheet_position)
+  selector = "worksheet:eq(#{table_selector}) table row:eq(#{row}) cell:eq(#{cell})"
+  unless negation == ' not' && !page.has_selector?(:selector) # if cell does not exist, then content does not exist so negative test is fine
+    step %{I should#{negation} see the text "#{text}" within "#{selector}"}
+  end
+end
+
+##
 # PDF
 When /^I follow the PDF link "([^"]+)"$/ do |label|
   click_link(label)
