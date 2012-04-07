@@ -1,6 +1,16 @@
 /*global Backbone:false, $:false, _:false, JST:false, App:false, window:false, AcceptanceCriteriaCollection:false */
 
 var Story = Backbone.Model.extend({
+  // as delete events for SprintStory are never sent to the browser because no realtime system exists
+  // we have to manually delete SprintStory when Story models are deleted
+  initialize: function() {
+    this.bind('destroy', function() {
+      if (this.SprintStory()) {
+        this.SprintStory().Sprint().SprintStories().remove(this.SprintStory());
+      }
+    });
+  },
+
   Theme: function() {
     return this.collection.theme;
   },
