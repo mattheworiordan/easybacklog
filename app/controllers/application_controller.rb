@@ -101,9 +101,12 @@ class ApplicationController < ActionController::Base
     # last sign in date is not updated if user is automatically logged in
     # force login for the first impression of this session
     def ensure_last_sign_in_updated
-      if user_signed_in? && session[:logged_signin]
-        sign_in(current_user, :force => true)
-        session[:logged_signin] = true
+      if user_signed_in?
+        signed_in_at = Time.parse(cookies[:signed_in_at]) rescue Time.now - 2.hours
+        if signed_in_at < Time.now - 1.hour
+          sign_in(current_user, :force => true)
+          cookies[:signed_in_at] = Time.now.utc
+        end
       end
     end
 
