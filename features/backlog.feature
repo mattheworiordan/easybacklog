@@ -209,7 +209,7 @@ Feature: Backlog
       And I check "Hide stories assigned to sprints"
       And I wait for AJAX for 1 second
     Then there should be 0 "accepted stories"
-      And there should be 0 "assigend to sprint stories"
+      And there should be 0 "assigned to sprint stories"
       And the "filter notifier" should be visible
     When I hover over the "filter menu"
       And I check "Hide accepted stories"
@@ -217,6 +217,25 @@ Feature: Backlog
     Then the "Hide stories assigned to sprints" checkbox should not be checked
       And there should be 0 "accepted stories"
       And there should be 1 "assigned to sprint story"
+      And the "filter notifier" should be visible
+
+  @javascript
+  Scenario: Remember filter preferences for this user
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    Then there should be 3 "accepted stories"
+      And there should be 4 "assigned to sprint stories"
+    When I hover over the "filter menu"
+      And I check "Hide stories assigned to sprints"
+      And I wait for AJAX for 1 second
+    Then there should be 0 "accepted stories"
+      And there should be 0 "assigned to sprint stories"
+      And the "filter notifier" should be visible
+    When I am on the accounts page
+      And I am on the backlog "Cucumber example backlog" page
+      And I wait for AJAX for 1 second
+    Then there should be 0 "accepted stories"
+      And there should be 0 "assigned to sprint stories"
       And the "filter notifier" should be visible
 
   @javascript

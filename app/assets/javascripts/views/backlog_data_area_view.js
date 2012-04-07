@@ -101,7 +101,8 @@ App.Views.BacklogDataArea = {
 
     // Need this roll over code simply because a CSS solution would not work as div gets hidden beneath fixed position items
     enableFilterMenu: function() {
-      var overEitherNode = false,
+      var backlog = App.Collections.Backlogs.at(0),
+          overEitherNode = false,
           selectIsOpen = false,
           hideMenu = function() {
             overEitherNode = false;
@@ -125,8 +126,7 @@ App.Views.BacklogDataArea = {
             overEitherNode = true;
           },
           filterChangeEvent = function(event) {
-            var backlog = App.Collections.Backlogs.at(0),
-                isHiding = ($(event.target).is(':checked')),
+            var isHiding = ($(event.target).is(':checked')),
                 filterType = $(event.target).attr('id').replace(/^filter_/, '');
 
             // uncheck other boxes
@@ -136,11 +136,11 @@ App.Views.BacklogDataArea = {
             if (isHiding) {
               $('.filter-notifier').slideDown();
               // store filtering preference for session
-              $.cookie('filter_stories', filterType);
+              backlog.UserSettings().save({ filter: filterType });
             } else {
               $('.filter-notifier').slideUp();
-              // delete the cookie preference
-              $.cookie('filter_stories', null);
+              // delete the filter preference
+              backlog.UserSettings().save({ filter: null });
             }
 
             // iterate through each story that is completed and hide
@@ -178,19 +178,21 @@ App.Views.BacklogDataArea = {
       $('.filter-notifier a').click(filterNoticeClicked);
 
       // keep preference in session of whether to show accepted stories or not
-      if ($.cookie('filter_stories')) {
+      if (backlog.UserSettings().get('filter')) {
         // wait until the page has rendered
         _.delay(function() {
-          var filterType = $.cookie('filter_stories'),
+          var filterType = backlog.UserSettings().get('filter'),
               filterCheckbox = $('.filter-container input#filter_' + filterType + '[type=checkbox]').attr('checked', 'checked');
-          filterChangeEvent({ target: filterCheckbox });
-          // interface has moved because the notice is showing at the top of the page, so blur the selected item, and show the editable text again
-          var focus = $('input[name=value]').parents('.data');
-          if (focus) {
-            $('input[name=value]').blur();
-            _.delay(function() {
-              focus.click();
-            }, 150);
+          if (filterCheckbox.length) { // ensure filter is valid before continuing
+            filterChangeEvent({ target: filterCheckbox });
+            // interface has moved because the notice is showing at the top of the page, so blur the selected item, and show the editable text again
+            var focus = $('input[name=value]').parents('.data');
+            if (focus) {
+              $('input[name=value]').blur();
+              _.delay(function() {
+                focus.click();
+              }, 150);
+            }
           }
         }, 750);
       }

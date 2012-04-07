@@ -188,6 +188,11 @@ App.Views.Themes = {
       this.model.bind('change:meta_story_filter', function() {
         that.updateThemeViewAfterExpandOrCollapse();
       });
+
+      // check if collapsed
+      if (this.model.Backlog().UserSettings().isCollapsedTheme(this.model.get('id'))) {
+        _.delay(function() { that.expandCollapse(); }, 100);
+      }
       return (this);
     },
 
@@ -531,6 +536,11 @@ App.Views.Themes = {
 
     expandCollapse: function() {
       $(this.el).toggleClass('collapsed');
+      if ($(this.el).hasClass('collapsed')) {
+        this.model.Backlog().UserSettings().addCollapsedTheme(this.model.get('id'));
+      } else {
+        this.model.Backlog().UserSettings().removeCollapsedTheme(this.model.get('id'));
+      }
       this.updateThemeViewAfterExpandOrCollapse();
     },
 

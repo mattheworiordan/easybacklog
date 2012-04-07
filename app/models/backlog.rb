@@ -8,6 +8,7 @@ class Backlog < ActiveRecord::Base
   has_many :themes, :dependent => :destroy, :order => 'position'
   has_many :sprints, :dependent => :destroy, :order => 'iteration'
   has_many :backlog_users, :dependent => :destroy
+  has_many :backlog_user_settings, :dependent => :destroy
 
   # self references for snapshots
   has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy

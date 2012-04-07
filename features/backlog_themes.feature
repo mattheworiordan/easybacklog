@@ -296,3 +296,24 @@ Feature: Backlog Themes
     Then I should not see the text "3 stories collapsed" within the "second theme"
       And the "first story element within the second theme" should be visible
 
+  @javascript
+  Scenario: Remember collapsed theme preferences for this user
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I collapse the first theme
+    Then the "first story element within the first theme" should not be visible
+      And the "first story element within the second theme" should be visible
+    When I am on the accounts page
+      And I am on the backlog "Cucumber example backlog" page
+      And I wait for 1 second
+    Then the "first story element within the first theme" should not be visible
+      And the "first story element within the second theme" should be visible
+    When I expand the first theme
+      And I expand the second theme
+    Then the "first story element within the first theme" should be visible
+      And the "first story element within the second theme" should not be visible
+    When I am on the accounts page
+      And I am on the backlog "Cucumber example backlog" page
+      And I wait for 1 second
+    Then the "first story element within the first theme" should be visible
+      And the "first story element within the second theme" should not be visible

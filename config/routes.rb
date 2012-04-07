@@ -13,6 +13,10 @@ Ibacklog::Application.routes.draw do
         # drop down partial
         get 'snapshots-list-html' => 'backlogs#snapshots_list_html'
 
+        # back settings
+        get 'user-settings' => 'backlog_user_settings#show'
+        match 'user-settings' => 'backlog_user_settings#update', :via => [:put, :post]
+
         get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot', :as => 'snapshot'
         post 'snapshots/create' => 'backlogs#create_snapshot', :as => 'create_snapshot'
         delete 'snapshots/:snapshot_id' => 'backlogs#destroy_snapshot', :as => 'delete_snapshot'
@@ -64,7 +68,7 @@ Ibacklog::Application.routes.draw do
     end
   end
   resources :sprints, :only => [:show] do
-    resources :sprint_stories, :path => "sprint-stories" do
+    resources :sprint_stories, :path => 'sprint-stories' do
       collection do
         put 'update-order' => 'sprint_stories#update_order'
       end

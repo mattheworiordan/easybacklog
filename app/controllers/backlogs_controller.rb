@@ -216,12 +216,16 @@ class BacklogsController < ApplicationController
 
     # override the as_json method for backlog_json so that it sends is_editable and is_status_editable based on the current user
     # if this was in the model, this would violate the fact that the model should not be aware of the current_user
+    # same is done to ensure only current user backlog settings are returned
     def @backlog.as_json(options = {})
       json = super(options)
+      json['backlog_user_settings'] = {}
       if options.has_key?(:current_user)
         current_user = options[:current_user]
         json['is_editable'] = self.editable? ? self.can?(:full, current_user) : false
         json['is_status_editable'] = self.editable? ? self.can?(:readstatus, current_user) : false
+        settings = backlog_user_settings.where(:user_id => current_user)
+        json['backlog_user_settings'] = settings.first if settings
       else
         json['is_editable'] = false
         json['is_status_editable'] = false
@@ -401,6 +405,6 @@ class BacklogsController < ApplicationController
     end
 
     def filter_backlog_params
-      filter_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived, :valid_scores
+      filter_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived, :valid_scores, :backlog_user_settings
     end
 end

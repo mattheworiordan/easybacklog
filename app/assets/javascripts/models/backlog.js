@@ -36,7 +36,7 @@ var Backlog = Backbone.Model.extend({
       this._themes = new ThemesCollection(this.get('themes'), { backlog: this });
       this.unset('themes'); // clear from object as it will be sent back to the server adding to the payload
     }
-    return (this._themes);
+    return this._themes;
   },
 
   // access to sprints collection
@@ -45,10 +45,18 @@ var Backlog = Backbone.Model.extend({
       this._sprints = new SprintsCollection(this.get('sprints'), { backlog: this });
       this.unset('sprints'); // clear from object as it will be sent back to the server adding to the payload
     }
-    return (this._sprints);
+    return this._sprints;
   },
 
   Account_ID: function() {
     return this.collection.account_id;
+  },
+
+  UserSettings: function() {
+    if (!this._userSettings) {
+      this._userSettings = new BacklogUserSettings(this.get('backlog_user_settings'), { backlog: this });
+      this.unset('backlog_user_settings');
+    }
+    return this._userSettings;
   }
 });
