@@ -14,5 +14,13 @@ var SprintsCollection = Backbone.Collection.extend({
 
   initialize: function(models, options) {
     this.backlog = options ? options.backlog : null;
+  },
+
+  // sprint that is currently being worked on
+  CurrentSprint: function() {
+    var now = new Date();
+    return this.find(function(sprint) {
+      return (!sprint.IsComplete()) && (new Date(sprint.get('start_on')) < new Date());
+    });
   }
 });

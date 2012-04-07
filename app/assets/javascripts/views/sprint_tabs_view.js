@@ -11,14 +11,22 @@ App.Views.SprintTabs = {
     },
 
     initialize: function() {
+      var view = this;
       this.collection = this.options.collection;
       this.router = this.options.router;
       _.bindAll(this, 'showNew', 'getModelFromIteration', 'restoreTab');
+
+      this.collection.bind('change', function(evt) {
+        if (evt !== 'change:update_tabs') { // don't trigger events that trickle back up and cause recursion
+          // update the tabs in case current tab is different by sending change event to all tabs
+          view.collection.each(function(sprint) { sprint.trigger('change:update_tabs'); });
+        }
+      });
     },
 
     render: function() {
       var view = this;
-      this.isSettingsPage = $('#backlog-data-area').length == 0;
+      this.isSettingsPage = $('#backlog-data-area').length === 0;
       this.isSnapshot = $('.not-editable-backlog-notice.snapshot').length >= 1 ? true : false;
 
       var addTabView = function(model) {
@@ -110,15 +118,11 @@ App.Views.SprintTabs = {
 
     // select the tab represented by this model
     select: function(model) {
-      var infinityTab = this.$('ul.infinite-tabs'),
-          currentActive = this.$('li.active');
-      if (currentActive.length) {
-        infinityTab.infiniteTabs('set-tab-content', currentActive, currentActive.find('a').html().replace(/^\s*Sprint (\d+)\s*$/, '$1'));
-      }
-      var tab = this.$('li#' + this.childId(model))
+      var infinityTab = this.$('ul.infinite-tabs');
+
+      var tab = this.$('li#' + this.childId(model));
       tab.parents('.infinite-tabs').find('li').removeClass('active');
       tab.addClass('active');
-      infinityTab.infiniteTabs('set-tab-content', tab, tab.find('a').html().replace(/^\s*(\d+)\s*$/, "Sprint $1"));
     },
 
     // restore tab back to previous state i.e. when user cancels a tab change because of changes
@@ -137,23 +141,25 @@ App.Views.SprintTabs = {
         this.models[model.get('iteration') - 1].fetch({
           success: function(previousModel) {
             view.router.navigate(String(previousModel.get('iteration')), true);
-            if (_.isFunction(callback)) { callback() };
+            if (_.isFunction(callback)) { callback(); }
           },
           failure: function() {
             new App.Views.Error({ message: 'Internal error, unable to refresh sprint data.  Please refresh your browser'});
             view.router.navigate(String(previousModel.get('iteration')), true);
-            if (_.isFunction(callback)) { callback() };
+            if (_.isFunction(callback)) { callback(); }
           }
-        })
+        });
       } else {
         this.router.navigate('Backlog', true);
-        if (_.isFunction(callback)) { callback() };
+        if (_.isFunction(callback)) { callback(); }
       }
     },
 
     createNew: function(event) {
       var view = this,
-          backlogVelocity = this.collection.backlog.get('velocity');
+          backlogVelocity = this.collection.backlog.get('velocity'),
+          sprintsDesc, lastSprint, previousSprint, lastDate, lastDuration,
+          timePassedBetweenDates, nextDateByDuration, nextDateByTimeBetweenSprints, nextDate;
 
       event.preventDefault();
 
@@ -186,7 +192,7 @@ App.Views.SprintTabs = {
             modelData = {
               start_on: $.datepicker.formatDate('yy-mm-dd', dialog.find('#start-on').datepicker('getDate')),
               duration_days: dialog.find('#duration-days').val()
-            }
+            };
             if (!backlogVelocity || dialog.find('#use-explicit-velocity').is(':checked')) {
               modelData['explicit_velocity'] = dialog.find('#explicit-velocity').val();
             } else {
@@ -263,29 +269,31 @@ App.Views.SprintTabs = {
       if (this.collection.length === 0) {
         // first sprint, assume some defaults
         dialog.find('#start-on').datepicker("setDate", new Date(new Date().getTime() + 1000 * 60 * 60 * 24));
-        dialog.find('#duration-days').val(!isNaN(parseInt($.cookie('sprint_duration'))) ? $.cookie('sprint_duration') : 10);
+        dialog.find('#duration-days').val(!isNaN(parseInt($.cookie('sprint_duration'),10)) ? $.cookie('sprint_duration') : 10);
         dialog.find('#number-team-members').val('1');
       } else if (this.collection.length == 1) {
         // we have one previous sprint so we can make some assumptions
-        var lastSprint = this.collection.at(0),
-            lastDate = parseRubyDate(lastSprint.get('start_on')).getTime(),
-            lastDuration = Number(lastSprint.get('duration_days')),
-            nextDate = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs); // next sprint starts next day plus account for weekends every 5 days
+        lastSprint = this.collection.at(0);
+        lastDate = parseRubyDate(lastSprint.get('start_on')).getTime();
+        lastDuration = Number(lastSprint.get('duration_days'));
+        nextDate = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs); // next sprint starts next day plus account for weekends every 5 days
+
         dialog.find('#start-on').datepicker("setDate", new Date(shiftToNextWeekday(nextDate)));
         dialog.find('#duration-days').val(lastDuration);
         dialog.find('#number-team-members').val(niceNum(lastSprint.get('number_team_members')));
         dialog.find('#explicit-velocity').val(niceNum(lastSprint.get('explicit_velocity')));
       } else {
         // we have more than one previous sprint so we can make some assumptions
-        var sprintsDesc = this.collection.sortBy(function(sprint) { return sprint.get('iteration'); }).reverse(),
-            lastSprint = sprintsDesc[0],
-            previousSprint = sprintsDesc[1],
-            lastDate = parseRubyDate(lastSprint.get('start_on')).getTime(),
-            lastDuration = Number(lastSprint.get('duration_days')),
-            timePassedBetweenDates = parseRubyDate(lastSprint.get('start_on')).getTime() - parseRubyDate(previousSprint.get('start_on')).getTime(),
-            nextDateByDuration = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs), // next sprint starts next day plus account for weekends every 5 days
-            nextDateByTimeBetweenSprints = lastDate + timePassedBetweenDates,
-            nextDate = Math.max(nextDateByDuration, nextDateByTimeBetweenSprints);
+        sprintsDesc = this.collection.sortBy(function(sprint) { return sprint.get('iteration'); }).reverse();
+        lastSprint = sprintsDesc[0];
+        previousSprint = sprintsDesc[1];
+        lastDate = parseRubyDate(lastSprint.get('start_on')).getTime();
+        lastDuration = Number(lastSprint.get('duration_days'));
+        timePassedBetweenDates = parseRubyDate(lastSprint.get('start_on')).getTime() - parseRubyDate(previousSprint.get('start_on')).getTime();
+        nextDateByDuration = lastDate + (lastDuration * dayInMs) + (Math.floor(lastDuration / 5) * 2 * dayInMs); // next sprint starts next day plus account for weekends every 5 days
+        nextDateByTimeBetweenSprints = lastDate + timePassedBetweenDates;
+        nextDate = Math.max(nextDateByDuration, nextDateByTimeBetweenSprints);
+
         dialog.find('#start-on').datepicker("setDate", new Date(shiftToNextWeekday(nextDate)));
         dialog.find('#duration-days').val(lastSprint.get('duration_days'));
         dialog.find('#number-team-members').val(niceNum(lastSprint.get('number_team_members')));
@@ -305,17 +313,30 @@ App.Views.SprintTabs = {
     },
 
     initialize: function() {
+      var view = this;
       App.Views.BaseView.prototype.initialize.call(this);
       this.router = this.options.router;
-      this.parentView = this.options.parentView
+      this.parentView = this.options.parentView;
       _.bindAll(this, 'remove');
+
+      if (this.model.bind) {
+        // if a real model (not a pseudo model for backlog/stats tabs)
+        this.model.bind('change:update_tabs', function(evt) {
+          // sprint has changed, update the view as we might need to change which tab is shown as (current)
+          view.render();
+        });
+      }
     },
 
     render: function() {
-      $(this.el).html( JST['templates/sprints/tabs/show']({ model: this.model }) );
+      this.updateView();
       if (this.model.active) { $(this.el).addClass('active'); }
       if (this.model.locked) { $(this.el).addClass('locked'); }
       return this;
+    },
+
+    updateView: function() {
+      $(this.el).html( JST['templates/sprints/tabs/show']({ model: this.model }) );
     },
 
     activate: function() {

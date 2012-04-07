@@ -25,11 +25,18 @@ var Sprint = Backbone.Model.extend({
     }
   },
 
+  IsCurrent: function() {
+    return this.collection.CurrentSprint() === this;
+  },
+
   CanEdit: function() {
     return this.collection.backlog.CanEdit();
   },
 
   CanEditStatus: function() {
     return (this.collection.backlog.CanEditStatus());
-  }
+  },
+
+  // used by tab view to check if current tab is a sprint or nav item
+  isSprint: true
 });

@@ -477,6 +477,31 @@ section.content .not-editable-backlog-notice {
   }
 }
 
+#backlog-settings-tabs, #backlog-tabs {
+  li {
+    >a.sprint-tab.current-sprint {
+      span {
+        color: white;
+        @include single-text-shadow(#000, 0px, 0px, 4px);
+      }
+    }
+    &.active>a.sprint-tab {
+      span:before {
+        content: 'Sprint ';
+      }
+      &.current-sprint {
+        span {
+          color: #000;
+          text-shadow: none;
+          &:after {
+            content: ' (current)';
+          }
+        }
+      }
+    }
+  }
+}
+
 /* notice showing when filtering the backlog */
 .filter-notifier {
   background-color: #FFFF99;

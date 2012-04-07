@@ -61,7 +61,7 @@ Feature: Backlog Sprints
     Then I should see "32" within "new sprint expected velocity"
     When I press "Create"
     Then I should see the notice "Sprint number 1 has been added"
-      And the "Sprint 1" tab should be selected
+      And the "1" tab should be selected
     # Add second sprint using explicit velocities
     When I click on the "add sprint button"
     Then a "new sprint dialog box" should be visible
@@ -84,7 +84,7 @@ Feature: Backlog Sprints
     When I fill in "Velocity in points" with "30"
       And I press "Create"
     Then I should see the notice "Sprint number 2 has been added"
-      And the "Sprint 2" tab should be selected
+      And the "2" tab should be selected
     When I click on the "add sprint button"
     Then a "new sprint dialog box" should be visible
       And the "Manually define a team velocity for this sprint" checkbox should be checked
@@ -100,7 +100,7 @@ Feature: Backlog Sprints
     When I press "Cancel"
       And I click on "1 backlog tab"
       And I follow "Settings"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
       And the "Sprint start date" field should contain "02/01/2012"
       And the "Duration of sprint in days" field should contain "8"
       And the "Use backlog velocity of 2 points per person per day" checkbox should be checked
@@ -133,9 +133,9 @@ Feature: Backlog Sprints
       And I should see "Start date and duration overlaps with sprint 2"
     When I follow "discard changes"
     Then I should see the page title "Backlog 1"
-      And the "Sprint 1" tab should be selected
+      And the "1" tab should be selected
     When I follow "Settings"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
       And I should see the page title "Backlog settings"
       And the "Sprint start date" field should contain "01/01/2012"
       And the "Duration of sprint in days" field should contain "5"
@@ -154,9 +154,9 @@ Feature: Backlog Sprints
       And I follow "Update sprint settings"
     Then I should see the notice "Sprint number 1 has been updated"
     When I follow "← Back to backlog"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
     When I follow "Settings"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
       And the "Velocity in points" field should contain "20"
       And the "Manually define a team velocity for this sprint" checkbox should be checked
       And the "Number of team members" should not be visible
@@ -166,12 +166,12 @@ Feature: Backlog Sprints
     When I click on "2 backlog tab"
     Then I should see "Discard changes?"
     When I press "Cancel"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
     When I click on "2 backlog tab"
     Then I should see "Discard changes?"
     When I press "Discard changes"
       And I wait for AJAX for 0.5 second
-    Then the "Sprint 2" tab should be selected
+    Then the "2" tab should be selected
       And the "Sprint start date" field should contain "12/01/2012"
       And the "Duration of sprint in days" field should contain "7"
       And the "Manually define a team velocity for this sprint" checkbox should be checked
@@ -196,10 +196,10 @@ Feature: Backlog Sprints
     When I fill in "Expected team velocity for this sprint" with "3"
       And I press "Create"
     Then I should see the notice "Sprint number 1 has been added"
-      And the "Sprint 1" tab should be selected
+      And the "1" tab should be selected
     # now edit the settings and make sure validation is working as expected
     When I follow "Settings"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
       And the "Team velocity for this sprint" field should contain "3"
       And the "edit sprint estimation question" should not be visible
     When I fill in "Team velocity for this sprint" with "a"
@@ -210,7 +210,7 @@ Feature: Backlog Sprints
       And I follow "Update sprint settings"
     Then I should see the notice "Sprint number 1 has been updated"
     When I follow "← Back to backlog"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
     When I follow "Settings"
     Then the "Team velocity for this sprint" field should contain "3.2"
 
@@ -222,9 +222,9 @@ Feature: Backlog Sprints
     Then a "new sprint dialog box" should be visible
     When I press "Create"
     Then I should see the notice "Sprint number 1 has been added"
-      And the "Sprint 1" tab should be selected
+      And the "1" tab should be selected
     When I follow "Settings"
-    Then the "Sprint 1" tab should be selected
+    Then the "1" tab should be selected
       And I should see the text "Yes, I understand — delete this sprint" within the "side panel"
       And the "text input fields" should not be disabled
       And the "radio buttons" should not be disabled

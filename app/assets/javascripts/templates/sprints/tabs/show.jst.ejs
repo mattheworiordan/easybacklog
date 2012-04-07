@@ -1,3 +1,5 @@
-<a>
-  <%= model.get('iteration')%>
+<a class="<% if (model.IsCurrent && model.IsCurrent()) { %>current-sprint <% } %><% if (model.isSprint) { %>sprint-tab <% } %>">
+  <span>
+    <%= model.get('iteration')%>
+  </span>
 </a>
