@@ -15,7 +15,14 @@ $(function() {
     id: "first",
     next: 'themes',
     overlay: true,
-    onHide: function() { $('.filter-container input#filter_completed').attr('checked', false).change(); } // ensure filter is not enabled
+    onHide: function() {
+      // ensure filter is not enabled
+      $('.filter-container input#filter_completed').attr('checked', false).change();
+
+      // mark all themes as expanded and trigger them to reset themselves
+      $('li.theme').removeClass('collapsed');
+      App.Collections.Backlogs.at(0).Themes().each(function(theme) { theme.trigger('change:meta_story_filter'); });
+    }
   });
 
   guiders.createGuider({
