@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   basic_allowed :contact, :browser_support
-  before_filter :authenticate_user!, :except => [:raise_error, :status]
+  before_filter :authenticate_user!, :only => [:home]
 
   # routed as dashboard
   def home
