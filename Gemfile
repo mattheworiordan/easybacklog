@@ -75,4 +75,5 @@ group :development do
   gem 'ruby_parser' # for Devise generators
   gem 'hpricot' # for Devise generators
   gem 'jslint_on_rails'
+  gem 'quiet_assets', :group => :development # reduce verbosity of console messages for serving up assets
 end
