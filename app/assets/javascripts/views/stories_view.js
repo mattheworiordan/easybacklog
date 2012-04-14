@@ -163,7 +163,7 @@ App.Views.Stories = {
       if (!storyList) { storyList = this.$('li.story'); }
       if (!storyCollection) { storyCollection = this.collection; }
       storyList.each(function(index, elem) {
-        var elemId = _.last($(elem).attr('id').split('-'));
+        var elemId = _.last(($(elem).attr('id') + '').split('-'));
         if (!isNaN(parseInt(elemId, 10))) { // unless story is new and not saved yet
           orderIndexesWithIds[elemId] = index + 1;
         }
