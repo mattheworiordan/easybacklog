@@ -15,7 +15,8 @@
   <% end %>
 <% end %>
 <% unless theme.stories.empty? %>
-  <% theme.stories[1..-1].each do |story| %>
+  <% start_index = show_totals ? 1 : 0 %>
+  <% theme.stories[start_index..-1].each do |story| %>
     <Row>
       <%= render :partial => 'table_story', :locals => { :story => story, :use_50_90 => use_50_90, :include_theme => !show_totals } %>
     </Row>
