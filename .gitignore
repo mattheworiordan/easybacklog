@@ -7,3 +7,4 @@ TODO.rb
 *.log
 public/test-*.*
 *.dat
+bin
