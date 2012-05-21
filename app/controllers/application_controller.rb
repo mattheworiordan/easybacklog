@@ -195,7 +195,7 @@ class ApplicationController < ActionController::Base
       %w(development test cucumber).include?(Rails.env)
     end
 
-    def authenticate_user!
+    def authenticate_user!(*args)
       if is_api?
         if !request.ssl? && !dev_test?
           send_error "API requests are only accepted over a secure connection (SSL)", :http_status => :upgrade_required
@@ -236,7 +236,7 @@ class ApplicationController < ActionController::Base
         end
       else
         # if not using API, just use standard Devise authentication
-        super
+        super(*args)
       end
     end
 
