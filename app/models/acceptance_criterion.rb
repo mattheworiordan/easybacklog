@@ -1,4 +1,7 @@
 class AcceptanceCriterion < ActiveRecord::Base
+  include Lockable
+  include ActiveRecordExceptions
+
   acts_as_list :scope => :story
 
   belongs_to :story
@@ -9,11 +12,16 @@ class AcceptanceCriterion < ActiveRecord::Base
 
   can_do :inherited_privilege => :story
 
-  include Snapshot
-  include ActiveRecordExceptions
-
   def editable?
-    story.theme.backlog.editable?
+    backlog.editable?
+  end
+
+  def backlog
+    theme.backlog
+  end
+
+  def theme
+    story.theme
   end
 
   def index_to_letters(index)

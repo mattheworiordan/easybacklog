@@ -1,0 +1,56 @@
+%h1 easyBacklog API
+
+Defaults to JSON, but supports XML as well.  Data can be sent as standard POST data, or JSON / XML as the post body
+Authentication methods Basic, Token or Querystring
+Standard response headers
+Talk about date formats
+
+Mention that position and ID is auto-assigned, however position can be overwritten
+
+/accounts GET
+/accounts/[id] GET|PUT
+
+/accounts/backlogs[?include_archived=true] GET
+/accounts/backlogs POST
+/accounts/backlogs/duplicate POST
+/accounts/backlogs/[id][?include_associated_data=true] GET (!JSON and XML version of backlog with associated data differ, JSON only includes the this backlog and no associated snapshots, XML includes everything related to this backlog)
+/accounts/backlogs/[id] PUT (archived=true|false, if bringing from archive other properties passed in are ignored)
+/accounts/backlogs/[id]/snapshots GET list of snapshots
+/accounts/backlogs/[id]/snapshots/[snapshot_id][?include_associated_data=true] GET
+/accounts/backlogs/[id]/snapshots POST create a new snapshot
+
+/backlogs/[id]/themes/[?include_associated_data=true] GET
+/backlogs/[id]/themes/[id][?include_associated_data=true] GET
+/backlogs/[id]/themes/[id] PUT
+/backlogs/[id]/themes/ POST
+/backlogs/[id]/themes/[id] DELETE
+/backlogs/[id]/themes/[id]/grab-story?story_id=(STORY_ID) POST (must be a story from this backlog)
+/backlogs/[id]/themes/[id]/move-to-backlog?target_backlog_id=(BACKLOG_ID) POST (must be a backlog in your account)
+
+/themes/[id]/stories/[?include_associated_data=true] GET
+/themes/[id]/stories/[id][?include_associated_data=true] GET
+/themes/[id]/stories/[id] PUT
+/themes/[id]/stories/ POST
+/themes/[id]/stories/[id] DELETE
+/themes/[id]/stories/[id]/move-to-theme?new_theme_id=(THEME_ID) POST (must be a theme in the same backlog)
+
+/stories/[id]/acceptance_criteria/ GET
+/stories/[id]/acceptance_criteria/[id] GET
+/stories/[id]/acceptance_criteria/[id] PUT
+/stories/[id]/acceptance_criteria/ POST
+/stories/[id]/acceptance_criteria/[id] DELETE
+
+/backlogs/[id]/sprints/[?include_associated_data=true] GET
+/backlogs/[id]/sprints/[id][?include_associated_data=true] GET
+/backlogs/[id]/sprints/[id] PUT (changing completed=true|false is exclusive, no other updates occur at the same time)
+/backlogs/[id]/sprints/ POST
+/backlogs/[id]/sprints/[id] DELETE
+
+/locales GET
+/locales/[id] GET
+
+/scoring-rules GET
+/scoring-rules/[id] GET
+
+/sprint-story-statuses GET
+/sprint-story-statuses/[id] GET

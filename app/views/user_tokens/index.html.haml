@@ -1,0 +1,27 @@
+- title 'API access'
+- content_for :title do
+  %h1 API access
+- content_for :head do
+  = javascript_include_tag 'sections/user_tokens'
+
+%p An authentication token is a special code that allows outside software and services to connect to your account with your permission. It works like a password so you should keep it safe just as you do with your username and password.
+%p
+  For documentation on how to integrate with easyBacklog via the API, please go to
+  = link_to 'http://api.easybacklog.com', 'http://api.easybacklog.com'
+%p Listed below are your authentication tokens.  If you think your token might have been compromised, you can generate a new one.
+
+#user-tokens
+  #list
+    #div.none You do not have any authentication tokens, click "Generate a new token" to create one.
+  %a.create-new.button Generate a new token
+
+  #user-id-description
+    If you are using basic authentication when accessing the API, use your
+    %span.highlight= "user ID of #{current_user.id}"
+    as the username.
+
+
+:javascript
+  App.Collections.UserTokens = new UserTokensCollection(#{@user_tokens.to_json});
+  var userTokens = new App.Views.UserTokens.Index({ collection: App.Collections.UserTokens, el: $('#user-tokens') });
+  userTokens.render();

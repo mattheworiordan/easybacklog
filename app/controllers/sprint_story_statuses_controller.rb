@@ -1,8 +1,13 @@
 class SprintStoryStatusesController < ApplicationController
-  before_filter :authenticate_user!
+  respond_to :xml, :json
 
+  ## included in API
   def index
-    @sprint_story_statuses = SprintStoryStatus.all
-    render :json => @sprint_story_statuses
+    respond_with SprintStoryStatus.all
+  end
+
+  ## included in API
+  def show
+    respond_with SprintStoryStatus.find(params[:id])
   end
 end

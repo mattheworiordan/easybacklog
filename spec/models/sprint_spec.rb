@@ -389,4 +389,16 @@ describe Sprint do
     sprint.total_expected_points.should == 4 * 2 * 3
     sprint.number_team_members.should be_nil
   end
+
+  it 'should not allow a new sprint to be created or edited or deleted if the backlog is locked' do
+    backlog = Factory.create(:backlog, :velocity => 4)
+    backlog.mark_archived
+    expect { Factory.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3) }.should raise_error
+    backlog.recover_from_archive
+    sprint = Factory.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3)
+    backlog.mark_archived
+    sprint.reload
+    expect { sprint.update_attributes! :number_team_members => 3 }.should raise_error
+    expect { sprint.destroy }.should raise_error
+  end
 end

@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
   has_many :companys, :through => :company_user
   has_many :accounts, :through => :account_users
   has_many :backlogs, :through => :backlog_users
+  has_many :user_tokens, :dependent => :destroy
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable

@@ -248,8 +248,8 @@ describe Backlog do
     criteria.count.should eql(5) # 3 initials, just destroyed one which is now blank plus added two
     criteria[0].should be_identical # first items are identical as text matches
     criteria[0].should_not have_criterion_changed
-    criteria[1].should be_identical # even those index 1 was destroyed above, index 2 has the same text so should effectively take it's place
-    criteria[2].should be_deleted # index 2 now has no more matches on criterion with the same default text
+    criteria[1].should be_deleted # index 2 now has no more matches on criterion with the same default text
+    criteria[2].should be_identical
     criteria[3].should be_new
     criteria[3].target.should eql(criterion_top) # there are 2 new criterion, index 3 & 4, but criterion_new was moved to the top
     criteria[4].target.should eql(criterion_bottom) # there are 2 new criterion, index 3 & 4, criterion should be at the bottom as criterion_new has moved up

@@ -1,0 +1,12 @@
+- title "404 Error - #{error_message}"
+
+- content_for :title do
+  %h1= "#{error_message} (404 error)"
+
+%p
+  Unfortunately we could not find the page you were looking for.  This is commonly referred to as a
+  =raw "#{link_to '404 error', 'http://en.wikipedia.org/wiki/HTTP_404'}."
+%p
+  Perhaps you have mistyped the address, the page no longer exists or the page may have moved
+%p
+  =link_to raw('&laquo; Back home'), root_path, :class => 'button'

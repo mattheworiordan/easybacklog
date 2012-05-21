@@ -21,7 +21,7 @@
     - if @backlog.snapshot_master.present?
       = link_to raw('← Back to snapshot'), snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :id => 'back-to-backlog'
     - elsif @backlog.snapshot_for_sprint.present?
-      = link_to raw('← Back to sprint snapshot'), sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root, @backlog), :id => 'back-to-backlog'
+      = link_to raw('← Back to sprint snapshot'), snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root, @backlog), :id => 'back-to-backlog'
     - else
       = link_to raw('← Back to backlog'), account_backlog_path(@backlog.account, @backlog), :id => 'back-to-backlog'
 
@@ -99,7 +99,7 @@
     - elsif @backlog.snapshot_master.present?
       = link_to "← Back to snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.snapshot_master, @backlog), :class => 'button'
     - elsif @backlog.snapshot_for_sprint.present?
-      = link_to "← Back to sprint snapshot", sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root, @backlog), :class => 'button'
+      = link_to "← Back to sprint snapshot", snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root, @backlog), :class => 'button'
     - elsif cannot?(:full)
       = link_to "← Back to backlog", account_backlog_path(@backlog.account, @backlog), :class => 'button'
     - else

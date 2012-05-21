@@ -1,35 +1,49 @@
 class SprintsController < ApplicationController
   before_filter :authenticate_user!, :set_backlog_and_protect
-  SPRINT_METHODS = [:completed?, :deletable?, :total_allocated_points, :total_expected_points, :total_completed_points]
-  EXCLUDE_FIELDS = [:updated_at, :created_at]
+  before_filter :stop_updates_if_locked, :only => [:create, :update, :destroy]
 
+  respond_to :xml, :json
+
+  JSON_METHODS = [:completed?, :deletable?, :total_allocated_points, :total_expected_points, :total_completed_points]
+  XML_METHODS = JSON_METHODS - [:completed?, :deletable?] # ? causes invalid XML
+
+  ## included in API
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
-      @sprints = @backlog.sprints.find(:all, :include => { :sprint_stories => :story })
-      render :json => @sprints.to_json(:include => {
-        :sprint_stories =>
-          { :only => [:id, :story_id, :sprint_story_status_id, :position], :methods => :theme_id }
-        },
-        :methods => SPRINT_METHODS,
-        :except => EXCLUDE_FIELDS)
+      if params[:include_associated_data].to_s == 'true'
+        @sprints = @backlog.sprints.find(:all, :include => { :sprint_stories => :story })
+        @sprints = @sprints.as_json(:include => { :sprint_stories => { :methods => :theme_id } }, :methods => data_transformation_methods)
+      else
+        @sprints = @backlog.sprints.as_json(:methods => data_transformation_methods)
+      end
+      respond_with(@sprints) do |format|
+        format.xml { render :xml => @sprints.to_xml(:root => 'sprints') }
+      end
     end
   end
 
+  ## included in API
   def show
-    @sprint = @backlog.sprints.find(params[:id])
+    find_params = params[:include_associated_data] ? { :include => { :sprint_stories => :story } } : {}
+    @sprint = @backlog.sprints.find(params[:id], find_params)
     enforce_can :read, 'You do not have permission to view this backlog' do
-      render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
+      render request.format.to_sym => if params[:include_associated_data].to_s == 'true'
+        @sprint.as_json(:include => { :sprint_stories => { :methods => :theme_id } }, :methods => data_transformation_methods)
+      else
+        @sprint.as_json(:methods => data_transformation_methods)
+      end
     end
   end
 
+  ## included in API
   def create
-    enforce_can :full, 'You do not have permission to edit this backlog' do
-      @sprint = @backlog.sprints.new(params.select { |key,val| [:start_on, :duration_days, :explicit_velocity, :number_team_members].include?(key.to_sym) })
+    enforce_can :full, 'You do not have permission to create this sprint' do
+      @sprint = @backlog.sprints.new(filter_sprint_params)
       if @sprint.save
         update_backlog_metadata
-        render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
+        render request.format.to_sym => @sprint.as_json(:methods => data_transformation_methods), :status => STATUS_CODE[:created]
       else
-        send_json_error @sprint.errors.full_messages.join(', ')
+        send_error @sprint.errors.full_messages.join(', '), :http_status => :invalid_params
       end
     end
   end
@@ -40,23 +54,24 @@ class SprintsController < ApplicationController
 
       # changing completed is exclusive, no other updates will occur at the same time
       if (%w(true false).include? params[:completed])
-        begin
         # special params set by front end to mark as completed or incomplete which can throw an error
-          @sprint.mark_as_complete if params[:completed] == 'true'
-          @sprint.mark_as_incomplete if params[:completed] == 'false'
-        rescue Exception => e
-          send_json_error e.message
-        else
-          update_backlog_metadata
-          render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
-        end
+        @sprint.mark_as_complete if params[:completed] == 'true'
+        @sprint.mark_as_incomplete if params[:completed] == 'false'
+        update_backlog_metadata
       else
-        @sprint.update_attributes filter_params(:backlog_id, :iteration, *SPRINT_METHODS)
+        @sprint.update_attributes filter_sprint_params
         if @sprint.save
           update_backlog_metadata
-          render :json => @sprint.to_json(:methods => SPRINT_METHODS, :except => EXCLUDE_FIELDS)
         else
-          send_json_error @sprint.errors.full_messages.join(', ')
+          send_error @sprint.errors.full_messages.join(', '), :http_status => :invalid_params
+        end
+      end
+
+      if !performed?
+        if is_api?
+          render :nothing => true, :status => STATUS_CODE[:no_content]
+        else
+          render request.format.to_sym => @sprint.as_json(:methods => data_transformation_methods)
         end
       end
     end
@@ -64,16 +79,20 @@ class SprintsController < ApplicationController
 
   def destroy
     @sprint = @backlog.sprints.find(params[:id])
-    enforce_can :full, 'You do not have permission to edit this backlog' do
+    enforce_can :full, 'You do not have permission to delete this sprint' do
       begin
         @sprint.destroy
       rescue ActiveRecordExceptions::RecordNotDestroyable => e
-        send_json_error 'This sprint cannot be deleted because it contains stories which are marked as accepted'
-      rescue Exception => e
-        raise e
+        send_error 'This sprint cannot be deleted because it contains stories which are marked as accepted', :http_status => :forbidden
+      rescue ActiveRecord::RecordNotSaved => e
+        send_error e.message, :http_status => :forbidden
       else
         update_backlog_metadata
-        send_json_notice 'Sprint deleted'
+        if is_api?
+          render :nothing => true, :status => STATUS_CODE[:no_content]
+        else
+          send_notice 'Sprint deleted'
+        end
       end
     end
   end
@@ -91,10 +110,14 @@ class SprintsController < ApplicationController
     # ensure user has access to this based on account
     def set_backlog_and_protect
       @backlog = Backlog.find(params[:backlog_id])
-      if @backlog.account.users.find(current_user.id).blank?
-        send_json_error 'You do not have permission to view this theme'
+      if @backlog.account.users.find_by_id(current_user.id).blank?
+        send_error 'You do not have permission to view this theme', :http_status => :forbidden
         return false
       end
+    end
+
+    def stop_updates_if_locked
+      send_error 'This sprint cannot be updated as the backlog is not editable', :http_status => :forbidden unless @backlog.editable?
     end
 
     def update_backlog_metadata
@@ -105,7 +128,15 @@ class SprintsController < ApplicationController
       if can? rights
         yield
       else
-        send_json_error message
+        send_error message, :http_status => :forbidden
       end
+    end
+
+    def data_transformation_methods
+      self.class.const_get("#{request.format.to_sym.upcase}_METHODS")
+    end
+
+    def filter_sprint_params
+      filter_params(:backlog_id, :iteration, JSON_METHODS)
     end
 end

@@ -28,6 +28,8 @@ gem 'xml-object'
 
 gem 'vanity', :git => 'https://github.com/assaf/vanity'
 
+gem 'deep_merge', :require => 'deep_merge/rails_compat'
+
 group :assets do
   gem 'sass-rails'
   gem 'compass'
@@ -65,6 +67,7 @@ group :test, :cucumber do
   gem 'pdf-reader'
   gem 'email_spec'
   gem 'capybara-screenshot'
+  gem 'recursive-open-struct', :git => 'git://github.com/mattheworiordan/recursive-open-struct.git'
 end
 
 group :development do

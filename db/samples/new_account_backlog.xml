@@ -4,111 +4,111 @@
     <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
       <stories>
         <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
-          <criteria>
-            <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Lightbox appears with ability to browse through gallery of screen shots </acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-          <criteria>
-            <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-            <criterion>Tracking code and number of visits to be stored in the database</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+            <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="00ff00" score="8.0">
-          <criteria>
-            <criterion>Tweets are automatically pulled from @company</criterion>
-            <criterion>The most recent 5 tweets should be visible</criterion>
-            <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+            <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+            <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="4" code="HOP4" as_a="investor" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="00ff00" score="8.0">
-          <criteria>
-            <criterion>Short about text to be displayed</criterion>
-            <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-            <criterion>Products will deep link to the products section of the website</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+            <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+            <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
     <theme name="Authentication" code="AUT" points="31.0" days="10.3" cost="&#163;8,267">
       <stories>
         <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="No longer need to adhere to security requirements of lock out" cost="&#163;1,333" days="1.7" color="" score="5.0">
-          <criteria>
-            <criterion>Email address and password is required</criterion>
-            <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-            <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Email address and password is required</acceptance_criterion>
+            <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+            <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-          <criteria>
-            <criterion>First name, last name, email address and password are all required fields</criterion>
-            <criterion>Additional fields include company and phone number</criterion>
-            <criterion>Email address must be unique</criterion>
-            <criterion>Password must pass strong password requirements</criterion>
-            <criterion>New registrations will send an email to validate the email address is valid</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+            <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+            <acceptance_criterion>Email address must be unique</acceptance_criterion>
+            <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+            <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-          <criteria>
-            <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-            <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+            <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="4" code="AUT4" as_a="admin" i_want_to="authorise uses who register for the website" so_i_can="control who has access to the secure areas" comments="" cost="&#163;3,467" days="4.3" color="ffff00" score="13.0">
-          <criteria>
-            <criterion>Admin is notified when a new user registers on the site</criterion>
-            <criterion>Users are told they are awaiting authorisation before the validation email is sent</criterion>
-            <criterion>Admin logs into an admin section to review unauthorised applicants and either approve or remove them.</criterion>
-            <criterion>Users will be notified when they are approved or not approved</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Admin is notified when a new user registers on the site</acceptance_criterion>
+            <acceptance_criterion>Users are told they are awaiting authorisation before the validation email is sent</acceptance_criterion>
+            <acceptance_criterion>Admin logs into an admin section to review unauthorised applicants and either approve or remove them.</acceptance_criterion>
+            <acceptance_criterion>Users will be notified when they are approved or not approved</acceptance_criterion>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
     <theme name="News section" code="NES" points="21.0" days="7.0" cost="&#163;5,600">
       <stories>
         <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-          <criteria>
-            <criterion>Latest news show in date descending order, with paging</criterion>
-            <criterion>Search for news</criterion>
-            <criterion>RSS feed</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+            <acceptance_criterion>Search for news</acceptance_criterion>
+            <acceptance_criterion>RSS feed</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;2,133" days="2.7" color="" score="8.0">
-          <criteria>
-            <criterion>Press releasees shown in date descending order</criterion>
-            <criterion>Downloadable in PDF format</criterion>
-            <criterion>Search for Press Releases</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+            <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+            <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
     <theme name="Investor relations" code="INR" points="15.0" days="5.0" cost="&#163;4,000">
       <stories>
         <story unique_id="1" code="INR1" as_a="user" i_want_to="see the current share price" so_i_can="keep track of how my investment in this company is doing" comments="Information pulled from 3rd party API" cost="&#163;2,133" days="2.7" color="" score="8.0">
-          <criteria>
-            <criterion>Share price must be no more than 15 minutes delayed</criterion>
-            <criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Share price must be no more than 15 minutes delayed</acceptance_criterion>
+            <acceptance_criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="2" code="INR2" as_a="user" i_want_to="access the last annual report" so_i_can="keep up to date with financial information" comments="Client agreed to use Slideshare" cost="&#163;1,333" days="1.7" color="" score="5.0">
-          <criteria>
-            <criterion>Annual report in both PDF and online formats</criterion>
-            <criterion>Online format must not rely on Flash, must support HTML format</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Annual report in both PDF and online formats</acceptance_criterion>
+            <acceptance_criterion>Online format must not rely on Flash, must support HTML format</acceptance_criterion>
+          </acceptance_criteria>
         </story>
         <story unique_id="3" code="INR3" as_a="admin" i_want_to="be able to update the annual report" so_i_can="keep the content fresh" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-          <criteria>
-            <criterion>Update report using Slideshare</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Update report using Slideshare</acceptance_criterion>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
     <theme name="CSR" code="CSR" points="1.0" days="0.3" cost="&#163;267">
       <stories>
         <story unique_id="1" code="CSR1" as_a="user" i_want_to="read about the CSR activity" so_i_can="be assured this company cares about its employees and the world" comments="Word doc C5.doc contains all the necessary static content" cost="&#163;267" days="0.3" color="" score="1.0">
-          <criteria>
-            <criterion>Simple static area with some CSR content</criterion>
-          </criteria>
+          <acceptance_criteria>
+            <acceptance_criterion>Simple static area with some CSR content</acceptance_criterion>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
@@ -119,89 +119,89 @@
         <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
           <stories>
             <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-              <criteria>
-                <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-                <criterion>Tracking code and number of visits to be stored in the database</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+                <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>Tweets are automatically pulled from @company</criterion>
-                <criterion>The most recent 5 tweets should be visible</criterion>
-                <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+                <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+                <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>Short about text to be displayed</criterion>
-                <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-                <criterion>Products will deep link to the products section of the website</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+                <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+                <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
-              <criteria>
-                <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Lightbox appears with ability to browse through gallery of screen shots </acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
         <theme name="Authentication" code="AUT" points="18.0" days="6.0" cost="&#163;4,800">
           <stories>
             <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="No longer need to adhere to security requirements of lock out" cost="&#163;1,333" days="1.7" color="" score="5.0">
-              <criteria>
-                <criterion>Email address and password is required</criterion>
-                <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-                <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Email address and password is required</acceptance_criterion>
+                <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+                <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>First name, last name, email address and password are all required fields</criterion>
-                <criterion>Additional fields include company and phone number</criterion>
-                <criterion>Email address must be unique</criterion>
-                <criterion>Password must pass strong password requirements</criterion>
-                <criterion>New registrations will send an email to validate the email address is valid</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+                <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+                <acceptance_criterion>Email address must be unique</acceptance_criterion>
+                <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+                <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-              <criteria>
-                <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-                <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+                <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
         <theme name="News section" code="NES" points="21.0" days="7.0" cost="&#163;5,600">
           <stories>
             <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-              <criteria>
-                <criterion>Latest news show in date descending order, with paging</criterion>
-                <criterion>Search for news</criterion>
-                <criterion>RSS feed</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+                <acceptance_criterion>Search for news</acceptance_criterion>
+                <acceptance_criterion>RSS feed</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>Press releasees shown in date descending order</criterion>
-                <criterion>Downloadable in PDF format</criterion>
-                <criterion>Search for Press Releases</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+                <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+                <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
         <theme name="Investor relations" code="INR" points="13.0" days="4.3" cost="&#163;3,467">
           <stories>
             <story unique_id="1" code="INR1" as_a="user" i_want_to="see the current share price" so_i_can="keep track of how my investment in this company is doing" comments="Information pulled from 3rd party API" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>Share price must be no more than 15 minutes delayed</criterion>
-                <criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Share price must be no more than 15 minutes delayed</acceptance_criterion>
+                <acceptance_criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="2" code="INR2" as_a="user" i_want_to="access the last annual report" so_i_can="keep up to date with financial information" comments="Client agreed to use Slideshare" cost="&#163;1,333" days="1.7" color="" score="5.0">
-              <criteria>
-                <criterion>Annual report in both PDF and online formats</criterion>
-                <criterion>Online format must not rely on Flash, must support HTML format</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Annual report in both PDF and online formats</acceptance_criterion>
+                <acceptance_criterion>Online format must not rely on Flash, must support HTML format</acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
@@ -212,78 +212,78 @@
         <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
           <stories>
             <story unique_id="1" code="HOP1" as_a="user" i_want_to="see an intro video on the home page" so_i_can="understand what the business does on my first visit" comments="See http://example.com/code for the latest version of the video" cost="&#163;800" days="1.0" color="" score="3.0">
-              <criteria>
-                <criterion>Video uses HTML5</criterion>
-                <criterion>Video automatically plays upon first visit</criterion>
-                <criterion>User is given the option to stop the video and it should not play again automatically on subsequent visits</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Video uses HTML5</acceptance_criterion>
+                <acceptance_criterion>Video automatically plays upon first visit</acceptance_criterion>
+                <acceptance_criterion>User is given the option to stop the video and it should not play again automatically on subsequent visits</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-              <criteria>
-                <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-                <criterion>Tracking code and number of visits to be stored in the database</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+                <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>Tweets are automatically pulled from @company</criterion>
-                <criterion>The most recent 5 tweets should be visible</criterion>
-                <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+                <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+                <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>Short about text to be displayed</criterion>
-                <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-                <criterion>Products will deep link to the products section of the website</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+                <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+                <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
         <theme name="Authentication" code="AUT" points="26.0" days="8.7" cost="&#163;6,933">
           <stories>
             <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="Please refer to security document A1 for details on the existing lock out mechanisms as a reference" cost="&#163;3,467" days="4.3" color="" score="13.0">
-              <criteria>
-                <criterion>Email address and password is required</criterion>
-                <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-                <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-                <criterion>More than 5 subsequent failed requests should lock the account and the user should be notified</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Email address and password is required</acceptance_criterion>
+                <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+                <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+                <acceptance_criterion>More than 5 subsequent failed requests should lock the account and the user should be notified</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-              <criteria>
-                <criterion>First name, last name, email address and password are all required fields</criterion>
-                <criterion>Additional fields include company and phone number</criterion>
-                <criterion>Email address must be unique</criterion>
-                <criterion>Password must pass strong password requirements</criterion>
-                <criterion>New registrations will send an email to validate the email address is valid</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+                <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+                <acceptance_criterion>Email address must be unique</acceptance_criterion>
+                <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+                <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-              <criteria>
-                <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-                <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+                <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
         <theme name="News section" code="NES" points="34.0" days="11.3" cost="&#163;9,067">
           <stories>
             <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-              <criteria>
-                <criterion>Latest news show in date descending order, with paging</criterion>
-                <criterion>Search for news</criterion>
-                <criterion>RSS feed</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+                <acceptance_criterion>Search for news</acceptance_criterion>
+                <acceptance_criterion>RSS feed</acceptance_criterion>
+              </acceptance_criteria>
             </story>
             <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;5,600" days="7.0" color="" score="21.0">
-              <criteria>
-                <criterion>Press releasees shown in date descending order</criterion>
-                <criterion>Downloadable in PDF format</criterion>
-                <criterion>Search for Press Releases</criterion>
-                <criterion>User can subscribe for release announcements by entering their email address.</criterion>
-                <criterion>Users who subscribe are stored in a database, and an email must be sent to the PR officer notifying them of a new subscriber</criterion>
-              </criteria>
+              <acceptance_criteria>
+                <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+                <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+                <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+                <acceptance_criterion>User can subscribe for release announcements by entering their email address.</acceptance_criterion>
+                <acceptance_criterion>Users who subscribe are stored in a database, and an email must be sent to the PR officer notifying them of a new subscriber</acceptance_criterion>
+              </acceptance_criteria>
             </story>
           </stories>
         </theme>
@@ -292,93 +292,93 @@
   </snapshots>
   <sprints>
     <sprint iteration="1" start_on="2011-01-17" duration_days="5" number_team_members="1" completed="true" completed_at="2011-01-24 19:05:19 UTC" total_completed_points="11.0" total_allocated_points="11.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="HOP2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
-        <story code="HOP3" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="HOP2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
+        <sprint_story code="HOP3" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+      </sprint_stories>
       <snapshot name="Sprint 1" velocity="3.0" rate="800" points="71.0" days="23.7" cost="&#163;18,933" use_50_90="false" created_at="2011-01-17 00:00:00 UTC" updated_at="2011-01-17 00:00:00 UTC">
         <themes>
           <theme name="Home page" code="HOP" points="19.0" days="6.3" cost="&#163;5,067">
             <stories>
               <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-                  <criterion>Tracking code and number of visits to be stored in the database</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+                  <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Tweets are automatically pulled from @company</criterion>
-                  <criterion>The most recent 5 tweets should be visible</criterion>
-                  <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+                  <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+                  <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Short about text to be displayed</criterion>
-                  <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-                  <criterion>Products will deep link to the products section of the website</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+                  <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+                  <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Authentication" code="AUT" points="18.0" days="6.0" cost="&#163;4,800">
             <stories>
               <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="No longer need to adhere to security requirements of lock out" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Email address and password is required</criterion>
-                  <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-                  <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Email address and password is required</acceptance_criterion>
+                  <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+                  <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>First name, last name, email address and password are all required fields</criterion>
-                  <criterion>Additional fields include company and phone number</criterion>
-                  <criterion>Email address must be unique</criterion>
-                  <criterion>Password must pass strong password requirements</criterion>
-                  <criterion>New registrations will send an email to validate the email address is valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+                  <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+                  <acceptance_criterion>Email address must be unique</acceptance_criterion>
+                  <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+                  <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-                  <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+                  <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="News section" code="NES" points="21.0" days="7.0" cost="&#163;5,600">
             <stories>
               <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-                <criteria>
-                  <criterion>Latest news show in date descending order, with paging</criterion>
-                  <criterion>Search for news</criterion>
-                  <criterion>RSS feed</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+                  <acceptance_criterion>Search for news</acceptance_criterion>
+                  <acceptance_criterion>RSS feed</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Press releasees shown in date descending order</criterion>
-                  <criterion>Downloadable in PDF format</criterion>
-                  <criterion>Search for Press Releases</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+                  <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+                  <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Investor relations" code="INR" points="13.0" days="4.3" cost="&#163;3,467">
             <stories>
               <story unique_id="1" code="INR1" as_a="user" i_want_to="see the current share price" so_i_can="keep track of how my investment in this company is doing" comments="Information pulled from 3rd party API" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Share price must be no more than 15 minutes delayed</criterion>
-                  <criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Share price must be no more than 15 minutes delayed</acceptance_criterion>
+                  <acceptance_criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="INR2" as_a="user" i_want_to="access the last annual report" so_i_can="keep up to date with financial information" comments="Client agreed to use Slideshare" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Annual report in both PDF and online formats</criterion>
-                  <criterion>Online format must not rely on Flash, must support HTML format</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Annual report in both PDF and online formats</acceptance_criterion>
+                  <acceptance_criterion>Online format must not rely on Flash, must support HTML format</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
@@ -386,99 +386,99 @@
       </snapshot>
     </sprint>
     <sprint iteration="2" start_on="2011-01-24" duration_days="5" number_team_members="1" completed="true" completed_at="2011-01-31 12:05:22 UTC" total_completed_points="18.0" total_allocated_points="18.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="AUT3" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-        <story code="AUT1" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-        <story code="HOP4" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="AUT3" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+        <sprint_story code="AUT1" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+        <sprint_story code="HOP4" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+      </sprint_stories>
       <snapshot name="Sprint 2" velocity="3.0" rate="800" points="74.0" days="24.7" cost="&#163;19,733" use_50_90="false" created_at="2011-01-24 14:27:00 UTC" updated_at="2011-01-24 14:27:00 UTC">
         <themes>
           <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
             <stories>
               <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-                  <criterion>Tracking code and number of visits to be stored in the database</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+                  <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Tweets are automatically pulled from @company</criterion>
-                  <criterion>The most recent 5 tweets should be visible</criterion>
-                  <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+                  <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+                  <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Short about text to be displayed</criterion>
-                  <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-                  <criterion>Products will deep link to the products section of the website</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+                  <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+                  <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Lightbox appears with ability to browse through gallery of screen shots </acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Authentication" code="AUT" points="18.0" days="6.0" cost="&#163;4,800">
             <stories>
               <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="No longer need to adhere to security requirements of lock out" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Email address and password is required</criterion>
-                  <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-                  <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Email address and password is required</acceptance_criterion>
+                  <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+                  <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>First name, last name, email address and password are all required fields</criterion>
-                  <criterion>Additional fields include company and phone number</criterion>
-                  <criterion>Email address must be unique</criterion>
-                  <criterion>Password must pass strong password requirements</criterion>
-                  <criterion>New registrations will send an email to validate the email address is valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+                  <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+                  <acceptance_criterion>Email address must be unique</acceptance_criterion>
+                  <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+                  <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-                  <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+                  <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="News section" code="NES" points="21.0" days="7.0" cost="&#163;5,600">
             <stories>
               <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-                <criteria>
-                  <criterion>Latest news show in date descending order, with paging</criterion>
-                  <criterion>Search for news</criterion>
-                  <criterion>RSS feed</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+                  <acceptance_criterion>Search for news</acceptance_criterion>
+                  <acceptance_criterion>RSS feed</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Press releasees shown in date descending order</criterion>
-                  <criterion>Downloadable in PDF format</criterion>
-                  <criterion>Search for Press Releases</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+                  <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+                  <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Investor relations" code="INR" points="13.0" days="4.3" cost="&#163;3,467">
             <stories>
               <story unique_id="1" code="INR1" as_a="user" i_want_to="see the current share price" so_i_can="keep track of how my investment in this company is doing" comments="Information pulled from 3rd party API" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Share price must be no more than 15 minutes delayed</criterion>
-                  <criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Share price must be no more than 15 minutes delayed</acceptance_criterion>
+                  <acceptance_criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="INR2" as_a="user" i_want_to="access the last annual report" so_i_can="keep up to date with financial information" comments="Client agreed to use Slideshare" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Annual report in both PDF and online formats</criterion>
-                  <criterion>Online format must not rely on Flash, must support HTML format</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Annual report in both PDF and online formats</acceptance_criterion>
+                  <acceptance_criterion>Online format must not rely on Flash, must support HTML format</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
@@ -486,98 +486,98 @@
       </snapshot>
     </sprint>
     <sprint iteration="3" start_on="2011-01-31" duration_days="5" number_team_members="1" completed="true" completed_at="2011-02-07 15:05:38 UTC" total_completed_points="13.0" total_allocated_points="13.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="INR2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-        <story code="NES2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="INR2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+        <sprint_story code="NES2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+      </sprint_stories>
       <snapshot name="Sprint 3" velocity="3.0" rate="800" points="74.0" days="24.7" cost="&#163;19,733" use_50_90="false" created_at="2011-01-31 00:00:00 UTC" updated_at="2011-01-31 00:00:00 UTC">
         <themes>
           <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
             <stories>
               <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-                  <criterion>Tracking code and number of visits to be stored in the database</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+                  <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Tweets are automatically pulled from @company</criterion>
-                  <criterion>The most recent 5 tweets should be visible</criterion>
-                  <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+                  <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+                  <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Short about text to be displayed</criterion>
-                  <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-                  <criterion>Products will deep link to the products section of the website</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+                  <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+                  <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Lightbox appears with ability to browse through gallery of screen shots </acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Authentication" code="AUT" points="18.0" days="6.0" cost="&#163;4,800">
             <stories>
               <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="No longer need to adhere to security requirements of lock out" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Email address and password is required</criterion>
-                  <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-                  <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Email address and password is required</acceptance_criterion>
+                  <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+                  <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>First name, last name, email address and password are all required fields</criterion>
-                  <criterion>Additional fields include company and phone number</criterion>
-                  <criterion>Email address must be unique</criterion>
-                  <criterion>Password must pass strong password requirements</criterion>
-                  <criterion>New registrations will send an email to validate the email address is valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+                  <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+                  <acceptance_criterion>Email address must be unique</acceptance_criterion>
+                  <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+                  <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-                  <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+                  <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="News section" code="NES" points="21.0" days="7.0" cost="&#163;5,600">
             <stories>
               <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-                <criteria>
-                  <criterion>Latest news show in date descending order, with paging</criterion>
-                  <criterion>Search for news</criterion>
-                  <criterion>RSS feed</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+                  <acceptance_criterion>Search for news</acceptance_criterion>
+                  <acceptance_criterion>RSS feed</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Press releasees shown in date descending order</criterion>
-                  <criterion>Downloadable in PDF format</criterion>
-                  <criterion>Search for Press Releases</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+                  <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+                  <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Investor relations" code="INR" points="13.0" days="4.3" cost="&#163;3,467">
             <stories>
               <story unique_id="1" code="INR1" as_a="user" i_want_to="see the current share price" so_i_can="keep track of how my investment in this company is doing" comments="Information pulled from 3rd party API" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Share price must be no more than 15 minutes delayed</criterion>
-                  <criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Share price must be no more than 15 minutes delayed</acceptance_criterion>
+                  <acceptance_criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="INR2" as_a="user" i_want_to="access the last annual report" so_i_can="keep up to date with financial information" comments="Client agreed to use Slideshare" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Annual report in both PDF and online formats</criterion>
-                  <criterion>Online format must not rely on Flash, must support HTML format</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Annual report in both PDF and online formats</acceptance_criterion>
+                  <acceptance_criterion>Online format must not rely on Flash, must support HTML format</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
@@ -585,111 +585,111 @@
       </snapshot>
     </sprint>
     <sprint iteration="4" start_on="2011-02-07" duration_days="5" number_team_members="1" completed="true" completed_at="2011-02-14 11:13:08 UTC" total_completed_points="21.0" total_allocated_points="21.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="AUT2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-        <story code="NES1" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="13.0" score_90_when_assigned="13.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="AUT2" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <sprint_story code="NES1" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="13.0" score_90_when_assigned="13.0"/>
+      </sprint_stories>
       <snapshot name="Sprint 4" velocity="3.0" rate="800" points="89.0" days="29.7" cost="&#163;23,733" use_50_90="false" created_at="2011-02-07 02:00:00 UTC" updated_at="2011-02-07 02:00:00 UTC">
         <themes>
           <theme name="Home page" code="HOP" points="22.0" days="7.3" cost="&#163;5,867">
             <stories>
               <story unique_id="2" code="HOP2" as_a="admin" i_want_to="track users who arrive on the home page via a campaign URL" so_i_can="measure the effectiveness of my campaigns" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
-                  <criterion>Tracking code and number of visits to be stored in the database</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Support for tracking code in the format ?campaign=[code]</acceptance_criterion>
+                  <acceptance_criterion>Tracking code and number of visits to be stored in the database</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="HOP3" as_a="user" i_want_to="see the latest tweets from the company" so_i_can="keep up to date with the latest news and comment for the company" comments="See http://twitter.com/#/company" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Tweets are automatically pulled from @company</criterion>
-                  <criterion>The most recent 5 tweets should be visible</criterion>
-                  <criterion>Tweets must not be links, they should only be shown as plain text</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Tweets are automatically pulled from @company</acceptance_criterion>
+                  <acceptance_criterion>The most recent 5 tweets should be visible</acceptance_criterion>
+                  <acceptance_criterion>Tweets must not be links, they should only be shown as plain text</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="HOP4" as_a="user" i_want_to="see information on the company and it's products" so_i_can="get an idea about what the company does and its relevance" comments="All design has been completed by Jason. HTML and templates to be built" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Short about text to be displayed</criterion>
-                  <criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</criterion>
-                  <criterion>Products will deep link to the products section of the website</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Short about text to be displayed</acceptance_criterion>
+                  <acceptance_criterion>All products from the products section to be listed on the home page with roll over screen shots and product info</acceptance_criterion>
+                  <acceptance_criterion>Products will deep link to the products section of the website</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="5" code="HOP5" as_a="user" i_want_to="view a set of simple screen shots" so_i_can="understand how the products work" comments="Assumed use of JQuery Lightbox" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                  <criterion>Lightbox appears with ability to browse through gallery of screen shots </criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Lightbox appears with ability to browse through gallery of screen shots </acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Authentication" code="AUT" points="31.0" days="10.3" cost="&#163;8,267">
             <stories>
               <story unique_id="1" code="AUT1" as_a="user" i_want_to="login to the website" so_i_can="access my account and use the support features" comments="No longer need to adhere to security requirements of lock out" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Email address and password is required</criterion>
-                  <criterion>Login is visible in the top header of the website and is available after rolling over the login button</criterion>
-                  <criterion>Error messages must be shown if the email address and password combination is incorrect</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Email address and password is required</acceptance_criterion>
+                  <acceptance_criterion>Login is visible in the top header of the website and is available after rolling over the login button</acceptance_criterion>
+                  <acceptance_criterion>Error messages must be shown if the email address and password combination is incorrect</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="AUT2" as_a="user" i_want_to="register on the website" so_i_can="access the secure areas" comments="Please refer to security document A1 for details on the existing strong password requirements" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>First name, last name, email address and password are all required fields</criterion>
-                  <criterion>Additional fields include company and phone number</criterion>
-                  <criterion>Email address must be unique</criterion>
-                  <criterion>Password must pass strong password requirements</criterion>
-                  <criterion>New registrations will send an email to validate the email address is valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>First name, last name, email address and password are all required fields</acceptance_criterion>
+                  <acceptance_criterion>Additional fields include company and phone number</acceptance_criterion>
+                  <acceptance_criterion>Email address must be unique</acceptance_criterion>
+                  <acceptance_criterion>Password must pass strong password requirements</acceptance_criterion>
+                  <acceptance_criterion>New registrations will send an email to validate the email address is valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="AUT3" as_a="user" i_want_to="click on the validate email address link within the email I receive" so_i_can="confirm that the email address is my own" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Validation email received will have a unique non-guessable link that the user must follow</criterion>
-                  <criterion>Once the link is clicked on, the user's account will be updated as valid</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Validation email received will have a unique non-guessable link that the user must follow</acceptance_criterion>
+                  <acceptance_criterion>Once the link is clicked on, the user's account will be updated as valid</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="AUT4" as_a="admin" i_want_to="authorise uses who register for the website" so_i_can="control who has access to the secure areas" comments="" cost="&#163;3,467" days="4.3" color="" score="13.0">
-                <criteria>
-                  <criterion>Admin is notified when a new user registers on the site</criterion>
-                  <criterion>Users are told they are awaiting authorisation before the validation email is sent</criterion>
-                  <criterion>Admin logs into an admin section to review unauthorised applicants and either approve or remove them.</criterion>
-                  <criterion>Users will be notified when they are approved or not approved</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Admin is notified when a new user registers on the site</acceptance_criterion>
+                  <acceptance_criterion>Users are told they are awaiting authorisation before the validation email is sent</acceptance_criterion>
+                  <acceptance_criterion>Admin logs into an admin section to review unauthorised applicants and either approve or remove them.</acceptance_criterion>
+                  <acceptance_criterion>Users will be notified when they are approved or not approved</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="News section" code="NES" points="21.0" days="7.0" cost="&#163;5,600">
             <stories>
               <story unique_id="1" code="NES1" as_a="user" i_want_to="view the news" so_i_can="keep up to date with the company" comments="Please refer to wireframe C5" cost="&#163;3,467" days="4.3" color="" score="13.0">
-                <criteria>
-                  <criterion>Latest news show in date descending order, with paging</criterion>
-                  <criterion>Search for news</criterion>
-                  <criterion>RSS feed</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Latest news show in date descending order, with paging</acceptance_criterion>
+                  <acceptance_criterion>Search for news</acceptance_criterion>
+                  <acceptance_criterion>RSS feed</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="NES2" as_a="investor" i_want_to="view the press releases" so_i_can="keep up to date with public announcements" comments="" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Press releasees shown in date descending order</criterion>
-                  <criterion>Downloadable in PDF format</criterion>
-                  <criterion>Search for Press Releases</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Press releasees shown in date descending order</acceptance_criterion>
+                  <acceptance_criterion>Downloadable in PDF format</acceptance_criterion>
+                  <acceptance_criterion>Search for Press Releases</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Investor relations" code="INR" points="15.0" days="5.0" cost="&#163;4,000">
             <stories>
               <story unique_id="1" code="INR1" as_a="user" i_want_to="see the current share price" so_i_can="keep track of how my investment in this company is doing" comments="Information pulled from 3rd party API" cost="&#163;2,133" days="2.7" color="" score="8.0">
-                <criteria>
-                  <criterion>Share price must be no more than 15 minutes delayed</criterion>
-                  <criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Share price must be no more than 15 minutes delayed</acceptance_criterion>
+                  <acceptance_criterion>Share price must be displayed numerically and in a graph showing last 60 days of trading</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="INR2" as_a="user" i_want_to="access the last annual report" so_i_can="keep up to date with financial information" comments="Client agreed to use Slideshare" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                  <criterion>Annual report in both PDF and online formats</criterion>
-                  <criterion>Online format must not rely on Flash, must support HTML format</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Annual report in both PDF and online formats</acceptance_criterion>
+                  <acceptance_criterion>Online format must not rely on Flash, must support HTML format</acceptance_criterion>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="INR3" as_a="admin" i_want_to="be able to update the annual report" so_i_can="keep the content fresh" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-                <criteria>
-                  <criterion>Update report using Slideshare</criterion>
-                </criteria>
+                <acceptance_criteria>
+                  <acceptance_criterion>Update report using Slideshare</acceptance_criterion>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
@@ -697,11 +697,11 @@
       </snapshot>
     </sprint>
     <sprint iteration="5" start_on="2011-02-14" duration_days="5" number_team_members="1" completed="false" completed_at="" total_completed_points="0.0" total_allocated_points="13.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="HOP5" status="Completed" status_code="R" accepted="false" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
-        <story code="INR1" status="In progress" status_code="P" accepted="false" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
-        <story code="INR3" status="Completed" status_code="R" accepted="false" score_50_when_assigned="2.0" score_90_when_assigned="2.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="HOP5" status="Completed" status_code="R" accepted="false" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
+        <sprint_story code="INR1" status="In progress" status_code="P" accepted="false" score_50_when_assigned="8.0" score_90_when_assigned="8.0"/>
+        <sprint_story code="INR3" status="Completed" status_code="R" accepted="false" score_50_when_assigned="2.0" score_90_when_assigned="2.0"/>
+      </sprint_stories>
     </sprint>
   </sprints>
 </backlog>

@@ -35,7 +35,7 @@ App.Views.BacklogDataArea = {
     sprintsChanged: function(model) {
       var that = this;
       var url = document.location.pathname.replace('#.*$', '');
-      $.get(url + '/snapshots-list-html', false, function(data) {
+      $.get(url + '/snapshots', false, function(data) {
         $('.snapshot-menu-container .select, #viewing-snapshot-container .selector').html(data);
         $('select.snapshot-selector').change(that.jumpToSnapshot);
       }, 'html');
@@ -292,11 +292,7 @@ App.Views.BacklogDataArea = {
       var baseUrl = document.location.href.match(/^.*\/accounts\/\d+\/backlogs\/\d+/i)[0];
       if (val.match(/^\d+$/)) {
         // user has selected a backlog
-        if (isSprintSnapshot) {
-          baseUrl += '/sprint-snapshots/' + val;
-        } else {
-          baseUrl += '/snapshots/' + val;
-        }
+        baseUrl += '/snapshots/' + val;
       }
       $('#loading-new-snapshot').show();
       document.location.href = baseUrl;

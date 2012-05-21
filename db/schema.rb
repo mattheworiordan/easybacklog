@@ -11,11 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120407221408) do
+ActiveRecord::Schema.define(:version => 20120520001739) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
-    t.text    "criterion", :null => false
+    t.text    "criterion"
     t.integer "position"
   end
 
@@ -233,6 +233,17 @@ ActiveRecord::Schema.define(:version => 20120407221408) do
   end
 
   add_index "themes", ["backlog_id"], :name => "index_themes_on_backlog_id"
+
+  create_table "user_tokens", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "access_token"
+    t.string   "basic_authentication_token"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
+  end
+
+  add_index "user_tokens", ["access_token"], :name => "index_user_tokens_on_access_token"
+  add_index "user_tokens", ["basic_authentication_token"], :name => "index_user_tokens_on_basic_authentication_token"
 
   create_table "users", :force => true do |t|
     t.string   "name",                                                  :null => false

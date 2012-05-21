@@ -30,6 +30,7 @@
         .name= current_user.name
         %div= current_user.email
         .link= link_to 'My settings', edit_user_registration_path
+        .link= link_to 'API access', user_tokens_path
         .nav-divider
         .link= link_to 'Sign out', destroy_user_session_path
     .divider

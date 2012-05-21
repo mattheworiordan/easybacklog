@@ -56,7 +56,7 @@ App.Views.BacklogStats = {
       var that = this;
       if (this.model.Sprints().select(function(sprint) { return sprint.IsComplete(); }).length > 0) {
         // load data and then...
-        $.getJSON('/backlogs/' + this.model.get('id') + '/backlog-stats')
+        $.getJSON('/accounts/' + this.model.get('account_id') + '/backlogs/' + this.model.get('id') + '/stats')
           .success(function(data) {
             that.$('.loading').hide();
             that.$('.no-stats').hide();

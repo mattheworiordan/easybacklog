@@ -4,42 +4,36 @@ class BacklogsController < ApplicationController
   after_filter :update_backlog_metadata, :only => [:update]
   BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => :story } } ]
 
+  respond_to :html
+  respond_to :xml, :json, :only => [:index, :show, :update, :create, :destroy, :duplicate, :index_snapshot, :show_snapshot, :destroy_snapshot]
+
+  ## included in API
+  def index
+    backlogs = if params[:include_archived].to_s == 'true'
+      current_account.backlogs.available
+    else
+      current_account.backlogs.active
+    end
+    respond_with(backlogs.order('updated_at desc').where_user_has_access(current_user)) do |format|
+      format.html { redirect_to account_path(current_account) }
+    end
+  end
+
+  ## included in API
   def show
-    begin
-      @backlog = current_account.backlogs.available.find(params[:id], :include => BACKLOG_INCLUDES)
-      set_locale
-    rescue ActiveRecord::RecordNotFound => exception
-      flash[:warning] = 'The backlog you were looking for does not exist'
-      redirect_to account_path(current_account)
-    else
-      render_backlog_or_snapshot
-    end
+    @backlog = current_account.backlogs.available.find(params[:id], :include => BACKLOG_INCLUDES)
+    set_locale
+    render_backlog_or_snapshot
   end
 
+  ## included in API
   def show_snapshot
-    begin
-      @backlog = current_account.backlogs.available.find(params[:id]).snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES)
-      set_locale
-    rescue ActiveRecord::RecordNotFound => exception
-      flash[:warning] = 'The snapshot you were looking for does not exist'
-      redirect_to account_path(current_account)
-    else
-      render_backlog_or_snapshot
-    end
-  end
-
-  def show_sprint_snapshot
-    begin
-      sprint_snapshot = current_account.backlogs.available.find(params[:id]).sprint_snapshots.find { |d| d.id.to_s == params[:snapshot_id] }
-      raise ActiveRecord::RecordNotFound.new('Sprint snapshot was not found') if sprint_snapshot.blank?
-      @backlog = Backlog.find(sprint_snapshot.id, :include => BACKLOG_INCLUDES)
-      set_locale
-    rescue ActiveRecord::RecordNotFound => exception
-      flash[:warning] = 'The snapshot you were looking for does not exist'
-      redirect_to account_path(current_account)
-    else
-      render_backlog_or_snapshot
-    end
+    master_backlog = current_account.backlogs.available.find(params[:id])
+    @backlog = master_backlog.snapshots.find_by_id(params[:snapshot_id], :include => BACKLOG_INCLUDES)
+    @backlog = master_backlog.sprint_snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES) if @backlog.blank?
+    raise ActiveRecord::RecordNotFound.new('Snapshot was not found') if @backlog.blank?
+    set_locale
+    render_backlog_or_snapshot
   end
 
   def new
@@ -54,6 +48,7 @@ class BacklogsController < ApplicationController
     end
   end
 
+  ## included in API
   def create
     if current_account.can?(:full, current_user)
       @backlog = current_account.backlogs.new(filter_backlog_params)
@@ -61,14 +56,21 @@ class BacklogsController < ApplicationController
       @backlog.last_modified_user = current_user
       set_or_create_company
       if @backlog.save
-        flash[:notice] = 'Backlog was successfully created.'
-        redirect_to account_backlog_path(current_account, @backlog)
+        respond_with(@backlog) do |format|
+          format.html do
+            flash[:notice] = 'Backlog was successfully created.'
+            redirect_to account_backlog_path(current_account, @backlog)
+          end
+          format.all { render request.format.to_sym => @backlog, :status => STATUS_CODE[:created] }
+        end
       else
-        render :action => "new"
+        respond_with(@backlog) do |format|
+          format.html { render :action => "new" }
+          format.all { send_error "Backlog could not be updated: #{@backlog.errors.full_messages.join(', ')}", :http_status => :invalid_params }
+        end
       end
     else
-      flash[:error] = 'You do not have permission to create backlogs'
-      redirect_to account_path(current_account)
+      send_error 'You do not have permission to create backlogs', :redirect_to => account_path(current_account), :http_status => :forbidden
     end
   end
 
@@ -111,78 +113,153 @@ class BacklogsController < ApplicationController
     end
   end
 
-  # only supports JSON updates
+  ## included in API
   def update
+    backlog_params = filter_backlog_params
+
     @backlog = current_account.backlogs.available.find(params[:id])
     enforce_can(:full, 'You do not have permission to update this backlog') do
-      if @backlog.archived? && params[:backlog][:archived] == 'false'
+      if @backlog.archived? && backlog_params[:archived].to_s == 'false'
         @backlog.recover_from_archive
-        flash[:notice] = 'Backlog has been restored from archive and is now active'
-        redirect_to account_backlog_path(current_account, @backlog)
-      elsif @backlog.archived? && params[:backlog][:archived] == 'true'
-        # do nothing, user updated for no reason as no change
-        redirect_to account_backlog_path(current_account, @backlog)
+        respond_with(@backlog) do |format|
+          format.html do
+            flash[:notice] = 'Backlog has been restored from archive and is now active'
+            redirect_to account_backlog_path(current_account, @backlog)
+          end
+        end
+      elsif @backlog.archived? && backlog_params[:archived].to_s == 'true'
+        respond_with(@backlog) do |format|
+          format.html do
+            # do nothing, user updated for no reason as no change
+            redirect_to account_backlog_path(current_account, @backlog)
+          end
+        end
       elsif !@backlog.editable?
-        flash[:notice] = 'You cannot edit an archived backlog'
-        redirect_to account_backlog_path(@backlog.account, @backlog)
+        send_error 'You cannot edit an archived backlog', :flash => :warning, :redirect_to => account_backlog_path(@backlog.account, @backlog), :http_status => :forbidden
       else
-        @backlog.update_attributes(filter_backlog_params)
+        @backlog.update_attributes(backlog_params.reject { |key, val| key.to_sym == :archived })
         @backlog.last_modified_user = current_user
         set_or_create_company
         if @backlog.save
-          if params[:backlog] && params[:backlog][:archived] == 'true'
+          has_been_archived = backlog_params && backlog_params[:archived].to_s == 'true'
+          if has_been_archived
             update_backlog_metadata
             @backlog.mark_archived
-            flash[:notice] = 'Backlog is now archived'
-          else
-            flash[:notice] = 'Backlog settings were successfully updated'
           end
-          redirect_to account_backlog_path(current_account, @backlog)
+          respond_with(@backlog) do |format|
+            format.html do
+              if has_been_archived
+                flash[:notice] = 'Backlog is now archived'
+              else
+                flash[:notice] = 'Backlog settings were successfully updated'
+              end
+              redirect_to account_backlog_path(current_account, @backlog)
+            end
+            format.all do
+              render :nothing => true, :status => 204
+            end
+          end
         else
-          render :action => "edit"
+          respond_to do |format|
+            format.html do
+              flash[:warning] = 'Backlog was not updated'
+              render :action => 'edit'
+            end
+            format.all { send_error "Backlog could not be updated: #{@backlog.errors.full_messages.join(', ')}", :http_status => :invalid_params }
+          end
         end
       end
     end
   end
 
+  ## included in API
   def destroy
     @backlog = current_account.backlogs.available.find(params[:id])
     enforce_can(:full, 'You do not have permission to delete this backlog') do
       @backlog.mark_deleted
-      flash[:notice] = 'Backlog was successfully deleted.'
-      redirect_to account_path(current_account)
-    end
-  end
-
-  def destroy_snapshot
-    @backlog = Backlog.available.where(:account_id => current_account.id).where(:id => params[:snapshot_id]).first
-    enforce_can(:full, 'You do not have permission to delete this snapshot') do
-      @backlog.mark_deleted
-      flash[:notice] = 'Snapshot was successfully deleted'
-      redirect_to account_backlog_path(current_account, current_account.backlogs.find(params[:id]))
-    end
-  end
-
-  def duplicate
-    @backlog = current_account.backlogs.available.find(params[:id])
-    enforce_can(:full, 'You do not have permission to duplicate this backlog') do
-      @new_backlog = current_account.backlogs.new(@backlog.safe_attributes.merge(params[:backlog] || {}))
-      @new_backlog.author = @backlog.author
-      @new_backlog.last_modified_user = current_user
-      if request.post?
-        if @new_backlog.save
-          @backlog.copy_children_to_backlog(@new_backlog)
-          flash[:notice] = 'Backlog was duplicated successfully.'
-          redirect_to account_backlog_path(current_account, @new_backlog)
+      respond_with(@backlog) do |format|
+        format.html do
+          flash[:notice] = 'Backlog was successfully deleted.'
+          redirect_to account_path(current_account)
         end
       end
-    end#
+    end
   end
 
-  # returns a partial to replace snapshots drop down when a sprint is marked as complete and thus a snapshot is created
-  def snapshots_list_html
+  ## included in API
+  def destroy_snapshot
+    master_backlog = current_account.backlogs.available.find(params[:id])
+    @backlog = master_backlog.snapshots.find_by_id(params[:snapshot_id], :include => BACKLOG_INCLUDES)
+    if @backlog.blank?
+      if master_backlog.sprint_snapshots.find(params[:snapshot_id], :include => BACKLOG_INCLUDES).present?
+        send_error 'You cannot delete a sprint snapshot, only manually created snapshots can be deleted', :http_status => :forbidden
+      else
+        raise ActiveRecord::RecordNotFound.new('Snapshot was not found') if @backlog.blank?
+      end
+    else
+      enforce_can(:full, 'You do not have permission to delete this snapshot') do
+        @backlog.mark_deleted
+        respond_with(@backlog) do |format|
+          format.html do
+            flash[:notice] = 'Snapshot was successfully deleted'
+            redirect_to account_backlog_path(current_account, current_account.backlogs.find(params[:id]))
+          end
+        end
+      end
+    end
+  end
+
+  ## included in API
+  def duplicate
     @backlog = current_account.backlogs.available.find(params[:id])
-    render :partial => 'snapshot_select'
+    if current_account.can?(:full, current_user)
+      enforce_can(:read, 'You do not have permission to view or duplicate this backlog') do
+        @new_backlog = current_account.backlogs.new(@backlog.safe_attributes.merge(filter_backlog_params || {}))
+        @new_backlog.author = @backlog.author
+        @new_backlog.last_modified_user = current_user
+        if request.post?
+          if @new_backlog.save
+            @backlog.copy_children_to_backlog(@new_backlog)
+            respond_with(@new_backlog, :location => account_backlog_path(current_account, @new_backlog)) do |format|
+              format.html do
+                flash[:notice] = 'Backlog was duplicated successfully.'
+                redirect_to account_backlog_path(current_account, @new_backlog)
+              end
+            end
+          else
+            respond_to do |format|
+              format.html { render }
+              format.any(:json, :xml) { send_error "Parameters invalid, backlog could not be duplicated: #{@new_backlog.errors.full_messages.join(', ')}", :http_status => :invalid_params }
+            end
+          end
+        else
+          respond_to do |format|
+            format.html { render }
+            format.any(:json, :xml) { send_error 'Unsupported request', :http_status => :not_acceptable }
+          end
+        end
+      end
+    else
+      send_error 'You do not have permission to create a new backlog in this account', :redirect_to => account_backlog_path(current_account, @backlog), :http_status => :forbidden
+    end
+  end
+
+  # in HTML mode, returns a partial to replace snapshots drop down when a sprint is marked as complete and thus a snapshot is created
+  ## included in API
+  def index_snapshot
+    @backlog = current_account.backlogs.available.find(params[:id])
+    respond_to do |format|
+      format.html do
+        render :partial => 'snapshot_select'
+      end
+
+      format.any(:json, :xml) do
+        render request.format.to_sym => {
+          :manual_snapshots => @backlog.snapshots,
+          :sprint_snapshots => @backlog.sprint_snapshots
+        }
+      end
+    end
   end
 
   # used by Backlog view to get a list of backlogs that the user can move a theme into
@@ -281,7 +358,13 @@ class BacklogsController < ApplicationController
 
   helper_method :can?, :cannot?
   def can?(method)
-    @backlog.can? method, current_user
+    # get permissions from parent backlog if one exists
+    master_backlog = if @backlog.is_snapshot?
+      @backlog.all_snapshot_master
+    else
+      @backlog
+    end
+    master_backlog.can? method, current_user
   end
   def cannot?(method)
     !can? method
@@ -289,36 +372,28 @@ class BacklogsController < ApplicationController
 
   private
     def update_backlog_metadata
-      @backlog.update_meta_data current_user unless @backlog.archived
+      @backlog.update_meta_data current_user unless @backlog.archived || @backlog.errors.present?
     end
 
     def render_backlog_or_snapshot
-      respond_to do |format|
-        format.html do
-          if can? :read
+      if cannot? :read
+        send_error 'You are not allowed to view this backlog', :redirect_to => account_path(current_account), :http_status => :forbidden
+      else
+        respond_to do |format|
+          format.html do
             render :layout => 'backlog', :action => 'show'
-          else
-            flash[:error] = 'You are not allowed to view this backlog'
-            redirect_to account_path(current_account)
           end
-        end
 
-        # download an Excel file
-        format.xls do
-          if can? :read
+          # download an Excel file
+          format.xls do
             filename = "#{@backlog.name.parameterize}.xls"
             headers['Content-Type'] = 'application/vnd.ms-excel'
             set_download_headers filename
             render :layout => false, :action => 'show'
-          else
-            flash[:error] = 'You are not allowed to view this backlog'
-            redirect_to account_path(current_account)
           end
-        end
 
-        # download a PDF of the user story cards
-        format.pdf do
-          if can? :read
+          # download a PDF of the user story cards
+          format.pdf do
             filename = "#{@backlog.name.parameterize}.pdf"
             set_download_headers filename
             stories = if params[:print_scope] =~ /sprint-(\d+)/
@@ -334,25 +409,22 @@ class BacklogsController < ApplicationController
             stories = stories.map { |t| t.stories }.flatten
             output = StoryCardsReport.new.to_pdf(stories, params[:page_size], params[:fold_side])
             send_data output, :filename => filename, :type => "application/pdf"
-          else
-            flash[:error] = 'You are not allowed to view this backlog'
-            redirect_to account_path(current_account)
           end
-        end
 
-        format.js do
-          if can? :read
-            render :json => backlog_json(@backlog)
-          else
-            send_json_error 'You are not allowed to view this backlog'
+          format.json do
+            if params[:include_associated_data].to_s == 'true'
+              render :json => backlog_json(@backlog)
+            else
+              render :json => @backlog
+            end
           end
-        end
 
-        format.xml do
-          if can? :read
-            render
-          else
-            send_xml_error 'You are not allowed to view this backlog'
+          format.xml do
+            if params[:include_associated_data].to_s == 'true'
+              render :action => 'show'
+            else
+              render :xml => @backlog
+            end
           end
         end
       end
@@ -399,12 +471,16 @@ class BacklogsController < ApplicationController
       if can? rights
         yield
       else
-        flash[:error] = message
-        redirect_to account_backlog_path(current_account, @backlog)
+        send_error message, :redirect_to => account_backlog_path(current_account, @backlog), :http_status => :forbidden
       end
     end
 
     def filter_backlog_params
-      filter_params_for :backlog, :days_estimatable, :has_company, :company_id, :archived, :valid_scores, :backlog_user_settings
+      params_namespace = is_api? ? nil : :backlog
+      filter_params_for params_namespace, :days_estimatable, :has_company, :company_id, :valid_scores, :backlog_user_settings, :account_id
+    end
+
+    def error_scope_name
+      action_name =~ /snapshot/ ? 'Snapshot' : 'Backlog'
     end
 end

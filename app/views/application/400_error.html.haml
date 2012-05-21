@@ -1,0 +1,14 @@
+- title '#{error_message} (400 Error)'
+
+- content_for :title do
+  %h1= "#{error_message}"
+
+%p
+  Unfortunately you tried to perform an action on this website that you are not permitted to do.
+
+%p
+  Please
+  = link_to 'contact us', contact_path
+  if you need any assistance.
+%p
+  =link_to raw('&laquo; Back home'), root_path, :class => 'button'

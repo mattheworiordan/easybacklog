@@ -11,6 +11,8 @@ class SprintStory < ActiveRecord::Base
   before_save :assign_sprint_scores_when_assigned
   before_validation :protect_sprint_scores_when_assigned, :prevent_assign_to_sprint_when_complete, :assign_default_sprint_story_status, :prevent_changes_when_sprint_complete
   before_destroy :prevent_delete_when_accepted_or_sprint_complete
+  before_validation :stop_create_update_if_backlog_locked
+  before_destroy :stop_destroy_if_backlog_locked
 
   attr_accessible :position, :sprint_story_status_id, :sprint_id, :story_id
 
@@ -31,6 +33,11 @@ class SprintStory < ActiveRecord::Base
       :total_allocated_points => sprint.total_allocated_points
     }
   end
+
+  def as_json(options={})
+    super(options.deeper_merge(:except => [:sprint_score_50_when_assigned, :sprint_score_90_when_assigned]))
+  end
+  alias_method :as_xml, :as_json
 
   private
     def prevent_assign_to_sprint_when_complete
@@ -66,5 +73,13 @@ class SprintStory < ActiveRecord::Base
 
     def prevent_changes_when_sprint_complete
       errors.add :base, 'Story cannot be modified once assigned to a completed sprint' if changed? && sprint.completed?
+    end
+
+    def stop_create_update_if_backlog_locked
+      errors.add :base, 'Story cannot be created or modified as the backlog is not editable' if sprint.backlog.locked?
+    end
+
+    def stop_destroy_if_backlog_locked
+      raise ActiveRecordExceptions::BacklogLocked.new('Story cannot be deleted as the backlog is not editable') if sprint.backlog.locked?
     end
 end

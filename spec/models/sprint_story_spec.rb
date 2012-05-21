@@ -82,7 +82,34 @@ describe SprintStory do
     @sprint.reload
     @sprint.mark_as_complete
 
-    @story.sprint_story.update_attributes(:sprint_story_status_id => default_sprint_story_status.id).should_not be_false # false means record was not saved
-    @story.sprint_story.update_attributes(:position => 3).should_not be_false
+    @story.reload
+    @story.sprint_story.update_attributes(:sprint_story_status_id => default_sprint_story_status.id).should be_false # false means record was not saved
+    @story.sprint_story.update_attributes(:position => 3).should be_false
+  end
+
+  it 'should not allow a new sprint story to be created or edited or deleted if the backlog is locked' do
+    backlog = Factory.create(:backlog, :velocity => 4)
+    sprint = Factory.create(:sprint, :backlog => backlog)
+    backlog.mark_archived
+    expect { Factory.create(:sprint_story, :sprint => sprint) }.should raise_error
+    backlog.recover_from_archive
+    sprint_story = Factory.create(:sprint_story, :sprint => sprint)
+    backlog.mark_archived
+    sprint_story.reload
+    expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.should raise_error
+    expect { sprint_story.destroy }.should raise_error
+  end
+
+  it 'should not allow a new sprint story to be created or edited or deleted if the sprint is completed (locked)' do
+    backlog = Factory.create(:backlog, :velocity => 4)
+    sprint = Factory.create(:sprint, :backlog => backlog)
+    sprint.mark_as_complete
+    expect { Factory.create(:sprint_story, :sprint => sprint) }.should raise_error
+    sprint.mark_as_incomplete
+    sprint_story = Factory.create(:sprint_story, :sprint => sprint)
+    sprint.mark_as_complete
+    sprint_story.reload
+    expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.should raise_error
+    expect { sprint_story.destroy }.should raise_error
   end
 end

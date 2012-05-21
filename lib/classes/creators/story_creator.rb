@@ -8,7 +8,7 @@ module Creators
       set_story_properties story_data
 
       # build criterion
-      arr(story_data, :criteria).each do |criterion|
+      arr(story_data, :acceptance_criteria).each do |criterion|
         @story.acceptance_criteria.create! :criterion => criterion
       end
 
@@ -36,7 +36,7 @@ module Creators
       sql = insert_sql 'stories', options
 
       # build criterion
-      arr(story_data, :criteria).each_with_index do |criterion, index|
+      arr(story_data, :acceptance_criteria).each_with_index do |criterion, index|
         sql << insert_sql('acceptance_criteria', :story_id => :stories, :criterion => criterion, :position => index + 1)
       end
 

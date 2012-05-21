@@ -1,4 +1,7 @@
 class Story < ActiveRecord::Base
+  include ScoreStatistics
+  include Lockable
+
   acts_as_list :scope => :theme
 
   belongs_to :theme
@@ -20,11 +23,12 @@ class Story < ActiveRecord::Base
 
   can_do :inherited_privilege => :theme
 
-  include ScoreStatistics
-  include Snapshot
-
   def editable?
-    theme.backlog.editable?
+    backlog.editable?
+  end
+
+  def backlog
+    theme.backlog
   end
 
   def cost
@@ -94,6 +98,16 @@ class Story < ActiveRecord::Base
     save!
     move_to_bottom
   end
+
+  # if not using 50/90 scoring rules, ensure the returned XML only shows a single score value
+  def as_json(options={})
+    if theme.backlog.use_50_90?
+      super(options)
+    else
+      super(options.deeper_merge(:except => [:score_50, :score_90], :methods => [:score]))
+    end
+  end
+  alias_method :as_xml, :as_json
 
   private
     def score_90_greater_than_50

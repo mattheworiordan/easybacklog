@@ -7,6 +7,7 @@ class Backlog < ActiveRecord::Base
 
   has_many :themes, :dependent => :destroy, :order => 'position'
   has_many :sprints, :dependent => :destroy, :order => 'iteration'
+  has_many :sprint_snapshots, :source => :snapshot, :conditions => ['deleted <> ?', true], :through => :sprints, :order => 'sprints.iteration desc'
   has_many :backlog_users, :dependent => :destroy
   has_many :backlog_user_settings, :dependent => :destroy
 
@@ -24,10 +25,13 @@ class Backlog < ActiveRecord::Base
 
   can_do :privileges => :backlog_users, :inherited_privilege => [:company, :account]
 
+  # for generic API requests, exclude these fields
+  EXCLUDE_FROM_API = [:snapshot_master_id, :snapshot_for_sprint_id, :deleted]
+
   scope :available, where(:deleted => false)
-  scope :active, where(:archived => false).where(:deleted => false)
+  scope :active, available.where(:archived => false)
   scope :deleted, where(:deleted => true)
-  scope :archived, where(:archived => true).where(:deleted => false)
+  scope :archived, available.where(:archived => true)
   scope :masters, where('snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL')
   scope :where_user_has_access, lambda { |user|
     sql = <<-SQL
@@ -165,6 +169,10 @@ class Backlog < ActiveRecord::Base
   end
   alias_method :is_editable, :editable?
 
+  def all_snapshot_master
+    self.snapshot_master || self.snapshot_for_sprint
+  end
+
   def is_snapshot?
     self.snapshot_master.present? || self.snapshot_for_sprint.present?
   end
@@ -220,10 +228,6 @@ class Backlog < ActiveRecord::Base
 
   def has_company?
     !company.blank?
-  end
-
-  def sprint_snapshots
-    sprints.sort_by(&:iteration).reverse.map(&:snapshot).reject { |s| s.blank? }
   end
 
   # allow search for a story using full code such as ABC001
@@ -289,6 +293,11 @@ class Backlog < ActiveRecord::Base
   def delete_user(user)
     backlog_users.where(:user_id => user.id).each { |cu| cu.delete }
   end
+
+  def as_json(options={})
+    super(options.deeper_merge({ :except => Backlog::EXCLUDE_FROM_API }))
+  end
+  alias_method :as_xml, :as_json
 
   private
     # only allow save on working copy i.e. not snapshot

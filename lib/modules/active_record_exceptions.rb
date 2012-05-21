@@ -4,4 +4,5 @@ module ActiveRecordExceptions
   class StoriesCannotBeRenumbered < StandardError; end
   class StoryCannotBeMoved < StandardError; end
   class ThemeCannotBeMoved < StandardError; end
+  class BacklogLocked < StandardError; end
 end

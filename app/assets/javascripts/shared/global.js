@@ -9,6 +9,8 @@ var App = {
 },
     _ues; // user echo needs to be in global space (urrgghh)
 
+$.ajaxSetup({ dataType: 'json' }); // all AJAX requests to the server are over JSON so lets set this as a default
+
 // Patch for Backbone to ensure save is completed before more requests are sent to the server
 // http://stackoverflow.com/questions/5886748/backbone-js-problem-when-saving-a-model-before-previous-save-issues-postcreate
 (function() {

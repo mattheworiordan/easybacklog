@@ -38,6 +38,8 @@ module Ibacklog
 
     config.assets.enabled = true
 
+    config.i18n.fallbacks = [:en]
+
     # pre-compile all javascript/scss files in assets/stylesheets, assets/javascripts, assets/javascripts/sections
     ['stylesheets','javascripts','javascripts/sections'].each do |path|
       Rails.root.join('app','assets',path).each_child do |d|

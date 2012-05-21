@@ -2,6 +2,9 @@ class BacklogUsersController < ApplicationController
   include AccountResource
   before_filter :check_account_admin, :set_backlog
 
+  respond_to :html, :only => [:index]
+  respond_to :json, :only => [:update]
+
   def index
     @account_users = current_account.account_users.sort_by { |d| d.user.name }.index_by(&:user_id)
     # allow company inherited permissions to override account inherited permissions
@@ -13,10 +16,7 @@ class BacklogUsersController < ApplicationController
   # Support JSON updates only
   def update
     begin
-      # ensure user ID is a valid user for this account
-      account_user = current_account.account_users.find_by_user_id(params[:id])
-      raise ActiveRecord::RecordNotFound.new if account_user.blank?
-      user = account_user.user
+      user = current_account.users.find(params[:id])
 
       if params[:privilege] == '(inherited)'
         # delete any explicit privileges as we will inherit
@@ -26,9 +26,9 @@ class BacklogUsersController < ApplicationController
         @backlog.add_or_update_user user, privilege
       end
 
-      send_json_notice 'Permissions updated successfully'
+      send_notice 'Permissions updated successfully'
     rescue ActiveRecord::RecordNotFound
-      send_json_error "Invalid parameters sent"
+      send_error 'Invalid parameters', :http_status => :invalid_params
     end
   end
 
@@ -36,8 +36,7 @@ class BacklogUsersController < ApplicationController
     # before_filter to check that user has correct privileges
     def check_account_admin
       unless is_account_admin?
-        flash[:error] = 'You need admin rights to manage users for this backlog'
-        redirect_to account_path(current_account)
+        send_error 'You need admin rights to manage users for this backlog', :redirect_to => account_path(current_account), :http_status => :forbidden
       end
     end
 

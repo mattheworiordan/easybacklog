@@ -94,11 +94,13 @@ class BacklogStats
       last_sprint = sprint
     end
 
-    sprint = last_sprint.dup
-    sprint.iteration = 0
-    sprint.start_on = last_sprint.assumed_completed_on + 1.day
-    total << burn_up_json(sprint, @backlog.points)
-    actual << burn_up_json(sprint, points_completed)
+    if last_sprint.present?
+      sprint = last_sprint.dup
+      sprint.iteration = 0
+      sprint.start_on = last_sprint.assumed_completed_on + 1.day
+      total << burn_up_json(sprint, @backlog.points)
+      actual << burn_up_json(sprint, points_completed)
+    end
 
     {
       :total => total,

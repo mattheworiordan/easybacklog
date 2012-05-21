@@ -1,37 +1,41 @@
 class SprintStoriesController < ApplicationController
   before_filter :authenticate_user!, :set_sprint_and_protect
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
+  before_filter :stop_updates_if_locked, :only => [:create, :update, :destroy]
 
-  METHODS = [:theme_id, :sprint_statistics]
-  INCLUDE_FIELDS = [:id, :story_id, :sprint_story_status_id, :position, :sprint_id]
+  respond_to :xml, :json
 
+  ## include in API
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
       @sprint_stories = @sprint.sprint_stories.find(:all)
-      render :json => @sprint_stories.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
+      custom_respond_with @sprint_stories
     end
   end
 
+  ## include in API
   def show
     @sprint_story = @sprint.sprint_stories.find(params[:id])
     enforce_can :read, 'You do not have permission to view this backlog' do
-      render :json => @sprint_story.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
+      custom_respond_with @sprint_story
     end
   end
 
+  ## include in API
   def create
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
       @sprint_story = @sprint.sprint_stories.new(filter_sprint_story_params)
       @sprint_story.sprint_id = params[:sprint_id]
       @sprint_story.story_id = params[:story_id]
       if @sprint_story.save
-        render :json => @sprint_story.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
+        custom_respond_with @sprint_story, :http_status => :created
       else
-        send_json_error @sprint_story.errors.full_messages.join(', ')
+        send_error @sprint_story.errors.full_messages.join(', '), :http_status => :invalid_params
       end
     end
   end
 
+  ## include in API
   def update
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
       @sprint_story = @sprint.sprint_stories.find(params[:id])
@@ -39,47 +43,46 @@ class SprintStoriesController < ApplicationController
       @sprint_story.sprint_id = params[:move_to_sprint_id] if params.has_key?(:move_to_sprint_id)
 
       if @sprint_story.save
-        render :json => @sprint_story.to_json(:methods => METHODS, :only => INCLUDE_FIELDS)
+        if is_api?
+          render :nothing => true, :status => :no_content
+        else
+          custom_respond_with @sprint_story
+        end
       else
-        send_json_error @sprint_story.errors.full_messages.join(', ')
+        send_error @sprint_story.errors.full_messages.join(', '), :http_status => :invalid_params
       end
     end
   end
 
   def update_order
     enforce_can :readstatus, 'You do not have permission to update the order of stories' do
-      begin
-        ids = params[:ids]
-        sprint_stories = []
-        ids.each do |id, position|
-          sprint_story = @sprint.sprint_stories.find(id)
-          sprint_story.position = position
-          sprint_story.save!
-          sprint_stories << sprint_story
-        end
-        # now return all the updated sprint stories so we can update the models in the front end
-        render :json => sprint_stories
-      rescue ActiveRecord::RecordNotFound
-        send_json_error "Sprint story could not be found"
-      rescue Exception => e
-        send_json_error "Sprint stories could not be reordered #{e}"
+      ids = params[:ids]
+      sprint_stories = []
+      ids.each do |id, position|
+        sprint_story = @sprint.sprint_stories.find(id)
+        sprint_story.position = position
+        sprint_story.save!
+        sprint_stories << sprint_story
       end
+      # now return all the updated sprint stories so we can update the models in the front end
+      render request.format.to_sym => sprint_stories
     end
   end
 
+  ## include in API
   def destroy
-    begin
-      @sprint_story = @sprint.sprint_stories.find(params[:id])
-      enforce_can :readstatus, 'You do not have permission to update the status of stories' do
-        @sprint_story.destroy
-        send_json_notice "Sprint story removed from sprint", :sprint_statistics => {
+    @sprint_story = @sprint.sprint_stories.find(params[:id])
+    enforce_can :readstatus, 'You do not have permission to update the status of stories' do
+      @sprint_story.destroy
+      if is_api?
+        render :nothing => true, :status => :no_content
+      else
+        send_notice "Sprint story removed from sprint", :sprint_statistics => {
           :total_expected_points => @sprint.total_expected_points,
           :total_completed_points => @sprint.total_completed_points,
           :total_allocated_points => @sprint.total_allocated_points
         }
       end
-    rescue ActiveRecord::RecordNotFound
-      send_json_error "Sprint story was not found and is likely deleted"
     end
   end
 
@@ -96,10 +99,13 @@ class SprintStoriesController < ApplicationController
     # ensure user has access to this based on account
     def set_sprint_and_protect
       @sprint = Sprint.find(params[:sprint_id])
-      if @sprint.backlog.account.users.find(current_user.id).blank?
-        flash[:error] = 'You do not have permission to view this sprint story'
-        redirect_to accounts_path
+      if @sprint.backlog.account.users.find_by_id(current_user.id).blank?
+        send_error 'You do not have permission to view this sprint story', :http_status => :forbidden, :redirect_to => accounts_path
       end
+    end
+
+    def stop_updates_if_locked
+      send_error 'This sprint story cannot be updated as the backlog or sprint is not editable', :http_status => :forbidden unless @sprint.editable? && @sprint.backlog.editable?
     end
 
     def update_backlog_metadata
@@ -110,11 +116,21 @@ class SprintStoriesController < ApplicationController
       if can? rights
         yield
       else
-        send_json_error message
+        send_error message, :http_status => :forbidden
       end
     end
 
     def filter_sprint_story_params
-      filter_params :sprint_id, :story_id, :theme_id, :sprint_statistics, :move_to_sprint_id
+      filter_params :sprint_id, :story_id, :theme_id, :sprint_statistics, :move_to_sprint_id, :created_at, :updated_at
+    end
+
+    # if API don't send stats data, but if for front end then send some helpful data
+    def custom_respond_with(data, options = {})
+      http_status = options[:http_status] ? STATUS_CODE[options[:http_status]] : STATUS_CODE[:ok]
+      if is_api?
+        render request.format.to_sym => data, :status => http_status
+      else
+        render request.format.to_sym => data.as_json(:methods => [:theme_id, :sprint_statistics]), :status => http_status
+      end
     end
 end

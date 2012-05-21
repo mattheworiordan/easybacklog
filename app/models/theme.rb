@@ -1,5 +1,8 @@
 class Theme < ActiveRecord::Base
   include ActiveRecordExceptions
+  include ScoreStatistics
+  include Lockable
+
   acts_as_list :scope => :backlog
 
   belongs_to :backlog
@@ -18,12 +21,9 @@ class Theme < ActiveRecord::Base
 
   can_do :inherited_privilege => :backlog
 
-  include ScoreStatistics
-
   def editable?
     backlog.editable?
   end
-  include Snapshot
 
   def points
     ScoreCalculator.total_points stories

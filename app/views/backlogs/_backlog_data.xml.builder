@@ -5,6 +5,7 @@ builder.themes do
     }
     theme_attributes.merge! :days => theme.days_formatted if backlog.days_estimatable?
     theme_attributes.merge! :cost => theme.cost_formatted if backlog.cost_estimatable?
+    theme_attributes.merge! :id => theme.id if is_api?
 
     builder.theme theme_attributes do
       builder.stories do
@@ -21,11 +22,14 @@ builder.themes do
           end
           story_attributes.merge! :days => story.days_formatted if backlog.days_estimatable?
           story_attributes.merge! :cost => story.cost_formatted if backlog.cost_estimatable?
+          story_attributes.merge! :id => story.id if is_api?
 
           builder.story story_attributes do
-            builder.criteria do
+            builder.acceptance_criteria do
               story.acceptance_criteria.each do |criterion|
-                builder.criterion criterion.criterion
+                criterion_attributes = {}
+                criterion_attributes.merge! :id => criterion.id if is_api?
+                builder.acceptance_criterion criterion_attributes, criterion.criterion
               end
             end
           end

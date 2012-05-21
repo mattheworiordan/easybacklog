@@ -35,7 +35,7 @@ describe Creators::SprintCreator do
     sprint_story_2.stub(:score_50_when_assigned) { 5 }
     sprint_story_2.stub(:score_90_when_assigned) { 8 }
 
-    data.stub(:stories) { [sprint_story, sprint_story_2] }
+    data.stub(:sprint_stories) { [sprint_story, sprint_story_2] }
     data
   end
 

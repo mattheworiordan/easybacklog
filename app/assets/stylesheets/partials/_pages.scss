@@ -411,3 +411,40 @@ form.edit_user {
     font-size: 90%;
   }
 }
+
+#user-tokens {
+  div.token {
+    margin: 10px 10px;
+    span.token {
+      padding: 3px 1em;
+      background-color: #E9E9E9;
+      font-weight: bold;
+      @include border-radius(3px);
+    }
+  }
+  span.delete {
+    display: none;
+    color: #CCC;
+    a {
+      color: red;
+      cursor: pointer;
+    }
+  }
+  .token:hover span.delete {
+    display: inline;
+  }
+  div.none {
+    color: #666;
+    margin: 10px 0 0 0;
+  }
+  a.create-new {
+    margin-top: 15px;
+  }
+  #user-id-description {
+    margin-top: 1em;
+  }
+  .highlight {
+    background-color: #E9E9E9;
+    padding: 2px;
+  }
+}

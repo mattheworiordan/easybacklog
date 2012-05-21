@@ -4,36 +4,36 @@
     <theme name="Theme 1" code="TH1" points="11.0" days="3.7" cost="&#163;2,933">
       <stories>
         <story unique_id="1" code="TH11" as_a="story 1" i_want_to="" so_i_can="" comments="" cost="&#163;267" days="0.3" color="" score="1.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
         <story unique_id="2" code="TH12" as_a="story 2" i_want_to="" so_i_can="" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
         <story unique_id="3" code="TH13" as_a="story 3" i_want_to="" so_i_can="" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
         <story unique_id="4" code="TH14" as_a="story 4" i_want_to="" so_i_can="" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
     <theme name="Theme 2" code="TH3" points="6.0" days="2.0" cost="&#163;1,600">
       <stories>
         <story unique_id="1" code="TH31" as_a="story 1" i_want_to="" so_i_can="" comments="" cost="&#163;267" days="0.3" color="" score="1.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
         <story unique_id="2" code="TH32" as_a="story 2" i_want_to="" so_i_can="" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
         <story unique_id="3" code="TH33" as_a="story 3" i_want_to="" so_i_can="" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-          <criteria>
-          </criteria>
+          <acceptance_criteria>
+          </acceptance_criteria>
         </story>
       </stories>
     </theme>
@@ -50,20 +50,20 @@
           <theme name="Theme 1" code="TH1" points="11.0" days="3.7" cost="&#163;2,933">
             <stories>
               <story unique_id="1" code="TH11" as_a="story 1" i_want_to="" so_i_can="" comments="" cost="&#163;267" days="0.3" color="" score="1.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="TH12" as_a="story 2" i_want_to="" so_i_can="" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="TH13" as_a="story 3" i_want_to="" so_i_can="" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="TH14" as_a="story 4" i_want_to="" so_i_can="" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
@@ -80,32 +80,32 @@
           <theme name="Theme 1" code="TH1" points="11.0" days="3.7" cost="&#163;2,933">
             <stories>
               <story unique_id="1" code="TH11" as_a="story 1" i_want_to="" so_i_can="" comments="" cost="&#163;267" days="0.3" color="" score="1.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="TH12" as_a="story 2" i_want_to="" so_i_can="" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="3" code="TH13" as_a="story 3" i_want_to="" so_i_can="" comments="" cost="&#163;800" days="1.0" color="" score="3.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="4" code="TH14" as_a="story 4" i_want_to="" so_i_can="" comments="" cost="&#163;1,333" days="1.7" color="" score="5.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
           <theme name="Theme 2" code="TH3" points="3.0" days="1.0" cost="&#163;800">
             <stories>
               <story unique_id="1" code="TH31" as_a="story 1" i_want_to="" so_i_can="" comments="" cost="&#163;267" days="0.3" color="" score="1.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
               <story unique_id="2" code="TH32" as_a="story 2" i_want_to="" so_i_can="" comments="" cost="&#163;533" days="0.7" color="" score="2.0">
-                <criteria>
-                </criteria>
+                <acceptance_criteria>
+                </acceptance_criteria>
               </story>
             </stories>
           </theme>
@@ -113,9 +113,9 @@
       </snapshot>
     </sprint>
     <sprint iteration="3" start_on="2011-01-17" duration_days="5" number_team_members="1" completed="false" completed_at="" total_completed_points="0.0" total_allocated_points="1.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="TH11" status="To do" status_code="T" accepted="false" score_50_when_assigned="1.0" score_90_when_assigned="1.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="TH11" status="To do" status_code="T" accepted="false" score_50_when_assigned="1.0" score_90_when_assigned="1.0"/>
+      </sprint_stories>
     </sprint>
   </sprints>
 </backlog>

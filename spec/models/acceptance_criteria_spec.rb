@@ -37,4 +37,26 @@ describe AcceptanceCriterion do
     @criterion.index_to_letters(51).should == 'z1'
     @criterion.index_to_letters(52).should == 'a2'
   end
+
+  # rather silly test as we're just testing the functionality of acts_as_list, however an issue occurred where acts_as_list stopped working so this is an extra check
+  it 'should allow order to be changed' do
+    c1 = Factory.create(:acceptance_criterion, :criterion => 'Position 1')
+    story = c1.story
+    c2 = Factory.create(:acceptance_criterion, :criterion => 'Position 2', :story => story)
+    c3 = Factory.create(:acceptance_criterion, :criterion => 'Position 3', :story => story)
+
+    story.acceptance_criteria.length.should == 3
+    story.acceptance_criteria.first.should == c1
+    story.acceptance_criteria.last.should == c3
+
+    c3.move_to_top
+    story.acceptance_criteria.reload
+    story.acceptance_criteria.first.should == c3
+    story.acceptance_criteria.last.should == c2
+
+    c1.move_to_bottom
+    story.acceptance_criteria.reload
+    story.acceptance_criteria.first.should == c3
+    story.acceptance_criteria.last.should == c1
+  end
 end

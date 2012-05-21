@@ -34,7 +34,7 @@
     .description
       Creates an exact copy of the current backlog for later reference
   .button-holder
-    %a#compare-snapshot.button{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)} Compare snapshots
+    %a#compare-snapshot.button{:href => '#compare-snapshots'} Compare snapshots
   .description
     View changes between the current version and any historical snapshots
 
@@ -55,14 +55,10 @@
     .snapshot
       %a#snapshot-menu Snapshots
     .divider
-    - if @backlog.snapshot_master.present?
+    - if @backlog.is_snapshot?
       = link_to "Export", download_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download Snapshot in Excel format', :class => 'vtip'
       .divider
       = link_to "Print", download_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
-    - elsif @backlog.snapshot_for_sprint.present?
-      = link_to "Export", download_sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :xls), :title => 'Download Snapshot in Excel format', :class => 'vtip'
-      .divider
-      = link_to "Print", download_sprint_snapshot_account_backlog_path(@backlog.account, @backlog.backlog_root.id, @backlog.id, @backlog.name.parameterize, :format => :pdf), :title => 'Print user story cards', :class => 'vtip', :id => 'print'
     - else
       = link_to "Export", download_account_backlog_path(@backlog.account, @backlog, @backlog.name.parameterize, :format => :xls), :title => 'Download Backlog in Excel format', :class => 'vtip'
       .divider

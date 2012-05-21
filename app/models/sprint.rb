@@ -16,7 +16,8 @@ class Sprint < ActiveRecord::Base
   before_validation :restrict_iteration_changes, :assign_iteration
   before_validation :restrict_changes_if_completed, :manage_completeness_amongst_other_sprints
   after_validation :check_date_overlaps_and_successive, :ensure_all_stories_are_accepted, :disallow_number_team_members_if_not_estimatable
-  before_destroy :ensure_sprint_allows_delete
+  before_validation :stop_create_update_if_backlog_locked
+  before_destroy :stop_destroy_if_backlog_locked, :ensure_sprint_allows_delete
   after_save :manage_sprint_snapshot
 
   scope :in_need_of_snapshot, includes([:backlog]).
@@ -277,5 +278,13 @@ class Sprint < ActiveRecord::Base
       if number_team_members.present? && backlog.velocity.blank?
         errors.add :number_team_members, 'is not editable with this backlog'
       end
+    end
+
+    def stop_create_update_if_backlog_locked
+      errors.add :base, 'Sprint cannot be created or modified as the backlog is not editable' if backlog.locked?
+    end
+
+    def stop_destroy_if_backlog_locked
+      raise ActiveRecordExceptions::BacklogLocked.new('Sprint cannot be deleted as the backlog is not editable') if backlog.locked?
     end
 end

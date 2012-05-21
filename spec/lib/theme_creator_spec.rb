@@ -25,7 +25,7 @@ describe Creators::ThemeCreator do
         story.stub(:score_90) { 2 }
         story.stub(:score) { 5 }
         story.stub(:color) { 'ffffff' }
-        story.stub(:criteria) do
+        story.stub(:acceptance_criteria) do
           (1..2).map do |c_index|
             "content #{c_index}"
           end

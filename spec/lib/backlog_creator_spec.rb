@@ -76,7 +76,7 @@ describe Creators::BacklogCreator do
     sprint_double.stub(:completed_at) { '1 Jun 2010 00:00:00 UTC' }
     sprint_double.stub(:number_team_members) { 2 }
     sprint_double.stub(:duration_days) { 3 }
-    sprint_double.stub(:stories) { nil }
+    sprint_double.stub(:sprint_stories) { nil }
 
     snapshot_double = double('Backlog')
     snapshot_double.stub(:name) { 'Sprint 1 Snapshot' }
