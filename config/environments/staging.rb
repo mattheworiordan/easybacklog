@@ -32,7 +32,7 @@ Ibacklog::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = { :host => 'easybacklog-staging.heroku.com' }
+  config.action_mailer.default_url_options = { :host => config.dns }
 
   # Heroku support
   config.assets.initialize_on_precompile = false
@@ -40,7 +40,7 @@ Ibacklog::Application.configure do
 
   config.asset_host = "d2bnjfukjumf2u.cloudfront.net" #"staging-easybacklog.netdna-ssl.com"
   config.assets.compress = true
-  config.fonts_domain = "//easybacklog-staging.heroku.com"
+  config.fonts_domain = "//#{config.dns}"
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
