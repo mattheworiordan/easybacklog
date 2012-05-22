@@ -20,6 +20,8 @@ class Account < ActiveRecord::Base
 
   can_do :privileges => :account_users
 
+  SERIALIZED_OPTIONS = { :except => [:defaults_set] }
+
   def add_user(user, privilege)
     self.account_users.create!(:user => user, :admin => false, :privilege => privilege.to_s )
   end
@@ -69,6 +71,13 @@ class Account < ActiveRecord::Base
 
   def days_estimatable?
     default_velocity.present?
+  end
+
+  def as_json(options={})
+    super(options.deeper_merge(SERIALIZED_OPTIONS))
+  end
+  def to_xml(options={})
+    super(options.deeper_merge(SERIALIZED_OPTIONS))
   end
 
   private

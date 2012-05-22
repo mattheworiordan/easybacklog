@@ -18,6 +18,8 @@ class SprintStory < ActiveRecord::Base
 
   can_do :inherited_privilege => :sprint
 
+  SERIALIZED_OPTIONS = { :except => [:sprint_score_50_when_assigned, :sprint_score_90_when_assigned] }
+
   include ActiveRecordExceptions
 
   def theme_id
@@ -35,9 +37,11 @@ class SprintStory < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(options.deeper_merge(:except => [:sprint_score_50_when_assigned, :sprint_score_90_when_assigned]))
+    super(options.deeper_merge(SERIALIZED_OPTIONS))
   end
-  alias_method :as_xml, :as_json
+  def to_xml(options={})
+    super(options.deeper_merge(SERIALIZED_OPTIONS))
+  end
 
   private
     def prevent_assign_to_sprint_when_complete

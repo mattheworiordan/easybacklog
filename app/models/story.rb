@@ -99,17 +99,23 @@ class Story < ActiveRecord::Base
     move_to_bottom
   end
 
-  # if not using 50/90 scoring rules, ensure the returned XML only shows a single score value
   def as_json(options={})
-    if theme.backlog.use_50_90?
-      super(options)
-    else
-      super(options.deeper_merge(:except => [:score_50, :score_90], :methods => [:score]))
-    end
+    super(options.deeper_merge(serialize_options))
   end
-  alias_method :as_xml, :as_json
+  def to_xml(options={})
+    super(options.deeper_merge(serialize_options))
+  end
 
   private
+    # if not using 50/90 scoring rules, ensure the returned XML only shows a single score value
+    def serialize_options
+      if theme.backlog.use_50_90?
+        {}
+      else
+        { :except => [:score_50, :score_90], :methods => [:score] }
+      end
+    end
+
     def score_90_greater_than_50
       unless score_50.blank? || score_90.blank?
         errors.add(:score_90, 'must be less than or equal to score 50') if score_90 < score_50

@@ -25,8 +25,7 @@ class Backlog < ActiveRecord::Base
 
   can_do :privileges => :backlog_users, :inherited_privilege => [:company, :account]
 
-  # for generic API requests, exclude these fields
-  EXCLUDE_FROM_API = [:snapshot_master_id, :snapshot_for_sprint_id, :deleted]
+  SERIALIZED_OPTIONS = { :except => [:snapshot_master_id, :snapshot_for_sprint_id, :deleted] }
 
   scope :available, where(:deleted => false)
   scope :active, available.where(:archived => false)
@@ -295,9 +294,11 @@ class Backlog < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(options.deeper_merge({ :except => Backlog::EXCLUDE_FROM_API }))
+    super(options.deeper_merge(SERIALIZED_OPTIONS))
   end
-  alias_method :as_xml, :as_json
+  def to_xml(options={})
+    super(options.deeper_merge(SERIALIZED_OPTIONS))
+  end
 
   private
     # only allow save on working copy i.e. not snapshot
