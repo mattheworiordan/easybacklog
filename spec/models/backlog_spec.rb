@@ -433,6 +433,31 @@ describe Backlog do
     backlog.should_not be_cost_estimatable
   end
 
+  context 'JSON and XML representations' do
+    it 'should not contain snapshots fields if a backlog master' do
+      json = Factory.create(:backlog).as_json
+      json.keys.should_not include(:snapshot_master_id, :snapshot_for_sprint_id, :deleted, :parent_backlog_id, :parent_sprint_id)
+    end
+
+    it 'should include a reference to the parent backlog ID if a manual snapshot' do
+      backlog = Factory.create(:backlog)
+      snapshot = backlog.create_snapshot('acme')
+      json = snapshot.as_json
+      json.keys.should_not include(:snapshot_master_id, :snapshot_for_sprint_id, :deleted, :parent_sprint_id)
+      json.keys.should_not include(:account_id, :company_id, :archived, :author_id, :last_modified_user_id, :updated_at)
+      json.keys.should include(:parent_backlog_id)
+    end
+
+    it 'should include a reference to the parent sprint ID if a sprint snapshot' do
+      sprint = Factory.create(:sprint)
+      snapshot = sprint.create_snapshot_if_missing
+      json = snapshot.as_json
+      json.keys.should_not include(:snapshot_master_id, :snapshot_for_sprint_id, :deleted, :parent_backlog_id)
+      json.keys.should_not include(:account_id, :company_id, :archived, :author_id, :last_modified_user_id, :updated_at)
+      json.keys.should include(:parent_sprint_id)
+    end
+  end
+
   describe '#where_user_has_access' do
     subject { account.backlogs.where_user_has_access(user) }
     let(:account) { Factory.create(:account) }

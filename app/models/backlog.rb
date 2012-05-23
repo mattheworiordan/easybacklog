@@ -25,8 +25,6 @@ class Backlog < ActiveRecord::Base
 
   can_do :privileges => :backlog_users, :inherited_privilege => [:company, :account]
 
-  SERIALIZED_OPTIONS = { :except => [:snapshot_master_id, :snapshot_for_sprint_id, :deleted] }
-
   scope :available, where(:deleted => false)
   scope :active, available.where(:archived => false)
   scope :deleted, where(:deleted => true)
@@ -171,6 +169,13 @@ class Backlog < ActiveRecord::Base
   def all_snapshot_master
     self.snapshot_master || self.snapshot_for_sprint
   end
+  alias_method :backlog_root, :all_snapshot_master
+
+  def all_snapshot_id
+    all_snapshot_master.id
+  end
+  alias_method :parent_backlog_id, :all_snapshot_id
+  alias_method :parent_sprint_id, :all_snapshot_id
 
   def is_snapshot?
     self.snapshot_master.present? || self.snapshot_for_sprint.present?
@@ -181,15 +186,6 @@ class Backlog < ActiveRecord::Base
     !editable?
   end
   alias_method :is_locked, :locked?
-
-  # independent backlog master link regardless of whether sprint snapshot or normal snapshot
-  def backlog_root
-    if self.snapshot_for_sprint.present?
-      self.snapshot_for_sprint.backlog
-    else
-      self.snapshot_master
-    end
-  end
 
   def update_meta_data(user)
     self.updated_at = Time.now
@@ -294,13 +290,27 @@ class Backlog < ActiveRecord::Base
   end
 
   def as_json(options={})
-    super(options.deeper_merge(SERIALIZED_OPTIONS))
+    super(serialized_options(options))
   end
   def to_xml(options={})
-    super(options.deeper_merge(SERIALIZED_OPTIONS))
+    super(serialized_options(options.deeper_merge(:root => is_snapshot? ? 'snapshot' : 'backlog')))
   end
 
   private
+    def serialized_options(super_options)
+      options = { :except => [:snapshot_master_id, :snapshot_for_sprint_id, :deleted] }
+      options.deeper_merge({ :except => [:account_id, :company_id, :archived, :author_id, :last_modified_user_id, :updated_at] }) if is_snapshot?
+      if snapshot_master.present?
+        options[:methods] = [:parent_backlog_id]
+        super_options[:methods].delete :parent_sprint_id if super_options[:methods] # odd bug where as_json on second request passes in options from first request
+      elsif snapshot_for_sprint.present?
+        options[:methods] = [:parent_sprint_id]
+        super_options[:methods].delete :parent_backlog_id if super_options[:methods] # odd bug where as_json on second request passes in options from first request
+      end
+      super_options.deeper_merge(options)
+      super_options
+    end
+
     # only allow save on working copy i.e. not snapshot
     #  but do allow editing if snapshot_master, snapshot_for_sprint, archived or deleted has changed
     #  snapshot_master is needed so that the snapshot can be created without an error blocking editing being thrown
