@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
           render :action => options[:render_action]
         else
           # if we have no specific action, then show a standard error page (last resort as bad UX)
-          render :action => "#{http_status}_error", :controller => 'application', :status => http_status, :locals => { :error_message => error_message }, :format => 'html'
+          render :action => "#{http_status}_error", :controller => 'application', :status => http_status, :locals => { :error_message => error_message }, :formats => 'html'
         end
       end
     end
