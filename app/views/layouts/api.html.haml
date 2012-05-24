@@ -4,6 +4,8 @@
 %html{:xmlns => 'http://www.w3.org/1999/xhtml'}
   - content_for :head do
     = stylesheet_link_tag 'api', :media => 'all'
+    = javascript_include_tag 'api'
+
   != render :partial => '/layouts/head'
   %body
     %header

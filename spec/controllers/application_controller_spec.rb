@@ -46,14 +46,14 @@ describe AccountsController do
     it 'should allow an API request to authenticate using querystring authentication' do
       request.env['X-Forward-To-API'] = 'true'
 
-      get :show, { :id => account.id, :access_token => user_token.access_token }
+      get :show, { :id => account.id, :api_key => user_token.access_token }
       response.code.should == status_code(:ok)
     end
 
     it 'should fail an API request trying to authenticate using querystring authentication' do
       request.env['X-Forward-To-API'] = 'true'
 
-      get :show, { :id => account.id, :access_token => 'doesNotExist' }
+      get :show, { :id => account.id, :api_key => 'doesNotExist' }
       response.code.should == status_code(:unauthorized)
     end
 

@@ -704,8 +704,7 @@ describe BacklogsController do
           json = JSON.parse(response.body)
           json['id'].should == manual_snapshot.id
           json['name'].should == 'Manual'
-          json.keys.should include('last_modified_user_id','created_at','updated_at')
-          json.keys.should include('account_id','author_id','company_id','velocity','rate','archived','use_50_90','scoring_rule_id')
+          json.keys.should include('id', 'velocity','rate','use_50_90','scoring_rule_id')
           json.keys.should_not include('snapshot_master_id','deleted','snapshot_for_sprint_id')
         end
 
@@ -716,8 +715,7 @@ describe BacklogsController do
           json = JSON.parse(response.body)
           json['id'].should == sprint_snapshot.id
           json['name'].should == 'Sprint 1'
-          json.keys.should include('last_modified_user_id','created_at','updated_at')
-          json.keys.should include('account_id','author_id','company_id','velocity','rate','archived','use_50_90','scoring_rule_id')
+          json.keys.should include('id', 'velocity','rate','use_50_90','scoring_rule_id')
           json.keys.should_not include('snapshot_master_id','deleted','snapshot_for_sprint_id')
         end
 

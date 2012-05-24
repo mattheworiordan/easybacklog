@@ -220,8 +220,8 @@ class ApplicationController < ActionController::Base
             end
           else
             # access_token passed in querystring param instead
-            if request.params['access_token'].present?
-              user_token = UserToken.where(:access_token => request.params['access_token']).limit(1)
+            if request.params['api_key'].present?
+              user_token = UserToken.where(:access_token => request.params['api_key']).limit(1)
               if user_token.present?
                 sign_in_api_user user_token.first.user
               end
@@ -243,8 +243,8 @@ class ApplicationController < ActionController::Base
     def prepare_api_request
       # ensure different content types are not cached http://www.informit.com/articles/article.aspx?p=1566460
       response.headers['Vary'] = 'Content-Type'
-      # default to JSON for API requests unless an accept type has been specified
-      request.format = 'json' unless request.headers.include?('HTTP_ACCEPT') && request.headers['HTTP_ACCEPT'] != '*/*'
+      # default to JSON for API requests unless an accept type has been specified or a format has been specified in the URL as a suffix
+      request.format = 'json' unless params[:format] || (request.headers.include?('HTTP_ACCEPT') && request.headers['HTTP_ACCEPT'] != '*/*')
 
       if request.format == 'html'
         send_error 'HTML is not a supported format for this API', :http_status => :not_acceptable

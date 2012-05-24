@@ -1,13 +1,30 @@
 .main-title-area
   .logo
-    = link_to 'http://easybacklog.com/' do
+    = link_to abs_home_url do
       .icon
-    = link_to 'http://easybacklog.com/' do
+    = link_to abs_home_url do
       easyBacklog
     %sup BETA
   .divider
   .header
-    API documentation (v1)
+    API documentation (v1) navigation
+    %ul
+      %li= link_to 'Overview', '#overview'
+      %li= link_to 'Authentication', '#authentication'
+      %li= link_to 'Content Types and Versioning', '#content-types'
+      %li.heading CRUD (read and write)
+      %li= link_to 'Accounts', '#accounts'
+      %li= link_to 'Companies', '#companies'
+      %li= link_to 'Backlogs', '#backlogs'
+      %li= link_to 'Snapshots', '#snapshots'
+      %li= link_to 'Themes', '#themes'
+      %li= link_to 'Sprints', '#sprints'
+      %li= link_to 'Stories', '#stories'
+      %li= link_to 'Acceptance Criteria', '#acceptance-criteria'
+      %li.heading Read only (lists)
+      %li= link_to 'Locales', '#stories'
+      %li= link_to 'Scoring Rules', '#stories'
+      %li= link_to 'Sprint Story Statuses', '#sprint-story-statuses'
 
 .account-info
-  %div= link_to 'Back to easyBacklog', 'http://easybacklog.com/'
+  %div= link_to 'Back to easyBacklog', abs_home_url

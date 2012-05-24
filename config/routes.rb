@@ -114,6 +114,7 @@ Ibacklog::Application.routes.draw do
         member do
           get 'snapshots' => 'backlogs#index_snapshot'
           get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot'
+          delete 'snapshots/:snapshot_id' => 'backlogs#destroy_snapshot'
           post 'snapshots' => 'backlogs#create_snapshot', :as => 'create_snapshot'
           post 'duplicate' => 'backlogs#duplicate'
           get 'stats' => 'backlog_stats#show'
@@ -138,7 +139,7 @@ Ibacklog::Application.routes.draw do
       end
     end
     resources :stories, :only => [] do
-      resources :acceptance_criteria, :except => [:new, :edit]
+      resources :acceptance_criteria, :path => 'acceptance-criteria', :except => [:new, :edit]
     end
 
     # routes to static controllers

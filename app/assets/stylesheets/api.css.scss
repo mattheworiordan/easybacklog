@@ -1,5 +1,272 @@
+@import 'partials/extensions';
+@import 'partials/mixins_and_constants';
+@import 'syntax-highlighter/shCoreDefault.css';
+
+/* redefine the standard styles */
+
+header {
+  position: fixed;
+  z-index: 4;
+  padding: 0;
+  height: 29px;
+  width: 100%;
+  top: 0;
+  .main-title-area {
+    padding: $standard-header-padding;
+  }
+  .account-info {
+    margin-top: -2px;
+    padding-top: 0;
+    padding-right: $ninesixty-gutter-width;
+  }
+}
+
+section.content {
+  margin-top: 29px;
+}
+
+/* API navigation */
 .main-title-area .header {
   color: white;
   float: left;
   margin-top: 2px;
+  ul {
+    height: 0;
+    visibility: hidden;
+    overflow: hidden;
+    z-index: 5;
+    position: fixed;
+    padding: 5px 13px 10px 13px;
+    margin: 0px -13px;
+    background-color: #111;
+    @include drop-shadow(0px, 5px, #000);
+    @include single-transition(all, 0.2s, ease);
+    li {
+      list-style: none;
+      margin: 0;
+      width: 20em;
+      &.heading {
+        margin-top: 1em;
+        font-family: $base-pretty-font;
+        color: #DDD;
+        padding-bottom: 3px;
+        border-bottom: 1px solid #333;
+        margin-bottom: 3px;
+      }
+    }
+  }
+  &:hover {
+    ul {
+      height: 27em;
+      visibility: visible;
+    }
+  }
+}
+
+/* documenation specific styles */
+#documentation {
+  margin: -20px -20px 0 579px;
+  background-color: lighten($title-area-color, 45%);
+
+  code {
+    font-family: Monaco, Consolas, "Lucida Console", monospace;
+    font-size: 12px;
+    &.rest {
+      white-space: pre;
+      white-space: -o-pre-wrap;
+      white-space: -moz-pre-wrap;
+      white-space: pre-wrap;
+      margin-bottom: 1.5em;
+      display: block;
+      &::before {
+        color: lighten($title-area-color, 15%);
+        display: block;
+      }
+      &::after {
+        color: lighten($title-area-color, 15%);
+        display: block;
+      }
+    }
+    &.rest-definition::before {
+      content: "DEFINITION";
+    }
+    &.rest-request::before {
+      content: "EXAMPLE REQUEST";
+    }
+    &.rest-response::before {
+      content: "EXAMPLE RESPONSE";
+    }
+    &.rest-response-header::before {
+      content: "EXAMPLE RESPONSE HEADER";
+    }
+    &.rest-response-xml::before {
+      content: "EXAMPLE OBJECT AS XML";
+    }
+    &.rest-response-json::before {
+      content: "EXAMPLE OBJECT AS JSON";
+    }
+    &.rest-locked::after {
+      content: "(The above example, if copied exactly and used, will fail with a '403 - Forbidden', as the API key only has read rights.  Use your API key and the correct resource URL to test)";
+      font-family: $base-pretty-font;
+      color: #999;
+      margin-left: 1em;
+    }
+    /* rest defintions can wrap but indent second line */
+    &.rest-definition {
+      padding-left: 1.5em;
+      text-indent: -1.5em;
+      /* spans are automatically inserted where / exist so the URL can wrap naturally
+         however we don't want actual spaces inserted so we use ::before to create spaces that cannot be selected */
+      span {
+        font-size: 0px;
+        &::before {
+          content: ' ';
+        }
+      }
+    }
+    .prompt::after {
+      color: lighten($title-area-color, 10%);
+      padding-right: 0.5em;
+      content: '$';
+      display: block;
+      float: left;
+    }
+  }
+
+  .route-section {
+    margin-left: -580px;
+    padding: 2.5em 1em 0em 0;
+    clear: left;
+
+    &.list-start {
+      padding-top: 0;
+    }
+
+    .route-info {
+      width: 550px;
+      float: left;
+      &.indent {
+        padding-left: 20px;
+      }
+      h3 {
+        font-size: 135%;
+        font-family: $base-brand-font;
+        margin-bottom: 0px;
+        color: #000;
+        a {
+          color: #000;
+        }
+      }
+      h4 {
+        font-family: $base-brand-font;
+        font-size: 130%;
+        margin-bottom: 0px;
+        color: #999;
+        text-transform: uppercase;
+        &.returns {
+          margin-top: 1.5em;
+          clear: both;
+        }
+      }
+      code {
+        background-color: lighten($title-area-color, 45%);
+        padding: 0 4px 0 4px;
+        @include border-radius(4px);
+      }
+      dl {
+        font-size: 90%;
+        overflow: hidden;
+        dt {
+          clear: both;
+          width: 34%;
+          float: left;
+          text-align: right;
+          font-weight: bold;
+          margin-top: 8px;
+        }
+        dd {
+          float: right;
+          width: 65%;
+          margin-top: 8px;
+          .data-type {
+            font-weight: bold;
+            &.read-only::after, &.foreign-key::after, &.nullable::after, &.foreign-key-read-only::after, &.foreign-key-nullable::after {
+              color: #666;
+              padding-left: 0.5em;
+              font-weight: normal;
+            }
+            &.read-only::after {
+              content: '(read only)';
+            }
+            &.nullable::after {
+              content: '(nullable)';
+            }
+            &.foreign-key::after {
+              content: '(foreign key)';
+            }
+            &.foreign-key-read-only::after {
+              content: '(read only foreign key)';
+            }
+            &.foreign-key-nullable::after {
+              content: '(nullable foreign key)';
+            }
+          }
+          h4 {
+            margin-top: 0.75em;
+            font-size: 110%;
+          }
+        }
+      }
+    }
+
+    .route-example {
+      margin-left: 580px;
+      padding: 0 1em 0 1em;
+      h2 {
+        color: darken($title-area-color, 15%);
+        margin-top: 1em;
+        margin-bottom: 0em;
+        font-size: 140%;
+      }
+      &.first-route-list {
+        padding-top: 1.5em;
+      }
+      li {
+        list-style: none;
+        margin-left: 0;
+        color: darken($title-area-color, 25%);
+        a {
+          color: darken($title-area-color, 25%);
+        }
+        b {
+          color: #000;
+        }
+        &.heading {
+          font-family: $base-brand-font;
+          font-size: 120%;
+          font-weight: bold;
+          padding-top: 0.5em;
+          border-bottom: 1px solid lighten($title-area-color, 50%);;
+        }
+      }
+    }
+  }
+}
+
+/* override syntax highlighter */
+.syntaxhighlighter {
+  background-color: transparent !important;
+  margin-top: 0 !important;
+}
+.syntaxhighlighter .line.alt1 {
+  background-color: transparent !important;
+}
+.syntaxhighlighter .line.alt2 {
+  background-color: transparent !important;
+}
+.syntaxhighlighter .toolbar {
+  display: none;
+}
+.syntaxhighlighter .string {
+  color: darken($title-area-color, 10%) !important;
 }

@@ -26,6 +26,12 @@ h2 {
   margin-bottom: 0.5em;
 }
 
+h1, h2, h3 {
+  &.short {
+    margin-bottom: 0;
+  }
+}
+
 ul {
   list-style: disc;
   margin-top: 0.25em;

@@ -1,4 +1,1205 @@
-%h1 easyBacklog API
+%a{:name => 'overview'}
+#documentation
+  .route-section
+    .route-info
+      %h1 easyBacklog API documentation
+
+      %p
+        The easyBacklog API is organized around #{link_to 'REST', 'http://en.wikipedia.org/wiki/Representational_State_Transfer'}.
+        Our API is designed to have predictable, resource-oriented URLs, to use #{link_to 'HTTP response codes', 'http://en.wikipedia.org/wiki/List_of_HTTP_status_codes'}
+        to indicate API errors, and to use built-in HTTP features, like HTTP authentication and HTTP verbs, which can be understood by off-the-shelf HTTP clients.
+        #{link_to 'JSON', 'http://www.json.org/'} or #{link_to 'XML', 'http://en.wikipedia.org/wiki/XML'} will be returned in all responses from the API, including errors.
+
+      %p
+        All EXAMPLE REQUESTS listed on the right can be run directly from your console.  Copy and paste the curl commands into your terminal to test the API using our demo API account.  Please note however that the demo API account only has read rights so no updates will succeed.
+
+    .route-example.first-route-list
+      %h2 API Endpoint
+      %code= api_end_point
+
+      %h2 Summary of Resource URL Patterns
+      %code
+        %ul
+          %li.heading CRUD (read and write)
+          %li= link_to raw("/#{content_tag(:b, 'accounts')}"), '#accounts'
+          %li= link_to raw("/#{content_tag(:b, 'companies')}"), '#companies'
+          %li= link_to raw("/accounts/{ACCOUNT_ID}/#{content_tag(:b, 'backlogs')}"), '#backlogs'
+          %li= link_to raw("/accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/#{content_tag(:b, 'snapshots')}"), '#snapshots'
+          %li= link_to raw("/backlogs/{BACKLOG_ID}/#{content_tag(:b, 'themes')}"), '#themes'
+          %li= link_to raw("/backlogs/{BACKLOG_ID}/#{content_tag(:b, 'sprints')}"), '#sprints'
+          %li= link_to raw("/themes/{THEME_ID}/#{content_tag(:b, 'stories')}"), '#stories'
+          %li= link_to raw("/stories/{STORY_ID}/#{content_tag(:b, 'acceptance-criteria')}"), '#acceptance-criteria'
+          %li= link_to raw("/sprints/{SPRINT_ID}/#{content_tag(:b, 'sprint-stories')}"), '#sprint-stories'
+          %li.heading Read only (lists)
+          %li= link_to raw("/#{content_tag(:b, 'locales')}"), '#locales'
+          %li= link_to raw("/#{content_tag(:b, 'scoring-rules')}"), '#scoring-rules'
+          %li= link_to raw("/#{content_tag(:b, 'sprint-story-statuses')}"), '#sprint-story-statuses'
+    %a{:name => 'authentication'}
+
+  .route-section
+    .route-info
+      %h2 Authentication
+
+      %p
+        You authenticate to the easyBacklog API by providing one of your #{link_to 'API keys', 'https://easybacklog.com/user-tokens'} in the request.
+        You can #{link_to 'manage your API keys', 'https://easybacklog.com/user-tokens'} from your #{link_to 'account', 'https://easybacklog.com/users/edit'}. You can have multiple API keys active at one time. Your API keys carry many privileges, so be sure to keep them secret!
+        All API requests must be made over #{link_to 'HTTPS', 'http://en.wikipedia.org/wiki/HTTP_Secure'}. Calls made over plain HTTP will fail. You must authenticate for all requests.
+
+      %p
+        Authentication to the API occurs via one of the following:
+
+  .route-section.list-start
+    .route-info.indent
+      %h3= link_to 'HTTP Basic Auth', 'http://en.wikipedia.org/wiki/Basic_access_authentication'
+      Provide your user ID as the basic auth username, and your API key as the basic auth password.  You can find your user ID at the bottom of your #{link_to 'API access page', 'https://easybacklog.com/user-tokens'}.
+    .route-example
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts \
+             -u #{demo_api_user_id}:#{demo_api_user_token}
+
+  .route-section
+    .route-info.indent
+      %h3 Token authentication
+      Simply provide your your API key in a token authorization header in the format
+      %code Authorization: token [api-key]
+    .route-example
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts \
+             -H "Authorization: token #{demo_api_user_token}"
+
+  .route-section
+    .route-info.indent
+      %h3 Query string authentication
+      Simply provide your your API key as a parameter in each request in the format
+      %code
+        ?api_key=[api-key]
+    .route-example
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts?api_key=#{demo_api_user_token}
+    %a{:name => 'errors'}
+
+  .route-section
+    .route-info
+      %h2 Errors
+      %p easyBacklog uses conventional #{link_to 'HTTP response codes', 'http://en.wikipedia.org/wiki/List_of_HTTP_status_codes'} to indicate success or failure of an API request. In general, codes in the 2xx range indicate success, codes in the 4xx range indicate an error that resulted from the provided information (e.g. a required parameter was missing, you do not have permission to make those changes, etc.), and codes in the 5xx range indicate an error with easyBacklog's servers.
+      %p Not all errors map cleanly onto HTTP response codes, however.
+      %p All errors return #{link_to 'JSON', 'http://www.json.org/'} or #{link_to 'XML', 'http://en.wikipedia.org/wiki/XML'} with a type (one of card_error, invalid_request_error, or api_error) and message describing the particular problem.
+      %h4 Attributes
+      %dl.argument-list
+        %dt status:
+        %dd
+          For all errors the status will be set to
+          %code error
+        %dt message:
+        %dd A user-friendly message describing the error
+    .route-example
+      %h2 HTTP Status Code Summary
+      %code
+        %ul
+          %li
+            %b 200
+            OK - Everything worked as expected.
+          %li
+            %b 201
+            Created - a new record has been created successfully, the response will include the new record.
+          %li
+            %b 204
+            Success but no data - after an update or delete request, no data is returned in the response.
+          %li
+            %b 400
+            Bad Request - Often missing a required parameter or invalid parameter.
+          %li
+            %b 401
+            Unauthorized - Invalid API key provided.
+          %li
+            %b 403
+            Forbidden - You do not have the necessary privileges to perform this function or the underlying data prohibits this request.
+          %li
+            %b 404
+            Not Found - The requested item doesn't exist.
+          %li
+            %b 406
+            Not Acceptable - The data type you requested is not supported, we only support JSON and XML.
+          %li
+            %b 500
+            Internal server error - Something has gone wrong on our servers.
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts \
+             -H "Authorization: token INVALID-TOKEN"
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "status": "error",
+              "message": "Invalid authentication details"
+            }
+    %a{:name => 'content-types'}
+
+  .route-section
+    .route-info
+      %h2 Content types and API versioning
+      %p
+        The API is currently at version 1.0.  You can specify a version number as a parameter in your
+        %code Accept:
+        header that will ensure API compatibility for all your requests.  However, if you do not specify a version number, then your requests will be routed to the latest version of the API and thus could have unexpected results whenever we upgrade our API.  If you want to ensure API compatibility, we recommend you pass in the version number using the
+        %code Accept:
+        header.  Please see below for complete examples.
+      %p
+        The easyBacklog API will accept and respond to requests using both #{link_to 'JSON', 'http://www.json.org/'} and #{link_to 'XML', 'http://en.wikipedia.org/wiki/XML'}.  JSON is used by default, however based on the
+        %code Accept
+        header used, XML can be returned.  Also, if an extension suffix is added to  a URL such as
+        %code /accounts.xml
+        then this format will be used.
+      %p
+        Examples are as follows:
+
+  .route-section.list-start
+    .route-info.indent
+      %h3 JSON
+      %p
+        We recommend you use the following header as it locks you into version 1.0 of the API and explicitly requests JSON data from the API:
+        %br
+        %code Accept: application/vnd.easybacklog+json; version=1.0
+      %p
+        The data type for each attribute in the JSON data returned is not defined explicitly, unlike in the #{link_to 'XML (example below)', '#content-type-xml'} data.
+      %p
+        All dates are expressed in #{link_to 'ISO 8601 format', 'http://en.wikipedia.org/wiki/ISO_8601'}.
+    .route-example
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts \
+             -H "Accept: application/vnd.easybacklog+json; version=1.0" \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts.json \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "created_at":"2012-05-21T21:33:51Z",
+                "default_rate":null,
+                "default_use_50_90":null,
+                "default_velocity":null,
+                "id":33,
+                "locale_id":1,
+                "name":"API Access Demo Account",
+                "scoring_rule_id":null,
+                "updated_at":"2012-05-21T21:33:51Z"
+              }
+            ]
+    %a{:name => 'content-type-xml'}
+
+  .route-section
+    .route-info.indent
+      %h3 XML
+      %p
+        We recommend you use the following header as it locks you into version 1.0 of the API and explicitly requests XML data from the API:
+        %br
+        %code Accept: application/vnd.easybacklog+xml; version=1.0
+      %p
+        The data type for each attribute in the XML data returned is defined in the type attribute, and all names with underscores are converted to dashes.
+      %p
+        All dates are expressed in #{link_to 'ISO 8601 format', 'http://en.wikipedia.org/wiki/ISO_8601'}.
+    .route-example
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts \
+             -H "Accept: application/vnd.easybacklog+xml; version=1.0" \
+             -H "Authorization: token #{demo_api_user_token}"
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts.xml \
+             -H "Authorization: token #{demo_api_user_token}"
+      %code.rest.rest-response
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <accounts type="array">
+              <account>
+                <created-at type="datetime">2012-05-21T21:33:51Z</created-at>
+                <default-rate type="integer" nil="true"></default-rate>
+                <default-use-50-90 type="boolean" nil="true"></default-use-50-90>
+                <default-velocity type="decimal" nil="true"></default-velocity>
+                <id type="integer">33</id>
+                <locale-id type="integer">1</locale-id>
+                <name>API Access Demo Account</name>
+                <scoring-rule-id type="integer" nil="true"></scoring-rule-id>
+                <updated-at type="datetime">2012-05-21T21:33:51Z</updated-at>
+              </account>
+            </accounts>
+    %a{:name => 'accounts'}
+
+  .route-section
+    .route-info
+      %a{:name => 'account-object'}
+      %h2 Accounts
+      %p
+        An account is the highest level container of data.  All backlogs belongs to accounts, and all users are assigned to one or more accounts.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Account object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id:
+        %dd
+          .data-type.read-only integer
+          Unique identifier for this account
+        %dt name:
+        %dd
+          .data-type string
+          The account name
+        %dt locale_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Locale', '#locales'} applied to this account.
+        %dt default_velocity:
+        %dd
+          .data-type.nullable decimal
+          Default velocity to use for new backlogs.
+        %dt default_rate:
+        %dd
+          .data-type.nullable integer
+          Default rate (without currency symbol) to use for new backlogs.
+        %dt default_use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% scoring rule as a default for new backlogs.  Setting this to false uses the simpler single scoring rule for stories.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          Default #{link_to 'scoring rule', '#scoring-rules'} to use for new backlogs.
+        %dt created_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2012-05-21T21:33:51Z",
+              "default_rate":null,
+              "default_use_50_90":null,
+              "default_velocity":null,
+              "id":33,
+              "locale_id":1,
+              "name":"API Access Demo Account",
+              "scoring_rule_id":null,
+              "updated_at":"2012-05-21T21:33:51Z"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <account>
+              <created-at type="datetime">2012-05-21T21:33:51Z</created-at>
+              <default-rate type="integer" nil="true"></default-rate>
+              <default-use-50-90 type="boolean" nil="true"></default-use-50-90>
+              <default-velocity type="decimal" nil="true"></default-velocity>
+              <id type="integer">33</id>
+              <locale-id type="integer">1</locale-id>
+              <name>API Access Demo Account</name>
+              <scoring-rule-id type="integer" nil="true"></scoring-rule-id>
+              <updated-at type="datetime">2012-05-21T21:33:51Z</updated-at>
+            </account>
+
+  .route-section
+    .route-info
+      %h3 List the Accounts
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An array of #{link_to 'account objects', '#account-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "created_at":"2012-05-21T21:33:51Z",
+                "default_rate":null,
+                "default_use_50_90":null,
+                "default_velocity":null,
+                "id":33,
+                "locale_id":1,
+                "name":"API Access Demo Account",
+                "scoring_rule_id":null,
+                "updated_at":"2012-05-21T21:33:51Z"
+              }
+            ]
+
+  .route-section
+    .route-info
+      %h3 Retrieve an Account
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An #{link_to 'account object', '#account-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2012-05-21T21:33:51Z",
+              "default_rate":null,
+              "default_use_50_90":null,
+              "default_velocity":null,
+              "id":33,
+              "locale_id":1,
+              "name":"API Access Demo Account",
+              "scoring_rule_id":null,
+              "updated_at":"2012-05-21T21:33:51Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Update an Account
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The account name
+        %dt locale_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Locale', '#locale'} applied to this account.
+        %dt default_velocity:
+        %dd
+          .data-type.nullable decimal
+          Default velocity to use for new backlogs.
+        %dt default_rate:
+        %dd
+          .data-type.nullable integer
+          Default rate (without currency symbol) to use for new backlogs.
+        %dt default_use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% certainty scoring rule as a default for new backlogs.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          Default #{link_to 'scoring rule', '#scoring-rule'} to use for new backlogs.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New account name" \
+             -d "default_rate=800" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+    %a{:name => 'backlogs'}
+
+
+  .route-section
+    .route-info
+      %a{:name => 'backlog-object'}
+      %h2 Backlog
+      %p
+        An backlog object represents a user created backlog and belongs to a single #{link_to 'account', '#account'}.  A backlog contains one or more children #{link_to 'themes', '#themes'},
+        #{link_to 'sprints', '#sprints'} or #{link_to 'snapshots', '#snapshots'}.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Backlog object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id:
+        %dd
+          .data-type.read-only integer
+          Unique identifier for this backlog
+        %dt name:
+        %dd
+          .data-type string
+          The backlog name
+        %dt account_id:
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Account', '#accounts'} this backlog belongs to
+        %dt company_id:
+        %dd
+          .data-type.foreign-key-nullable integer
+          #{link_to 'Company', '#company'} this backlog belongs to.  A backlog is optionally associated with a company.
+        %dt velocity:
+        %dd
+          .data-type.nullable decimal
+          Average velocity per day per team member.  This is empty (null) when time estimates are not automatically created for this backlog.
+        %dt rate:
+        %dd
+          .data-type.nullable integer
+          Rate per day per team member.  This is empty (null) when cost estimates are not automatically created for this backlog.
+        %dt use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% scoring rule for this backlog.  When false (or null) the backlog uses the simpler single scoring rule for stories.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
+        %dt archived:
+        %dd
+          .data-type boolean
+          Indicates whether the backlog has been archived (and locked).
+        %dt created_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+        %dt *others*
+        %dd
+          Any other attributes that are returned are not part of the official API spec and you should not rely on their existence.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":33,
+              "archived":false,
+              "author_id":1,
+              "company_id":null,
+              "created_at":"2011-01-03T15:03:00Z",
+              "id":357,
+              "last_modified_user_id":1,
+              "name":"Example corporate website backlog",
+              "rate":800,
+              "scoring_rule_id":null,
+              "updated_at":"2011-02-17T15:03:00Z",
+              "use_50_90":false,
+              "velocity":"3.0"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <backlog>
+              <account-id type="integer">33</account-id>
+              <archived type="boolean">false</archived>
+              <author-id type="integer">1</author-id>
+              <company-id type="integer" nil="true"></company-id>
+              <created-at type="datetime">2011-01-03T15:03:00Z</created-at>
+              <id type="integer">357</id>
+              <last-modified-user-id type="integer">1</last-modified-user-id>
+              <name>Example corporate website backlog</name>
+              <rate type="integer">800</rate>
+              <scoring-rule-id type="integer" nil="true"></scoring-rule-id>
+              <updated-at type="datetime">2011-02-17T15:03:00Z</updated-at>
+              <use-50-90 type="boolean">false</use-50-90>
+              <velocity type="decimal">3.0</velocity>
+            </backlog>
+
+  .route-section
+    .route-info
+      %h3 List the Backlogs
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt include_archived:
+        %dd
+          .data-type boolean
+          If set to true, all backlogs including archived backlogs will be returned.  By default, archived backlogs are filtered in the response.
+
+      %h4.returns Returns
+      An array of #{link_to 'backlog objects', '#backlog-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "account_id":33,
+                "archived":false,
+                "author_id":1,
+                "company_id":null,
+                "created_at":"2011-01-03T15:03:00Z",
+                "id":357,
+                "last_modified_user_id":1,
+                "name":"Example corporate website backlog",
+                "rate":800,
+                "scoring_rule_id":null,
+                "updated_at":"2011-02-17T15:03:00Z",
+                "use_50_90":false,
+                "velocity":"3.0"
+              }
+            ]
+    %a{:name => 'backlog-retrieve'}
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Backlog
+
+      %h4 Content types
+      This route is special in that it supports the following mime types:
+      %dl.argument-list
+        %dt JSON:
+        %dd
+          Use the
+          %code Accept:
+          header
+          %code application/json
+          or
+          %code application/vnd.easybacklog+json; version=1.0
+          or optional add the extension
+          %code .json
+          to the URL.
+          %br
+          The backlog object will be returned in JSON format.
+          %h4 Arguments
+          %b include associated data:
+          Passing in the optional
+          %code include_associated_data=true
+          parameter modifies the JSON to include all themes, sprints, stories and acceptance criteria related to this object.
+        %dt XML:
+        %dd
+          Use the
+          %code Accept:
+          header
+          %code application/xml
+          or
+          %code application/vnd.easybacklog+xml; version=1.0
+          or optional add the extension
+          %code .xml
+          to the URL.
+          %br
+          The backlog object will be returned in JSON format.
+          %h4 Arguments
+          %b include associated data:
+          Passing in the optional
+          %code include_associated_data=true
+          parameter modifies the JSON to include all snapshots, themes, sprints, sprint snapshots, stories, sprint stories and acceptance criteria related to this object.
+        %dt Excel (XLS):
+        %dd
+          Use the
+          %code Accept:
+          header
+          %code application/vnd.ms-excel
+          or
+          %code application/vnd.easybacklog+xls; version=1.0
+          or optional add the extension
+          %code .xls
+          to the URL.
+          %br
+          The backlog object will be returned in Microsoft Excel (XML) format, including two worksheets.  The first worksheet contains the entire backlog laid out with summary data, the second worksheet simply contains a list of stories that can be autofiltered.
+          %h4 Arguments
+          None
+        %dt PDF:
+        %dd
+          Use the
+          %code Accept:
+          header
+          %code application/pdf
+          or
+          %code application/vnd.easybacklog+pdf; version=1.0
+          or optional add the extension
+          %code .pdf
+          to the URL.
+          %br
+          The story cards in printable format will be returned for the entire backlog.
+
+          %h4 Arguments
+          %b scope:
+          Passing in the optional
+          %code print_scope
+          parameter with either
+          %code sprint-{SPRINT_ID}
+          or
+          %code theme-{THEME_ID}
+          , will filter the cards returned by that theme or sprint.
+          %br
+          %b page size:
+          Adding the option parameter
+          %code page_size=[A4|letter]
+          allows you to select your page size
+          %br
+          %b fold side:
+          As the story cards are meant to be print on double sided paper, by passing in the optional parameter
+          %code fold_side=[short|long]
+          you can select which side the fold is assumed on.
+
+
+
+
+
+
+      %h4 Arguments
+      Please see arguments specified in the content types above.
+
+      %h4.returns Returns
+      An #{link_to 'backlog object', '#backlog-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":33,
+              "archived":false,
+              "author_id":1,
+              "company_id":null,
+              "created_at":"2011-01-03T15:03:00Z",
+              "id":357,
+              "last_modified_user_id":1,
+              "name":"Example corporate website backlog",
+              "rate":800,
+              "scoring_rule_id":null,
+              "updated_at":"2011-02-17T15:03:00Z",
+              "use_50_90":false,
+              "velocity":"3.0"
+            }
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}.xls \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id} \
+             -d include_associated_data=true \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -H "Accept: application/vnd.easybacklog+xml; version=1.0" \
+             -X GET
+
+  .route-section
+    .route-info
+      %h3 Create a Backlog
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The backlog name
+        %dt company_id:
+        %dd
+          .data-type.foreign-key-nullable integer
+          #{link_to 'Company', '#company'} this backlog belongs to.  A backlog can also have no association with a company, so this can be empty (null).
+        %dt velocity:
+        %dd
+          .data-type.nullable decimal
+          Average velocity per day per team member.  Set this to empty (null) when time estimates are not required for this backlog.
+        %dt rate:
+        %dd
+          .data-type.nullable integer
+          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be set if velocity is not also set.
+        %dt use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% scoring rule for this backlog.  Use false (or null) if you wish to use the simpler single scoring rule for stories.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
+
+      %h4.returns Returns
+      The newly created #{link_to 'backlog object', '#backlog-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New backlog name" \
+             -d "velocity=3.5" \
+             -d "rate=800" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":33,
+              "archived":false,
+              "author_id":1,
+              "company_id":null,
+              "created_at":"2012-05-23T12:16:25Z",
+              "id":364,
+              "last_modified_user_id":1,
+              "name":"New backlog name",
+              "rate":800,
+              "scoring_rule_id":null,
+              "updated_at":"2012-05-23T12:16:25Z",
+              "use_50_90":null,
+              "velocity":"3.5"
+            }
+
+  .route-section
+    .route-info
+      %h3 Update a Backlog
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The backlog name
+        %dt company_id:
+        %dd
+          .data-type.foreign-key-nullable integer
+          #{link_to 'Company', '#company'} this backlog belongs to.  A backlog can also have no association with a company, so this can be empty (null).
+        %dt velocity:
+        %dd
+          .data-type.nullable decimal
+          Average velocity per day per team member.  Set this to empty (null) when time estimates are not required for this backlog.
+        %dt rate:
+        %dd
+          .data-type.nullable integer
+          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be set if velocity is not also set.
+        %dt use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% scoring rule for this backlog.  Use false (or null) if you wish to use the simpler single scoring rule for stories.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
+        %dt archived:
+        %dd
+          .data-type boolean
+          Set this to true to archive a backlog, and false to recover from the archives.  All archived backlogs are locked and therefore cannot be edited.
+          %br
+          If recovering an archive from the backlog, then all other arguments are ignored.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New backlog name" \
+             -d "rate=800" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Duplicate a Backlog
+
+      %p Duplicating a backlog copies all children themes, stories and acceptance criteria to a new backlog.  Sprints however are not copied.
+
+      %h4.returns Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The new backlog name
+        %dt company_id:
+        %dd
+          .data-type.foreign-key-nullable integer
+          #{link_to 'Company', '#company'} this backlog belongs to.  A backlog can also have no association with a company, so this can be empty (null).
+        %dt velocity:
+        %dd
+          .data-type.nullable decimal
+          Average velocity per day per team member.  Set this to empty (null) when time estimates are not required for this backlog.
+        %dt rate:
+        %dd
+          .data-type.nullable integer
+          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be set if velocity is not also set.
+        %dt use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% scoring rule for this backlog.  Use false (or null) if you wish to use the simpler single scoring rule for stories.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
+
+      %h4.returns Returns
+      The newly created #{link_to 'backlog object', '#backlog-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/duplicate'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/duplicate \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New duplicated backlog name" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":33,
+              "archived":false,
+              "author_id":1,
+              "company_id":null,
+              "created_at":"2012-05-24T13:13:18Z",
+              "id":366,
+              "last_modified_user_id":1,
+              "name":"New duplicated backlog name",
+              "rate":800,
+              "scoring_rule_id":7,
+              "updated_at":"2012-05-24T13:13:18Z",
+              "use_50_90":false,
+              "velocity":"3.0"
+            }
+
+  .route-section
+    .route-info
+      %h3 Delete a Backlog
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+    %a{:name => 'snapshots'}
+
+
+  .route-section
+    .route-info
+      %a{:name => 'snapshot-object'}
+      %h2 Snapshots
+      %p
+        An snapshot object represents a exact copy of an entire backlog and its children and belongs to a single #{link_to 'Backlog', '#backlog'}.  A snapshot contains one or more children #{link_to 'themes', '#themes'}.
+      %p
+        Snapshots are either manually created, or created automatically when a sprint starts.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Snapshot object
+
+      The Snapshot object is very nearly identical to the #{link_to 'Backlog object', '#backlog-object'}, except that it is never editable, and contains a reference to it's parent backlog or sprint.
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id:
+        %dd
+          .data-type.read-only integer
+          Unique identifier for this snapshot.
+        %dt name:
+        %dd
+          .data-type string
+          The snapshot name
+        %dt parent_backlog_id or parent_sprint_id:
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Backlog', '#backlog'} or #{link_to 'Sprint', '#sprint'} this snapshot belongs to.  Manually created snapshots have a
+          #{content_tag :code, 'parent_backlog_id'}, whereas sprint snapshots created automatically when a sprint commences have a
+          #{content_tag :code, 'parent_sprint_id'}.
+        %dt velocity:
+        %dd
+          .data-type.nullable decimal
+          Average velocity per day per team member.  This is empty (null) when time estimates are not automatically created for this snapshot.
+        %dt rate:
+        %dd
+          .data-type.nullable integer
+          Rate per day per team member.  This is empty (null) when cost estimates are not automatically created for this snapshot.
+        %dt use_50_90:
+        %dd
+          .data-type.nullable boolean
+          50%/90% scoring rule used for this snapshot.  When false (or null) the snapshot uses the simpler single scoring rule for stories.
+        %dt scoring_rule_id:
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Scoring rule', '#scoring-rule'} used for this snapshot.
+        %dt created_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2011-01-18T19:03:49Z",
+              "id":358,
+              "name":"New finance section added and agreed with client",
+              "rate":800,
+              "scoring_rule_id":null,
+              "use_50_90":false,
+              "velocity":"3.0",
+              "parent_backlog_id":357
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <snapshot>
+              <created-at type="datetime">2011-01-18T19:03:49Z</created-at>
+              <id type="integer">358</id>
+              <name>New finance section added and agreed with client</name>
+              <rate type="integer">800</rate>
+              <scoring-rule-id type="integer" nil="true"></scoring-rule-id>
+              <use-50-90 type="boolean">false</use-50-90>
+              <velocity type="decimal">3.0</velocity>
+              <parent-backlog-id type="integer">357</parent-backlog-id>
+            </snapshot>
+
+  .route-section
+    .route-info
+      %h3 List the Snapshots
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An array of #{link_to 'snapshot objects', '#snapshot-object'} grouped into
+      %code manual_snapshots
+      and
+      #{content_tag :code, 'sprint_snapshots'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/snapshots'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/snapshots \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "manual_snapshots":[
+                {
+                  "created_at":"2011-01-18T19:03:49Z",
+                  "id":358,
+                  "name":"New finance section added and agreed with client",
+                  "rate":800,
+                  "scoring_rule_id":null,
+                  "use_50_90":false,
+                  "velocity":"3.0",
+                  "parent_backlog_id":357
+                }
+              ],
+              "sprint_snapshots":[
+                {
+                  "created_at":"2011-02-07T02:00:00Z",
+                  "id":363,
+                  "name":"Sprint 4",
+                  "rate":800,
+                  "scoring_rule_id":null,
+                  "use_50_90":false,
+                  "velocity":"3.0",
+                  "parent_sprint_id":227
+                }
+              ]
+            }
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Snapshot
+
+      %h4 Content types
+      This route is special in that it supports all the additional mime types supported by the
+      #{link_to 'Retrieve a Backlog', '#backlog-retrieve'}.
+      Please refer to the #{link_to 'Retrieve a Backlog', '#backlog-retrieve'} section to understand the supported mime types and arguments.
+
+      %h4.returns Arguments
+      Please see arguments specified in the section #{link_to 'Retrieve a Backlog', '#backlog-retrieve'} above.
+
+      %h4.returns Returns
+      An #{link_to 'snapshot object', '#snapshot-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}/snapshots/{SNAPSHOT_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/snapshots/#{demo_api_snapshot_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2011-01-18T19:03:49Z",
+              "id":358,
+              "name":"New finance section added and agreed with client",
+              "rate":800,
+              "scoring_rule_id":null,
+              "use_50_90":false,
+              "velocity":"3.0",
+              "parent_backlog_id":357
+            }
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/snapshots/#{demo_api_snapshot_id}.xls \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/snapshots/#{demo_api_snapshot_id} \
+             -d include_associated_data=true \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -H "Accept: application/vnd.easybacklog+xml; version=1.0" \
+             -X GET
+
+  .route-section
+    .route-info
+      %h3 Create a Snapshot
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The new snapshot name
+
+      %h4.returns Returns
+      The newly created #{link_to 'snapshot object', '#snapshot-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/snapshots'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/snapshots \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New snapshot name" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2012-05-24T12:44:39Z",
+              "id":365,
+              "name":"New snapshot name",
+              "rate":800,
+              "scoring_rule_id":7,
+              "use_50_90":false,
+              "velocity":"3.0",
+              "parent_backlog_id":357
+            }
+
+  .route-section
+    .route-info
+      %h3 Delete a Snapshot
+
+      Please note that you can only delete a manually created snapshot.  Sprint snapshots cannot be deleted.
+
+      %h4.returns Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/snapshots/{SNAPSHOT_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/snapshots/#{demo_api_snapshot_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+
+
+
 
 Defaults to JSON, but supports XML as well.  Data can be sent as standard POST data, or JSON / XML as the post body
 Authentication methods Basic, Token or Querystring
@@ -6,18 +1207,6 @@ Standard response headers
 Talk about date formats
 
 Mention that position and ID is auto-assigned, however position can be overwritten
-
-/accounts GET
-/accounts/[id] GET|PUT
-
-/accounts/backlogs[?include_archived=true] GET
-/accounts/backlogs POST
-/accounts/backlogs/duplicate POST
-/accounts/backlogs/[id][?include_associated_data=true] GET (!JSON and XML version of backlog with associated data differ, JSON only includes the this backlog and no associated snapshots, XML includes everything related to this backlog)
-/accounts/backlogs/[id] PUT (archived=true|false, if bringing from archive other properties passed in are ignored)
-/accounts/backlogs/[id]/snapshots GET list of snapshots
-/accounts/backlogs/[id]/snapshots/[snapshot_id][?include_associated_data=true] GET
-/accounts/backlogs/[id]/snapshots POST create a new snapshot
 
 /backlogs/[id]/themes/[?include_associated_data=true] GET
 /backlogs/[id]/themes/[id][?include_associated_data=true] GET
@@ -45,6 +1234,12 @@ Mention that position and ID is auto-assigned, however position can be overwritt
 /backlogs/[id]/sprints/[id] PUT (changing completed=true|false is exclusive, no other updates occur at the same time)
 /backlogs/[id]/sprints/ POST
 /backlogs/[id]/sprints/[id] DELETE
+
+/sprints/[id]/sprint-stories/ GET
+/sprints/[id]/sprint-stories/[id] GET
+/sprints/[id]/sprint-stories/[id] PUT [optional move_to_sprint_id=new_sprint_id]
+/sprints/[id]/sprint-stories/ POST
+/sprints/[id]/sprint-stories/[id] DELETE
 
 /locales GET
 /locales/[id] GET

@@ -10,7 +10,7 @@
     = stylesheet_link_tag 'ie_compatibility', :media => 'all'
     = javascript_include_tag 'ie_compatibility'
 
-  = javascript_include_tag 'application'
+  = javascript_include_tag 'application' unless @dont_render_application_js.present?
 
   = yield(:head)
 
