@@ -103,14 +103,22 @@ class BacklogsController < ApplicationController
     end
   end
 
+  ## included in API
   def create_snapshot
     @backlog = current_account.backlogs.available.find(params[:id])
     enforce_can(:full, 'You do not have permission to create a snapshot for this backlog') do
       name = params[:name]
       new_snapshot = @backlog.create_snapshot(name)
-      flash[:notice] = "New snapshot created"
-      redirect_to account_backlog_path(@backlog.account, @backlog)
+      respond_with(new_snapshot) do |format|
+        format.html do
+          flash[:notice] = "New snapshot created"
+          redirect_to account_backlog_path(@backlog.account, @backlog)
+        end
+        format.all { render request.format.to_sym => new_snapshot, :status => STATUS_CODE[:created] }
+      end
     end
+  rescue ActiveRecord::RecordInvalid => e
+    send_error e.message, :http_status => :invalid_params
   end
 
   ## included in API

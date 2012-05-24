@@ -113,6 +113,8 @@ Ibacklog::Application.routes.draw do
       resources :backlogs, :except => [:new, :edit] do
         member do
           get 'snapshots' => 'backlogs#index_snapshot'
+          get 'snapshots/:snapshot_id' => 'backlogs#show_snapshot'
+          post 'snapshots' => 'backlogs#create_snapshot', :as => 'create_snapshot'
           post 'duplicate' => 'backlogs#duplicate'
           get 'stats' => 'backlog_stats#show'
         end

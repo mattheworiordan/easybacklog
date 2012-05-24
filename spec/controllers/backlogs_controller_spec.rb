@@ -653,6 +653,33 @@ describe BacklogsController do
         end
       end
 
+      context 'create' do
+        it 'should allow snapshots to be created' do
+          put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => 'New name' }
+          response.code.should == status_code(:created)
+          account.reload
+          account.backlogs.last.snapshots.last.name.should == 'New name'
+          json = JSON.parse(response.body)
+          json['name'].should == 'New name'
+        end
+
+        it 'should return an error if the fields are not valid' do
+          put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => '' }
+          response.code.should == status_code(:invalid_params)
+          json = JSON.parse(response.body)
+          json['message'].should match(/Name can't/)
+        end
+
+        it 'should return an error if the current user does not have permission to create the backlog' do
+          no_rights_account_user = Factory.create(:account_user_with_no_rights, :account => account)
+          setup_api_authentication Factory.create(:user_token, :user => no_rights_account_user.user)
+          put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => 'New name' }
+          response.code.should == status_code(:forbidden)
+          json = JSON.parse(response.body)
+          json['message'].should match(/You do not have permission to create a snapshot/)
+        end
+      end
+
       context 'show' do
         render_views # we need the XML builder view to actually execute and not be stubbed by RSpec/Rails
 
