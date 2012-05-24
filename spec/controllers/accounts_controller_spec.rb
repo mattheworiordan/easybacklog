@@ -26,6 +26,13 @@ describe AccountsController do
   describe 'API' do
     before(:each) { setup_api_authentication user_token }
 
+    def expect_404(http_verb)
+      get http_verb, { :id => 0 }
+      response.code.should == status_code(:not_found)
+      json = JSON.parse(response.body)
+      json['message'].should match(/Account does not exist/i)
+    end
+
     context 'index' do
       let (:account2) { Factory.create(:account) }
       before (:each) { Factory.create(:account_user, :user => user, :account => account2) }
@@ -72,6 +79,8 @@ describe AccountsController do
         get :show, { :id => 0 }
         response.code.should == status_code(:not_found)
       end
+
+      it('should return a 404 error if the account id does not exist') { expect_404(:show) }
     end
 
     context 'update' do
@@ -100,6 +109,16 @@ describe AccountsController do
         json['message'].should match(/Account could not be updated/)
         json['message'].should match(/Name can't/)
       end
+
+      it 'should return an error if the user does not have full permissions' do
+        account_user2 = Factory.create(:account_user_with_no_rights)
+        user_token2 = Factory.create(:user_token, :user => account_user2.user)
+        setup_api_authentication user_token2
+        put :update, { :id => account_user2.account.id }
+        response.code.should == status_code(:forbidden)
+      end
+
+      it('should return a 404 error if the account id does not exist') { expect_404(:update) }
     end
   end
 end
