@@ -18,13 +18,13 @@ test: &test
   timeout: 5000
   min_messages: WARNING
 
-production:
+production: &production
   adapter: sqlite3
   database: db/production.sqlite3
   pool: 5
   timeout: 5000
 
-staging:
+staging: &staging
   adapter: sqlite3
   database: db/production.sqlite3
   pool: 5
@@ -32,3 +32,9 @@ staging:
 
 cucumber: &cucumber
   <<: *test
+
+api_production:
+  <<: *production
+
+api_staging:
+  <<: *staging

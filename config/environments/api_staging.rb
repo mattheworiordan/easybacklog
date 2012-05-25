@@ -29,9 +29,9 @@ Ibacklog::Application.configure do
   config.assets.initialize_on_precompile = false
   config.assets.compile = false # do not live compile assets
 
-  config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
+  config.asset_host = 'd2gruexw2l1opu.cloudfront.net'
   config.assets.compress = true
-  config.fonts_domain = '//easybacklog-staging.heroku.com'
+  config.fonts_domain = '//api-easybacklog-staging.heroku.com'
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true

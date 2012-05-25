@@ -11,7 +11,7 @@
 require 'optparse'
 
 # supported environments
-ENVIRONMENTS = ['ci','staging','production']
+ENVIRONMENTS = ['ci','staging','production','api-staging','api-production']
 
 options = {}
 

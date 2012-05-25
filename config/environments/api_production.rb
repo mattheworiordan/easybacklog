@@ -23,15 +23,17 @@ Ibacklog::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
+  config.dns = 'api.easybacklog.com' if config.dns == 'localhost' # just in case the environment var is missing in production, just force through api.easybacklog.com
+
   config.action_mailer.default_url_options = { :host => config.dns }
 
   # Heroku support
   config.assets.initialize_on_precompile = false
   config.assets.compile = false # do not live compile assets
 
-  config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
+  config.asset_host = 'dzfi00z1djzy.cloudfront.net'
   config.assets.compress = true
-  config.fonts_domain = '//easybacklog-staging.heroku.com'
+  config.fonts_domain = '//easybacklog.com'
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true

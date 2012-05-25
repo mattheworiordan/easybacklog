@@ -8,7 +8,7 @@
 # Usage: ./compile [environment]
 
 # supported environments
-ENVIRONMENTS = ['ci','staging','production']
+ENVIRONMENTS = ['ci','staging','production','api-staging','api-production']
 
 if ARGV.length == 0
   puts "Error: Usage: compile [environment]"
@@ -18,7 +18,7 @@ elsif (!ENVIRONMENTS.include?(ARGV[0]))
   exit false
 else
   environment = ARGV[0]
-  ENV['RAILS_ENV'] = environment
+  ENV['RAILS_ENV'] = environment.gsub(/\-/, '_') # environment names in Rails follow underscore convention
 
   branch_list = %x[git branch]
   branches = branch_list.gsub(/\*\s/, '').split(/[\n\r]/).map { |d| d.strip }

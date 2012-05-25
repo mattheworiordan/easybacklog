@@ -12,15 +12,6 @@ Ibacklog::Application.configure do
   # Specifies the header that your server uses for sending files
   config.action_dispatch.x_sendfile_header = "X-Sendfile"
 
-  # See everything in the log (default is :info)
-  # config.log_level = :debug
-
-  # Use a different logger for distributed setups
-  # config.logger = SyslogLogger.new
-
-  # Use a different cache store in production
-  # config.cache_store = :mem_cache_store
-
   # Disable Rails's static asset server
   # In production, Apache or nginx will already do this
   config.serve_static_assets = false
@@ -41,9 +32,9 @@ Ibacklog::Application.configure do
   config.assets.initialize_on_precompile = false
   config.assets.compile = false # do not live compile assets
 
-  config.asset_host = 'd2n3m6ttt1syhb.cloudfront.net' #"assets-easybacklog.netdna-ssl.com"
+  config.asset_host = 'd2n3m6ttt1syhb.cloudfront.net'
   config.assets.compress = true
-  config.fonts_domain = "//easybacklog.com"
+  config.fonts_domain = '//easybacklog.com'
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
