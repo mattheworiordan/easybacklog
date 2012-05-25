@@ -120,6 +120,7 @@ Ibacklog::Application.routes.draw do
           get 'stats' => 'backlog_stats#show'
         end
       end
+      resources :companies, :only => [:index, :show, :create, :update]
     end
     resources :backlogs, :only => [] do
       resources :themes, :except => [:new, :edit] do
