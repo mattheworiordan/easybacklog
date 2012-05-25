@@ -40,7 +40,49 @@ module ApiHelper
     demo_api_backlog.snapshots.first.id rescue '{SNAPSHOT_ID}'
   end
 
+  def demo_api_theme_id
+    demo_api_backlog.themes.first.id rescue '{THEME_ID}'
+  end
+
+  def demo_api_story_id
+    demo_api_backlog.themes.first.stories.first.id rescue '{STORY_ID}'
+  end
+
+  def demo_api_acceptance_criterion_id
+    demo_api_backlog.themes.first.stories.first.acceptance_criteria.first.id rescue '{ACCEPTANCE_CRITERIA_ID}'
+  end
+
+  def demo_api_company_id
+    demo_api_user.accounts.first.companies.first.id rescue '{COMPANY_ID}'
+  end
+
+  def demo_api_sprint_id
+    demo_api_backlog.sprints.first.id rescue '{SPRINT_ID}'
+  end
+
+  def demo_api_sprint_story_id
+    demo_api_backlog.sprints.first.sprint_stories.first.id rescue '{SPRINT_STORY_ID}'
+  end
+
+  def demo_api_locale_id
+    Locale.first.id rescue '{LOCALE_ID}'
+  end
+
+  def demo_api_scoring_rule_id
+    ScoringRule.first.id rescue '{SCORING_RULE_ID}'
+  end
+
+  def demo_api_sprint_story_status_id
+    SprintStoryStatus.first.id rescue '{SPRINT_STORY_STATUS_ID}'
+  end
+
   def api_end_point
-    Rails.env.development? ? 'http://api-local:3000/' : "https://#{request.host}/"
+    if Rails.env.development?
+      'http://api-local:3000/'
+    elsif Rails.env.test?
+      'https://api.easybacklog.com/'
+    else
+      "https://#{request.host}/"
+    end
   end
 end
