@@ -41,6 +41,6 @@ module ApiHelper
   end
 
   def api_end_point
-    Rails.env.development? ? 'http://api-local:3000/' : 'https://api.easybacklog.com/'
+    Rails.env.development? ? 'http://api-local:3000/' : "https://#{request.host}/"
   end
 end
