@@ -12,14 +12,14 @@ module SslRequired
     # Specifies that the named actions requires an SSL connection
     # to be performed (which is enforced by ensure_proper_protocol).
 
-    @@basic_allowed_actions = nil
+    @basic_allowed_actions = nil
 
     def basic_allowed(*actions)
-      @@basic_allowed_actions = actions
+      @basic_allowed_actions = actions
     end
 
     def basic_allowed_actions
-      @@basic_allowed_actions || []
+      @basic_allowed_actions || []
     end
   end
 
