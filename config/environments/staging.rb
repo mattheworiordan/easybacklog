@@ -40,7 +40,7 @@ Ibacklog::Application.configure do
 
   config.asset_host = "d2bnjfukjumf2u.cloudfront.net" #"staging-easybacklog.netdna-ssl.com"
   config.assets.compress = true
-  config.fonts_domain = "//#{config.dns}"
+  config.fonts_domain = "//easybacklog-staging.heroku.com"
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
