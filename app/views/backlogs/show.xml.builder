@@ -28,7 +28,7 @@ xml.backlog backlog_attributes do
         snapshot_attributes.merge! :cost => snapshot.cost_formatted if snapshot.cost_estimatable?
         snapshot_attributes.merge! :id => snapshot.id, :use_50_90 => snapshot.use_50_90, :scoring_rule_id => snapshot.scoring_rule_id if is_api?
 
-        xml.snapshot  do
+        xml.snapshot snapshot_attributes do
           render :partial => 'backlog_data', :locals => { :builder => xml, :backlog => snapshot }
         end
       end
