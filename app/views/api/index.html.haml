@@ -98,6 +98,8 @@
           %code error
         %dt message:
         %dd A user-friendly message describing the error
+        %dt errors (optional):
+        %dd An array of error messages, if applicable.  Typically this property is set to an array when more than one validation error has occurred on an update or create request.
     .route-example
       %h2 HTTP Status Code Summary
       %code
@@ -416,7 +418,7 @@
         %dt default_rate:
         %dd
           .data-type.nullable integer
-          Default rate (without currency symbol) to use for new backlogs.
+          Default rate (without currency symbol) to use for new backlogs.  Cannot be specified unless default velocity is set.
         %dt default_use_50_90:
         %dd
           .data-type.nullable boolean
@@ -439,13 +441,268 @@
           curl #{api_end_point}accounts/#{demo_api_account_id} \
              -H "Authorization: token #{demo_api_user_token}" \
              -d "name=New account name" \
-             -d "default_rate=800" \
+             -d "default_velocity=4" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+    %a{:name => 'companies'}
+
+  .route-section
+    .route-info
+      %a{:name => 'company-object'}
+      %h2 Companies
+      %p
+        A company represents a business or business unit that one can group backlogs into.  A backlog can optionally be associated with a company.  If no association from backlog to a company is made, then the backlog is grouped at the account level.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Company object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id:
+        %dd
+          .data-type.read-only integer
+          Unique identifier for this company
+        %dt name:
+        %dd
+          .data-type string
+          The company name
+        %dt default_velocity:
+        %dd
+          .data-type.nullable decimal
+          Default velocity to use for new backlogs.
+        %dt default_rate:
+        %dd
+          .data-type.nullable integer
+          Default rate (without currency symbol) to use for new backlogs.
+        %dt default_use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% scoring rule as a default for new backlogs.  Setting this to false uses the simpler single scoring rule for stories.
+        %dt created_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":33,
+              "created_at":"2012-05-25T17:11:20Z",
+              "default_rate":800,
+              "default_use_50_90":false,
+              "default_velocity":"3.0",
+              "id":13,
+              "name":"Acme company",
+              "updated_at":"2012-05-25T17:11:42Z"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <company>
+              <account-id type="integer">33</account-id>
+              <created-at type="datetime">2012-05-25T17:11:20Z</created-at>
+              <default-rate type="integer">800</default-rate>
+              <default-use-50-90 type="boolean">false</default-use-50-90>
+              <default-velocity type="decimal">3.0</default-velocity>
+              <id type="integer">13</id>
+              <name>Acme company</name>
+              <updated-at type="datetime">2012-05-25T17:11:42Z</updated-at>
+            </company>
+
+  .route-section
+    .route-info
+      %h3 List the Companies
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An array of #{link_to 'company objects', '#company-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/companies'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/companies \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "account_id":33,
+                "created_at":"2012-05-25T17:11:20Z",
+                "default_rate":800,
+                "default_use_50_90":false,
+                "default_velocity":"3.0",
+                "id":13,
+                "name":"Acme company",
+                "updated_at":"2012-05-25T17:11:42Z"
+              }
+            ]
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Company
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      A #{link_to 'company object', '#company-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/companies/{COMPANY_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/companies/#{demo_api_company_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":33,
+              "created_at":"2012-05-25T17:11:20Z",
+              "default_rate":800,
+              "default_use_50_90":false,
+              "default_velocity":"3.0",
+              "id":13,
+              "name":"Acme company",
+              "updated_at":"2012-05-25T17:47:24Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Create a Company
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The company name
+        %dt default_velocity:
+        %dd
+          .data-type.nullable decimal
+          Default velocity to use for new backlogs.
+        %dt default_rate:
+        %dd
+          .data-type.nullable integer
+          Default rate (without currency symbol) to use for new backlogs.  Cannot be specified unless default velocity is set.
+        %dt default_use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% certainty scoring rule as a default for new backlogs.
+
+      %h4.returns Returns
+      The newly created #{link_to 'company object', '#company-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/companies/{COMPANY_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/companies \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New company name" \
+             -d "default_velocity=5" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "account_id":null,
+              "created_at":"2012-05-25T18:02:18Z",
+              "default_rate":null,
+              "default_use_50_90":null,
+              "default_velocity":"5.0",
+              "id":14,
+              "name":"New company name",
+              "updated_at":"2012-05-25T18:02:18Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Update a Company
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The company name
+        %dt default_velocity:
+        %dd
+          .data-type.nullable decimal
+          Default velocity to use for new backlogs.
+        %dt default_rate:
+        %dd
+          .data-type.nullable integer
+          Default rate (without currency symbol) to use for new backlogs.  Cannot be specified unless default velocity is set.
+        %dt default_use_50_90:
+        %dd
+          .data-type.nullable boolean
+          Use the 50%/90% certainty scoring rule as a default for new backlogs.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/companies/{COMPANY_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/companies/#{demo_api_company_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New company name" \
+             -d "default_velocity=5.0" \
              -X PUT
 
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
     %a{:name => 'backlogs'}
 
+    .route-section
+    .route-info
+      %h3 Delete a Company
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/companies/{COMPANY_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/companies/#{demo_api_company_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+    %a{:name => 'backlogs'}
 
   .route-section
     .route-info
@@ -758,7 +1015,7 @@
         %dt rate:
         %dd
           .data-type.nullable integer
-          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be set if velocity is not also set.
+          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be specified unless velocity is set.
         %dt use_50_90:
         %dd
           .data-type.nullable boolean
@@ -823,7 +1080,7 @@
         %dt rate:
         %dd
           .data-type.nullable integer
-          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be set if velocity is not also set.
+          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be specified unless velocity is set.
         %dt use_50_90:
         %dd
           .data-type.nullable boolean
@@ -881,7 +1138,7 @@
         %dt rate:
         %dd
           .data-type.nullable integer
-          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be set if velocity is not also set.
+          Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be specified unless velocity is set.
         %dt use_50_90:
         %dd
           .data-type.nullable boolean
