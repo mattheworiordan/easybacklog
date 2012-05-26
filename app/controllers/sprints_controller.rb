@@ -38,12 +38,21 @@ class SprintsController < ApplicationController
   ## included in API
   def create
     enforce_can :full, 'You do not have permission to create this sprint' do
-      @sprint = @backlog.sprints.new(filter_sprint_params)
-      if @sprint.save
-        update_backlog_metadata
+      sprint_saved = false
+      Sprint.transaction do
+        @sprint = @backlog.sprints.new(filter_sprint_params)
+        sprint_saved = @sprint.save
+        if sprint_saved
+          update_backlog_metadata
+        else
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      if sprint_saved
         render request.format.to_sym => @sprint.as_json(:methods => data_transformation_methods), :status => STATUS_CODE[:created]
       else
-        send_error @sprint.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @sprint, :http_status => :invalid_params
       end
     end
   end
@@ -51,19 +60,20 @@ class SprintsController < ApplicationController
   def update
     enforce_can :full, 'You do not have permission to edit this backlog' do
       @sprint = @backlog.sprints.find(params[:id])
-
-      # changing completed is exclusive, no other updates will occur at the same time
-      if (%w(true false).include? params[:completed])
-        # special params set by front end to mark as completed or incomplete which can throw an error
-        @sprint.mark_as_complete if params[:completed] == 'true'
-        @sprint.mark_as_incomplete if params[:completed] == 'false'
-        update_backlog_metadata
-      else
-        @sprint.update_attributes filter_sprint_params
-        if @sprint.save
+      Sprint.transaction do
+        # changing completed is exclusive, no other updates will occur at the same time
+        if (%w(true false).include? params[:completed])
+          # special params set by front end to mark as completed or incomplete which can throw an error
+          @sprint.mark_as_complete if params[:completed] == 'true'
+          @sprint.mark_as_incomplete if params[:completed] == 'false'
           update_backlog_metadata
         else
-          send_error @sprint.errors.full_messages.join(', '), :http_status => :invalid_params
+          if @sprint.update_attributes filter_sprint_params
+            update_backlog_metadata
+          else
+            send_error @sprint, :http_status => :invalid_params
+            raise ActiveRecord::Rollback
+          end
         end
       end
 
@@ -80,18 +90,20 @@ class SprintsController < ApplicationController
   def destroy
     @sprint = @backlog.sprints.find(params[:id])
     enforce_can :full, 'You do not have permission to delete this sprint' do
-      begin
-        @sprint.destroy
-      rescue ActiveRecordExceptions::RecordNotDestroyable => e
-        send_error 'This sprint cannot be deleted because it contains stories which are marked as accepted', :http_status => :forbidden
-      rescue ActiveRecord::RecordNotSaved => e
-        send_error e.message, :http_status => :forbidden
-      else
-        update_backlog_metadata
-        if is_api?
-          render :nothing => true, :status => STATUS_CODE[:no_content]
+      Sprint.transaction do
+        begin
+          @sprint.destroy
+        rescue ActiveRecordExceptions::RecordNotDestroyable => e
+          send_error 'This sprint cannot be deleted because it contains stories which are marked as accepted', :http_status => :forbidden
+        rescue ActiveRecord::RecordNotSaved => e
+          send_error e.message, :http_status => :forbidden
         else
-          send_notice 'Sprint deleted'
+          update_backlog_metadata
+          if is_api?
+            render :nothing => true, :status => STATUS_CODE[:no_content]
+          else
+            send_notice 'Sprint deleted'
+          end
         end
       end
     end
@@ -137,6 +149,6 @@ class SprintsController < ApplicationController
     end
 
     def filter_sprint_params
-      filter_params(:backlog_id, :iteration, JSON_METHODS)
+      filter_params(:backlog_id, :iteration, *JSON_METHODS)
     end
 end

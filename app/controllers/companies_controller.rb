@@ -24,8 +24,7 @@ class CompaniesController < ApplicationController
   def update
     @company = current_account.companies.find(params[:id])
     enforce_can(:full, 'You do not have permission to edit this company') do
-      @company.update_attributes(filter_company_params)
-      if @company.save
+      if @company.update_attributes(filter_company_params)
         respond_with(@company) do |format|
           format.html do
             flash[:notice] = 'Company defaults were successfully updated'
@@ -38,7 +37,7 @@ class CompaniesController < ApplicationController
             flash[:error] = "You have not completed the form correctly.\n#{@company.errors.full_messages.join("\n")}"
             render :action => "edit"
           end
-          format.all { send_error "Company could not be updated: #{@company.errors.full_messages.join(', ')}", :http_status => :unprocessable_entity }
+          format.all { send_error @company, :http_status => :unprocessable_entity }
         end
       end
     end
@@ -51,7 +50,7 @@ class CompaniesController < ApplicationController
       if @company.save
         respond_with(@company, :location => account_company_path(current_account, @company))
       else
-        send_error @company.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @company, :http_status => :invalid_params
       end
     else
       send_error 'You do not have permission to create a company', :http_status => :forbidden

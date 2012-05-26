@@ -40,27 +40,42 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def send_json_error(error_message, status=STATUS_CODE[:bad_request])
-    render :status => status, :json => { :status => 'error', :message => error_message }
+  def send_json_error(error_message, status=STATUS_CODE[:bad_request], errors = nil)
+    response = errors.present? ? { :errors => errors } : {}
+    render :status => status, :json => response.merge({ :status => 'error', :message => error_message })
   end
 
   def send_notice(notice_message, payload = {})
     render request.format.to_sym => { :status => 'notice', :message => notice_message }.merge(payload)
   end
 
-  def send_xml_error(error_message, status=STATUS_CODE[:bad_request])
-    render :status => status, :text => { :status => 'error', :message => error_message }.to_xml(:root => 'response')
+  def send_xml_error(error_message, status=STATUS_CODE[:bad_request], errors = nil)
+    response = errors.present? ? { :errors => errors } : {}
+    render :status => status, :text => response.merge({ :status => 'error', :message => error_message }).to_xml(:root => 'response')
   end
 
   def send_error(error_message, options={})
     http_status = options[:http_status].is_a?(Symbol) ? STATUS_CODE[options[:http_status]] : options[:http_status] # allow symbol or status to be passed in
     http_status = STATUS_CODE[:bad_request] if http_status.blank? # default to simple bad request 400
     flash_type = options[:flash] || :error
-    error_message.gsub(/Please refresh your browser.?/i, '') if is_api? # don't show refresh browser messages if in the API
+    errors = if options.has_key?(:errors)
+      if options[:errors].kind_of?(ActiveRecord::Base)
+        options[:errors].errors.full_messages
+      else
+        options[:errors]
+      end
+    else
+      nil
+    end
+    # if an active record model passed in, then use the error messages for the error message if model has errors
+    if error_message.kind_of?(ActiveRecord::Base) && error_message.errors.present?
+      errors = error_message.errors.full_messages if errors.blank?
+      error_message = error_message.errors.full_messages.join(', ')
+    end
 
     respond_to do |format|
-      format.json { send_json_error error_message, http_status }
-      format.xml { send_xml_error error_message, http_status }
+      format.json { send_json_error error_message, http_status, errors }
+      format.xml { send_xml_error error_message, http_status, errors }
 
       format.all do
         # if we are redirecting to another page, simply add the error to the flash and redirect

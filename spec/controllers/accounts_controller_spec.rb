@@ -106,8 +106,8 @@ describe AccountsController do
         put :update, { :id => account.id, :name => '' }
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
-        json['message'].should match(/Account could not be updated/)
         json['message'].should match(/Name can't/)
+        json['errors'].first.should match(/Name can't/)
       end
 
       it 'should return an error if the user does not have full permissions' do
@@ -116,6 +116,14 @@ describe AccountsController do
         setup_api_authentication user_token2
         put :update, { :id => account_user2.account.id }
         response.code.should == status_code(:forbidden)
+      end
+
+      it 'should return an error when assigning default_rate without default_velocity' do
+        put :update, {:id => account.id, :default_rate => 500, :default_velocity => nil }
+        response.code.should == status_code(:invalid_params)
+        json = JSON.parse(response.body)
+        json['message'].should match(/Default rate cannot be specified if default velocity is empty/)
+        json['errors'].first.should match(/Default rate cannot be specified/)
       end
 
       it('should return a 404 error if the account id does not exist') { expect_404(:update) }

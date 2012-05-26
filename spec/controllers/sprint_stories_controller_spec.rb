@@ -199,6 +199,7 @@ describe SprintStoriesController do
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Story/)
+        json['errors'].first.should match(/Story/)
       end
 
       it 'should return an error if the current user does not have permission to create the sprint story' do

@@ -54,8 +54,18 @@ class BacklogsController < ApplicationController
       @backlog = current_account.backlogs.new(filter_backlog_params)
       @backlog.author = current_user
       @backlog.last_modified_user = current_user
-      set_or_create_company
-      if @backlog.save
+
+      backlog_saved = false
+      Backlog.transaction do
+        backlog_saved = @backlog.save
+        if backlog_saved
+          set_or_create_company
+          backlog_saved = @backlog.save
+        end
+        raise ActiveRecord::Rollback if !backlog_saved
+      end
+
+      if backlog_saved
         respond_with(@backlog) do |format|
           format.html do
             flash[:notice] = 'Backlog was successfully created.'
@@ -66,7 +76,7 @@ class BacklogsController < ApplicationController
       else
         respond_with(@backlog) do |format|
           format.html { render :action => "new" }
-          format.all { send_error "Backlog could not be updated: #{@backlog.errors.full_messages.join(', ')}", :http_status => :invalid_params }
+          format.all { send_error @backlog, :http_status => :invalid_params }
         end
       end
     else
@@ -145,15 +155,26 @@ class BacklogsController < ApplicationController
       elsif !@backlog.editable?
         send_error 'You cannot edit an archived backlog', :flash => :warning, :redirect_to => account_backlog_path(@backlog.account, @backlog), :http_status => :forbidden
       else
-        @backlog.update_attributes(backlog_params.reject { |key, val| key.to_sym == :archived })
-        @backlog.last_modified_user = current_user
-        set_or_create_company
-        if @backlog.save
-          has_been_archived = backlog_params && backlog_params[:archived].to_s == 'true'
-          if has_been_archived
-            update_backlog_metadata
-            @backlog.mark_archived
+        backlog_saved = false
+        has_been_archived = backlog_params && backlog_params[:archived].to_s == 'true'
+        Backlog.transaction do
+          backlog_saved = @backlog.update_attributes(backlog_params.reject { |key, val| key.to_sym == :archived })
+          if backlog_saved
+            @backlog.last_modified_user = current_user
+            backlog_saved = @backlog.save
+            if backlog_saved
+              set_or_create_company
+              backlog_saved = @backlog.save
+              if backlog_saved && has_been_archived
+                update_backlog_metadata
+                @backlog.mark_archived
+              end
+            end
           end
+          raise ActiveRecord::Rollback if !backlog_saved
+        end
+
+        if backlog_saved
           respond_with(@backlog) do |format|
             format.html do
               if has_been_archived
@@ -173,7 +194,7 @@ class BacklogsController < ApplicationController
               flash[:warning] = 'Backlog was not updated'
               render :action => 'edit'
             end
-            format.all { send_error "Backlog could not be updated: #{@backlog.errors.full_messages.join(', ')}", :http_status => :invalid_params }
+            format.all { send_error @backlog, :http_status => :invalid_params }
           end
         end
       end
@@ -237,7 +258,7 @@ class BacklogsController < ApplicationController
           else
             respond_to do |format|
               format.html { render }
-              format.any(:json, :xml) { send_error "Parameters invalid, backlog could not be duplicated: #{@new_backlog.errors.full_messages.join(', ')}", :http_status => :invalid_params }
+              format.any(:json, :xml) { send_error @new_backlog, :http_status => :invalid_params }
             end
           end
         else
@@ -457,7 +478,7 @@ class BacklogsController < ApplicationController
       end
 
       if @backlog.company.blank?
-        # if account does not yet have defaults, assign them to the account
+        # if first time we have created a backlog and account does not yet have defaults, assign these settings to the account
         unless @backlog.account.defaults_set?
           unassigned_attributes = {
             :default_velocity => @backlog.velocity,

@@ -213,6 +213,7 @@ describe ThemesController do
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Name can't be blank/)
+        json['errors'].first.should match(/Name can't be blank/)
       end
 
       it 'should return an error if the current user does not have permission to create the backlog' do
@@ -251,6 +252,7 @@ describe ThemesController do
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Name can't/)
+        json['errors'].first.should match(/Name can't be blank/)
       end
 
       it 'should return an error if the backlog is not editable' do

@@ -13,7 +13,7 @@ class Account < ActiveRecord::Base
 
   attr_accessible :name, :default_rate, :default_velocity, :locale_id, :default_use_50_90, :scoring_rule_id
 
-  before_save :remove_rate_if_velocity_empty
+  before_validation :prohibit_rate_if_velocity_empty
   before_update :enable_defaults_set
 
   scope :with_backlog_counts, select(sanitize_sql(['accounts.id, accounts.name, (select count(*) from backlogs where account_id = accounts.id and snapshot_master_id is null and snapshot_for_sprint_id is null and archived <> ? and deleted <> ?) as cnt', true, true]))
@@ -91,8 +91,8 @@ class Account < ActiveRecord::Base
       end
     end
 
-    def remove_rate_if_velocity_empty
-      self.default_rate = nil if default_velocity.blank?
+    def prohibit_rate_if_velocity_empty
+      errors.add :default_rate, "cannot be specified if default velocity is empty" if default_rate.present? && default_velocity.blank?
     end
 
     # when an account is create, defaults have not yet been set for the account, however once the account is

@@ -70,8 +70,7 @@ describe Account do
   end
 
   it 'should only allow a rate if velocity is present' do
-    account = Factory.create(:account, :default_rate => 50, :default_velocity => nil)
-    account.default_rate.should be_blank
+    expect { Factory.create(:account, :default_rate => 50, :default_velocity => nil) }.to raise_error ActiveRecord::RecordInvalid, /Default rate cannot be specified if default velocity is empty/
 
     account = Factory.create(:account, :default_rate => 50, :default_velocity => 5)
     account.default_rate.should == 50

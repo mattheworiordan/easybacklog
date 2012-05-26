@@ -30,7 +30,7 @@ class SprintStoriesController < ApplicationController
       if @sprint_story.save
         custom_respond_with @sprint_story, :http_status => :created
       else
-        send_error @sprint_story.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @sprint_story, :http_status => :invalid_params
       end
     end
   end
@@ -39,17 +39,23 @@ class SprintStoriesController < ApplicationController
   def update
     enforce_can :readstatus, 'You do not have permission to update the status of stories' do
       @sprint_story = @sprint.sprint_stories.find(params[:id])
-      @sprint_story.update_attributes filter_sprint_story_params
-      @sprint_story.sprint_id = params[:move_to_sprint_id] if params.has_key?(:move_to_sprint_id)
-
-      if @sprint_story.save
-        if is_api?
-          render :nothing => true, :status => :no_content
-        else
-          custom_respond_with @sprint_story
+      SprintStory.transaction do
+        sprint_story_saved = @sprint_story.update_attributes filter_sprint_story_params
+        if sprint_story_saved
+          @sprint_story.sprint_id = params[:move_to_sprint_id] if params.has_key?(:move_to_sprint_id)
+          sprint_story_saved = @sprint_story.save
+          if sprint_story_saved
+            if is_api?
+              render :nothing => true, :status => :no_content
+            else
+              custom_respond_with @sprint_story
+            end
+          end
         end
-      else
-        send_error @sprint_story.errors.full_messages.join(', '), :http_status => :invalid_params
+        if !sprint_story_saved
+          send_error @sprint_story, :http_status => :invalid_params
+          raise ActiveRecord::Rollback
+        end
       end
     end
   end
@@ -58,11 +64,13 @@ class SprintStoriesController < ApplicationController
     enforce_can :readstatus, 'You do not have permission to update the order of stories' do
       ids = params[:ids]
       sprint_stories = []
-      ids.each do |id, position|
-        sprint_story = @sprint.sprint_stories.find(id)
-        sprint_story.position = position
-        sprint_story.save!
-        sprint_stories << sprint_story
+      SprintStory.transaction do
+        ids.each do |id, position|
+          sprint_story = @sprint.sprint_stories.find(id)
+          sprint_story.position = position
+          sprint_story.save!
+          sprint_stories << sprint_story
+        end
       end
       # now return all the updated sprint stories so we can update the models in the front end
       render request.format.to_sym => sprint_stories

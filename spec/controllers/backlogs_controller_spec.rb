@@ -479,6 +479,13 @@ describe BacklogsController do
           json['message'].should match(/Name can't/)
         end
 
+        it 'should return an error when assigning rate without velocity' do
+          post :create, { :account_id => account.id, :name => 'New name', :rate => 500 }
+          response.code.should == status_code(:invalid_params)
+          json = JSON.parse(response.body)
+          json['message'].should match(/Rate cannot be specified if velocity is empty/)
+        end
+
         it 'should return an error if the current user does not have permission to create the backlog' do
           no_rights_account_user = Factory.create(:account_user_with_no_rights, :account => account)
           setup_api_authentication Factory.create(:user_token, :user => no_rights_account_user.user)
@@ -509,8 +516,15 @@ describe BacklogsController do
           put :update, { :id => backlog.id, :account_id => account.id, :name => '' }
           response.code.should == status_code(:invalid_params)
           json = JSON.parse(response.body)
-          json['message'].should match(/Backlog could not be updated/)
           json['message'].should match(/Name can't/)
+          json['errors'].first.should match(/Name can't/)
+        end
+
+        it 'should return an error when assigning default_rate without default_velocity' do
+          put :update, {:id => backlog.id, :account_id => account.id, :rate => 500, :velocity => nil }
+          response.code.should == status_code(:invalid_params)
+          json = JSON.parse(response.body)
+          json['message'].should match(/Rate cannot be specified if velocity is empty/)
         end
 
         it 'should return an error if the backlog is not editable' do
@@ -591,7 +605,6 @@ describe BacklogsController do
           post :duplicate, { :id => backlog.id, :account_id => account.id, :name => '' }
           response.code.should == status_code(:invalid_params)
           json = JSON.parse(response.body)
-          json['message'].should match(/backlog could not be duplicated/)
           json['message'].should match(/Name can't/)
         end
 

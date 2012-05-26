@@ -235,6 +235,7 @@ describe StoriesController do
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Score 50/)
+        json['errors'].first.should match(/Score 50/)
       end
 
       it 'should return an error if the current user does not have permission to create the story' do
@@ -274,6 +275,7 @@ describe StoriesController do
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Score 50/)
+        json['errors'].first.should match(/Score 50/)
       end
 
       it 'should return an error if the backlog is not editable' do

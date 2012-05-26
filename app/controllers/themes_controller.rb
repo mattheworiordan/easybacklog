@@ -43,7 +43,7 @@ class ThemesController < ApplicationController
           render request.format.to_sym => frontend_json # include stats in response object
         end
       else
-        send_error @theme.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @theme, :http_status => :invalid_params
       end
     end
   end
@@ -52,15 +52,14 @@ class ThemesController < ApplicationController
   def update
     @theme = @backlog.themes.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @theme.update_attributes filter_theme_params
-      if @theme.save
+      if @theme.update_attributes filter_theme_params
         if is_api?
           respond_with @theme
         else
           render request.format.to_sym => frontend_json # include stats in response object, and force response of object even though with updates that's not normally required
         end
       else
-        send_error @theme.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @theme, :http_status => :invalid_params
       end
     end
   end

@@ -359,7 +359,7 @@ describe Sprint do
   end
 
   it 'should return explicit velocity for total expected points when explicit velocity set in sprint' do
-    backlog = Factory.create(:backlog, :velocity => nil)
+    backlog = Factory.create(:backlog, :velocity => nil, :rate => nil)
     sprint = Factory.create(:sprint, :backlog => backlog, :explicit_velocity => 12, :number_team_members => nil)
     sprint.total_expected_points.should == 12
 
@@ -369,12 +369,12 @@ describe Sprint do
   end
 
   it 'should require an explicit velocity when backlog average velocity not set' do
-    backlog = Factory.create(:backlog, :velocity => nil)
+    backlog = Factory.create(:backlog, :velocity => nil, :rate => nil)
     expect { Factory.create(:sprint, :backlog => backlog, :number_team_members => nil) }.should raise_error ActiveRecord::RecordInvalid, /Explicit velocity can't be blank/
   end
 
   it 'should not allow number_team_members to be set when backlog average velocity is not set' do
-    backlog = Factory.create(:backlog, :velocity => nil)
+    backlog = Factory.create(:backlog, :velocity => nil, :rate => nil)
     expect { Factory.create(:sprint, :backlog => backlog, :number_team_members => 5) }.should raise_error ActiveRecord::RecordInvalid, /Number team members is not editable with this backlog/
   end
 

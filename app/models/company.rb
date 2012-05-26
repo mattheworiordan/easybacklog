@@ -9,7 +9,7 @@ class Company < ActiveRecord::Base
 
   attr_accessible :name, :default_rate, :default_velocity, :default_use_50_90
 
-  before_save :remove_rate_if_velocity_empty
+  before_validation :prohibit_rate_if_velocity_empty
 
   can_do :privileges => :company_users, :inherited_privilege => :account
 
@@ -32,7 +32,7 @@ class Company < ActiveRecord::Base
   end
 
   private
-    def remove_rate_if_velocity_empty
-      self.default_rate = nil if default_velocity.blank?
+    def prohibit_rate_if_velocity_empty
+      errors.add :default_rate, "cannot be specified if default velocity is empty" if default_rate.present? && default_velocity.blank?
     end
 end

@@ -20,8 +20,10 @@ class Backlog < ActiveRecord::Base
 
   attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id
 
-  before_save :check_can_modify, :remove_rate_if_velocity_empty, :update_sprint_estimation_method
+  before_save :check_can_modify, :update_sprint_estimation_method
   after_save :update_account_scoring_rule_if_empty
+
+  before_validation :prohibit_rate_if_velocity_empty
 
   can_do :privileges => :backlog_users, :inherited_privilege => [:company, :account]
 
@@ -324,8 +326,8 @@ class Backlog < ActiveRecord::Base
       end
     end
 
-    def remove_rate_if_velocity_empty
-      self.rate = nil if velocity.blank?
+    def prohibit_rate_if_velocity_empty
+      errors.add :rate, "cannot be specified if velocity is empty" if rate.present? && velocity.blank?
     end
 
     # if average velocity for this backlog is removed, then all existing sprints will need to be

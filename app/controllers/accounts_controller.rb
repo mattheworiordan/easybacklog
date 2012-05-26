@@ -56,8 +56,7 @@ class AccountsController < ApplicationController
     if cannot?(:full)
       send_error 'You do not have permission to edit this account', :redirect_to => account_path(@account), :http_status => :forbidden
     else
-      @account.update_attributes(filter_account_params)
-      if @account.save
+      if @account.update_attributes(filter_account_params)
         respond_with(@account) do |format|
           format.html do
             flash[:notice] = "Account for #{@account.name} updated successfully"
@@ -70,7 +69,7 @@ class AccountsController < ApplicationController
             flash[:warning] = 'Account was not updated'
             render :action => 'edit'
           end
-          format.all { send_error "Account could not be updated: #{@account.errors.full_messages.join(', ')}", :http_status => :unprocessable_entity }
+          format.all { send_error @account, :http_status => :unprocessable_entity }
         end
       end
     end
@@ -87,6 +86,7 @@ class AccountsController < ApplicationController
       flash[:notice] = 'Account was successfully created.'
       redirect_to(@account)
     else
+      # locale errors are actually shown on the locale_id element
       if (@account.errors[:locale].present?)
         @account.errors.add(:locale_id, @account.errors[:locale].join(', '))
         @account.errors.delete(:locale)

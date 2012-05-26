@@ -128,7 +128,7 @@ describe CompaniesController do
       let(:new_locale) { Factory.create(:locale) }
 
       it 'should allow users to create a company' do
-        post :create, { :account_id => account.id, :name => 'New name', :default_velocity => 27 }
+        post :create, { :account_id => account.id, :name => 'New name', :default_velocity => 27, :default_rate => 800 }
         response.code.should == status_code(:created)
         json = JSON.parse(response.body)
         json['name'].should == 'New name'
@@ -136,6 +136,7 @@ describe CompaniesController do
         company = Company.find(json['id'])
         company.name.should == 'New name'
         company.default_velocity.to_i.should == 27
+        company.default_rate.to_i.should == 800
       end
 
       it 'should return an error when trying to assign to protected variables' do
@@ -143,6 +144,14 @@ describe CompaniesController do
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/some_field/)
+      end
+
+      it 'should return an error when assigning default_rate without default_velocity' do
+        post :create, { :account_id => account.id, :name => 'New name', :default_rate => 500 }
+        response.code.should == status_code(:invalid_params)
+        json = JSON.parse(response.body)
+        json['message'].should match(/Default rate cannot be specified if default velocity is empty/)
+        json['errors'].first.should match(/Default rate cannot be specified if default velocity is empty/)
       end
 
       it 'should return an error if the fields are not valid' do
@@ -180,11 +189,18 @@ describe CompaniesController do
         json['message'].should match(/some_field/)
       end
 
+      it 'should return an error when assigning default_rate without default_velocity' do
+        put :update, {:id => company.id, :account_id => account.id, :default_rate => 500, :default_velocity => nil }
+        response.code.should == status_code(:invalid_params)
+        json = JSON.parse(response.body)
+        json['message'].should match(/Default rate cannot be specified if default velocity is empty/)
+        json['errors'].first.should match(/Default rate cannot be specified if default velocity is empty/)
+      end
+
       it 'should return an error if the fields are not valid' do
         put :update, { :id => company.id, :account_id => account.id, :name => '' }
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
-        json['message'].should match(/Company could not be updated/)
         json['message'].should match(/Name can't/)
       end
 

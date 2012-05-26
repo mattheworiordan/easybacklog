@@ -355,8 +355,7 @@ describe Backlog do
 
 
   it 'should only allow a rate if velocity is present' do
-    backlog = Factory.create(:backlog, :rate => 50, :velocity => nil)
-    backlog.rate.should be_blank
+    expect { Factory.create(:backlog, :rate => 50, :velocity => nil)}.to raise_error ActiveRecord::RecordInvalid, /Rate cannot be specified if velocity is empty/
 
     backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
     backlog.rate.should == 50
@@ -383,7 +382,7 @@ describe Backlog do
     incomplete_sprint_points = incomplete_sprint.total_expected_points
 
     # remove velocity for backlog, which should trigger updates to sprints so that explicit velocities are set based on the old backlog velocity
-    backlog.update_attributes :velocity => nil
+    backlog.update_attributes :velocity => nil, :rate => nil
 
     completed_sprint.reload
     completed_sprint.total_expected_points.should == completed_sprint_points
@@ -396,7 +395,7 @@ describe Backlog do
 
   it 'should not change sprint settings when backlog settings change back to average velocity per day setting' do
     # set up a backlog with a sprint with explicit velocity set
-    backlog = Factory.create(:backlog, :velocity => nil)
+    backlog = Factory.create(:backlog, :velocity => nil, :rate => nil)
     sprint = Factory.create(:sprint, :backlog => backlog, :explicit_velocity => 7, :number_team_members => nil)
 
     # now set to use velocity calculations for the backlog
@@ -411,7 +410,7 @@ describe Backlog do
     backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
     backlog.rate.should == 50
 
-    backlog.update_attributes :velocity => nil
+    backlog.update_attributes :velocity => nil, :rate => nil
     backlog.rate.should == nil
   end
 

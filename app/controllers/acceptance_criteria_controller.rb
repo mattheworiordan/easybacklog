@@ -28,7 +28,7 @@ class AcceptanceCriteriaController < ApplicationController
       if @acceptance_criterion.save
         respond_with @acceptance_criterion, :location => story_acceptance_criteria_path(@story, @acceptance_criterion)
       else
-        send_error @acceptance_criterion.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @acceptance_criterion, :http_status => :invalid_params
       end
     end
   end
@@ -37,15 +37,14 @@ class AcceptanceCriteriaController < ApplicationController
   def update
     @acceptance_criterion = @story.acceptance_criteria.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @acceptance_criterion.update_attributes filter_criteria_params
-      if @acceptance_criterion.save
+      if @acceptance_criterion.update_attributes filter_criteria_params
         if is_api?
           respond_with @acceptance_criterion
         else
           render request.format.to_sym => @acceptance_criterion
         end
       else
-        send_error @acceptance_criterion.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @acceptance_criterion, :http_status => :invalid_params
       end
     end
   end

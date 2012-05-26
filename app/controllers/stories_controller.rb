@@ -47,7 +47,7 @@ class StoriesController < ApplicationController
           render request.format.to_sym => frontend_json # include stats in response object
         end
       else
-        send_error @story.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @story, :http_status => :invalid_params
       end
     end
   end
@@ -57,16 +57,15 @@ class StoriesController < ApplicationController
     config_score_params params
     @story = @theme.stories.find(params[:id])
     enforce_can :full, 'You do not have permission to edit this backlog' do
-      @story.update_attributes filter_story_params
-      @story.ensure_send_statistics if params[:force_send_statistics] # allow stats to be force sent with this update, needed when a story is moved to a new theme
-      if @story.save
+      if @story.update_attributes filter_story_params
+        @story.ensure_send_statistics if params[:force_send_statistics] # allow stats to be force sent with this update, needed when a story is moved to a new theme
         if is_api?
           respond_with @story
         else
           render request.format.to_sym => frontend_json # include stats in response object, and force response of object even though with updates that's not normally required
         end
       else
-        send_error @story.errors.full_messages.join(', '), :http_status => :invalid_params
+        send_error @story, :http_status => :invalid_params
       end
     end
   end
