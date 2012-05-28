@@ -6,14 +6,7 @@ module ApiHelper
   end
 
   def demo_api_user
-    cache_key = 'demo_api_user'
-    if (Rails.cache.exist?(cache_key))
-      Rails.cache.fetch(cache_key)
-    else
-      user = User.find_by_email('demo-api@easybacklog.com')
-      Rails.cache.write(cache_key, user, :expires_in => 10)
-      user
-    end
+    User.find_by_email('demo-api@easybacklog.com')
   end
 
   def demo_api_user_id
