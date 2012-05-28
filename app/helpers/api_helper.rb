@@ -21,12 +21,20 @@ module ApiHelper
     demo_api_user.accounts.first.id rescue '{ACCOUNT_ID}'
   end
 
+  def demo_api_backlogs
+    demo_api_user.accounts.first.backlogs.active.order('created_at asc')
+  end
+
   def demo_api_backlog
-    demo_api_user.accounts.first.backlogs.order('created_at asc').first
+    demo_api_backlogs.first
   end
 
   def demo_api_backlog_id
     demo_api_backlog.id rescue '{BACKLOG_ID}'
+  end
+
+  def demo_api_2nd_backlog_id
+    demo_api_backlogs.second.id rescue '{BACKLOG_ID}'
   end
 
   def demo_api_snapshot_id
@@ -35,6 +43,10 @@ module ApiHelper
 
   def demo_api_theme_id
     demo_api_backlog.themes.first.id rescue '{THEME_ID}'
+  end
+
+  def demo_api_2nd_theme_id
+    demo_api_backlog.themes.second.id rescue '{THEME_ID}'
   end
 
   def demo_api_story_id

@@ -49,6 +49,16 @@ describe ApiHelper do
         helper.demo_api_backlog_id.should == '{BACKLOG_ID}'
       end
     end
+    describe '#demo_api_backlog_id' do
+      it 'should return placeholder' do
+        helper.demo_api_backlog_id.should == '{BACKLOG_ID}'
+      end
+    end
+    describe '#demo_api_2nd_backlog_id' do
+      it 'should return placeholder' do
+        helper.demo_api_2nd_backlog_id.should == '{BACKLOG_ID}'
+      end
+    end
     describe '#demo_api_snapshot_id' do
       it 'should return placeholder' do
         helper.demo_api_snapshot_id.should == '{SNAPSHOT_ID}'
@@ -57,6 +67,11 @@ describe ApiHelper do
     describe '#demo_api_theme_id' do
       it 'should return placeholder' do
         helper.demo_api_theme_id.should == '{THEME_ID}'
+      end
+    end
+    describe '#demo_api_2nd_theme_id' do
+      it 'should return placeholder' do
+        helper.demo_api_2nd_theme_id.should == '{THEME_ID}'
       end
     end
     describe '#demo_api_story_id' do
@@ -145,7 +160,9 @@ describe ApiHelper do
     let!(:account_user) { Factory.create(:account_user, :user => user) }
     let!(:account) { account_user.account }
     let!(:backlog) { Factory.create(:backlog, :account => account) }
+    let!(:backlog2) { Factory.create(:backlog, :account => account) }
     let!(:theme) { Factory.create(:theme, :backlog => backlog) }
+    let!(:theme2) { Factory.create(:theme, :backlog => backlog) }
     let!(:story) { Factory.create(:story, :theme => theme) }
     let!(:acceptance_criterion) { Factory.create(:acceptance_criterion, :story => story) }
     let!(:company) { Factory.create(:company, :account => account) }
@@ -177,6 +194,11 @@ describe ApiHelper do
         helper.demo_api_backlog_id.should == backlog.id
       end
     end
+    describe '#demo_api_2nd_backlog_id' do
+      it 'should return backlog id' do
+        helper.demo_api_2nd_backlog_id.should == backlog2.id
+      end
+    end
     describe '#demo_api_snapshot_id' do
       it 'should return snapshot id' do
         backlog.create_snapshot 'anything'
@@ -186,6 +208,11 @@ describe ApiHelper do
     describe '#demo_api_theme_id' do
       it 'should return theme id' do
         helper.demo_api_theme_id.should == theme.id
+      end
+    end
+    describe '#demo_api_2nd_theme_id' do
+      it 'should return theme id' do
+        helper.demo_api_2nd_theme_id.should == theme2.id
       end
     end
     describe '#demo_api_story_id' do
