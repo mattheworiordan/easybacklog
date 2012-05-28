@@ -8,45 +8,62 @@ module Creators
 
     # create a normal backlog, not a snapshot
     def create(source_backlog, target_account, current_user)
-      @backlog = target_account.backlogs.build
-      set_backlog_properties source_backlog, current_user
+      begin
+        Backlog.record_timestamps = false
 
-      # build themes
-      add_themes source_backlog
+        @backlog = target_account.backlogs.build
 
-      # build snapshots
-      add_manual_snapshots source_backlog
+        set_backlog_properties source_backlog, current_user
+        # last update time needs to be set manually
+        set_backlog_timestamps source_backlog
 
-      # build sprints
-      add_sprints source_backlog
+        # build themes
+        add_themes source_backlog
 
-      # last update time needs to be set manually
-      set_backlog_timestamps source_backlog
+        # build snapshots
+        add_manual_snapshots source_backlog
+
+        # build sprints
+        add_sprints source_backlog
+      ensure
+        Backlog.record_timestamps = true
+      end
+
       @backlog
     end
 
     # create a new manually created snapshot
     def create_manual_snapshot(source_snapshot, target_backlog)
-      # create a backlog that is editable
-      @backlog = target_backlog.account.backlogs.build
-      set_backlog_properties source_snapshot, target_backlog.author
-      add_themes source_snapshot
-      set_backlog_timestamps source_snapshot, true # pass true to ensure @backlog is not saved and updated_at and created_at are saved when snapshot is saved
-      # set the backlog to a snapshot and it will no longer be editable
-      @backlog.snapshot_master = target_backlog
-      @backlog.save!
+      begin
+        Backlog.record_timestamps = false
+        # create a backlog that is editable
+        @backlog = target_backlog.account.backlogs.build
+        set_backlog_properties source_snapshot, target_backlog.author
+        set_backlog_timestamps source_snapshot # do before themes are added so that the right time stamp is used
+        add_themes source_snapshot
+        # set the backlog to a snapshot and it will no longer be editable
+        @backlog.snapshot_master = target_backlog
+        @backlog.save!
+      ensure
+        Backlog.record_timestamps = true
+      end
       @backlog
     end
 
     # create a sprint snapshot
     def create_sprint_snapshot(source_snapshot, target_sprint)
-      @backlog = target_sprint.backlog.account.backlogs.build
-      set_backlog_properties source_snapshot, target_sprint.backlog.author
-      add_themes source_snapshot
-      set_backlog_timestamps source_snapshot, true # pass true to ensure @backlog is not saved and updated_at and created_at are saved when snapshot is saved
-      # set the backlog to a sprint snapshot and it will no longer be editable
-      @backlog.snapshot_for_sprint = target_sprint
-      @backlog.save!
+      begin
+        Backlog.record_timestamps = false
+        @backlog = target_sprint.backlog.account.backlogs.build
+        set_backlog_properties source_snapshot, target_sprint.backlog.author
+        set_backlog_timestamps source_snapshot # do before themes are added so that the right time stamp is used
+        add_themes source_snapshot
+        # set the backlog to a sprint snapshot and it will no longer be editable
+        @backlog.snapshot_for_sprint = target_sprint
+        @backlog.save!
+      ensure
+        Backlog.record_timestamps = true
+      end
       @backlog
     end
 
@@ -94,10 +111,10 @@ module Creators
         @backlog.save!
       end
 
-      def set_backlog_timestamps(source_backlog, dont_save = false)
+      def set_backlog_timestamps(source_backlog)
         @backlog.created_at = source_backlog.created_at
         @backlog.updated_at = source_backlog.updated_at
-        @backlog.save! unless dont_save
+        @backlog.save!
       end
   end
 end

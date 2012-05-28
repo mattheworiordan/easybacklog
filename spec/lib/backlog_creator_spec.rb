@@ -41,8 +41,12 @@ describe Creators::BacklogCreator do
     backlog = subject.create backlog_double, account, user
 
     backlog.themes.count.should == 1
-    backlog.themes.first.name.should == 'First theme'
-    backlog.themes.first.code.should == 'FTE'
+    backlog.themes.first.instance_eval do
+      name.should == 'First theme'
+      code.should == 'FTE'
+      created_at.should == Date.parse('1 Jan 2010')
+      updated_at.should == Date.parse('1 Jan 2011')
+    end
   end
 
   it 'should create manual snapshots from backlog data with snapshots' do
@@ -98,6 +102,10 @@ describe Creators::BacklogCreator do
       completed_at.should == Time.parse('1 Jun 2010 00:00:00 UTC')
       number_team_members.should == 2
       duration_days.should == 3
+      created_at.should == Date.parse('1 Jan 2010')
+      updated_at.should == Date.parse('1 Jan 2011')
+      snapshot.created_at.should == Date.parse('1 Mar 2010')
+      snapshot.updated_at.should == Date.parse('1 Mar 2011')
     end
 
     backlog.sprints.first.snapshot.should be_present

@@ -3,8 +3,10 @@
 require 'spec_helper'
 
 describe Creators::ThemeCreator do
-  let(:backlog_50_90) { Factory.create(:backlog, :use_50_90 => true) }
-  let(:backlog_single_score) { Factory.create(:backlog, :use_50_90 => false) }
+  let(:base_created_at) { Time.parse('1 Jan 2011') }
+  let(:base_updated_at) { Time.parse('1 Jan 2012') }
+  let(:backlog_50_90) { Factory.create(:backlog, :use_50_90 => true, :created_at => base_created_at, :updated_at => base_updated_at) }
+  let(:backlog_single_score) { Factory.create(:backlog, :use_50_90 => false, :created_at => base_created_at, :updated_at => base_updated_at) }
 
   let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
 
@@ -30,6 +32,8 @@ describe Creators::ThemeCreator do
             "content #{c_index}"
           end
         end
+        story.stub_chain(:theme, :backlog, :created_at).and_return(base_created_at)
+        story.stub_chain(:theme, :backlog, :updated_at).and_return(base_updated_at)
         story
       end
     end
@@ -38,33 +42,45 @@ describe Creators::ThemeCreator do
   end
 
   def check_valid_for_50_90(backlog_50_90)
+    default_created_at = base_created_at
+    default_updated_at = base_updated_at
+
     backlog_50_90.themes.count.should == 1
-    stories = backlog_50_90.themes.first.stories
+    backlog_50_90.themes.first.instance_eval do
+      created_at.should == default_created_at # add these method missing methods to the local var space
+      updated_at.should == default_updated_at # add these method missing methods to the local var space
 
-    stories.first.unique_id.should == 1
-    stories.last.unique_id.should == 2
+      stories.first.instance_eval do
+        unique_id.should == 1
+        as_a.should == 'user 1'
+        so_i_can.should == 'act on 1'
+        score_50.should == 1
+        color.should == 'ffffff'
+        created_at.should == default_created_at
+        updated_at.should == default_updated_at
 
-    stories.first.as_a.should == 'user 1'
-    stories.last.i_want_to.should == 'do 2'
-    stories.first.so_i_can.should == 'act on 1'
-    stories.last.comments.should == 'comments 2'
-    stories.first.score_50.should == 1
-    stories.last.score_90.should == 2
-    stories.first.color.should == 'ffffff'
+        acceptance_criteria.instance_eval do
+          count.should == 2
+          first.criterion.should == 'content 1'
+          last.criterion.should == 'content 2'
+        end
+      end
 
-    stories.first.acceptance_criteria.count.should == 2
-    criteria = stories.first.acceptance_criteria
-    criteria.first.criterion.should == 'content 1'
-    criteria.last.criterion.should == 'content 2'
+      stories.last.instance_eval do
+        i_want_to.should == 'do 2'
+        comments.should == 'comments 2'
+        score_90.should == 2
+      end
+    end
   end
 
   def check_valid_single_score(backlog_single_score)
     backlog_single_score.themes.count.should == 1
-    stories = backlog_single_score.themes.first.stories
-
-    stories.first.score_50.should == 5.0
-    stories.last.score_90.should == 5.0
-    stories.last.score.should == 5.0
+    backlog_single_score.themes.first.stories.instance_eval do
+      first.score_50.should == 5.0
+      last.score_90.should == 5.0
+      last.score.should == 5.0
+    end
   end
 
   it 'should create themes and stories using 50/90 scoring from sprint data' do

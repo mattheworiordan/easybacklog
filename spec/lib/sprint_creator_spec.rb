@@ -3,8 +3,11 @@
 require 'spec_helper'
 
 describe Creators::SprintCreator do
+  let(:base_created_at) { Time.parse('1 Jan 2011') }
+  let(:base_updated_at) { Time.parse('1 Jan 2012') }
+
   # set up 2 stories in two themes
-  let(:backlog) { Factory.create(:backlog) }
+  let(:backlog) { Factory.create(:backlog, :created_at => base_created_at, :updated_at => base_updated_at) }
   let(:theme_1) { Factory.create(:theme, :backlog => backlog) }
   let(:theme_2) { Factory.create(:theme, :backlog => backlog) }
   let(:story_1) { Factory.create(:story, :theme => theme_1) }
@@ -40,22 +43,41 @@ describe Creators::SprintCreator do
   end
 
   it 'should create sprint stories from sprint data' do
+    # create local varaibles as let does not work with instance_eval
+    default_created_at = base_created_at
+    default_updated_at = base_updated_at
+    accepted = accepted_sprint_story_status
+    story_one = story_1
+    story_two = story_2
+
     sprint = subject.create sprint_data, backlog
 
     backlog.sprints.count.should == 1
+    backlog.sprints.first.instance_eval do
+      created_at.should == default_created_at
+      updated_at.should == default_updated_at
+    end
 
     sprint_stories = backlog.sprints.first.sprint_stories
     sprint_stories.count.should == 2
 
-    sprint_stories.first.sprint_story_status.should == accepted_sprint_story_status
-    sprint_stories.first.story.should == story_1
-    sprint_stories.first.sprint_score_50_when_assigned.should == 3
-    sprint_stories.first.sprint_score_90_when_assigned.should == 5
+    sprint_stories.first.instance_eval do
+      sprint_story_status.should == accepted
+      story.should == story_one
+      sprint_score_50_when_assigned.should == 3
+      sprint_score_90_when_assigned.should == 5
+      created_at.should == default_created_at
+      updated_at.should == default_updated_at
+    end
 
-    sprint_stories.last.sprint_story_status.should == accepted_sprint_story_status
-    sprint_stories.last.story.should == story_2
-    sprint_stories.last.sprint_score_50_when_assigned.should == 5
-    sprint_stories.last.sprint_score_90_when_assigned.should == 8
+    sprint_stories.last.instance_eval do
+      sprint_story_status.should == accepted
+      story.should == story_two
+      sprint_score_50_when_assigned.should == 5
+      sprint_score_90_when_assigned.should == 8
+      created_at.should == default_created_at
+      updated_at.should == default_updated_at
+    end
   end
 
   it 'should mark a sprint as complete if completed' do
@@ -78,8 +100,11 @@ describe Creators::SprintCreator do
     sprint = subject.create sprint_data, backlog
 
     backlog.sprints.first.snapshot.should be_present
-    snapshot = backlog.sprints.first.snapshot
-    snapshot.name.should == 'Sprint 1 Snapshot'
-    snapshot.rate.should == 600
+    backlog.sprints.first.snapshot.instance_eval do
+      name.should == 'Sprint 1 Snapshot'
+      rate.should == 600
+      created_at.should == Date.parse('1 Mar 2010')
+      updated_at.should == Date.parse('1 Mar 2011')
+    end
   end
 end

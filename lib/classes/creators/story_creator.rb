@@ -5,7 +5,7 @@ module Creators
 
     def create(story_data, target_theme)
       @story = target_theme.stories.build
-      set_story_properties story_data
+      set_story_properties story_data, target_theme
 
       # build criterion
       arr(story_data, :acceptance_criteria).each do |criterion|
@@ -24,7 +24,9 @@ module Creators
         :so_i_can => story_data.so_i_can,
         :comments => story_data.comments,
         :color => story_data.color,
-        :position => position
+        :position => position,
+        :created_at => story_data.theme.backlog.created_at,
+        :updated_at => story_data.theme.backlog.updated_at
       }
 
       if use_50_90
@@ -44,7 +46,7 @@ module Creators
     end
 
     private
-      def set_story_properties(story)
+      def set_story_properties(story, target_theme)
         @story.unique_id = story.unique_id
         @story.as_a = story.as_a
         @story.i_want_to = story.i_want_to
@@ -57,6 +59,8 @@ module Creators
         else
           @story.score = story.score
         end
+        @story.created_at = target_theme.backlog.created_at
+        @story.updated_at = target_theme.backlog.updated_at
         @story.save!
       end
   end
