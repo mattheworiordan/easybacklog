@@ -677,7 +677,6 @@
 
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
-    %a{:name => 'backlogs'}
 
     .route-section
     .route-info
@@ -953,7 +952,7 @@
       An #{link_to 'backlog object', '#backlog-object'}.
 
     .route-example
-      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}'
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}'
       %code.rest.rest-request
         .prompt
         :preserve
@@ -1029,7 +1028,7 @@
       The newly created #{link_to 'backlog object', '#backlog-object'}.
 
     .route-example
-      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}'
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs'
       %code.rest.rest-request.rest-locked
         .prompt
         :preserve
@@ -1102,7 +1101,7 @@
       HTTP response header if successful.
 
     .route-example
-      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}'
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}'
       %code.rest.rest-request.rest-locked
         .prompt
         :preserve
@@ -1193,7 +1192,7 @@
       HTTP response header if successful.
 
     .route-example
-      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}'
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}'
       %code.rest.rest-request.rest-locked
         .prompt
         :preserve
@@ -1211,7 +1210,9 @@
       %a{:name => 'snapshot-object'}
       %h2 Snapshots
       %p
-        An snapshot object represents a exact copy of an entire backlog and its children and belongs to a single #{link_to 'Backlog', '#backlog'}.  A snapshot contains one or more children #{link_to 'themes', '#themes'}.
+        A snapshot object represents an exact copy of a #{link_to 'backlog', '#backlogs'} in a point in time.  It belongs to a single #{link_to 'backlog', '#backlogs'}.
+        A snapshot contains one or more children #{link_to 'themes', '#themes'}, which in turn contain #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'}.
+        Snapshots only contain backlog data and do not contain #{link_to 'sprints', '#sprints'}.
       %p
         Snapshots are either manually created, or created automatically when a sprint starts.
 
@@ -1219,7 +1220,7 @@
     .route-info
       %h3 The Snapshot object
 
-      The Snapshot object is very nearly identical to the #{link_to 'Backlog object', '#backlog-object'}, except that it is never editable, and contains a reference to it's parent backlog or sprint.
+      The Snapshot object is very similar to the #{link_to 'Backlog object', '#backlog-object'}, except that it is never editable, and contains a reference to it's parent backlog or sprint.
 
       %h4 Attributes
       %dl.argument-list
@@ -1234,7 +1235,7 @@
         %dt parent_backlog_id or parent_sprint_id:
         %dd
           .data-type.foreign-key-read-only integer
-          #{link_to 'Backlog', '#backlog'} or #{link_to 'Sprint', '#sprint'} this snapshot belongs to.  Manually created snapshots have a
+          #{link_to 'Backlog', '#backlogs'} or #{link_to 'Sprint', '#sprints'} this snapshot belongs to.  Manually created snapshots have a
           #{content_tag :code, 'parent_backlog_id'}, whereas sprint snapshots created automatically when a sprint commences have a
           #{content_tag :code, 'parent_sprint_id'}.
         %dt velocity:
@@ -1354,7 +1355,7 @@
       An #{link_to 'snapshot object', '#snapshot-object'}.
 
     .route-example
-      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlog/{BACKLOG_ID}/snapshots/{SNAPSHOT_ID}'
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/snapshots/{SNAPSHOT_ID}'
       %code.rest.rest-request
         .prompt
         :preserve
@@ -1453,16 +1454,314 @@
 
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
+    %a{:name => 'themes'}
+
+  .route-section
+    .route-info
+      %a{:name => 'theme-object'}
+      %h2 Theme
+      %p
+        A theme object contains one or more stories in a backlog, and belongs to a single #{link_to 'backlog', '#backlogs'}.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Theme object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id:
+        %dd
+          .data-type.read-only integer
+          Unique identifier for this theme
+        %dt backlog_id:
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Backlog', '#backlogs'} this theme belongs to
+        %dt name:
+        %dd
+          .data-type string
+          The theme name
+        %dt code:
+        %dd
+          .data-type.auto-generated string
+          A three letter unique identifier for this theme.  This code is automatically generated if not specified, but can be manually specified as well.
+        %dt position:
+        %dd
+          .data-type.auto-generated integer
+          Position of this theme relative to the other themes in this #{link_to 'backlog', '#backlogs'}.  Position 1 represents the first theme in the list.
+        %dt created_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "backlog_id":366,
+              "code":"HOP",
+              "created_at":"2012-05-24T13:13:18Z",
+              "id":1164,
+              "name":"Home page",
+              "position":1,
+              "updated_at":"2012-05-25T17:11:20Z"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <theme>
+              <backlog-id type="integer">366</backlog-id>
+              <code>HOP</code>
+              <created-at type="datetime">2012-05-24T13:13:18Z</created-at>
+              <id type="integer">1164</id>
+              <name>Home page</name>
+              <position type="integer">1</position>
+              <updated-at type="datetime">2012-05-25T17:11:20Z</updated-at>
+            </theme>
+
+  .route-section
+    .route-info
+      %h3 List the Themes
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An array of #{link_to 'theme objects', '#theme-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/themes'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "backlog_id":366,
+                "code":"HOP",
+                "created_at":"2012-05-24T13:13:18Z",
+                "id":1164,
+                "name":"Home page",
+                "position":1,
+                "updated_at":"2012-05-25T17:11:20Z"
+              }
+            ]
+    %a{:name => 'theme-retrieve'}
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Theme
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An #{link_to 'theme object', '#theme-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/themes/{THEME_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes/#{demo_api_theme_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "backlog_id":357,
+              "code":"HOP",
+              "created_at":"2011-01-03T15:03:00Z",
+              "id":1131,
+              "name":"Home page",
+              "position":1,
+              "updated_at":"2012-05-23T17:42:10Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Create a Theme
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The theme name
+        %dt code:
+        %dd
+          .data-type.auto-generated string
+          A three letter unique identifier for this theme.  This code is automatically generated if not specified, but can be manually specified as well.
+        %dt position:
+        %dd
+          .data-type.auto-generated integer
+          Position of this theme relative to the other themes in this #{link_to 'backlog', '#backlogs'}.  Position 1 represents the first theme in the list.
+
+      %h4.returns Returns
+      The newly created #{link_to 'theme object', '#theme-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/themes'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New theme" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "backlog_id":357,
+              "code":"NET",
+              "created_at":"2012-05-28T15:20:41Z",
+              "id":1170,
+              "name":"New theme",
+              "position":6,
+              "updated_at":"2012-05-28T15:20:41Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Update a Theme
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt name:
+        %dd
+          .data-type string
+          The theme name
+        %dt code:
+        %dd
+          .data-type.auto-generated string
+          A three letter unique identifier for this theme.
+        %dt position:
+        %dd
+          .data-type.auto-generated integer
+          Position of this theme relative to the other themes in this #{link_to 'backlog', '#backlogs'}.  Position 1 represents the first theme in the list.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes/#{demo_api_theme_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "name=New theme name" \
+             -d "code=NTM" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Move story from another theme
+
+      %p You can attach a story to this theme by specifying the ID of the story that you wish to move.  The story you are moving to this theme must be assigned to another theme in the same backlog.
+
+      %h4.returns Arguments
+      %dl.argument-list
+        %dt story_id:
+        %dd
+          .data-type integer
+          #{link_to 'Story', '#stories'} that you wish to move to this theme.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/themes/{THEME_ID}/grab-story'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes/#{demo_api_2nd_theme_id}/grab-story \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "story_id=#{demo_api_story_id}" \
+             -X POST
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Move theme to another backlog
+
+      %p A theme and all the stories and acceptance criteria within this theme can be moved to another backlog.  However, if the theme contains any stories that are assigned to sprints, then this request will be prohibited.
+
+      %h4.returns Arguments
+      %dl.argument-list
+        %dt target_backlog_id:
+        %dd
+          .data-type integer
+          #{link_to 'Backlog', '#backlogs'} that you wish to move this theme to.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/themes/{THEME_ID}/move-to-backlog'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes/#{demo_api_2nd_theme_id}/move-to-backlog \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "target_backlog_id=#{demo_api_2nd_backlog_id}" \
+             -X POST
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Delete a Theme
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/themes/{THEME_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes/#{demo_api_theme_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
 
 
 
-
-
-Defaults to JSON, but supports XML as well.  Data can be sent as standard POST data, or JSON / XML as the post body
-Authentication methods Basic, Token or Querystring
-Standard response headers
 Talk about date formats
-
 Mention that position and ID is auto-assigned, however position can be overwritten
 
 /backlogs/[id]/themes/[?include_associated_data=true] GET

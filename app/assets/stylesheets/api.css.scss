@@ -210,6 +210,9 @@ section.content {
             &.foreign-key-nullable::after {
               content: '(nullable foreign key)';
             }
+            &.auto-generated::after {
+              content: '(auto-generated)';
+            }
           }
           h4 {
             margin-top: 0.75em;
