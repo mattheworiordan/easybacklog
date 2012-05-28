@@ -112,6 +112,7 @@ class ThemesController < ApplicationController
     end
   end
 
+  ## included in API
   def move_to_backlog
     enforce_can :full, 'You do not have permission to edit this backlog' do
       @theme = @backlog.themes.find(params[:id])
@@ -131,7 +132,7 @@ class ThemesController < ApplicationController
       rescue ActiveRecord::RecordNotFound => not_found
         send_error "The backlog you are moving this theme to does not exist", :http_status => :not_found
       rescue Theme::ThemeCannotBeMoved => e
-        send_error "This theme cannot be moved (possibly because one of the stories has been assigned to a sprint)", :http_status => :forbidden
+        send_error "This theme cannot be moved. #{e.message}", :http_status => :forbidden
       rescue Exception => e
         send_error "Internal error: '#{e.message}'. #{t 'refresh'}", :http_status => :internal_server_error
       end

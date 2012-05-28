@@ -78,8 +78,10 @@ class Theme < ActiveRecord::Base
 
   def move_to_backlog(new_backlog)
     # you can't move a theme if any of the stories are assigned to sprints
-    raise ThemeCannotBeMoved if stories.select { |story| story.sprint_story.present? }.present?
-    raise ThemeCannotBeMoved if new_backlog == backlog
+    raise ThemeCannotBeMoved, 'One or more stories in this theme are assigned to sprints.' if stories.select { |story| story.sprint_story.present? }.present?
+    raise ThemeCannotBeMoved, 'The target backlog is the current backlog.' if new_backlog == backlog
+    raise ThemeCannotBeMoved, 'The target backlog is locked and not editable.' if new_backlog.locked?
+    raise ThemeCannotBeMoved, 'This backlog is locked and not editable.' if backlog.locked?
     self.backlog = new_backlog
     self.code = nil if new_backlog.themes.where(:code => code).present? # just create a new code if that one already exists
     # ensure name is unique by adding a number to the end
