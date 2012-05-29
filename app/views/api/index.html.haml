@@ -2587,6 +2587,222 @@
 
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
+    %a{:name => 'acceptance-criteria'}
+
+  .route-section
+    .route-info
+      %a{:name => 'acceptance-criterion-object'}
+      %h2 Acceptance Criteria
+      %p
+        An acceptance criterion object represents the acceptance criteria assigned to a #{link_to 'story', '#stories'}.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Acceptance Criterion object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id
+        %dd
+          .data-type.auto-generated-read-only integer
+          Unique identifier for this acceptance criterion
+        %dt story_id
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Story', '#stories'} this acceptance criterion belongs to.
+        %dt criterion
+        %dd
+          .data-type.nullable string
+          This criterion's value.
+        %dt position
+        %dd
+          .data-type.auto-generated integer
+          Position of this story relative to the other stories in this #{link_to 'theme', '#themnes'}.  Position 1 represents the first story in the list.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "criterion":"Support for tracking code in the format ?campaign=[code]",
+              "id":7658,
+              "position":1,
+              "story_id":3159
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <story>
+            <acceptance-criterion>
+              <criterion>Support for tracking code in the format ?campaign=[code]</criterion>
+              <id type="integer">7658</id>
+              <position type="integer">1</position>
+              <story-id type="integer">3159</story-id>
+            </acceptance-criterion>
+
+  .route-section
+    .route-info
+      %h3 List the Acceptance Criteria
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An array of #{link_to 'acceptance criterion objects', '#acceptance-criterion-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'stories/{STORY_ID}/acceptance-criteria'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id}/acceptance-criteria \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "criterion":"Support for tracking code in the format ?campaign=[code]",
+                "id":7658,
+                "position":1,
+                "story_id":3159
+              }
+            ]
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id}/acceptance-criteria \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "include_associated_data=true" \
+             -X GET
+
+    %a{:name => 'sprint-retrieve'}
+
+  .route-section
+    .route-info
+      %h3 Retrieve an Acceptance Criterion
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An #{link_to 'acceptance criterion object', '#acceptance-criterion-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'stories/{STORY_ID}/acceptance-criteria/{ACCEPTANCE_CRITERIA_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id}/acceptance-criteria/#{demo_api_acceptance_criterion_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "criterion":"Support for tracking code in the format ?campaign=[code]",
+              "id":7658,
+              "position":1,
+              "story_id":3159
+            }
+
+  .route-section
+    .route-info
+      %h3 Create an Acceptance Criterion
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt criterion
+        %dd
+          .data-type.nullable string
+          This criterion's value.
+        %dt position
+        %dd
+          .data-type.auto-generated integer
+          Position of this story relative to the other stories in this #{link_to 'theme', '#themnes'}.  Position 1 represents the first story in the list.
+
+      %h4.returns Returns
+      The newly created #{link_to 'acceptance criterion object', '#acceptance-criterion-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'stories/{STORY_ID}/acceptance-criteria'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id}/acceptance-criteria \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "criterion=Must validate user details" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "criterion":"Must validation user details",
+              "id":7941,
+              "position":1,
+              "story_id":3267
+            }
+
+  .route-section
+    .route-info
+      %h3 Update an Acceptance Criterion
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt criterion
+        %dd
+          .data-type.nullable string
+          This criterion's value.
+        %dt position
+        %dd
+          .data-type.auto-generated integer
+          Position of this story relative to the other stories in this #{link_to 'theme', '#themnes'}.  Position 1 represents the first story in the list.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'stories/{STORY_ID}/acceptance-criteria/{ACCEPTANCE_CRITERIA_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id}/acceptance-criteria/#{demo_api_acceptance_criterion_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "criterion=Must validate user details using Javascript" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Delete an Acceptance Criterion
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'stories/{STORY_ID}/acceptance-criteria/{ACCEPTANCE_CRITERIA_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id}/acceptance-criteria/#{demo_api_acceptance_criterion_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
 
 
 Talk about date formats
