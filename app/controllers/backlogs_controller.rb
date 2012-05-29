@@ -1,11 +1,10 @@
 class BacklogsController < ApplicationController
+  respond_to :html
+  respond_to *API_FORMATS, :only => [:index, :show, :update, :create, :destroy, :duplicate, :index_snapshot, :show_snapshot, :destroy_snapshot]
   include AccountResource
   include ActionView::Helpers::TextHelper
   after_filter :update_backlog_metadata, :only => [:update]
   BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => :story } } ]
-
-  respond_to :html
-  respond_to :xml, :json, :only => [:index, :show, :update, :create, :destroy, :duplicate, :index_snapshot, :show_snapshot, :destroy_snapshot]
 
   ## included in API
   def index
@@ -71,7 +70,7 @@ class BacklogsController < ApplicationController
             flash[:notice] = 'Backlog was successfully created.'
             redirect_to account_backlog_path(current_account, @backlog)
           end
-          format.all { render request.format.to_sym => @backlog, :status => STATUS_CODE[:created] }
+          format.any(*API_FORMATS) { render request.format.to_sym => @backlog, :status => STATUS_CODE[:created] }
         end
       else
         respond_with(@backlog) do |format|
@@ -124,7 +123,7 @@ class BacklogsController < ApplicationController
           flash[:notice] = "New snapshot created"
           redirect_to account_backlog_path(@backlog.account, @backlog)
         end
-        format.all { render request.format.to_sym => new_snapshot, :status => STATUS_CODE[:created] }
+        format.any(*API_FORMATS) { render request.format.to_sym => new_snapshot, :status => STATUS_CODE[:created] }
       end
     end
   rescue ActiveRecord::RecordInvalid => e
@@ -285,7 +284,7 @@ class BacklogsController < ApplicationController
       format.html do
         render :partial => 'snapshot_select'
       end
-      format.xml { render render_options.send("to_#{request.format.to_sym}", :root => 'snapshots') }
+      format.xml { render render_options.send("to_xml", :root => 'snapshots') }
       format.json { render render_options }
     end
   end

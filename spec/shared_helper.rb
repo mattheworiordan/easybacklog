@@ -23,6 +23,16 @@ def assert_backlog_not_editable(backlog)
   expect { backlog.name = 'Changed'; backlog.save! }.to raise_error
 end
 
+def check_unsupported_mimetypes(actions)
+  %w(text/html text/plain doesnotexist).each do |mime_type|
+    actions.each do |action|
+      request.env['HTTP_ACCEPT'] = mime_type
+      get action.to_sym
+      response.code.should == status_code(:not_acceptable)
+    end
+  end
+end
+
 # API requests are treated differently in the application, typically identified by the host name, however the X-Forward-To-Api header can be used for testing
 # Basic authentication request using access token set up by default
 def setup_api_authentication(user_token)

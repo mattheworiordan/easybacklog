@@ -1,9 +1,8 @@
 class ThemesController < ApplicationController
-  before_filter :authenticate_user!, :set_backlog_and_protect
+  respond_to *API_FORMATS
+  before_filter :enforce_mime_type_for_api, :authenticate_user!, :set_backlog_and_protect
   before_filter :stop_updates_if_locked, :only => [:create, :update, :destroy]
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy]
-
-  respond_to :xml, :json
 
   ## included in API
   def index

@@ -1,8 +1,8 @@
 class CompaniesController < ApplicationController
+  respond_to :html, :except => [:index, :create], :if => :is_api?
+  respond_to *API_FORMATS, :only => [:index, :show, :create, :update]
+  before_filter :enforce_mime_type_for_api, :if => :is_api?
   include AccountResource
-
-  respond_to :html, :except => [:index, :create]
-  respond_to :xml, :json, :only => [:index, :show, :create, :update]
 
   ## only for API
   def index

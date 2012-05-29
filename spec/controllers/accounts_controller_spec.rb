@@ -33,6 +33,12 @@ describe AccountsController do
       json['message'].should match(/Account does not exist/i)
     end
 
+    context 'only support JSON and XML' do
+      it 'should return a 406 for all unsupported mime types' do
+        check_unsupported_mimetypes %w(index show update)
+      end
+    end
+
     context 'index' do
       let (:account2) { Factory.create(:account) }
       before (:each) { Factory.create(:account_user, :user => user, :account => account2) }

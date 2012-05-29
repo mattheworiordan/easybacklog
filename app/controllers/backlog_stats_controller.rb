@@ -1,6 +1,8 @@
 class BacklogStatsController < ApplicationController
+  respond_to *API_FORMATS
+  before_filter :enforce_mime_type_for_api
+
   include AccountResource
-  respond_to :xml, :json
 
   def show
     @backlog = Backlog.find(params[:id])

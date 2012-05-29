@@ -1,9 +1,9 @@
 class AccountsController < ApplicationController
+  respond_to :html, :unless => :is_api?
+  respond_to *API_FORMATS, :only => [:index, :show, :update]
+  before_filter :enforce_mime_type_for_api, :if => :is_api?
   before_filter :authenticate_user!, :except => :name_available
   basic_allowed :name_available
-
-  respond_to :html
-  respond_to :xml, :json, :only => [:index, :show, :update]
 
   ## included in API
   def index

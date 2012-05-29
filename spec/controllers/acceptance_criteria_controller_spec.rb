@@ -114,6 +114,12 @@ describe AcceptanceCriteriaController do
       response.code.should == status_code(:forbidden)
     end
 
+    context 'only support JSON and XML' do
+      it 'should return a 406 for all unsupported mime types' do
+        check_unsupported_mimetypes %w(index show create update destroy)
+      end
+    end
+
     context 'index' do
       before(:each) { criterion }
 

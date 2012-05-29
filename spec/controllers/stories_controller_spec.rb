@@ -123,6 +123,12 @@ describe StoriesController do
       response.code.should == status_code(:forbidden)
     end
 
+    context 'only support JSON and XML' do
+      it 'should return a 406 for all unsupported mime types' do
+        check_unsupported_mimetypes %w(index show create update destroy move_to_theme)
+      end
+    end
+
     context 'index' do
       before(:each) { 2.times { Factory.create(:acceptance_criterion, :story => story) } }
 

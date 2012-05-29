@@ -76,6 +76,12 @@ describe CompaniesController do
       json['message'].should match(/Company does not exist/i)
     end
 
+    context 'only support JSON and XML' do
+      it 'should return a 406 for all unsupported mime types' do
+        check_unsupported_mimetypes %w(index show create update)
+      end
+    end
+
     context 'index' do
       let! (:company2) { Factory.create(:company, :account => account) }
       before (:each) { Factory.create(:company_user, :user => user, :company => company2) }

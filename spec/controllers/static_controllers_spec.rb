@@ -8,6 +8,12 @@ shared_examples "a static API" do
     subject
   end
 
+  context 'only support JSON and XML' do
+    it 'should return a 406 for all unsupported mime types' do
+      check_unsupported_mimetypes %w(index show)
+    end
+  end
+
   it 'should return a list' do
     get :index
     response.code.should == status_code(:ok)

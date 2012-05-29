@@ -1,5 +1,6 @@
 class ScoringRulesController < ApplicationController
-  respond_to :xml, :json
+  respond_to *API_FORMATS
+  before_filter :enforce_mime_type_for_api
 
   ## included in API
   def index

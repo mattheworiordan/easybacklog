@@ -1,8 +1,7 @@
 class SprintsController < ApplicationController
-  before_filter :authenticate_user!, :set_backlog_and_protect
+  respond_to *API_FORMATS
+  before_filter :enforce_mime_type_for_api, :authenticate_user!, :set_backlog_and_protect
   before_filter :stop_updates_if_locked, :only => [:create, :update, :destroy]
-
-  respond_to :xml, :json
 
   JSON_METHODS = [:completed?, :deletable?, :total_allocated_points, :total_expected_points, :total_completed_points]
   XML_METHODS = JSON_METHODS - [:completed?, :deletable?] # ? causes invalid XML
@@ -57,6 +56,7 @@ class SprintsController < ApplicationController
     end
   end
 
+  ## included in API
   def update
     enforce_can :full, 'You do not have permission to edit this backlog' do
       @sprint = @backlog.sprints.find(params[:id])
@@ -87,6 +87,7 @@ class SprintsController < ApplicationController
     end
   end
 
+  ## included in API
   def destroy
     @sprint = @backlog.sprints.find(params[:id])
     enforce_can :full, 'You do not have permission to delete this sprint' do

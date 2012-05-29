@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   include SslRequired
 
+  API_FORMATS = [:xml, :json]
+
   after_filter :log_last_page_viewed, :unless => :is_api?
   before_filter :test_env_mail_config if Rails.env.test? # set up ActionMailer host when running Cuke so links work
   before_filter :ensure_last_sign_in_updated # last sign in date is not updated if user is automatically logged in
@@ -261,8 +263,25 @@ class ApplicationController < ActionController::Base
       # default to JSON for API requests unless an accept type has been specified or a format has been specified in the URL as a suffix
       request.format = 'json' unless params[:format] || (request.headers.include?('HTTP_ACCEPT') && request.headers['HTTP_ACCEPT'] != '*/*')
 
-      if request.format == 'html'
+      if request.format.present? && request.format.to_sym == :html
         send_error 'HTML is not a supported format for this API', :http_status => :not_acceptable
+      end
+    end
+
+    def enforce_mime_type_for_api
+      # ensure a 406 not permitted is returned if unsupported format
+      render_unsupported = { :text => "Unsupported mime type: #{request.format}", :status => STATUS_CODE[:not_acceptable] }
+      if request.format.blank?
+        render render_unsupported
+      else
+        respond_with({}) do |format|
+          format.any(*API_FORMATS) do
+            true
+          end
+          format.all do
+            render render_unsupported
+          end
+        end
       end
     end
 
