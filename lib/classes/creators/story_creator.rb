@@ -15,7 +15,7 @@ module Creators
       @story
     end
 
-    def create_sql(story_data, position, use_50_90)
+    def create_sql(story_data, position, target_backlog)
       options = {
         :theme_id => :themes,
         :unique_id => story_data.unique_id,
@@ -25,11 +25,11 @@ module Creators
         :comments => story_data.comments,
         :color => story_data.color,
         :position => position,
-        :created_at => story_data.theme.backlog.created_at,
-        :updated_at => story_data.theme.backlog.updated_at
+        :created_at => target_backlog.created_at,
+        :updated_at => target_backlog.updated_at
       }
 
-      if use_50_90
+      if target_backlog.use_50_90
         options.merge! :score_50 => story_data.score_50, :score_90 => story_data.score_90
       else
         options.merge! :score_50 => story_data.score, :score_90 => story_data.score

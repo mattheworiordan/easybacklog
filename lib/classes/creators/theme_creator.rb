@@ -23,7 +23,7 @@ module Creators
       # build stories
       creator = StoryCreator.new
       arr(theme_data, :stories).each_with_index do |story, index|
-        sql << creator.create_sql(story, index+1, target_backlog.use_50_90)
+        sql << creator.create_sql(story, index+1, target_backlog)
       end
 
       sql

@@ -32,8 +32,6 @@ describe Creators::ThemeCreator do
             "content #{c_index}"
           end
         end
-        story.stub_chain(:theme, :backlog, :created_at).and_return(base_created_at)
-        story.stub_chain(:theme, :backlog, :updated_at).and_return(base_updated_at)
         story
       end
     end
