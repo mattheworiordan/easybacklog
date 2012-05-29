@@ -7,14 +7,14 @@ class ThemesController < ApplicationController
   ## included in API
   def index
     enforce_can :read, 'You do not have permission to view this backlog' do
+      theme_options = render_options
       if params[:include_associated_data].to_s == 'true'
         @themes = @backlog.themes.find(:all, :include => [:stories, { :stories => :acceptance_criteria } ])
-        @themes = @themes.as_json(:include => { :stories => { :include => :acceptance_criteria } })
+        theme_options.merge!(:include => { :stories => { :include => :acceptance_criteria } })
       else
         @themes = @backlog.themes
       end
-
-      respond_with @themes
+      render request.format.to_sym => @themes.send("to_#{request.format.to_sym}", theme_options)
     end
   end
 
@@ -23,10 +23,14 @@ class ThemesController < ApplicationController
     find_params = params[:include_associated_data] ? { :include => [:stories, { :stories => :acceptance_criteria } ] } : {}
     @theme = @backlog.themes.find(params[:id], find_params)
     enforce_can :read, 'You do not have permission to view this backlog' do
-      render request.format.to_sym => if params[:include_associated_data].to_s == 'true'
-        @theme.as_json(:include => { :stories => { :include => :acceptance_criteria } })
-      else
-        @theme
+      respond_with(@themes) do |format|
+        format.all do
+          render request.format.to_sym => if params[:include_associated_data].to_s == 'true'
+            @theme.send("to_#{request.format.to_sym}", render_options.merge(:include => { :stories => { :include => :acceptance_criteria } }))
+          else
+            @theme
+          end
+        end
       end
     end
   end
@@ -162,6 +166,19 @@ class ThemesController < ApplicationController
 
     def frontend_json()
       @theme.as_json(:methods => [:score_statistics], :except => [:updated_at, :created_at])
+    end
+
+    # if rendering XML, we need to specify the root element
+    def render_options()
+      if request.format.to_sym == :xml
+        if caller(1)[0].match(/`.*?([a-z0-9_]*)'$/i)[1] == 'index'
+          { :root => 'themes' }
+        else
+          { :root => 'theme' }
+        end
+      else
+        {}
+      end
     end
 
     def update_backlog_metadata

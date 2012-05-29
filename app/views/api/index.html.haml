@@ -1530,7 +1530,10 @@
       %h3 List the Themes
 
       %h4 Arguments
-      None
+      %dl.argument-list
+        %dt include_associated_data:
+        %dd
+          Passing in this optional parameter will include all children stories and acceptance criteria for this list of themes.
 
       %h4.returns Returns
       An array of #{link_to 'theme objects', '#theme-object'}.
@@ -1557,6 +1560,15 @@
                 "updated_at":"2012-05-25T17:11:20Z"
               }
             ]
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/themes \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "include_associated_data=true" \
+             -X GET
+
     %a{:name => 'theme-retrieve'}
 
   .route-section
@@ -1564,7 +1576,10 @@
       %h3 Retrieve a Theme
 
       %h4 Arguments
-      None
+      %dl.argument-list
+        %dt include_associated_data:
+        %dd
+          Passing in this optional parameter will include all children stories and acceptance criteria for this object.
 
       %h4.returns Returns
       An #{link_to 'theme object', '#theme-object'}.
