@@ -263,7 +263,7 @@
       %dl.argument-list
         %dt id:
         %dd
-          .data-type.read-only integer
+          .data-type.auto-generated-read-only integer
           Unique identifier for this account
         %dt name:
         %dd
@@ -463,7 +463,7 @@
       %dl.argument-list
         %dt id:
         %dd
-          .data-type.read-only integer
+          .data-type.auto-generated-read-only integer
           Unique identifier for this company
         %dt name:
         %dd
@@ -872,7 +872,7 @@
           %b include associated data:
           Passing in the optional
           %code include_associated_data=true
-          parameter modifies the JSON to include all themes, sprints, stories and acceptance criteria related to this object.
+          parameter modifies the JSON to include all #{link_to 'themes', '#themes'}, #{link_to 'sprints', '#sprints'}, #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} related to this object.
         %dt XML:
         %dd
           Use the
@@ -890,7 +890,7 @@
           %b include associated data:
           Passing in the optional
           %code include_associated_data=true
-          parameter modifies the JSON to include all snapshots, themes, sprints, sprint snapshots, stories, sprint stories and acceptance criteria related to this object.
+          parameter modifies the JSON to include all #{link_to 'sprints', '#sprints'}, #{link_to 'themes', '#themes'}, #{link_to 'sprints', '#sprints'}, #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} related to this object.
         %dt Excel (XLS):
         %dd
           Use the
@@ -1226,7 +1226,7 @@
       %dl.argument-list
         %dt id:
         %dd
-          .data-type.read-only integer
+          .data-type.auto-generated-read-only integer
           Unique identifier for this snapshot.
         %dt name:
         %dd
@@ -1471,7 +1471,7 @@
       %dl.argument-list
         %dt id:
         %dd
-          .data-type.read-only integer
+          .data-type.auto-generated-read-only integer
           Unique identifier for this theme
         %dt backlog_id:
         %dd
@@ -1533,7 +1533,7 @@
       %dl.argument-list
         %dt include_associated_data:
         %dd
-          Passing in this optional parameter will include all children stories and acceptance criteria for this list of themes.
+          Passing in this optional parameter will include all children #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} for this list of themes.
 
       %h4.returns Returns
       An array of #{link_to 'theme objects', '#theme-object'}.
@@ -1579,7 +1579,7 @@
       %dl.argument-list
         %dt include_associated_data:
         %dd
-          Passing in this optional parameter will include all children stories and acceptance criteria for this object.
+          Passing in this optional parameter will include all children #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} for this object.
 
       %h4.returns Returns
       An #{link_to 'theme object', '#theme-object'}.
@@ -1773,19 +1773,333 @@
 
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
+    %a{:name => 'sprints'}
 
+  .route-section
+    .route-info
+      %a{:name => 'sprint-object'}
+      %h2 Theme
+      %p
+        A sprint object represents the sprint configured for a #{link_to 'backlog', '#backlog'} where one or more #{link_to 'stories', '#stories'} are assigned to the sprint.  A sprint has two states, incomplete (active and editable) or completed.  A join model is used to relate #{link_to 'stories', '#stories'} to sprints, this model is called a #{link_to 'sprint story', '#sprint-stories'} and is described below.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Sprint object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id:
+        %dd
+          .data-type.auto-generated-read-only integer
+          Unique identifier for this sprint
+        %dt backlog_id:
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Backlog', '#backlogs'} this sprint belongs to
+        %dt iteration:
+        %dd
+          .data-type.auto-generated-read-only integer
+          Represents the number of this sprint, starting at one for the first sprint.  This field is automatically assigned when the sprint is created.
+        %dt start_on:
+        %dd
+          .data-type date
+          The date that this sprint starts on.  This date is important in that it dictates when a snapshot of the backlog is taken so that the current backlog can be compared against the state of the backlog when the sprint commenced.
+        %dt duration_days:
+        %dd
+          .data-type integer
+          The duration in working days that this sprint lasts for.
+        %dt number_team_members:
+        %dd
+          .data-type.nullable decimal
+          Represents the number of team members assigned to this sprint, and is used to calculate the expected sprint velocity based on the duration and backlog average velocity.  The number of team members can only be specified if the backlog daily velocity is specified, and must be specified unless explicit velocity for the this sprint is specified.
+        %dt explicit_velocity:
+        %dd
+          .data-type.nullable decimal
+          Represents the expected velocity for this sprint.  If explicit velocity is specified, then the expected velocity for this sprint will not be calculated based on the backlog average velocity and the number of team members working on this sprint.
+        %dt created_at:
+        %dd
+          .data-type.nullable datetime
+          The date that this sprint was marked as complete, or null if not complete.  A sprint can only be marked as complete if all the stories it
+        %dt created_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at:
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+        %dt *others*
+        %dd
+          Any other attributes that are returned are not part of the official API spec and you should not rely on their existence.  They do serve as helpers though to provide additional information about this sprint.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "backlog_id":357,
+              "completed_at":"2011-01-24T19:05:19Z",
+              "created_at":"2011-01-03T15:03:00Z",
+              "duration_days":5,
+              "explicit_velocity":null,
+              "id":224,
+              "iteration":1,
+              "number_team_members":"1.0",
+              "start_on":"2011-01-17",
+              "updated_at":"2012-05-23T17:42:10Z",
+              "completed?":true,
+              "deletable?":false,
+              "total_allocated_points":11.0,
+              "total_expected_points":"15.0",
+              "total_completed_points":11.0
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <sprint>
+              <backlog-id type="integer">357</backlog-id>
+              <completed-at type="datetime">2011-01-24T19:05:19Z</completed-at>
+              <created-at type="datetime">2011-01-03T15:03:00Z</created-at>
+              <duration-days type="integer">5</duration-days>
+              <explicit-velocity nil="true"></explicit-velocity>
+              <id type="integer">224</id>
+              <iteration type="integer">1</iteration>
+              <number-team-members type="decimal">1.0</number-team-members>
+              <start-on type="date">2011-01-17</start-on>
+              <updated-at type="datetime">2012-05-23T17:42:10Z</updated-at>
+              <total-allocated-points type="float">11.0</total-allocated-points>
+              <total-expected-points type="decimal">15.0</total-expected-points>
+              <total-completed-points type="float">11.0</total-completed-points>
+            </sprint>
+
+  .route-section
+    .route-info
+      %h3 List the Sprints
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt include_associated_data:
+        %dd
+          Passing in this optional parameter will include all children #{link_to 'sprint stories', '#sprint-stories'} for this list of sprints.
+
+      %h4.returns Returns
+      An array of #{link_to 'sprint objects', '#sprint-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/sprints'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/sprints \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "backlog_id":357,
+                "completed_at":"2011-01-24T19:05:19Z",
+                "created_at":"2011-01-03T15:03:00Z",
+                "duration_days":5,
+                "explicit_velocity":null,
+                "id":224,
+                "iteration":1,
+                "number_team_members":"1.0",
+                "start_on":"2011-01-17",
+                "updated_at":"2012-05-23T17:42:10Z",
+                "completed?":true,
+                "deletable?":false,
+                "total_allocated_points":11.0,
+                "total_expected_points":"15.0",
+                "total_completed_points":11.0
+              }
+            ]
+
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/sprints \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "include_associated_data=true" \
+             -X GET
+
+    %a{:name => 'sprint-retrieve'}
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Sprint
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt include_associated_data:
+        %dd
+          Passing in this optional parameter will include all children #{link_to 'sprint stories', '#sprint-stories'} for this sprint.
+
+      %h4.returns Returns
+      An #{link_to 'sprint object', '#sprint-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/sprints/{SPRINT_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/sprints/#{demo_api_sprint_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "backlog_id":357,
+              "completed_at":"2011-01-24T19:05:19Z",
+              "created_at":"2011-01-03T15:03:00Z",
+              "duration_days":5,
+              "explicit_velocity":null,
+              "id":224,
+              "iteration":1,
+              "number_team_members":"1.0",
+              "start_on":"2011-01-17",
+              "updated_at":"2012-05-23T17:42:10Z",
+              "completed?":true,
+              "deletable?":false,
+              "total_allocated_points":11.0,
+              "total_expected_points":"15.0",
+              "total_completed_points":11.0
+            }
+
+  .route-section
+    .route-info
+      %h3 Create a Sprint
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt start_on:
+        %dd
+          .data-type date
+          The date that this sprint starts on.  This date is important in that it dictates when a snapshot of the backlog is taken so that the current backlog can be compared against the state of the backlog when the sprint commenced.
+        %dt duration_days:
+        %dd
+          .data-type integer
+          The duration in working days that this sprint lasts for.
+        %dt number_team_members:
+        %dd
+          .data-type.nullable decimal
+          Represents the number of team members assigned to this sprint, and is used to calculate the expected sprint velocity based on the duration and backlog average velocity.  The number of team members can only be specified if the backlog daily velocity is specified, and must be specified unless explicit velocity for the this sprint is specified.
+        %dt explicit_velocity:
+        %dd
+          .data-type.nullable decimal
+          Represents the expected velocity for this sprint.  If explicit velocity is specified, then the expected velocity for this sprint will not be calculated based on the backlog average velocity and the number of team members working on this sprint.
+
+      %h4.returns Returns
+      The newly created #{link_to 'sprint object', '#sprint-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/sprints'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/sprints \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "start_on=2012-01-02" \
+             -d "explicit_velocity=30" \
+             -d "duration_days=5" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "backlog_id":357,
+              "completed_at":null,
+              "created_at":"2012-05-29T16:08:42Z",
+              "duration_days":5,
+              "explicit_velocity":"30.0",
+              "id":230,
+              "iteration":6,
+              "number_team_members":null,
+              "start_on":"2012-01-02",
+              "updated_at":"2012-05-29T16:08:42Z",
+              "completed?":false,
+              "deletable?":true,
+              "total_allocated_points":0.0,
+              "total_expected_points":"30.0",
+              "total_completed_points":0.0
+            }
+
+  .route-section
+    .route-info
+      %h3 Update a Sprint
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt completed:
+        %dd
+          .data-type boolean
+          If this argument is passed in, all other arguments are ignored for this request.  Passing in true sets the sprint to completed, and passing in false sets a complete sprint back to its incomplete state.
+        %dt start_on:
+        %dd
+          .data-type date
+          The date that this sprint starts on.  This date is important in that it dictates when a snapshot of the backlog is taken so that the current backlog can be compared against the state of the backlog when the sprint commenced.
+        %dt duration_days:
+        %dd
+          .data-type integer
+          The duration in working days that this sprint lasts for.
+        %dt number_team_members:
+        %dd
+          .data-type.nullable decimal
+          Represents the number of team members assigned to this sprint, and is used to calculate the expected sprint velocity based on the duration and backlog average velocity.  The number of team members can only be specified if the backlog daily velocity is specified, and must be specified unless explicit velocity for the this sprint is specified.
+        %dt explicit_velocity:
+        %dd
+          .data-type decimal
+          Represents the expected velocity for this sprint.  If explicit velocity is specified, then the expected velocity for this sprint will not be calculated based on the backlog average velocity and the number of team members working on this sprint.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/sprints/#{demo_api_sprint_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "complete=true" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Delete a Sprint
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'backlogs/{BACKLOG_ID}/sprints/{SPRINT_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}backlogs/#{demo_api_backlog_id}/sprints/#{demo_api_sprint_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
 
 
 Talk about date formats
 Mention that position and ID is auto-assigned, however position can be overwritten
-
-/backlogs/[id]/themes/[?include_associated_data=true] GET
-/backlogs/[id]/themes/[id][?include_associated_data=true] GET
-/backlogs/[id]/themes/[id] PUT
-/backlogs/[id]/themes/ POST
-/backlogs/[id]/themes/[id] DELETE
-/backlogs/[id]/themes/[id]/grab-story?story_id=(STORY_ID) POST (must be a story from this backlog)
-/backlogs/[id]/themes/[id]/move-to-backlog?target_backlog_id=(BACKLOG_ID) POST (must be a backlog in your account)
 
 /themes/[id]/stories/[?include_associated_data=true] GET
 /themes/[id]/stories/[id][?include_associated_data=true] GET
@@ -1811,6 +2125,8 @@ Mention that position and ID is auto-assigned, however position can be overwritt
 /sprints/[id]/sprint-stories/[id] PUT [optional move_to_sprint_id=new_sprint_id]
 /sprints/[id]/sprint-stories/ POST
 /sprints/[id]/sprint-stories/[id] DELETE
+
+/ backlog stats
 
 /locales GET
 /locales/[id] GET

@@ -190,7 +190,7 @@ section.content {
           margin-top: 8px;
           .data-type {
             font-weight: bold;
-            &.read-only::after, &.foreign-key::after, &.nullable::after, &.foreign-key-read-only::after, &.foreign-key-nullable::after {
+            &.read-only::after, &.foreign-key::after, &.nullable::after, &.foreign-key-read-only::after, &.foreign-key-nullable::after, &.auto-generated::after, &.auto-generated-read-only::after {
               color: #666;
               padding-left: 0.5em;
               font-weight: normal;
@@ -212,6 +212,9 @@ section.content {
             }
             &.auto-generated::after {
               content: '(auto-generated)';
+            }
+            &.auto-generated-read-only::after {
+              content: '(auto-generated and read only)';
             }
           }
           h4 {

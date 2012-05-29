@@ -63,10 +63,14 @@ class SprintsController < ApplicationController
       Sprint.transaction do
         # changing completed is exclusive, no other updates will occur at the same time
         if (%w(true false).include? params[:completed])
-          # special params set by front end to mark as completed or incomplete which can throw an error
-          @sprint.mark_as_complete if params[:completed] == 'true'
-          @sprint.mark_as_incomplete if params[:completed] == 'false'
-          update_backlog_metadata
+          begin
+            # special params set by front end to mark as completed or incomplete which can throw an error
+            @sprint.mark_as_complete if params[:completed] == 'true'
+            @sprint.mark_as_incomplete if params[:completed] == 'false'
+            update_backlog_metadata
+          rescue ActiveRecord::RecordInvalid => e
+            send_error @sprint, :http_status => :invalid_params
+          end
         else
           if @sprint.update_attributes filter_sprint_params
             update_backlog_metadata
