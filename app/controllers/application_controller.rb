@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include HttpStatusCodes
 
   protect_from_forgery
+  skip_before_filter :verify_authenticity_token, :if => :is_api?
   include SslRequired
 
   API_FORMATS = [:xml, :json]
