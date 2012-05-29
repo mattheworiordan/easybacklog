@@ -2227,7 +2227,7 @@
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this sprint
-        %dt backlog_id
+        %dt theme_id
         %dd
           .data-type.foreign-key-read-only integer
           #{link_to 'Theme', '#themes'} this story belongs to
@@ -2370,7 +2370,7 @@
              -d "include_associated_data=true" \
              -X GET
 
-    %a{:name => 'sprint-retrieve'}
+    %a{:name => 'story-retrieve'}
 
   .route-section
     .route-info
@@ -2803,22 +2803,256 @@
 
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
+    %a{:name => 'sprint-stories'}
 
+  .route-section
+    .route-info
+      %a{:name => 'sprint-story-object'}
+      %h2 Sprint Stories
+      %p
+        A sprint story object represents a join between a #{link_to 'sprint object', '#sprints'} and a #{link_to 'story object', '#stories'}.  When a #{link_to 'story', '#stories'} is assigned to a #{link_to 'sprint', '#sprints'}, a sprint story object is created linking the two objects.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Sprint Story object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id
+        %dd
+          .data-type.auto-generated-read-only integer
+          Unique identifier for this sprint story.
+        %dt sprint_id
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Sprint', '#sprint'} this sprint story belongs to.
+        %dt story_id
+        %dd
+          .data-type.foreign-key-read-only integer
+          #{link_to 'Story', '#story'} that is being assigned to the #{link_to 'sprint', '#sprint'}.
+        %dt sprint_story_status_id
+        %dd
+          .data-type.foreign-key integer
+          The #{link_to 'sprint story status', '#sprint-stories-statuses'} represents the state of the #{link_to 'story', '#story'} in the assigned #{link_to 'sprint', '#sprint'}, such as
+          %code To Do or
+          %code Accepted.
+        %dt position
+        %dd
+          .data-type.auto-generated integer
+          Position of the story relative to the other stories for this #{link_to 'sprint', '#sprint'}.  Position 1 represents the first story in the list.
+        %dt created_at
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2011-01-03T15:03:00Z",
+              "id":525,
+              "position":1,
+              "sprint_id":224,
+              "sprint_story_status_id":4,
+              "story_id":3159,
+              "updated_at":"2012-05-23T17:42:10Z"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <sprint-story>
+              <created-at type="datetime">2011-01-03T15:03:00Z</created-at>
+              <id type="integer">525</id>
+              <position type="integer">1</position>
+              <sprint-id type="integer">224</sprint-id>
+              <sprint-story-status-id type="integer">4</sprint-story-status-id>
+              <story-id type="integer">3159</story-id>
+              <updated-at type="datetime">2012-05-23T17:42:10Z</updated-at>
+            </sprint-story>
+
+  .route-section
+    .route-info
+      %h3 List the Sprint Stories
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An array of #{link_to 'sprint story objects', '#sprint-stories'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprints/{SPRINT_ID}/sprint-stories'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}sprints/#{demo_api_sprint_id}/sprint-stories \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "created_at":"2011-01-03T15:03:00Z",
+                "id":525,
+                "position":1,
+                "sprint_id":224,
+                "sprint_story_status_id":4,
+                "story_id":3159,
+                "updated_at":"2012-05-23T17:42:10Z"
+              }
+            ]
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Sprint Story
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      An #{link_to 'sprint story object', '#sprint-story-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprints/{SPRINT_ID}/sprint-stories/{SPRINT_STORY_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}sprints/#{demo_api_sprint_id}/sprint-stories/#{demo_api_sprint_story_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2011-01-03T15:03:00Z",
+              "id":525,
+              "position":1,
+              "sprint_id":224,
+              "sprint_story_status_id":4,
+              "story_id":3159,
+              "updated_at":"2012-05-23T17:42:10Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Create a Sprint Story (assign a story to a sprint)
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt story_id
+        %dd
+          .data-type.foreign-key integer
+          #{link_to 'Story', '#story'} that is being assigned to the #{link_to 'sprint', '#sprint'}.
+        %dt sprint_story_status_id
+        %dd
+          .data-type.foreign-key integer
+          The #{link_to 'sprint story status', '#sprint-stories-statuses'} represents the state of the #{link_to 'story', '#story'} in the assigned #{link_to 'sprint', '#sprint'}, such as
+          %code To Do or
+          %code Accepted.
+        %dt position
+        %dd
+          .data-type.auto-generated integer
+          Position of the story relative to the other stories for this #{link_to 'sprint', '#sprint'}.  Position 1 represents the first story in the list.
+
+      %h4.returns Returns
+      The newly created #{link_to 'sprint story object', '#sprint-story-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprints/{SPRINT_ID}/sprint-stories'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}sprints/#{demo_api_sprint_id}/sprint-stories \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "story_id=#{demo_api_story_id}" \
+             -d "sprint_story_status_id=#{demo_api_sprint_story_status_id}" \
+             -X POST
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "created_at":"2012-05-29T17:43:23Z",
+              "id":538,
+              "position":3,
+              "sprint_id":228,
+              "sprint_story_status_id":1,
+              "story_id":3267,
+              "updated_at":"2012-05-29T17:43:23Z"
+            }
+
+  .route-section
+    .route-info
+      %h3 Update a Sprint Story
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt move_to_sprint_id
+        %dd
+          .data-type.foreign integer
+          Specify this value if you want to move this sprint story to another #{link_to 'Sprint', '#sprints'}, meaning that the story and this object are reassigned.
+        %dt sprint_story_status_id
+        %dd
+          .data-type.foreign-key integer
+          The #{link_to 'sprint story status', '#sprint-stories-statuses'} represents the state of the #{link_to 'story', '#story'} in the assigned #{link_to 'sprint', '#sprint'}, such as
+          %code To Do or
+          %code Accepted.
+        %dt position
+        %dd
+          .data-type.auto-generated integer
+          Position of the story relative to the other stories for this #{link_to 'sprint', '#sprint'}.  Position 1 represents the first story in the list.
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprints/{SPRINT_ID}/sprint-stories/{SPRINT_STORY_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}sprints/#{demo_api_sprint_id}/sprint-stories/#{demo_api_sprint_story_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -d "sprint_story_status_id=#{demo_api_sprint_story_status_id}" \
+             -X PUT
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
+
+  .route-section
+    .route-info
+      %h3 Delete a Sprint Story
+
+      %h4 Arguments
+      None
+
+      %h4.returns Returns
+      Nothing, will respond with a
+      %code 204
+      HTTP response header if successful.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprints/{SPRINT_ID}/sprint-stories/{SPRINT_STORY_ID}'
+      %code.rest.rest-request.rest-locked
+        .prompt
+        :preserve
+          curl #{api_end_point}sprints/#{demo_api_sprint_id}/sprint-stories/#{demo_api_sprint_story_id} \
+             -H "Authorization: token #{demo_api_user_token}" \
+             -X DELETE
+
+      %code.rest.rest-response-header
+        HTTP/1.1 204 No Content
 
 Talk about date formats
 Mention that position and ID is auto-assigned, however position can be overwritten
-
-/stories/[id]/acceptance_criteria/ GET
-/stories/[id]/acceptance_criteria/[id] GET
-/stories/[id]/acceptance_criteria/[id] PUT
-/stories/[id]/acceptance_criteria/ POST
-/stories/[id]/acceptance_criteria/[id] DELETE
-
-/backlogs/[id]/sprints/[?include_associated_data=true] GET
-/backlogs/[id]/sprints/[id][?include_associated_data=true] GET
-/backlogs/[id]/sprints/[id] PUT (changing completed=true|false is exclusive, no other updates occur at the same time)
-/backlogs/[id]/sprints/ POST
-/backlogs/[id]/sprints/[id] DELETE
 
 /sprints/[id]/sprint-stories/ GET
 /sprints/[id]/sprint-stories/[id] GET
