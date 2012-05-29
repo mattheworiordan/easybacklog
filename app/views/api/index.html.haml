@@ -995,6 +995,118 @@
 
   .route-section
     .route-info
+      %h3 Retrieve backlog statistics
+
+      The data that is used to generate the burn down, burn up, velocity of completed sprints and velocity charts in the Stats tab of your backlog, is available via this API.
+
+      %h4.returns Arguments
+      None
+
+      %h4.returns Returns
+      A set of objects representing the statistics relating to the current backlog.  The statistics are grouped into four objects,
+      %code burn_down,
+      %code burn_up,
+      %code velocity_completed,
+      and
+      %code velocity_stats.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/stats'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}accounts/#{demo_api_account_id}/backlogs/#{demo_api_backlog_id}/stats \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "burn_down":{
+                "trend":[
+                  {
+                    "starts_on":"2011-01-17",
+                    "completed_on":"2011-01-17",
+                    "points":90.0,
+                    "iteration":0,
+                    "duration":5,
+                    "completed":0,
+                    "team":"1.0",
+                    "actual":0.0
+                  }
+                ],
+                "actual":[
+                  {
+                    "starts_on":"2011-01-17",
+                    "completed_on":"2011-01-17",
+                    "points":90.0,
+                    "iteration":0,
+                    "duration":5,
+                    "completed":0,
+                    "team":"1.0",
+                    "actual":0.0
+                  }
+                ],
+                "projected":[
+                  {
+                    "starts_on":"2011-02-07",
+                    "completed_on":"2011-02-11",
+                    "points":27.0,
+                    "iteration":4,
+                    "duration":5,
+                    "completed":21.0,
+                    "team":"1.0",
+                    "actual":4.2
+                  }
+                ]
+              },
+              "velocity_stats":{
+                "expected_sprint":"15.0",
+                "actual_sprint":15.75,
+                "actual_day":3.1500000000000004,
+                "expected_day":"3.0"
+              },
+              "velocity_completed":[
+                {
+                  "starts_on":"2011-01-17",
+                  "completed_on":"2011-01-21",
+                  "iteration":1,
+                  "duration":5,
+                  "completed":11.0,
+                  "team":"1.0",
+                  "actual":2.2
+                }
+              ],
+              "burn_up":{
+                "total":[
+                  {
+                    "starts_on":"2011-01-17",
+                    "completed_on":"2011-01-21",
+                    "iteration":1,
+                    "duration":5,
+                    "completed":11.0,
+                    "total_points":71.0,
+                    "team":"1.0",
+                    "actual":2.2
+                  }
+                ],
+                "actual":[
+                  {
+                    "starts_on":"2011-01-17",
+                    "completed_on":"2011-01-21",
+                    "iteration":1,
+                    "duration":5,
+                    "completed":11.0,
+                    "total_points":0,
+                    "team":"1.0",
+                    "actual":2.2
+                  }
+                ]
+              }
+            }
+
+  .route-section
+    .route-info
       %h3 Create a Backlog
 
       %h4 Arguments

@@ -13,10 +13,14 @@ class BacklogStatsController < ApplicationController
         respond_with :zero_points => true
       else
         backlog_stats = BacklogStats.new @backlog
-        respond_with :burn_down => backlog_stats.burn_down_data,
+        render_options = request.format.to_sym == :xml ? { :root => 'statistics'} : {}
+        data = {
+          :burn_down => backlog_stats.burn_down_data,
           :velocity_stats => backlog_stats.velocity_stats,
           :velocity_completed => backlog_stats.velocity_completed,
           :burn_up => backlog_stats.burn_up_data
+        }
+        render request.format.to_sym => data.send("to_#{request.format.to_sym}", render_options)
       end
     end
   end
