@@ -12,8 +12,8 @@ module ApplicationHelper
     end
   end
 
-  def abs_home_url(secure = false)
-    "http#{secure ? 's' : ''}://#{Rails.configuration.dns}#{[80,443].include?(request.port) ? '' : ":#{request.port}"}/"
+  def abs_home_url
+    'http://easybacklog.com'
   end
 
   def dont_use_base_css
