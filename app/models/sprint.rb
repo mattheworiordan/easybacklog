@@ -191,7 +191,7 @@ class Sprint < ActiveRecord::Base
 
     # ensure the date does not overlap with another iteration
     def check_date_overlaps_and_successive
-      unless backlog.blank? || errors[:start_on].present?
+      unless backlog.blank? || errors[:start_on].present? || errors[:duration_days].present?
         other_sprints = backlog.sprints.order('iteration').reject { |s| s.iteration == self.iteration }
         other_sprints.each do |sprint|
           date_range = sprint.start_on..sprint.end_on
