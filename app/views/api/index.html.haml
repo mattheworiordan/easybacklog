@@ -92,13 +92,13 @@
       %p All errors return #{link_to 'JSON', 'http://www.json.org/'} or #{link_to 'XML', 'http://en.wikipedia.org/wiki/XML'} with a type (one of card_error, invalid_request_error, or api_error) and message describing the particular problem.
       %h4 Attributes
       %dl.argument-list
-        %dt status:
+        %dt status
         %dd
           For all errors the status will be set to
           %code error
-        %dt message:
+        %dt message
         %dd A user-friendly message describing the error
-        %dt errors (optional):
+        %dt errors (optional)
         %dd An array of error messages, if applicable.  Typically this property is set to an array when more than one validation error has occurred on an update or create request.
     .route-example
       %h2 HTTP Status Code Summary
@@ -261,39 +261,39 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this account
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The account name
-        %dt locale_id:
+        %dt locale_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Locale', '#locales'} applied to this account.
-        %dt default_velocity:
+        %dt default_velocity
         %dd
           .data-type.nullable decimal
           Default velocity to use for new backlogs.
-        %dt default_rate:
+        %dt default_rate
         %dd
           .data-type.nullable integer
           Default rate (without currency symbol) to use for new backlogs.
-        %dt default_use_50_90:
+        %dt default_use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% scoring rule as a default for new backlogs.  Setting this to false uses the simpler single scoring rule for stories.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           Default #{link_to 'scoring rule', '#scoring-rules'} to use for new backlogs.
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
-        %dt updated_at:
+        %dt updated_at
         %dd
           .data-type.read-only datetime
           Date that this object was last updated.
@@ -403,27 +403,27 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The account name
-        %dt locale_id:
+        %dt locale_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Locale', '#locale'} applied to this account.
-        %dt default_velocity:
+        %dt default_velocity
         %dd
           .data-type.nullable decimal
           Default velocity to use for new backlogs.
-        %dt default_rate:
+        %dt default_rate
         %dd
           .data-type.nullable integer
           Default rate (without currency symbol) to use for new backlogs.  Cannot be specified unless default velocity is set.
-        %dt default_use_50_90:
+        %dt default_use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% certainty scoring rule as a default for new backlogs.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           Default #{link_to 'scoring rule', '#scoring-rule'} to use for new backlogs.
@@ -461,31 +461,31 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this company
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The company name
-        %dt default_velocity:
+        %dt default_velocity
         %dd
           .data-type.nullable decimal
           Default velocity to use for new backlogs.
-        %dt default_rate:
+        %dt default_rate
         %dd
           .data-type.nullable integer
           Default rate (without currency symbol) to use for new backlogs.
-        %dt default_use_50_90:
+        %dt default_use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% scoring rule as a default for new backlogs.  Setting this to false uses the simpler single scoring rule for stories.
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
-        %dt updated_at:
+        %dt updated_at
         %dd
           .data-type.read-only datetime
           Date that this object was last updated.
@@ -591,19 +591,19 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The company name
-        %dt default_velocity:
+        %dt default_velocity
         %dd
           .data-type.nullable decimal
           Default velocity to use for new backlogs.
-        %dt default_rate:
+        %dt default_rate
         %dd
           .data-type.nullable integer
           Default rate (without currency symbol) to use for new backlogs.  Cannot be specified unless default velocity is set.
-        %dt default_use_50_90:
+        %dt default_use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% certainty scoring rule as a default for new backlogs.
@@ -642,19 +642,19 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The company name
-        %dt default_velocity:
+        %dt default_velocity
         %dd
           .data-type.nullable decimal
           Default velocity to use for new backlogs.
-        %dt default_rate:
+        %dt default_rate
         %dd
           .data-type.nullable integer
           Default rate (without currency symbol) to use for new backlogs.  Cannot be specified unless default velocity is set.
-        %dt default_use_50_90:
+        %dt default_use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% certainty scoring rule as a default for new backlogs.
@@ -706,7 +706,7 @@
   .route-section
     .route-info
       %a{:name => 'backlog-object'}
-      %h2 Backlog
+      %h2 Backlogs
       %p
         An backlog object represents a user created backlog and belongs to a single #{link_to 'account', '#account'}.  A backlog contains one or more children #{link_to 'themes', '#themes'},
         #{link_to 'sprints', '#sprints'} or #{link_to 'snapshots', '#snapshots'}.
@@ -717,47 +717,47 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.read-only integer
           Unique identifier for this backlog
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The backlog name
-        %dt account_id:
+        %dt account_id
         %dd
           .data-type.foreign-key-read-only integer
           #{link_to 'Account', '#accounts'} this backlog belongs to
-        %dt company_id:
+        %dt company_id
         %dd
           .data-type.foreign-key-nullable integer
           #{link_to 'Company', '#company'} this backlog belongs to.  A backlog is optionally associated with a company.
-        %dt velocity:
+        %dt velocity
         %dd
           .data-type.nullable decimal
           Average velocity per day per team member.  This is empty (null) when time estimates are not automatically created for this backlog.
-        %dt rate:
+        %dt rate
         %dd
           .data-type.nullable integer
           Rate per day per team member.  This is empty (null) when cost estimates are not automatically created for this backlog.
-        %dt use_50_90:
+        %dt use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% scoring rule for this backlog.  When false (or null) the backlog uses the simpler single scoring rule for stories.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
-        %dt archived:
+        %dt archived
         %dd
           .data-type boolean
           Indicates whether the backlog has been archived (and locked).
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
-        %dt updated_at:
+        %dt updated_at
         %dd
           .data-type.read-only datetime
           Date that this object was last updated.
@@ -810,7 +810,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_archived:
+        %dt include_archived
         %dd
           .data-type boolean
           If set to true, all backlogs including archived backlogs will be returned.  By default, archived backlogs are filtered in the response.
@@ -855,7 +855,7 @@
       %h4 Content types
       This route is special in that it supports the following mime types:
       %dl.argument-list
-        %dt JSON:
+        %dt JSON
         %dd
           Use the
           %code Accept:
@@ -873,7 +873,7 @@
           Passing in the optional
           %code include_associated_data=true
           parameter modifies the JSON to include all #{link_to 'themes', '#themes'}, #{link_to 'sprints', '#sprints'}, #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} related to this object.
-        %dt XML:
+        %dt XML
         %dd
           Use the
           %code Accept:
@@ -891,7 +891,7 @@
           Passing in the optional
           %code include_associated_data=true
           parameter modifies the JSON to include all #{link_to 'sprints', '#sprints'}, #{link_to 'themes', '#themes'}, #{link_to 'sprints', '#sprints'}, #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} related to this object.
-        %dt Excel (XLS):
+        %dt Excel (XLS)
         %dd
           Use the
           %code Accept:
@@ -906,7 +906,7 @@
           The backlog object will be returned in Microsoft Excel (XML) format, including two worksheets.  The first worksheet contains the entire backlog laid out with summary data, the second worksheet simply contains a list of stories that can be autofiltered.
           %h4 Arguments
           None
-        %dt PDF:
+        %dt PDF
         %dd
           Use the
           %code Accept:
@@ -1111,27 +1111,27 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The backlog name
-        %dt company_id:
+        %dt company_id
         %dd
           .data-type.foreign-key-nullable integer
           #{link_to 'Company', '#company'} this backlog belongs to.  A backlog can also have no association with a company, so this can be empty (null).
-        %dt velocity:
+        %dt velocity
         %dd
           .data-type.nullable decimal
           Average velocity per day per team member.  Set this to empty (null) when time estimates are not required for this backlog.
-        %dt rate:
+        %dt rate
         %dd
           .data-type.nullable integer
           Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be specified unless velocity is set.
-        %dt use_50_90:
+        %dt use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% scoring rule for this backlog.  Use false (or null) if you wish to use the simpler single scoring rule for stories.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
@@ -1176,31 +1176,31 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The backlog name
-        %dt company_id:
+        %dt company_id
         %dd
           .data-type.foreign-key-nullable integer
           #{link_to 'Company', '#company'} this backlog belongs to.  A backlog can also have no association with a company, so this can be empty (null).
-        %dt velocity:
+        %dt velocity
         %dd
           .data-type.nullable decimal
           Average velocity per day per team member.  Set this to empty (null) when time estimates are not required for this backlog.
-        %dt rate:
+        %dt rate
         %dd
           .data-type.nullable integer
           Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be specified unless velocity is set.
-        %dt use_50_90:
+        %dt use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% scoring rule for this backlog.  Use false (or null) if you wish to use the simpler single scoring rule for stories.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
-        %dt archived:
+        %dt archived
         %dd
           .data-type boolean
           Set this to true to archive a backlog, and false to recover from the archives.  All archived backlogs are locked and therefore cannot be edited.
@@ -1234,27 +1234,27 @@
 
       %h4.returns Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The new backlog name
-        %dt company_id:
+        %dt company_id
         %dd
           .data-type.foreign-key-nullable integer
           #{link_to 'Company', '#company'} this backlog belongs to.  A backlog can also have no association with a company, so this can be empty (null).
-        %dt velocity:
+        %dt velocity
         %dd
           .data-type.nullable decimal
           Average velocity per day per team member.  Set this to empty (null) when time estimates are not required for this backlog.
-        %dt rate:
+        %dt rate
         %dd
           .data-type.nullable integer
           Rate per day per team member.  Set this to empty (null) when cost estimates are not required for this backlog.  Rate cannot be specified unless velocity is set.
-        %dt use_50_90:
+        %dt use_50_90
         %dd
           .data-type.nullable boolean
           Use the 50%/90% scoring rule for this backlog.  Use false (or null) if you wish to use the simpler single scoring rule for stories.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Scoring rule', '#scoring-rule'} used for this backlog.
@@ -1336,37 +1336,37 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this snapshot.
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The snapshot name
-        %dt parent_backlog_id or parent_sprint_id:
+        %dt parent_backlog_id or parent_sprint_id
         %dd
           .data-type.foreign-key-read-only integer
           #{link_to 'Backlog', '#backlogs'} or #{link_to 'Sprint', '#sprints'} this snapshot belongs to.  Manually created snapshots have a
           #{content_tag :code, 'parent_backlog_id'}, whereas sprint snapshots created automatically when a sprint commences have a
           #{content_tag :code, 'parent_sprint_id'}.
-        %dt velocity:
+        %dt velocity
         %dd
           .data-type.nullable decimal
           Average velocity per day per team member.  This is empty (null) when time estimates are not automatically created for this snapshot.
-        %dt rate:
+        %dt rate
         %dd
           .data-type.nullable integer
           Rate per day per team member.  This is empty (null) when cost estimates are not automatically created for this snapshot.
-        %dt use_50_90:
+        %dt use_50_90
         %dd
           .data-type.nullable boolean
           50%/90% scoring rule used for this snapshot.  When false (or null) the snapshot uses the simpler single scoring rule for stories.
-        %dt scoring_rule_id:
+        %dt scoring_rule_id
         %dd
           .data-type.foreign-key integer
           #{link_to 'Scoring rule', '#scoring-rule'} used for this snapshot.
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
@@ -1509,7 +1509,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The new snapshot name
@@ -1571,7 +1571,7 @@
   .route-section
     .route-info
       %a{:name => 'theme-object'}
-      %h2 Theme
+      %h2 Themes
       %p
         A theme object contains one or more stories in a backlog, and belongs to a single #{link_to 'backlog', '#backlogs'}.
 
@@ -1581,31 +1581,31 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this theme
-        %dt backlog_id:
+        %dt backlog_id
         %dd
           .data-type.foreign-key-read-only integer
           #{link_to 'Backlog', '#backlogs'} this theme belongs to
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The theme name
-        %dt code:
+        %dt code
         %dd
           .data-type.auto-generated string
           A three letter unique identifier for this theme.  This code is automatically generated if not specified, but can be manually specified as well.
-        %dt position:
+        %dt position
         %dd
           .data-type.auto-generated integer
           Position of this theme relative to the other themes in this #{link_to 'backlog', '#backlogs'}.  Position 1 represents the first theme in the list.
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
-        %dt updated_at:
+        %dt updated_at
         %dd
           .data-type.read-only datetime
           Date that this object was last updated.
@@ -1643,7 +1643,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_associated_data:
+        %dt include_associated_data
         %dd
           Passing in this optional parameter will include all children #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} for this list of themes.
 
@@ -1689,7 +1689,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_associated_data:
+        %dt include_associated_data
         %dd
           Passing in this optional parameter will include all children #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} for this object.
 
@@ -1723,15 +1723,15 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The theme name
-        %dt code:
+        %dt code
         %dd
           .data-type.auto-generated string
           A three letter unique identifier for this theme.  This code is automatically generated if not specified, but can be manually specified as well.
-        %dt position:
+        %dt position
         %dd
           .data-type.auto-generated integer
           Position of this theme relative to the other themes in this #{link_to 'backlog', '#backlogs'}.  Position 1 represents the first theme in the list.
@@ -1768,15 +1768,15 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt name:
+        %dt name
         %dd
           .data-type string
           The theme name
-        %dt code:
+        %dt code
         %dd
           .data-type.auto-generated string
           A three letter unique identifier for this theme.
-        %dt position:
+        %dt position
         %dd
           .data-type.auto-generated integer
           Position of this theme relative to the other themes in this #{link_to 'backlog', '#backlogs'}.  Position 1 represents the first theme in the list.
@@ -1808,7 +1808,7 @@
 
       %h4.returns Arguments
       %dl.argument-list
-        %dt story_id:
+        %dt story_id
         %dd
           .data-type integer
           #{link_to 'Story', '#stories'} that you wish to move to this theme.
@@ -1839,7 +1839,7 @@
 
       %h4.returns Arguments
       %dl.argument-list
-        %dt target_backlog_id:
+        %dt target_backlog_id
         %dd
           .data-type integer
           #{link_to 'Backlog', '#backlogs'} that you wish to move this theme to.
@@ -1890,7 +1890,7 @@
   .route-section
     .route-info
       %a{:name => 'sprint-object'}
-      %h2 Theme
+      %h2 Sprints
       %p
         A sprint object represents the sprint configured for a #{link_to 'backlog', '#backlog'} where one or more #{link_to 'stories', '#stories'} are assigned to the sprint.  A sprint has two states, incomplete (active and editable) or completed.  A join model is used to relate #{link_to 'stories', '#stories'} to sprints, this model is called a #{link_to 'sprint story', '#sprint-stories'} and is described below.
 
@@ -1900,43 +1900,43 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this sprint
-        %dt backlog_id:
+        %dt backlog_id
         %dd
           .data-type.foreign-key-read-only integer
           #{link_to 'Backlog', '#backlogs'} this sprint belongs to
-        %dt iteration:
+        %dt iteration
         %dd
           .data-type.auto-generated-read-only integer
           Represents the number of this sprint, starting at one for the first sprint.  This field is automatically assigned when the sprint is created.
-        %dt start_on:
+        %dt start_on
         %dd
           .data-type date
           The date that this sprint starts on.  This date is important in that it dictates when a snapshot of the backlog is taken so that the current backlog can be compared against the state of the backlog when the sprint commenced.
-        %dt duration_days:
+        %dt duration_days
         %dd
           .data-type integer
           The duration in working days that this sprint lasts for.
-        %dt number_team_members:
+        %dt number_team_members
         %dd
           .data-type.nullable decimal
           Represents the number of team members assigned to this sprint, and is used to calculate the expected sprint velocity based on the duration and backlog average velocity.  The number of team members can only be specified if the backlog daily velocity is specified, and must be specified unless explicit velocity for the this sprint is specified.
-        %dt explicit_velocity:
+        %dt explicit_velocity
         %dd
           .data-type.nullable decimal
           Represents the expected velocity for this sprint.  If explicit velocity is specified, then the expected velocity for this sprint will not be calculated based on the backlog average velocity and the number of team members working on this sprint.
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.nullable datetime
           The date that this sprint was marked as complete, or null if not complete.  A sprint can only be marked as complete if all the stories it
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
-        %dt updated_at:
+        %dt updated_at
         %dd
           .data-type.read-only datetime
           Date that this object was last updated.
@@ -1991,7 +1991,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_associated_data:
+        %dt include_associated_data
         %dd
           Passing in this optional parameter will include all children #{link_to 'sprint stories', '#sprint-stories'} for this list of sprints.
 
@@ -2045,7 +2045,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_associated_data:
+        %dt include_associated_data
         %dd
           Passing in this optional parameter will include all children #{link_to 'sprint stories', '#sprint-stories'} for this sprint.
 
@@ -2087,19 +2087,19 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt start_on:
+        %dt start_on
         %dd
           .data-type date
           The date that this sprint starts on.  This date is important in that it dictates when a snapshot of the backlog is taken so that the current backlog can be compared against the state of the backlog when the sprint commenced.
-        %dt duration_days:
+        %dt duration_days
         %dd
           .data-type integer
           The duration in working days that this sprint lasts for.
-        %dt number_team_members:
+        %dt number_team_members
         %dd
           .data-type.nullable decimal
           Represents the number of team members assigned to this sprint, and is used to calculate the expected sprint velocity based on the duration and backlog average velocity.  The number of team members can only be specified if the backlog daily velocity is specified, and must be specified unless explicit velocity for the this sprint is specified.
-        %dt explicit_velocity:
+        %dt explicit_velocity
         %dd
           .data-type.nullable decimal
           Represents the expected velocity for this sprint.  If explicit velocity is specified, then the expected velocity for this sprint will not be calculated based on the backlog average velocity and the number of team members working on this sprint.
@@ -2146,23 +2146,23 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt completed:
+        %dt completed
         %dd
           .data-type boolean
           If this argument is passed in, all other arguments are ignored for this request.  Passing in true sets the sprint to completed, and passing in false sets a complete sprint back to its incomplete state.
-        %dt start_on:
+        %dt start_on
         %dd
           .data-type date
           The date that this sprint starts on.  This date is important in that it dictates when a snapshot of the backlog is taken so that the current backlog can be compared against the state of the backlog when the sprint commenced.
-        %dt duration_days:
+        %dt duration_days
         %dd
           .data-type integer
           The duration in working days that this sprint lasts for.
-        %dt number_team_members:
+        %dt number_team_members
         %dd
           .data-type.nullable decimal
           Represents the number of team members assigned to this sprint, and is used to calculate the expected sprint velocity based on the duration and backlog average velocity.  The number of team members can only be specified if the backlog daily velocity is specified, and must be specified unless explicit velocity for the this sprint is specified.
-        %dt explicit_velocity:
+        %dt explicit_velocity
         %dd
           .data-type decimal
           Represents the expected velocity for this sprint.  If explicit velocity is specified, then the expected velocity for this sprint will not be calculated based on the backlog average velocity and the number of team members working on this sprint.
@@ -2213,7 +2213,7 @@
   .route-section
     .route-info
       %a{:name => 'story-object'}
-      %h2 Story
+      %h2 Stories
       %p
         A story object represents a story within a #{link_to 'theme', '#themes'}.  It contains zero or more child #{link_to 'acceptance criteria', '#acceptance-criteria'}.
 
@@ -2223,47 +2223,47 @@
 
       %h4 Attributes
       %dl.argument-list
-        %dt id:
+        %dt id
         %dd
           .data-type.auto-generated-read-only integer
           Unique identifier for this sprint
-        %dt backlog_id:
+        %dt backlog_id
         %dd
           .data-type.foreign-key-read-only integer
-          #{link_to 'Theme', '#themes'} this theme belongs to
-        %dt unique_id:
+          #{link_to 'Theme', '#themes'} this story belongs to
+        %dt unique_id
         %dd
           .data-type.auto-generated integer
           Represents a unique ID for this story within this theme.  Numbers are autogenerated starting at one.
-        %dt as_a:
+        %dt as_a
         %dd
           .data-type.nullable string
           The "As a" field.
-        %dt i_want_to:
+        %dt i_want_to
         %dd
           .data-type.nullable string
           The "I want to" field.
-        %dt so_i_can:
+        %dt so_i_can
         %dd
           .data-type.nullable string
           The "So I can" field.
-        %dt comments:
+        %dt comments
         %dd
           .data-type.nullable string
           The "Comments" field.
-        %dt score:
+        %dt score
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story if using the simple scoring rule for this backlog.
-        %dt score_50:
+        %dt score_50
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story's 50% score if using the 50%/90% scoring rule for this backlog.
-        %dt score_90:
+        %dt score_90
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story's 90% score if using the 50%/90% scoring rule for this backlog.
-        %dt color:
+        %dt color
         %dd
           .data-type.nullable string
           An optional color can be assigned to this story using a hexadecimal value such as
@@ -2271,15 +2271,15 @@
           for red, or
           %span{:style => 'color: #00FF00'} 00ff00
           for green.
-        %dt position:
+        %dt position
         %dd
           .data-type.auto-generated integer
           Position of this story relative to the other stories in this #{link_to 'theme', '#themnes'}.  Position 1 represents the first story in the list.
-        %dt created_at:
+        %dt created_at
         %dd
           .data-type.read-only datetime
           Date that this object was created.
-        %dt updated_at:
+        %dt updated_at
         %dd
           .data-type.read-only datetime
           Date that this object was last updated.
@@ -2327,7 +2327,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_associated_data:
+        %dt include_associated_data
         %dd
           Passing in this optional parameter will include all children #{link_to 'acceptance criteria', '#acceptance-criteria'} for this list of stories.
 
@@ -2378,7 +2378,7 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt include_associated_data:
+        %dt include_associated_data
         %dd
           Passing in this optional parameter will include all children #{link_to 'acceptance criteria', '#acceptance-criteria'} for this story.
 
@@ -2417,39 +2417,39 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt unique_id:
+        %dt unique_id
         %dd
           .data-type.auto-generated integer
           Represents a unique ID for this story within this theme.  Numbers are autogenerated starting at one.
-        %dt as_a:
+        %dt as_a
         %dd
           .data-type.nullable string
           The "As a" field.
-        %dt i_want_to:
+        %dt i_want_to
         %dd
           .data-type.nullable string
           The "I want to" field.
-        %dt so_i_can:
+        %dt so_i_can
         %dd
           .data-type.nullable string
           The "So I can" field.
-        %dt comments:
+        %dt comments
         %dd
           .data-type.nullable string
           The "Comments" field.
-        %dt score:
+        %dt score
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story if using the simple scoring rule for this backlog.
-        %dt score_50:
+        %dt score_50
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story's 50% score if using the 50%/90% scoring rule for this backlog.
-        %dt score_90:
+        %dt score_90
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story's 90% score if using the 50%/90% scoring rule for this backlog.
-        %dt color:
+        %dt color
         %dd
           .data-type.nullable string
           An optional color can be assigned to this story using a hexadecimal value such as
@@ -2457,7 +2457,7 @@
           for red, or
           %span{:style => 'color: #00FF00'} 00ff00
           for green.
-        %dt position:
+        %dt position
         %dd
           .data-type.auto-generated integer
           Position of this story relative to the other stories in this #{link_to 'theme', '#themnes'}.  Position 1 represents the first story in the list.
@@ -2501,39 +2501,39 @@
 
       %h4 Arguments
       %dl.argument-list
-        %dt unique_id:
+        %dt unique_id
         %dd
           .data-type.auto-generated integer
           Represents a unique ID for this story within this theme.  Numbers are autogenerated starting at one.
-        %dt as_a:
+        %dt as_a
         %dd
           .data-type.nullable string
           The "As a" field.
-        %dt i_want_to:
+        %dt i_want_to
         %dd
           .data-type.nullable string
           The "I want to" field.
-        %dt so_i_can:
+        %dt so_i_can
         %dd
           .data-type.nullable string
           The "So I can" field.
-        %dt comments:
+        %dt comments
         %dd
           .data-type.nullable string
           The "Comments" field.
-        %dt score:
+        %dt score
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story if using the simple scoring rule for this backlog.
-        %dt score_50:
+        %dt score_50
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story's 50% score if using the 50%/90% scoring rule for this backlog.
-        %dt score_90:
+        %dt score_90
         %dd
           .data-type.nullable decimal
           Number of points assigned to this story's 90% score if using the 50%/90% scoring rule for this backlog.
-        %dt color:
+        %dt color
         %dd
           .data-type.nullable string
           An optional color can be assigned to this story using a hexadecimal value such as
@@ -2541,7 +2541,7 @@
           for red, or
           %span{:style => 'color: #00FF00'} 00ff00
           for green.
-        %dt position:
+        %dt position
         %dd
           .data-type.auto-generated integer
           Position of this story relative to the other stories in this #{link_to 'theme', '#themnes'}.  Position 1 represents the first story in the list.
@@ -2807,13 +2807,6 @@
 
 Talk about date formats
 Mention that position and ID is auto-assigned, however position can be overwritten
-
-/themes/[id]/stories/[?include_associated_data=true] GET
-/themes/[id]/stories/[id][?include_associated_data=true] GET
-/themes/[id]/stories/[id] PUT
-/themes/[id]/stories/ POST
-/themes/[id]/stories/[id] DELETE
-/themes/[id]/stories/[id]/move-to-theme?new_theme_id=(THEME_ID) POST (must be a theme in the same backlog)
 
 /stories/[id]/acceptance_criteria/ GET
 /stories/[id]/acceptance_criteria/[id] GET

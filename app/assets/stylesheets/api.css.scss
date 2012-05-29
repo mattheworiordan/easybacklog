@@ -183,6 +183,11 @@ section.content {
           text-align: right;
           font-weight: bold;
           margin-top: 8px;
+          &::after {
+            content: ':';
+            color: #666;
+            font-weight: normal;
+          }
         }
         dd {
           float: right;
