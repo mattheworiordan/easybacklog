@@ -3051,22 +3051,363 @@
       %code.rest.rest-response-header
         HTTP/1.1 204 No Content
 
+    %a{:name => 'locales'}
+
+  .route-section
+    .route-info
+      %a{:name => 'locale-object'}
+      %h2 Locales
+      %p
+        A locale represents a an environment based on language and cultural conventions.  An example locale is American English ($).  The locale used in the #{link_to 'account', '#accounts'} effects how dates, currencies and sometimes messages are displayed.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Locale object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id
+        %dd
+          .data-type.auto-generated-read-only integer
+          Unique identifier for this locale.
+        %dt name
+        %dd
+          .data-type string
+          The locale name.
+        %dt code
+        %dd
+          .data-type string
+          The locale code.
+        %dt position
+        %dd
+          .data-type integer
+          The position of this locale with one indicating the first in the list.
+        %dt created_at
+        %dd
+          .data-type.read-only datetime
+          Date that this object was created.
+        %dt updated_at
+        %dd
+          .data-type.read-only datetime
+          Date that this object was last updated.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "code":"en-US",
+              "created_at":"2011-02-18T02:53:12Z",
+              "id":1,
+              "name":"American English ($)",
+              "position":10,
+              "updated_at":"2012-01-11T22:57:26Z"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <locale>
+              <code>en-US</code>
+              <created-at type="datetime">2011-02-18T02:53:12Z</created-at>
+              <id type="integer">1</id>
+              <name>American English ($)</name>
+              <position type="integer">10</position>
+              <updated-at type="datetime">2012-01-11T22:57:26Z</updated-at>
+            </locale>
+
+  .route-section
+    .route-info
+      %h3 List the Locales
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An array of #{link_to 'locale objects', '#locale-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'locales'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}locales \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "code":"en-US",
+                "created_at":"2011-02-18T02:53:12Z",
+                "id":1,
+                "name":"American English ($)",
+                "position":10,
+                "updated_at":"2012-01-11T22:57:26Z"
+              }
+            ]
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Locale
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An #{link_to 'locale object', '#locale-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'locale/{LOCALE_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}locales/#{demo_api_locale_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "code":"en-US",
+              "created_at":"2011-02-18T02:53:12Z",
+              "id":1,
+              "name":"American English ($)",
+              "position":10,
+              "updated_at":"2012-01-11T22:57:26Z"
+            }
+    %a{:name => 'scoring-rules'}
+
+  .route-section
+    .route-info
+      %a{:name => 'scoring-rules-object'}
+      %h2 Scoring Rules
+      %p
+        A scoring rule represents the types of scores that can be assigned to a story.  For example, the Strict Fibanacci rule dictates that only 0, 1, 2, 3, 5, 8, 13, 21, and 34 can be used.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Scoring Rule object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id
+        %dd
+          .data-type.auto-generated-read-only integer
+          Unique identifier for this scoring rule.
+        %dt title
+        %dd
+          .data-type string
+          The scoring rule title.
+        %dt code
+        %dd
+          .data-type string
+          The scoring rule short code.
+        %dt description
+        %dd
+          .data-type string
+          The description of this scoring rule.
+        %dt position
+        %dd
+          .data-type integer
+          The position of this scoring rule with one indicating the first in the list.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "code":"M",
+              "description":"0, 0.5, 1, 2, 3, 5, 8, 13, 20, 21, 40, 60, 100",
+              "id":7,
+              "position":1,
+              "title":"Modified Fibonacci"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <scoring-rule>
+              <code>M</code>
+              <description>0, 0.5, 1, 2, 3, 5, 8, 13, 20, 21, 40, 60, 100</description>
+              <id type="integer">7</id>
+              <position type="integer">1</position>
+              <title>Modified Fibonacci</title>
+            </scoring-rule>
+
+  .route-section
+    .route-info
+      %h3 List the Scoring Rules
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An array of #{link_to 'scoring rule objects', '#scoring-rule-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'scoring-rules'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}scoring-rules \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "code":"M",
+                "description":"0, 0.5, 1, 2, 3, 5, 8, 13, 20, 21, 40, 60, 100",
+                "id":7,
+                "position":1,
+                "title":"Modified Fibonacci"
+              }
+            ]
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Scoring Rule
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An #{link_to 'scoring rule object', '#scoring-rule-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'scoring-rules/{SCORING_RULE_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}scoring-rules/#{demo_api_scoring_rule_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "code":"M",
+              "description":"0, 0.5, 1, 2, 3, 5, 8, 13, 20, 21, 40, 60, 100",
+              "id":7,
+              "position":1,
+              "title":"Modified Fibonacci"
+            }
+    %a{:name => 'sprint-story-statuses'}
+
+  .route-section
+    .route-info
+      %a{:name => 'sprint-story-status-object'}
+      %h2 Sprint Story Statuses
+      %p
+        A sprint story status represents the state of a story in regards to its completeness in a sprint.  For example, a sprint story status may be
+        %code To Do
+        or
+        %code Accepted.
+
+  .route-section.list-start
+    .route-info
+      %h3 The Sprint Story Status object
+
+      %h4 Attributes
+      %dl.argument-list
+        %dt id
+        %dd
+          .data-type.auto-generated-read-only integer
+          Unique identifier for this sprint story status rule.
+        %dt status
+        %dd
+          .data-type string
+          The status description.
+        %dt code
+        %dd
+          .data-type string
+          The sprint story status short code.
+        %dt position
+        %dd
+          .data-type integer
+          The position of this sprint story status with one indicating the first in the list.
+    .route-example
+      %code.rest.rest-response-json
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "code":"T",
+              "id":1,
+              "position":1,
+              "status":"To do"
+            }
+
+      %code.rest.rest-response-xml
+        %pre{:class => 'brush: xml'}
+          :preserve
+            <?xml version="1.0" encoding="UTF-8"?>
+            <sprint-story-status>
+              <code>T</code>
+              <id type="integer">1</id>
+              <position type="integer">1</position>
+              <status>To do</status>
+            </sprint-story-status>
+
+  .route-section
+    .route-info
+      %h3 List the Sprint Story Statuses
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An array of #{link_to 'sprint story status objects', '#sprint-story-status-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprint-story-statuses'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}sprint-story-statuses \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            [
+              {
+                "code":"T",
+                "id":1,
+                "position":1,
+                "status":"To do"
+              }
+            ]
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Sprint Story Status
+
+      %h4 Arguments
+      This request requires no arguments.
+
+      %h4.returns Returns
+      An #{link_to 'sprint story status object', '#sprint-story-status-object'}.
+
+    .route-example
+      %code.rest.rest-definition= defintion_url_wrappable 'sprint-story-statuses/{SPRINT_STORY_STATUS_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}sprint-story-statuses/#{demo_api_sprint_story_status_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "code":"T",
+              "id":1,
+              "position":1,
+              "status":"To do"
+            }
+
 Talk about date formats
 Mention that position and ID is auto-assigned, however position can be overwritten
-
-/sprints/[id]/sprint-stories/ GET
-/sprints/[id]/sprint-stories/[id] GET
-/sprints/[id]/sprint-stories/[id] PUT [optional move_to_sprint_id=new_sprint_id]
-/sprints/[id]/sprint-stories/ POST
-/sprints/[id]/sprint-stories/[id] DELETE
-
-/ backlog stats
-
-/locales GET
-/locales/[id] GET
-
-/scoring-rules GET
-/scoring-rules/[id] GET
-
-/sprint-story-statuses GET
-/sprint-story-statuses/[id] GET
