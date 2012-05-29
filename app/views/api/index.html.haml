@@ -11,6 +11,9 @@
         #{link_to 'JSON', 'http://www.json.org/'} or #{link_to 'XML', 'http://en.wikipedia.org/wiki/XML'} will be returned in all responses from the API, including errors.
 
       %p
+        Please note that all dates and times are returned using #{link_to 'ISO 8601 format', 'http://en.wikipedia.org/wiki/ISO_8601'}, and we recommend that you send all date and or time arguments in this format as well.
+
+      %p
         All EXAMPLE REQUESTS listed on the right can be run directly from your console.  Copy and paste the curl commands into your terminal to test the API using our demo API account.  Please note however that the demo API account only has read rights so no updates will succeed.
 
     .route-example.first-route-list
@@ -3409,5 +3412,4 @@
               "status":"To do"
             }
 
-Talk about date formats
-Mention that position and ID is auto-assigned, however position can be overwritten
+        %p
