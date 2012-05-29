@@ -21,8 +21,4 @@ class PagesController < ApplicationController
   def raise_error
     raise "Intentional error thrown"
   end
-
-  def status
-    @users = User.count
-  end
 end

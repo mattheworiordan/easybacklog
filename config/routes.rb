@@ -93,7 +93,6 @@ Ibacklog::Application.routes.draw do
     get '/faq' => 'pages#faq', :as => 'faq'
     get '/browser-support' => 'pages#browser_support', :as => 'browser_support'
     get '/raise-error' => 'pages#raise_error'
-    get '/status' => 'pages#status'
 
     get '/beta/:unique_code' => 'beta_signups#index', :constraints => { :code => /[a-z0-9]{6}/i }, :as => 'beta_signup_referral'
 
@@ -150,4 +149,6 @@ Ibacklog::Application.routes.draw do
 
     root :to => 'api#index'
   end
+
+  get '/status' => 'health#status'
 end
