@@ -1,5 +1,5 @@
 module ApiHelper
-  def defintion_url_wrappable(url)
+  def definition_url_wrappable(url)
     url = h(url)
     url = url.gsub(/\//, "#{content_tag('span', '')}/")
     raw "#{api_end_point}#{url}"
