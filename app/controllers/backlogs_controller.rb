@@ -276,16 +276,16 @@ class BacklogsController < ApplicationController
   ## included in API
   def index_snapshot
     @backlog = current_account.backlogs.available.find(params[:id])
-    render_options = { request.format.to_sym => {
+    render_options = {
       :manual_snapshots => @backlog.snapshots,
       :sprint_snapshots => @backlog.sprint_snapshots
-    } }
+    }
     respond_to do |format|
       format.html do
         render :partial => 'snapshot_select'
       end
-      format.xml { render render_options.send("to_xml", :root => 'snapshots') }
-      format.json { render render_options }
+      format.xml { render :xml => render_options.send("to_xml", :root => 'snapshots') }
+      format.json { render :json => render_options }
     end
   end
 
