@@ -42,9 +42,9 @@
   </snapshots>
   <sprints>
     <sprint iteration="1" start_on="2011-01-03" duration_days="5" number_team_members="1" completed="true" completed_at="2011-11-13 22:13:30 UTC" total_completed_points="2.0" total_allocated_points="2.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="TH12" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="2.0" score_90_when_assigned="2.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="TH12" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="2.0" score_90_when_assigned="2.0"/>
+      </sprint_stories>
       <snapshot name="Sprint 1" velocity="3.0" rate="800" points="11.0" days="3.7" cost="&#163;2,933" use_50_90="false" created_at="2011-11-13 22:13:31 UTC" updated_at="2011-11-13 22:13:31 UTC">
         <themes>
           <theme name="Theme 1" code="TH1" points="11.0" days="3.7" cost="&#163;2,933">
@@ -71,10 +71,10 @@
       </snapshot>
     </sprint>
     <sprint iteration="2" start_on="2011-01-10" duration_days="5" number_team_members="1" completed="true" completed_at="2011-11-13 22:15:28 UTC" total_completed_points="8.0" total_allocated_points="8.0" total_expected_points_for_this_sprint="15.0">
-      <stories>
-        <story code="TH13" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
-        <story code="TH14" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
-      </stories>
+      <sprint_stories>
+        <sprint_story code="TH13" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="3.0" score_90_when_assigned="3.0"/>
+        <sprint_story code="TH14" status="Accepted" status_code="D" accepted="true" score_50_when_assigned="5.0" score_90_when_assigned="5.0"/>
+      </sprint_stories>
       <snapshot name="Sprint 2" velocity="3.0" rate="800" points="14.0" days="4.7" cost="&#163;3,733" use_50_90="false" created_at="2011-11-13 22:15:28 UTC" updated_at="2011-11-13 22:15:28 UTC">
         <themes>
           <theme name="Theme 1" code="TH1" points="11.0" days="3.7" cost="&#163;2,933">
