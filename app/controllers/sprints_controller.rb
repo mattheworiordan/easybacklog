@@ -154,6 +154,6 @@ class SprintsController < ApplicationController
     end
 
     def filter_sprint_params
-      filter_params(:backlog_id, :iteration, *JSON_METHODS)
+      filter_params(:backlog_id, :iteration, *(JSON_METHODS + [:created_at, :updated_at]))
     end
 end
