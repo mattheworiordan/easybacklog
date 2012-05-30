@@ -147,6 +147,7 @@ Feature: Backlog Permissions
       And a user named "Mike company read access" is created with no rights and assigned to account "Acme"
       And a user named "Z no company access" is created with no rights and assigned to account "Acme"
       And I am on the accounts page
+    Then I should see "Microsoft" within the "side panel"
     When I follow "Microsoft"
       And I follow "Manage company users"
       And I select "Read only access to this company" from "Mike company read access"
@@ -171,7 +172,7 @@ Feature: Backlog Permissions
       And I sign out
       And I am signed in as "Mike company read access"
     # Mike company read access should not see anything as his company rights have been explicitly overwritten
-    Then I should not see "Microsoft"
+    Then I should not see "Microsoft" within the "side panel"
       And I should not see "Backlog for test"
     When I sign out
       And I am signed in as "Z no company access"
