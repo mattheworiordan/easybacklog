@@ -21,7 +21,8 @@ class Backlog < ActiveRecord::Base
   attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id
 
   before_save :check_can_modify, :update_sprint_estimation_method
-  after_save :update_account_scoring_rule_if_empty
+  after_save :update_account_defaults_if_empty, :unless => Proc.new { |b| b.prohibit_account_updates || b.is_snapshot? }
+  attr_accessor :prohibit_account_updates # a property used to signify this is a snapshot being built or a demo (example) backlog and thus it should not fire after filters
 
   before_validation :prohibit_rate_if_velocity_empty
 
@@ -145,6 +146,7 @@ class Backlog < ActiveRecord::Base
   # snapshot is a non-editable copy of a backlog in time
   def create_snapshot(snapshot_name)
     new_backlog = account.backlogs.new(safe_attributes.merge({ :name => snapshot_name }))
+    new_backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a snapshot
     # these 2 attributes are protected
     new_backlog.author = self.author
     new_backlog.last_modified_user = self.last_modified_user
@@ -317,12 +319,22 @@ class Backlog < ActiveRecord::Base
     #  but do allow editing if snapshot_master, snapshot_for_sprint, archived or deleted has changed
     #  snapshot_master is needed so that the snapshot can be created without an error blocking editing being thrown
     def check_can_modify
-      editable? || snapshot_master_id_changed? || archived_changed? || deleted_changed? || snapshot_for_sprint_id_changed?
+      if !editable?
+        unless snapshot_master_id_changed? || archived_changed? || deleted_changed? || snapshot_for_sprint_id_changed?
+          raise ActiveRecord::RecordNotSaved, 'Backlog is not editable (locked)'
+        end
+      end
     end
 
-    def update_account_scoring_rule_if_empty
-      unless scoring_rule_id.blank?
-        account.update_attributes :scoring_rule_id => scoring_rule_id if account.scoring_rule_id.blank?
+    def update_account_defaults_if_empty
+      # update scoring rule if assigned to this backlog and none exists yet for the account
+      account.update_attributes! :scoring_rule_id => scoring_rule_id if scoring_rule_id.present? && account.scoring_rule_id.blank?
+
+      # if first time we have created a backlog and account does not yet have defaults, assign these settings to the account
+      if company.blank? && account.defaults_set.blank?
+        unless account.defaults_set?
+          account.update_attributes! :default_velocity => velocity, :default_rate => rate, :default_use_50_90 => use_50_90
+        end
       end
     end
 

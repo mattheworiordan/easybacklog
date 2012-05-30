@@ -243,6 +243,7 @@ class BacklogsController < ApplicationController
     if current_account.can?(:full, current_user)
       enforce_can(:read, 'You do not have permission to view or duplicate this backlog') do
         @new_backlog = current_account.backlogs.new(@backlog.safe_attributes.merge(filter_backlog_params || {}))
+        @new_backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a duplicate so ignore any account updates
         @new_backlog.author = @backlog.author
         @new_backlog.last_modified_user = current_user
         if request.post?
@@ -474,18 +475,6 @@ class BacklogsController < ApplicationController
         end
       else
         @backlog.company = nil
-      end
-
-      if @backlog.company.blank?
-        # if first time we have created a backlog and account does not yet have defaults, assign these settings to the account
-        unless @backlog.account.defaults_set?
-          unassigned_attributes = {
-            :default_velocity => @backlog.velocity,
-            :default_rate => @backlog.rate,
-            :default_use_50_90 => @backlog.use_50_90
-          }
-          @backlog.account.update_attributes! unassigned_attributes
-        end
       end
     end
 

@@ -299,6 +299,36 @@ describe Backlog do
     backlog.average_velocity.should == 2 # average of 1,2,3
   end
 
+  context 'Account defaults' do
+    let(:account) { Factory.create(:account) }
+
+    it 'should not update account defaults if backlog if prohibit_account_updates is set' do
+      account.defaults_set.should be_blank
+      backlog = Factory.build(:backlog, :account => account, :velocity => 1, :rate => 2)
+      backlog.prohibit_account_updates = true
+      backlog.save!
+      account.reload
+      account.defaults_set.should be_blank
+    end
+
+    it 'should not update account defaults if backlog is assigned to a company' do
+      account.defaults_set.should be_blank
+      backlog = Factory.build(:backlog, :account => account, :velocity => 1, :rate => 2, :company => Factory.create(:company, :account => account))
+      backlog.save!
+      account.reload
+      account.defaults_set.should be_blank
+    end
+
+    it 'should update account defaults if backlog if prohibit_account_updates is not set' do
+      account.defaults_set.should be_blank
+      Factory.create(:backlog, :account => account, :velocity => 1, :rate => 2)
+      account.reload
+      account.defaults_set.should be_true
+      account.default_velocity.to_i.should == 1
+      account.default_rate.to_i.should == 2
+    end
+  end
+
   context 'Scoring rule' do
     it 'should update the account scoring rule if one is not set' do
       backlog = Factory.create(:backlog)

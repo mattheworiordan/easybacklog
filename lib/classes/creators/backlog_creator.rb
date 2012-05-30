@@ -12,6 +12,7 @@ module Creators
         Backlog.record_timestamps = false
 
         @backlog = target_account.backlogs.build
+        @backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a machine created backlog
 
         set_backlog_properties source_backlog, current_user
         # last update time needs to be set manually
@@ -38,6 +39,7 @@ module Creators
         Backlog.record_timestamps = false
         # create a backlog that is editable
         @backlog = target_backlog.account.backlogs.build
+        @backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a snapshot
         set_backlog_properties source_snapshot, target_backlog.author
         set_backlog_timestamps source_snapshot # do before themes are added so that the right time stamp is used
         add_themes source_snapshot
@@ -55,6 +57,7 @@ module Creators
       begin
         Backlog.record_timestamps = false
         @backlog = target_sprint.backlog.account.backlogs.build
+        @backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a snapshot
         set_backlog_properties source_snapshot, target_sprint.backlog.author
         set_backlog_timestamps source_snapshot # do before themes are added so that the right time stamp is used
         add_themes source_snapshot

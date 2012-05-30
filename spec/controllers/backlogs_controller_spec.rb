@@ -334,6 +334,43 @@ describe BacklogsController do
     end
   end
 
+  context 'new backlog created when account has no defaults set (a new account)' do
+    let(:account) { Factory.create(:account_with_user_with_full_rights, :default_velocity => nil, :default_rate => nil) }
+    let!(:example_backlog) { account.add_example_backlog(account.users.first) }
+    before(:each) { sign_in account.users.first }
+
+    it 'should not update the account settings if backlog is a snapshot' do
+      account.defaults_set.should be_blank
+      post :create_snapshot, :account_id => account.id, :id => example_backlog.id, :name => 'New snapshot name'
+      example_backlog.reload
+      example_backlog.snapshots.where(:name => 'New snapshot name').should be_present
+      account.reload
+      account.defaults_set.should be_blank
+    end
+
+    it 'should update the account settings if backlog is created by a user' do
+      account.defaults_set.should be_blank
+      post :create, :account_id => account.id, :backlog => {
+        :name => 'New backlog name', :velocity => 1, :rate => 2 }
+      account.reload
+      account.backlogs.where(:name => 'New backlog name').should be_present
+      account.defaults_set.should be_true
+      account.default_velocity.to_i.should == 1
+      account.default_rate.to_i.should == 2
+    end
+
+    it 'should not update the account settings if account settings already set by user' do
+      account.update_attribute :defaults_set, true
+      post :create, :account_id => account.id, :backlog => {
+        :name => 'New backlog name', :velocity => 1, :rate => 2 }
+      account.reload
+      account.backlogs.where(:name => 'New backlog name').should be_present
+      account.defaults_set.should be_true
+      account.default_velocity.should be_blank
+      account.default_rate.should be_blank
+    end
+  end
+
   describe 'API' do
     let(:account) { Factory.create(:account_with_user) }
     let(:user) { account.users.first }

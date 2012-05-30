@@ -98,6 +98,10 @@ class Account < ActiveRecord::Base
     # when an account is create, defaults have not yet been set for the account, however once the account is
     # updated, then we know the user has set the defaults so we can use those defaults moving forwards
     def enable_defaults_set
-      self.defaults_set = true unless defaults_set_changed?
+      if !new_record?
+        if default_velocity_changed? || default_rate_changed? || default_use_50_90_changed?
+          self.defaults_set = true
+        end
+      end
     end
 end

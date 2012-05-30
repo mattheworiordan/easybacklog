@@ -76,6 +76,46 @@ describe Account do
     account.default_rate.should == 50
   end
 
+  context 'should set defaults_set to true if any of the default values are set' do
+    let(:account) { Factory.build(:account, :default_velocity => nil, :default_rate => nil, :default_use_50_90 => nil) }
+
+    context 'on create' do
+      it 'should not set defaults_set to true unless explicitly set' do
+        account.save!
+        account.defaults_set.should be_blank
+      end
+      it 'should allow defaults_set to be set explicitly' do
+        account.defaults_set = true
+        account.default_velocity = 1
+        account.save!
+        account.defaults_set.should be_true
+        account.default_velocity.should == 1
+      end
+    end
+
+    context 'on update' do
+      before(:each) { account.save! }
+
+      it 'should not set defaults_set to true unless a default_value has been updated' do
+        account.update_attributes! :name => 'New name'
+        account.defaults_set.should be_blank
+      end
+      it 'should set defaults_set to true if a default_value has been updated' do
+        account.update_attributes! :default_velocity => 1
+        account.defaults_set.should be_true
+        account.default_velocity.to_i.should == 1
+      end
+      it 'should allow defaults_set to be set explicitly' do
+        account.defaults_set = true
+        account.save!
+        account.defaults_set.should be_true
+        account.default_velocity.should be_blank
+      end
+    end
+  end
+
+
+
   context "Adding a user" do
     before(:each) do
       @account = Factory.create(:account)

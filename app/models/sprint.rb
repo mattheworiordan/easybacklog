@@ -137,6 +137,7 @@ class Sprint < ActiveRecord::Base
   def create_snapshot_if_missing
     if snapshot.blank?
       new_backlog = backlog.account.backlogs.new(backlog.safe_attributes.merge({ :name => "Sprint #{iteration}" }))
+      new_backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a snapshot
       # these 2 attributes are protected
       new_backlog.author = backlog.author
       new_backlog.last_modified_user = backlog.last_modified_user

@@ -32,6 +32,13 @@ describe Creators::BacklogCreator do
     backlog.updated_at.should == Date.parse('1 Jan 2011')
   end
 
+  it 'should not update the account defaults when backlog is an example' do
+    account.defaults_set.should be_blank
+    backlog = subject.create backlog_double, account, user
+    account.reload
+    account.defaults_set.should be_blank
+  end
+
   it 'should create themes from backlog data with themes' do
     theme = double('Theme')
     theme.stub(:name) { 'First theme' }
@@ -59,7 +66,13 @@ describe Creators::BacklogCreator do
     snapshot_double.stub(:updated_at) { '1 Feb 2011' }
     snapshot_double.stub(:themes) { nil }
     backlog_double.stub(:snapshots) { [snapshot_double] }
+
+    account.defaults_set.should be_blank
     backlog = subject.create backlog_double, account, user
+
+    # account defaults should never set by snapshots
+    account.reload
+    account.defaults_set.should be_blank
 
     backlog.snapshots.count.should == 1
     backlog.snapshots.first.instance_eval do
@@ -93,7 +106,12 @@ describe Creators::BacklogCreator do
     sprint_double.stub(:snapshot) { snapshot_double }
 
     backlog_double.stub(:sprints) { [sprint_double] }
+    account.defaults_set.should be_blank
     backlog = subject.create backlog_double, account, user
+
+    # account defaults should never set by snapshots
+    account.reload
+    account.defaults_set.should be_blank
 
     backlog.sprints.count.should == 1
     backlog.sprints.first.instance_eval do
