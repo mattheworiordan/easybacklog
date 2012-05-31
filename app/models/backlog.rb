@@ -331,10 +331,8 @@ class Backlog < ActiveRecord::Base
       account.update_attributes! :scoring_rule_id => scoring_rule_id if scoring_rule_id.present? && account.scoring_rule_id.blank?
 
       # if first time we have created a backlog and account does not yet have defaults, assign these settings to the account
-      if company.blank? && account.defaults_set.blank?
-        unless account.defaults_set?
-          account.update_attributes! :default_velocity => velocity, :default_rate => rate, :default_use_50_90 => use_50_90
-        end
+      if company.blank? && (account.defaults_set.blank? || !account.defaults_set)
+        account.update_attributes! :default_velocity => velocity, :default_rate => rate, :default_use_50_90 => use_50_90
       end
     end
 
