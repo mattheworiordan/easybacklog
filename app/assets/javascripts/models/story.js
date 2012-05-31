@@ -59,7 +59,7 @@ var Story = Backbone.Model.extend({
 
   MoveToTheme: function(newThemeId, options) {
     var story = this;
-    $.post(this.collection.url() + '/' + this.get('id') + '/move-to-theme/' + newThemeId).success(function(response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/move-to-theme/' + newThemeId, null, null, 'json').success(function(response) {
       var themeCollection = story.Theme().collection;
       story.collection.remove(story); // remove story from this theme
       themeCollection.get(Number(newThemeId)).Stories().add(story); // add story model to new theme

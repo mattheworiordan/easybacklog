@@ -33,7 +33,7 @@ var Theme = Backbone.Model.extend({
   // renumber all the stories by assigning them sequential IDs
   ReNumberStories: function(options) {
     var theme = this;
-    $.post(this.collection.url() + '/' + this.get('id') + '/re-number-stories').success(function(response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/re-number-stories', null, null, 'json').success(function(response) {
       theme.Stories().each(function(story) {
         story.fetch();
       });
@@ -63,7 +63,7 @@ var Theme = Backbone.Model.extend({
           }
         };
 
-    $.post(this.collection.url() + '/' + this.get('id') + '/add-existing-story/' + storyId).success(function(response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/add-existing-story/' + storyId, null, null, 'json').success(function(response) {
       // find the story within the themes
       stories = theme.Backlog().Themes().map(function(theme) {
         return theme.Stories().get(Number(storyId));
@@ -92,7 +92,7 @@ var Theme = Backbone.Model.extend({
 
   MoveToBacklog: function(backlogId, options) {
     var theme = this;
-    $.post(this.collection.url() + '/' + this.get('id') + '/move_to_backlog/' + backlogId).success(function(response) {
+    $.post(this.collection.url() + '/' + this.get('id') + '/move-to-backlog/' + backlogId, null, null, 'json').success(function(response) {
       theme.Backlog().Themes().remove(theme);
       if (options && _.isFunction(options.success)) {
         // callback for success

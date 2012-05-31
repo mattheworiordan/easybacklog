@@ -58,7 +58,7 @@ Ibacklog::Application.routes.draw do
         member do
           match 're-number-stories' => 'themes#re_number_stories', :via => [:post]
           match 'add-existing-story/:story_id' => 'themes#add_existing_story', :via => [:post]
-          match 'move_to_backlog/:target_backlog_id' => 'themes#move_to_backlog', :via => [:post]
+          match 'move-to-backlog/:target_backlog_id' => 'themes#move_to_backlog', :via => [:post]
         end
       end
       resources :sprints
