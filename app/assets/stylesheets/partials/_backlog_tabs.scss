@@ -239,6 +239,7 @@ section.showing-sprints {
             background-color: $title-area-color;
           }
           @include status-code-colors;
+          @include status-code-arrows(1.25em);
           /* slight adjustments to icon and spacing as bigger font size */
           &.status-code-D {
             background-position-y: 3px;

@@ -956,9 +956,7 @@ ul.themes {
                     text-decoration: none;
                   }
                 }
-                &:hover {
-                  background-color: $title-area-color;
-                }
+                @include status-code-arrows(0.75em);
                 @include status-code-colors;
               }
             }

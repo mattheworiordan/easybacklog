@@ -54,7 +54,14 @@ App.Views.Helpers = {
 
   statusChangeClick: function(event) {
     var that = this,
-        dropDown = $(JST['templates/stories/status-drop-down']({ model: this.model }));
+        dropDown = $(JST['templates/stories/status-drop-down']({ model: this.model })),
+        tab = $(this.el).find('.status .tab'),
+        revertCallBack;
+
+    if (tab.hasClass('open')) {
+      // tab is open, let the events attached below close the tabs
+      return;
+    }
 
     event.preventDefault();
     event.stopPropagation();
@@ -67,6 +74,8 @@ App.Views.Helpers = {
       $('body').find('#sprint-story-status-dropdown').remove();
       $('body').append(dropDown);
 
+      tab.addClass('open');
+
       // manually add hover state as had problems with CSS hover when elems moved away from the cursor
       dropDown.find('li').hover(function() {
         $(this).addClass('hover');
@@ -75,8 +84,8 @@ App.Views.Helpers = {
       });
 
       // make tabs similar width so they don't look odd when smaller than the selected tab
-      if (dropDown.width() < $(this.el).find('.status .tab').outerWidth()) {
-        dropDown.css('width', $(this.el).find('.status .tab').outerWidth() + 'px');
+      if (dropDown.width() < tab.outerWidth()) {
+        dropDown.css('width', tab.outerWidth() + 'px');
       }
 
       dropDown.css('position','absolute').position({
@@ -86,10 +95,14 @@ App.Views.Helpers = {
         offset: "0 0"
       });
 
-      $('html').bind('click.status-drop-down', function() {
+      revertCallBack = function() {
         $('body').find('#sprint-story-status-dropdown').remove();
         $('html').unbind('click.status-drop-down');
-      });
+        tab.unbind('click');
+        tab.removeClass('open');
+      };
+
+      $('html').bind('click.status-drop-down', revertCallBack);
 
       dropDown.find('li').click(function(event) {
         event.preventDefault();
@@ -100,8 +113,7 @@ App.Views.Helpers = {
             code = $(this).attr('class').match(/status-code-(\w+)/)[1],
             name = $(this).text();
 
-        $('body').find('#sprint-story-status-dropdown').remove();
-        $('html').unbind('click.status-drop-down');
+        revertCallBack();
 
         App.Views.Helpers.statusDropDownChanged.call(that, id, code, name);
       });
@@ -109,10 +121,11 @@ App.Views.Helpers = {
   },
 
   statusDropDownChanged: function(id, code, name) {
-    var that = this;
+    var that = this,
+        tab = $(this.el).find('.status .tab');
 
     // update the status tab
-    $(this.el).find('.status .tab').attr('class', 'tab status-code-' + code).removeClass('hover').find('span').text(name);
+    tab.attr('class', 'tab status-code-' + code).removeClass('hover').find('span').text(name);
     // now update whether the story is locked for moving or not
     if (code === this.model.SprintStory().Status().AcceptedCode) {
       $(this.el).addClass('locked');
