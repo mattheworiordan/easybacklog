@@ -11,6 +11,7 @@ Feature: Backlog Themes
       And I am on the accounts page
       And I follow "Create a new backlog"
       And I fill in "Name the backlog" with "My First Backlog"
+      And I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
       And I press "Create new backlog"
     Then I should see the notice "Backlog was successfully created."
 
