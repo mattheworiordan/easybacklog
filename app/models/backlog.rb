@@ -171,7 +171,7 @@ class Backlog < ActiveRecord::Base
   alias_method :is_editable, :editable?
 
   def all_snapshot_master
-    self.snapshot_master || self.snapshot_for_sprint
+    self.snapshot_master || (self.snapshot_for_sprint.present? && self.snapshot_for_sprint.backlog)
   end
   alias_method :backlog_root, :all_snapshot_master
 
