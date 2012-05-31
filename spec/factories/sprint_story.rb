@@ -1,5 +1,7 @@
-Factory.define :sprint_story do |a|
-  a.association :sprint
-  a.association :story
-  a.association :sprint_story_status
+FactoryGirl.define do
+  factory :sprint_story do
+    association :sprint
+    association :story
+    association :sprint_story_status
+  end
 end

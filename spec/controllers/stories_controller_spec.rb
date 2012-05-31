@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 describe StoriesController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   describe 'Front end API' do
     before(:each) { accept_json }
 
     context 'user does not have read access (no rights) to the backlog' do
       before(:each) do
-        @story = Factory.create(:story)
-        @account_user = Factory.create(:account_user_with_no_rights, :account => @story.theme.backlog.account)
+        @story = FactoryGirl.create(:story)
+        @account_user = FactoryGirl.create(:account_user_with_no_rights, :account => @story.theme.backlog.account)
         sign_in @account_user.user
         @params = {
           :theme_id => @story.theme.id,
@@ -32,8 +32,8 @@ describe StoriesController do
 
     context 'user only has read rights to an account' do
       before(:each) do
-        @story = Factory.create(:story)
-        @account_user = Factory.create(:account_user_with_read_rights, :account => @story.theme.backlog.account)
+        @story = FactoryGirl.create(:story)
+        @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @story.theme.backlog.account)
         sign_in @account_user.user
         @params = {
           :theme_id => @story.theme.id,
@@ -57,7 +57,7 @@ describe StoriesController do
       end
 
       it 'should not allow a user to move a story to a new theme' do
-        post :move_to_theme, @params.merge(:new_theme_id => Factory.create(:theme, :backlog => @story.theme.backlog))
+        post :move_to_theme, @params.merge(:new_theme_id => FactoryGirl.create(:theme, :backlog => @story.theme.backlog))
         response.code.should == status_code(:forbidden)
         ActiveSupport::JSON.decode(response.body)['message'].should == 'You do not have permission to edit this backlog'
       end
@@ -65,8 +65,8 @@ describe StoriesController do
 
     context 'user has full rights to an account' do
       before(:each) do
-        @story = Factory.create(:story)
-        @account_user = Factory.create(:account_user_with_full_rights, :account => @story.theme.backlog.account)
+        @story = FactoryGirl.create(:story)
+        @account_user = FactoryGirl.create(:account_user_with_full_rights, :account => @story.theme.backlog.account)
         sign_in @account_user.user
         @params = {
           :theme_id => @story.theme.id,
@@ -90,19 +90,19 @@ describe StoriesController do
       end
 
       it 'should allow a user to move a story to a new theme' do
-        post :move_to_theme, @params.merge(:new_theme_id => Factory.create(:theme, :backlog => @story.theme.backlog))
+        post :move_to_theme, @params.merge(:new_theme_id => FactoryGirl.create(:theme, :backlog => @story.theme.backlog))
         response.code.should == status_code(:ok)
       end
     end
   end
 
   describe 'API' do
-    let(:account) { Factory.create(:account_with_user) }
+    let(:account) { FactoryGirl.create(:account_with_user) }
     let(:user) { account.users.first }
-    let(:user_token) { Factory.create(:user_token, :user => user) }
-    let(:backlog) { Factory.create(:backlog, :account => account) }
-    let(:theme) { Factory.create(:theme, :backlog => backlog) }
-    let(:story) { Factory.create(:story, :theme => theme) }
+    let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
+    let(:backlog) { FactoryGirl.create(:backlog, :account => account) }
+    let(:theme) { FactoryGirl.create(:theme, :backlog => backlog) }
+    let(:story) { FactoryGirl.create(:story, :theme => theme) }
 
     before(:each) { setup_api_authentication user_token }
 
@@ -114,11 +114,11 @@ describe StoriesController do
     end
 
     def expect_permission_error(http_verb)
-      backlog2 = Factory.create(:backlog, :account => account)
-      theme2 = Factory.create(:theme, :backlog => backlog2)
-      story2 = Factory.create(:story, :theme => theme2)
+      backlog2 = FactoryGirl.create(:backlog, :account => account)
+      theme2 = FactoryGirl.create(:theme, :backlog => backlog2)
+      story2 = FactoryGirl.create(:story, :theme => theme2)
       # assign the user no rights to this backlog
-      Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
+      FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
       get http_verb, { :id => story2.id, :theme_id => theme2.id }
       response.code.should == status_code(:forbidden)
     end
@@ -130,7 +130,7 @@ describe StoriesController do
     end
 
     context 'index' do
-      before(:each) { 2.times { Factory.create(:acceptance_criterion, :story => story) } }
+      before(:each) { 2.times { FactoryGirl.create(:acceptance_criterion, :story => story) } }
 
       it 'should return a 404 error if the theme id does not exist' do
         get :index, { :theme_id => 0 }
@@ -138,7 +138,7 @@ describe StoriesController do
       end
 
       it 'should return an error if the user does not have access to the backlog' do
-        get :index, { :theme_id => Factory.create(:theme).id }
+        get :index, { :theme_id => FactoryGirl.create(:theme).id }
         response.code.should == status_code(:forbidden)
       end
 
@@ -171,7 +171,7 @@ describe StoriesController do
     end
 
     context 'show' do
-      before(:each) { 2.times { Factory.create(:acceptance_criterion, :story => story) } }
+      before(:each) { 2.times { FactoryGirl.create(:acceptance_criterion, :story => story) } }
 
       it 'should return a single story' do
         get :show, { :id => story.id, :theme_id => theme.id }
@@ -245,7 +245,7 @@ describe StoriesController do
       end
 
       it 'should return an error if the current user does not have permission to create the story' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :create, { :theme_id => theme.id, :as_a => 'New name' }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -292,7 +292,7 @@ describe StoriesController do
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :update, { :id => story.id, :theme_id => theme.id, :as_a => 'New name' }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -334,7 +334,7 @@ describe StoriesController do
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         delete :destroy, { :id => story.id, :theme_id => theme.id }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -353,7 +353,7 @@ describe StoriesController do
     end
 
     context 'move story to another theme' do
-      let(:theme2) { Factory.create(:theme, :backlog => backlog) }
+      let(:theme2) { FactoryGirl.create(:theme, :backlog => backlog) }
 
       it 'should allow the story to be reassigned to another theme' do
         post :move_to_theme, { :id => story.id, :theme_id => theme.id, :new_theme_id => theme2.id }
@@ -369,7 +369,7 @@ describe StoriesController do
       end
 
       it 'should return an error if the theme could not be found from this backlog' do
-        post :move_to_theme, { :id => story.id, :theme_id => theme.id, :new_theme_id => Factory.create(:theme).id }
+        post :move_to_theme, { :id => story.id, :theme_id => theme.id, :new_theme_id => FactoryGirl.create(:theme).id }
         response.code.should == status_code(:forbidden)
       end
     end

@@ -3,7 +3,7 @@ Given /^an account called "([^\"]+)" is set up for "([^\"]+)"(?:| who should hav
   raise "User #{user_name} does not exist." if user.blank?
   account_user_options = {
     :user => user,
-    :account => Factory.create(:account, :name => account_name)
+    :account => FactoryGirl.create(:account, :with_no_defaults_set, :name => account_name)
   }
   case rights
     when 'account admin'
@@ -18,7 +18,7 @@ Given /^an account called "([^\"]+)" is set up for "([^\"]+)"(?:| who should hav
       account_user_options.merge! :privilege => 'none'
   end
 
-  au = Factory.create(:account_user, account_user_options)
+  au = FactoryGirl.create(:account_user, account_user_options)
 end
 
 Given /^a user named "([^\"]+)" is created (?:with (read only|read only and status update|full access|no) rights )?and assigned to account "([^\"]+)"$/ do |user_name, rights, account_name|
@@ -36,5 +36,5 @@ Given /^a user named "([^\"]+)" is created (?:with (read only|read only and stat
     else
       :account_user
   end
-  au = Factory.create(account_user_type, :user => Factory.create(:user, :name => user_name, :email => "#{user_name.gsub(/ /, '')}@acme.com"), :account => account, :admin => false)
+  au = FactoryGirl.create(account_user_type, :user => FactoryGirl.create(:user, :name => user_name, :email => "#{user_name.gsub(/ /, '')}@acme.com"), :account => account, :admin => false)
 end

@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe InvitesController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   before(:each) do
-    @account = Factory.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
-    @invite = Factory.create(:invited_user, :account => @account, :invitee_user => @account.users.first)
+    @account = FactoryGirl.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
+    @invite = FactoryGirl.create(:invited_user, :account => @account, :invitee_user => @account.users.first)
     @params = {
       :account_id => @account.id,
       :id => @invite.id,
@@ -30,7 +30,7 @@ describe InvitesController do
   context "Registered user follows an invite to an account they do not have access to" do
     it 'should assign the user rights to the account with the read rights' do
       @invite.update_attributes! :privilege => 'read'
-      signed_in_user = Factory.create(:user)
+      signed_in_user = FactoryGirl.create(:user)
       sign_in signed_in_user
 
       get :show, @params
@@ -46,7 +46,7 @@ describe InvitesController do
       @invite.update_attributes! :privilege => 'full'
 
       # sign in a user with read rights
-      signed_in_user = Factory.create(:user)
+      signed_in_user = FactoryGirl.create(:user)
       @account.add_user signed_in_user, :read
       sign_in signed_in_user
 
@@ -63,7 +63,7 @@ describe InvitesController do
       @invite.update_attributes! :privilege => 'read'
 
       # sign in a user with full rights
-      signed_in_user = Factory.create(:user)
+      signed_in_user = FactoryGirl.create(:user)
       @account.add_user signed_in_user, :full
       sign_in signed_in_user
 
@@ -77,12 +77,12 @@ describe InvitesController do
 
   it "New user should be given explicit full access to the Example backlog" do
     @account.add_example_backlog(@account.users.first)
-    @other_backlog = Factory.create(:backlog, :account => @account)
+    @other_backlog = FactoryGirl.create(:backlog, :account => @account)
     # set privileges to none for new user
     @invite.update_attributes! :privilege => 'none'
 
     # sign in a user with read rights
-    signed_in_user = Factory.create(:user)
+    signed_in_user = FactoryGirl.create(:user)
     sign_in signed_in_user
 
     get :show, @params

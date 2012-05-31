@@ -4,13 +4,13 @@ require 'spec_helper'
 
 describe SprintStory do
   # default sprint story status is needed when any story is assigned to a sprint
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:accepted_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   before(:each) do
-    @story = Factory.create(:story, :score_50 => 1, :score_90 => 2)
-    @sprint = Factory.create(:sprint, :backlog => @story.theme.backlog)
+    @story = FactoryGirl.create(:story, :score_50 => 1, :score_90 => 2)
+    @sprint = FactoryGirl.create(:sprint, :backlog => @story.theme.backlog)
     @sprint.stories << @story
   end
 
@@ -29,7 +29,7 @@ describe SprintStory do
   it 'should not be allowed to be reassigned to a complete sprint' do
     sprint1 = @sprint
     sprint1.stories.delete @story
-    sprint2 = Factory.create(:sprint, :backlog_id => @story.theme.backlog.id)
+    sprint2 = FactoryGirl.create(:sprint, :backlog_id => @story.theme.backlog.id)
     sprint2.stories << @story
     sprint1.mark_as_complete
 
@@ -47,7 +47,7 @@ describe SprintStory do
     sprint1 = @sprint
     @story.sprint_story.update_attributes :sprint_story_status_id => accepted_sprint_story_status.id # must mark as accepted to assign so that sprint can be marked as completed
     sprint1.mark_as_complete
-    sprint2 = Factory.create(:sprint, :backlog_id => @story.theme.backlog.id)
+    sprint2 = FactoryGirl.create(:sprint, :backlog_id => @story.theme.backlog.id)
 
     # cannot assign to sprint2 as it's assigned to sprint1 which is complete
     @story.sprint_story.sprint = sprint2
@@ -88,12 +88,12 @@ describe SprintStory do
   end
 
   it 'should not allow a new sprint story to be created or edited or deleted if the backlog is locked' do
-    backlog = Factory.create(:backlog, :velocity => 4)
-    sprint = Factory.create(:sprint, :backlog => backlog)
+    backlog = FactoryGirl.create(:backlog, :velocity => 4)
+    sprint = FactoryGirl.create(:sprint, :backlog => backlog)
     backlog.mark_archived
-    expect { Factory.create(:sprint_story, :sprint => sprint) }.should raise_error
+    expect { FactoryGirl.create(:sprint_story, :sprint => sprint) }.should raise_error
     backlog.recover_from_archive
-    sprint_story = Factory.create(:sprint_story, :sprint => sprint)
+    sprint_story = FactoryGirl.create(:sprint_story, :sprint => sprint)
     backlog.mark_archived
     sprint_story.reload
     expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.should raise_error
@@ -101,12 +101,12 @@ describe SprintStory do
   end
 
   it 'should not allow a new sprint story to be created or edited or deleted if the sprint is completed (locked)' do
-    backlog = Factory.create(:backlog, :velocity => 4)
-    sprint = Factory.create(:sprint, :backlog => backlog)
+    backlog = FactoryGirl.create(:backlog, :velocity => 4)
+    sprint = FactoryGirl.create(:sprint, :backlog => backlog)
     sprint.mark_as_complete
-    expect { Factory.create(:sprint_story, :sprint => sprint) }.should raise_error
+    expect { FactoryGirl.create(:sprint_story, :sprint => sprint) }.should raise_error
     sprint.mark_as_incomplete
-    sprint_story = Factory.create(:sprint_story, :sprint => sprint)
+    sprint_story = FactoryGirl.create(:sprint_story, :sprint => sprint)
     sprint.mark_as_complete
     sprint_story.reload
     expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.should raise_error

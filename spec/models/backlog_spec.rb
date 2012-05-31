@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 describe Backlog do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:accepted_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   it 'should duplicate backlog along with all related records' do
     # get a backlog set up with at least one story
-    acceptance_criterion = Factory.create(:acceptance_criterion)
+    acceptance_criterion = FactoryGirl.create(:acceptance_criterion)
     @backlog = acceptance_criterion.story.theme.backlog
 
     # new backlog with no stories or themes
-    @new_backlog = Factory.create(:backlog)
+    @new_backlog = FactoryGirl.create(:backlog)
 
     @backlog.copy_children_to_backlog(@new_backlog)
     @backlog.reload
@@ -23,13 +23,13 @@ describe Backlog do
   end
 
   it 'should ensure days and costs are accurate based on the themes' do
-    backlog = Factory.create(:backlog, :rate => 800, :velocity => 3)
-    theme = Factory.create(:theme, :backlog => backlog)
-    Factory.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
-    Factory.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
-    Factory.create(:story, :theme => theme, :score_50 => 3, :score_90 => 3)
-    theme2 = Factory.create(:theme, :backlog => backlog)
-    Factory.create(:story, :theme => theme2, :score_50 => 1, :score_90 => 2)
+    backlog = FactoryGirl.create(:backlog, :rate => 800, :velocity => 3)
+    theme = FactoryGirl.create(:theme, :backlog => backlog)
+    FactoryGirl.create(:story, :theme => theme, :score_50 => 5, :score_90 => 8)
+    FactoryGirl.create(:story, :theme => theme, :score_50 => 1, :score_90 => 2)
+    FactoryGirl.create(:story, :theme => theme, :score_50 => 3, :score_90 => 3)
+    theme2 = FactoryGirl.create(:theme, :backlog => backlog)
+    FactoryGirl.create(:story, :theme => theme2, :score_50 => 1, :score_90 => 2)
 
     backlog.points.should be_within(0.01).of(14.16)
     backlog.days.should be_within(0.1).of(4.72)
@@ -40,10 +40,10 @@ describe Backlog do
   it 'should update meta data' do
     backlog = nil
     Timecop.freeze(Time.now - 1.day) do
-      backlog = Factory.create(:backlog)
+      backlog = FactoryGirl.create(:backlog)
     end
     Timecop.freeze(Time.now) do
-      user = Factory.create(:user)
+      user = FactoryGirl.create(:user)
       backlog.update_meta_data user
       backlog.updated_at.utc.to_s.should eql(Time.now.utc.to_s)
       backlog.last_modified_user.should eql(user)
@@ -51,10 +51,10 @@ describe Backlog do
   end
 
   it 'should allow backlogs to be marked as deleted or archived' do
-    backlog = Factory.create(:backlog, :name => 'Active 1')
-    active2 = Factory.create(:backlog, :name => 'Active 2', :account => backlog.account)
-    Factory.create(:backlog, :name => 'Archived', :account => backlog.account).mark_archived
-    Factory.create(:backlog, :name => 'Deleted', :account => backlog.account).mark_deleted
+    backlog = FactoryGirl.create(:backlog, :name => 'Active 1')
+    active2 = FactoryGirl.create(:backlog, :name => 'Active 2', :account => backlog.account)
+    FactoryGirl.create(:backlog, :name => 'Archived', :account => backlog.account).mark_archived
+    FactoryGirl.create(:backlog, :name => 'Deleted', :account => backlog.account).mark_deleted
 
     Backlog.archived(true).should include(Backlog.find_by_name('Archived'))
     Backlog.archived.first.should be_archived
@@ -83,9 +83,9 @@ describe Backlog do
   end
 
   it 'should ensure when a backlog is destroyed all related snapshots are deleted' do
-    parent = Factory.create(:backlog, :name => 'Parent')
-    snapshot1 = Factory.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
-    snapshot2 = Factory.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
+    parent = FactoryGirl.create(:backlog, :name => 'Parent')
+    snapshot1 = FactoryGirl.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
+    snapshot2 = FactoryGirl.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
     parent.destroy
 
     # check that snapshots have been deleted in the proces
@@ -93,7 +93,7 @@ describe Backlog do
   end
 
   it 'should allow a backlog snapshot to be created' do
-    acceptance_criterion = Factory.create(:acceptance_criterion)
+    acceptance_criterion = FactoryGirl.create(:acceptance_criterion)
     @backlog = acceptance_criterion.story.theme.backlog
 
     # create two snapshots in the future and check they are proper duplicates
@@ -133,10 +133,10 @@ describe Backlog do
 
   it 'should provide a compare_with method returning a comparison object' do
     # create a simple base which has two stories, two themes, and two acceptance criterion on the first story
-    @base = Factory.create(:acceptance_criterion).story.theme.backlog
+    @base = FactoryGirl.create(:acceptance_criterion).story.theme.backlog
     @base.themes[0].stories[0].update_attributes :score_50 => 1, :score_90 => 21, :as_a => 'As story 1'
 
-    empty_backlog = Factory.create(:backlog)
+    empty_backlog = FactoryGirl.create(:backlog)
     # compare with an empty backlog as target (newer)
     comparison = @base.compare_with(empty_backlog)
     comparison.themes.first.should be_deleted
@@ -150,14 +150,14 @@ describe Backlog do
     comparison.themes.first.stories.first.acceptance_criteria.first.should be_new
 
     # add two additional criterion to the base, one story and one theme to index 0 of theme, story and backlog
-    Factory.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
-    Factory.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
-    Factory.create(:story, :theme => @base.themes.first, :as_a => 'As story 2')
-    Factory.create(:theme, :backlog => @base)
+    FactoryGirl.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
+    FactoryGirl.create(:acceptance_criterion, :story => @base.themes.first.stories.first)
+    FactoryGirl.create(:story, :theme => @base.themes.first, :as_a => 'As story 2')
+    FactoryGirl.create(:theme, :backlog => @base)
 
     # base is typically the older version
     # target is typically the newer version so we can see the changes
-    @target = Factory.create(:backlog)
+    @target = FactoryGirl.create(:backlog)
     @base.copy_children_to_backlog(@target)
 
     # we now have two identical objects, check they are identical before we embark on a complete test suite
@@ -190,7 +190,7 @@ describe Backlog do
     # theme changes
     base_theme_name = @base.themes[0].name
     @target.themes[1].destroy # remove the second theme in target
-    Factory.create(:theme, :backlog => @target) # create a new theme in target
+    FactoryGirl.create(:theme, :backlog => @target) # create a new theme in target
     @target.themes[0].update_attributes :name => 'Changed the name' # change theme 0
     @target.reload
     # check theme changes
@@ -206,9 +206,9 @@ describe Backlog do
     comparison.themes[2].should be_new
 
     # story changes
-    story_3 = Factory.create(:story, :theme => @target.themes[0], :as_a => 'As story 3') # create a new story in target
-    story_4 = Factory.create(:story, :theme => @target.themes[0], :as_a => 'As story 4') # create a new story in target
-    story_5 = Factory.create(:story, :theme => @target.themes[0], :as_a => 'As story 5') # create a new story in target
+    story_3 = FactoryGirl.create(:story, :theme => @target.themes[0], :as_a => 'As story 3') # create a new story in target
+    story_4 = FactoryGirl.create(:story, :theme => @target.themes[0], :as_a => 'As story 4') # create a new story in target
+    story_5 = FactoryGirl.create(:story, :theme => @target.themes[0], :as_a => 'As story 5') # create a new story in target
     story_4.move_to_bottom # this should be listed as the last story in target collection
     @target.themes[0].stories[1].destroy # remove the second existing story in target, now index 1 will be the new item from above
     @target.themes[0].stories[0].as_a = 'Changed the as_a field' # change the as_a field in 2nd story of 1st theme
@@ -237,8 +237,8 @@ describe Backlog do
     theme.stories[4].target.should eql(story_4) # check that order has been respected in new items
 
     # acceptance criterion changes
-    criterion_bottom = Factory.create(:acceptance_criterion, :story => @target.themes[0].stories[0], :criterion => 'Changed this criterion') # create a new criterion in target
-    criterion_top = Factory.create(:acceptance_criterion, :story => @target.themes[0].stories[0], :criterion => 'Changed this criterion')
+    criterion_bottom = FactoryGirl.create(:acceptance_criterion, :story => @target.themes[0].stories[0], :criterion => 'Changed this criterion') # create a new criterion in target
+    criterion_top = FactoryGirl.create(:acceptance_criterion, :story => @target.themes[0].stories[0], :criterion => 'Changed this criterion')
     criterion_top.move_to_top # criterion matched on content, so ordering should be ignored
     @target.themes[0].stories[0].acceptance_criteria[1].destroy # remove the second criterion in target
     @target.reload
@@ -256,17 +256,17 @@ describe Backlog do
   end
 
   it 'should not be editable if a sprint backlog' do
-    criterion = Factory.create(:acceptance_criterion)
+    criterion = FactoryGirl.create(:acceptance_criterion)
     backlog = criterion.story.theme.backlog
-    sprint = Factory.create(:sprint, :backlog => backlog)
+    sprint = FactoryGirl.create(:sprint, :backlog => backlog)
     sprint_snapshot = sprint.create_snapshot_if_missing
 
     assert_backlog_not_editable sprint_snapshot
   end
 
   it 'should return a list of sprint snapshots in descending order' do
-    backlog = Factory.create(:backlog)
-    sprints = (1..3).map { |d| Factory.create(:sprint, :backlog => backlog) }
+    backlog = FactoryGirl.create(:backlog)
+    sprints = (1..3).map { |d| FactoryGirl.create(:sprint, :backlog => backlog) }
     sprints.first.create_snapshot_if_missing
     sprints.second.create_snapshot_if_missing
     backlog.reload
@@ -277,7 +277,7 @@ describe Backlog do
   end
 
   it 'should return an average velocity based on completed sprints' do
-    theme = Factory.create(:theme)
+    theme = FactoryGirl.create(:theme)
     backlog = theme.backlog
     backlog.velocity = 4
     backlog.save!
@@ -287,8 +287,8 @@ describe Backlog do
 
     # create 3 sprints with a single story with a score of 1, 2, and 3
     (1..3).each do |score|
-      sprint = Factory.create(:sprint, :backlog => backlog, :duration_days => 1, :number_team_members => 1)
-      story = Factory.create(:story, :score_50 => score, :score_90 => score)
+      sprint = FactoryGirl.create(:sprint, :backlog => backlog, :duration_days => 1, :number_team_members => 1)
+      story = FactoryGirl.create(:story, :score_50 => score, :score_90 => score)
       sprint.stories << story
       story.sprint_story.sprint_story_status = accepted_sprint_story_status
       story.sprint_story.save!
@@ -300,11 +300,11 @@ describe Backlog do
   end
 
   context 'Account defaults' do
-    let(:account) { Factory.create(:account) }
+    let(:account) { FactoryGirl.create(:account) }
 
     it 'should not update account defaults if backlog if prohibit_account_updates is set' do
       account.defaults_set.should be_blank
-      backlog = Factory.build(:backlog, :account => account, :velocity => 1, :rate => 2)
+      backlog = FactoryGirl.build(:backlog, :account => account, :velocity => 1, :rate => 2)
       backlog.prohibit_account_updates = true
       backlog.save!
       account.reload
@@ -313,7 +313,7 @@ describe Backlog do
 
     it 'should not update account defaults if backlog is assigned to a company' do
       account.defaults_set.should be_blank
-      backlog = Factory.build(:backlog, :account => account, :velocity => 1, :rate => 2, :company => Factory.create(:company, :account => account))
+      backlog = FactoryGirl.build(:backlog, :account => account, :velocity => 1, :rate => 2, :company => FactoryGirl.create(:company, :account => account))
       backlog.save!
       account.reload
       account.defaults_set.should be_blank
@@ -321,7 +321,7 @@ describe Backlog do
 
     it 'should update account defaults if backlog if prohibit_account_updates is not set' do
       account.defaults_set.should be_blank
-      Factory.create(:backlog, :account => account, :velocity => 1, :rate => 2)
+      FactoryGirl.create(:backlog, :account => account, :velocity => 1, :rate => 2)
       account.reload
       account.defaults_set.should be_true
       account.default_velocity.to_i.should == 1
@@ -331,10 +331,10 @@ describe Backlog do
 
   context 'Scoring rule' do
     it 'should update the account scoring rule if one is not set' do
-      backlog = Factory.create(:backlog)
+      backlog = FactoryGirl.create(:backlog)
       account = backlog.account
-      scoring_rule_fib = Factory.create(:scoring_rule_fib)
-      scoring_rule_any = Factory.create(:scoring_rule_any)
+      scoring_rule_fib = FactoryGirl.create(:scoring_rule_fib)
+      scoring_rule_any = FactoryGirl.create(:scoring_rule_any)
 
       backlog.scoring_rule_id.should be_blank
       account.scoring_rule_id.should be_blank
@@ -351,7 +351,7 @@ describe Backlog do
     end
 
     it 'should have a default scoring system even when no scoring system has been selected' do
-      backlog = Factory.create(:backlog)
+      backlog = FactoryGirl.create(:backlog)
 
       # check backlog does not actually have a scoring rule set
       backlog.scoring_rule_id.should be_blank
@@ -359,9 +359,9 @@ describe Backlog do
     end
 
     it 'should inherit the scoring rule from the account if no scoring rule for this backlog exists' do
-      scoring_rule_fib = Factory.create(:scoring_rule_fib)
+      scoring_rule_fib = FactoryGirl.create(:scoring_rule_fib)
 
-      backlog = Factory.create(:backlog)
+      backlog = FactoryGirl.create(:backlog)
       account = backlog.account
 
       backlog.scoring_rule.should == default_scoring_rule
@@ -372,33 +372,33 @@ describe Backlog do
     end
 
     it 'should return a list of valid scoring rules when anything other than any is selected' do
-      backlog = Factory.create(:backlog, :scoring_rule_id => Factory.create(:scoring_rule_fib).id)
+      backlog = FactoryGirl.create(:backlog, :scoring_rule_id => FactoryGirl.create(:scoring_rule_fib).id)
       backlog.valid_scores.should include(1,2,3)
       backlog.valid_scores.should_not include(4)
     end
 
     it 'should return nil when scoring rule is any' do
-      backlog = Factory.create(:backlog, :scoring_rule_id => Factory.create(:scoring_rule_any).id)
+      backlog = FactoryGirl.create(:backlog, :scoring_rule_id => FactoryGirl.create(:scoring_rule_any).id)
       backlog.valid_scores.should be_blank
     end
   end
 
 
   it 'should only allow a rate if velocity is present' do
-    expect { Factory.create(:backlog, :rate => 50, :velocity => nil)}.to raise_error ActiveRecord::RecordInvalid, /Rate cannot be specified if velocity is empty/
+    expect { FactoryGirl.create(:backlog, :rate => 50, :velocity => nil)}.to raise_error ActiveRecord::RecordInvalid, /Rate cannot be specified if velocity is empty/
 
-    backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
+    backlog = FactoryGirl.create(:backlog, :rate => 50, :velocity => 5)
     backlog.rate.should == 50
   end
 
   it 'should trigger sprints to change from calculated velocity to explicit velocity when velocity p/day nilled in backlog settings' do
     # set up two stories
-    story = Factory.create(:story)
-    story2 = Factory.create(:story, :theme => story.theme)
+    story = FactoryGirl.create(:story)
+    story2 = FactoryGirl.create(:story, :theme => story.theme)
     backlog = story.theme.backlog
 
     # assign stories to a completed sprint
-    completed_sprint = Factory.create(:sprint, :backlog => backlog, :number_team_members => 5)
+    completed_sprint = FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 5)
     [story, story2].each do |story|
       completed_sprint.stories << story
       story.reload
@@ -408,7 +408,7 @@ describe Backlog do
     completed_sprint_points = completed_sprint.total_expected_points
 
     # set up an imcomplete sprint with a different expected velocity based on number team members
-    incomplete_sprint = Factory.create(:sprint, :backlog => backlog, :number_team_members => 20)
+    incomplete_sprint = FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 20)
     incomplete_sprint_points = incomplete_sprint.total_expected_points
 
     # remove velocity for backlog, which should trigger updates to sprints so that explicit velocities are set based on the old backlog velocity
@@ -425,8 +425,8 @@ describe Backlog do
 
   it 'should not change sprint settings when backlog settings change back to average velocity per day setting' do
     # set up a backlog with a sprint with explicit velocity set
-    backlog = Factory.create(:backlog, :velocity => nil, :rate => nil)
-    sprint = Factory.create(:sprint, :backlog => backlog, :explicit_velocity => 7, :number_team_members => nil)
+    backlog = FactoryGirl.create(:backlog, :velocity => nil, :rate => nil)
+    sprint = FactoryGirl.create(:sprint, :backlog => backlog, :explicit_velocity => 7, :number_team_members => nil)
 
     # now set to use velocity calculations for the backlog
     backlog.update_attributes :velocity => 5
@@ -437,7 +437,7 @@ describe Backlog do
   end
 
   it 'should remove the rate when velocity for sprint is empty' do
-    backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
+    backlog = FactoryGirl.create(:backlog, :rate => 50, :velocity => 5)
     backlog.rate.should == 50
 
     backlog.update_attributes :velocity => nil, :rate => nil
@@ -445,31 +445,31 @@ describe Backlog do
   end
 
   it 'should be cost estimatable and velocity estimatable' do
-    backlog = Factory.create(:backlog, :rate => 50, :velocity => 5)
+    backlog = FactoryGirl.create(:backlog, :rate => 50, :velocity => 5)
     backlog.should be_cost_estimatable
     backlog.should be_days_estimatable
   end
 
   it 'should be velocity estimatable and not cost estimatable' do
-    backlog = Factory.create(:backlog, :rate => nil, :velocity => 5)
+    backlog = FactoryGirl.create(:backlog, :rate => nil, :velocity => 5)
     backlog.should be_days_estimatable
     backlog.should_not be_cost_estimatable
   end
 
   it 'should not be cost estimatable and not velocity estimatable' do
-    backlog = Factory.create(:backlog, :rate => nil, :velocity => nil)
+    backlog = FactoryGirl.create(:backlog, :rate => nil, :velocity => nil)
     backlog.should_not be_days_estimatable
     backlog.should_not be_cost_estimatable
   end
 
   context 'JSON and XML representations' do
     it 'should not contain snapshots fields if a backlog master' do
-      json = Factory.create(:backlog).as_json
+      json = FactoryGirl.create(:backlog).as_json
       json.keys.should_not include(:snapshot_master_id, :snapshot_for_sprint_id, :deleted, :parent_backlog_id, :parent_sprint_id)
     end
 
     it 'should include a reference to the parent backlog ID if a manual snapshot' do
-      backlog = Factory.create(:backlog)
+      backlog = FactoryGirl.create(:backlog)
       snapshot = backlog.create_snapshot('acme')
       json = snapshot.as_json
       json.keys.should_not include(:snapshot_master_id, :snapshot_for_sprint_id, :deleted, :parent_sprint_id)
@@ -478,7 +478,7 @@ describe Backlog do
     end
 
     it 'should include a reference to the parent sprint ID if a sprint snapshot' do
-      sprint = Factory.create(:sprint)
+      sprint = FactoryGirl.create(:sprint)
       snapshot = sprint.create_snapshot_if_missing
       json = snapshot.as_json
       json.keys.should_not include(:snapshot_master_id, :snapshot_for_sprint_id, :deleted, :parent_backlog_id)
@@ -489,11 +489,11 @@ describe Backlog do
 
   describe '#where_user_has_access' do
     subject { account.backlogs.where_user_has_access(user) }
-    let(:account) { Factory.create(:account) }
-    let(:company) { Factory.create(:company, :account => account) }
-    let(:backlog) { Factory.create(:backlog, :account => account) }
-    let(:backlog_for_company) { Factory.create(:backlog, :account => account, :company => company) }
-    let(:user) { Factory.create(:user) }
+    let(:account) { FactoryGirl.create(:account) }
+    let(:company) { FactoryGirl.create(:company, :account => account) }
+    let(:backlog) { FactoryGirl.create(:backlog, :account => account) }
+    let(:backlog_for_company) { FactoryGirl.create(:backlog, :account => account, :company => company) }
+    let(:user) { FactoryGirl.create(:user) }
 
     context 'user is an administrator and should always have access to all backlogs' do
       before (:each) do
@@ -628,13 +628,13 @@ describe Backlog do
   end
 
   context 'backlog_users' do
-    let(:account) { Factory.create(:account) }
-    let(:user) { Factory.create(:user) }
-    subject { Factory.create(:backlog, :account => account) }
+    let(:account) { FactoryGirl.create(:account) }
+    let(:user) { FactoryGirl.create(:user) }
+    subject { FactoryGirl.create(:backlog, :account => account) }
 
     describe '#delete_user' do
       it 'should delete the backlog user that exists' do
-        Factory.create(:backlog_user, :backlog => subject, :user => user)
+        FactoryGirl.create(:backlog_user, :backlog => subject, :user => user)
         subject.backlog_users.map(&:user).should include(user)
         subject.delete_user user
         subject.reload
@@ -649,7 +649,7 @@ describe Backlog do
 
     describe '#add_or_update_user' do
       it 'should update the existing user when one exists' do
-        Factory.create(:backlog_user_with_no_rights, :backlog => subject, :user => user)
+        FactoryGirl.create(:backlog_user_with_no_rights, :backlog => subject, :user => user)
         subject.backlog_users.map(&:user).should include(user)
         subject.add_or_update_user user, :full
         subject.reload

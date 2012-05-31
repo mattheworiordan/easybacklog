@@ -1,5 +1,7 @@
-Factory.define :invited_user do |a|
-  a.association :invitee_user, :factory => :user
-  a.association :account, :factory => :account
-  a.email 'john.doe@test.com'
+FactoryGirl.define do
+  factory :invited_user do
+    association :invitee_user, :factory => :user
+    association :account, :factory => :account
+    email 'john.doe@test.com'
+  end
 end

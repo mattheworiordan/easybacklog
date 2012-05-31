@@ -1,10 +1,8 @@
-Factory.sequence :sprint_start_date do |n|
-  Date.today + (n*10).days
-end
-
-Factory.define :sprint do |a|
-  a.start_on { Factory.next(:sprint_start_date) }
-  a.number_team_members 2
-  a.duration_days 10
-  a.association :backlog, :factory => :backlog
+FactoryGirl.define do
+  factory :sprint do
+    sequence(:start_on) { |n| Date.today + (n*10).days }
+    number_team_members 2
+    duration_days 10
+    association :backlog, :factory => :backlog
+  end
 end

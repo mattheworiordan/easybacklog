@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 describe AccountsController do
-  let(:account) { Factory.create(:account_with_user) }
+  let(:account) { FactoryGirl.create(:account_with_user) }
   let(:user) { account.users.first }
-  let(:user_token) { Factory.create(:user_token, :user => user) }
+  let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
 
   describe 'URL error handling' do
     before(:each) { sign_in user }
@@ -16,7 +16,7 @@ describe AccountsController do
     end
 
     it 'should flash an error if trying to access another user\'s account' do
-      account2 = Factory.create(:account_with_user)
+      account2 = FactoryGirl.create(:account_with_user)
       get :show, { :id => account2.id }
       response.should redirect_to(accounts_path)
       flash[:error].should == 'You do not have permission to view this account'
@@ -40,8 +40,8 @@ describe AccountsController do
     end
 
     context 'index' do
-      let (:account2) { Factory.create(:account) }
-      before (:each) { Factory.create(:account_user, :user => user, :account => account2) }
+      let (:account2) { FactoryGirl.create(:account) }
+      before (:each) { FactoryGirl.create(:account_user, :user => user, :account => account2) }
 
       def check_has_valid_accounts_data(accounts)
         response.code.should == status_code(:ok)
@@ -74,7 +74,7 @@ describe AccountsController do
       end
 
       it 'should return an error if trying to access another user\'s account' do
-        account2 = Factory.create(:account_with_user)
+        account2 = FactoryGirl.create(:account_with_user)
         get :show, { :id => account2.id }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -90,7 +90,7 @@ describe AccountsController do
     end
 
     context 'update' do
-      let(:new_locale) { Factory.create(:locale) }
+      let(:new_locale) { FactoryGirl.create(:locale) }
 
       it 'should allow updates to an account' do
         put :update, { :id => account.id, :name => 'New name', :locale_id => new_locale }
@@ -117,8 +117,8 @@ describe AccountsController do
       end
 
       it 'should return an error if the user does not have full permissions' do
-        account_user2 = Factory.create(:account_user_with_no_rights)
-        user_token2 = Factory.create(:user_token, :user => account_user2.user)
+        account_user2 = FactoryGirl.create(:account_user_with_no_rights)
+        user_token2 = FactoryGirl.create(:user_token, :user => account_user2.user)
         setup_api_authentication user_token2
         put :update, { :id => account_user2.account.id }
         response.code.should == status_code(:forbidden)

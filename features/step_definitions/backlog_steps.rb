@@ -6,10 +6,10 @@ Given /^a standard backlog named "([^\"]+)" is set up for "([^\"]+)"$/ do |backl
   account = Account.find_by_name(account_name)
   raise "Account #{account_name} does not exist." if account.blank?
 
-  backlog = Factory.create(:backlog, :account => account, :name => backlog_name)
+  backlog = FactoryGirl.create(:backlog, :account => account, :name => backlog_name)
   (1..2).each do |index|
-    theme = Factory.create(:theme, :backlog => backlog, :name => "Theme #{index}")
-    (1..3).each { |ac| Factory.create(:acceptance_criterion, :story => Factory.create(:story, :theme => theme) ) }
+    theme = FactoryGirl.create(:theme, :backlog => backlog, :name => "Theme #{index}")
+    (1..3).each { |ac| FactoryGirl.create(:acceptance_criterion, :story => FactoryGirl.create(:story, :theme => theme) ) }
   end
 end
 
@@ -17,12 +17,12 @@ Given /^a backlog named "([^\"]+)" with (\d+) themes? (?:and (\d+) stor(?:y|ies)
   account = Account.find_by_name(account_name)
   raise "Account #{account_name} does not exist." if account.blank?
 
-  backlog = Factory.create(:backlog, :account => account, :name => backlog_name)
+  backlog = FactoryGirl.create(:backlog, :account => account, :name => backlog_name)
   theme_quantity.to_i.times do |index|
-    theme = Factory.create(:theme, :backlog => backlog, :name => "Theme #{index+1}")
+    theme = FactoryGirl.create(:theme, :backlog => backlog, :name => "Theme #{index+1}")
     unless story_quantity.blank?
       story_quantity.to_i.times do |story_index|
-        Factory.create(:story, :theme => theme, :as_a => "Story #{story_index+1}", :score_50 => nil, :score_90 => nil)
+        FactoryGirl.create(:story, :theme => theme, :as_a => "Story #{story_index+1}", :score_50 => nil, :score_90 => nil)
       end
     end
   end
@@ -68,7 +68,7 @@ Given /^a backlog named "([^"]*)" assigned to company "([^"]*)" for account "([^
 
   company = account.create_company(company_name)
 
-  backlog = Factory.create(:backlog, :account => account, :name => backlog_name, :company => company)
+  backlog = FactoryGirl.create(:backlog, :account => account, :name => backlog_name, :company => company)
 end
 
 Given /^(an example backlog for testing|the example backlog) is set up for (?:the |)account "([^"]*)"$/ do |which_example, account_name|

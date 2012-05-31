@@ -1,13 +1,13 @@
 Given /^the database has the necessary lookup tables$/ do
-  Factory.create(:locale, :name => 'American English', :code => 'en-US', :position => 5)
-  Factory.create(:locale, :name => 'British English', :code => 'en-GB', :position => 10)
-  Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
-  Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
-  Factory.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
-  Factory.create(:sprint_story_status, :status => 'Completd', :code => SprintStoryStatus::COMPLETED)
-  Factory.create(:scoring_rule_fib)
-  Factory.create(:scoring_rule_modified_fib)
-  Factory.create(:scoring_rule_any)
+  FactoryGirl.create(:locale, :name => 'American English', :code => 'en-US', :position => 5)
+  FactoryGirl.create(:locale, :name => 'British English', :code => 'en-GB', :position => 10)
+  FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
+  FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
+  FactoryGirl.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
+  FactoryGirl.create(:sprint_story_status, :status => 'Completd', :code => SprintStoryStatus::COMPLETED)
+  FactoryGirl.create(:scoring_rule_fib)
+  FactoryGirl.create(:scoring_rule_modified_fib)
+  FactoryGirl.create(:scoring_rule_any)
 end
 
 Then /^(?:|I )should see the page title "([^\"]+)"$/ do |title|

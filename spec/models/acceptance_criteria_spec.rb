@@ -4,14 +4,14 @@ require 'spec_helper'
 
 describe AcceptanceCriterion do
   # default sprint story status is needed when any story is assigned to a sprint
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:accepted_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   before(:each) do
-    @criterion = Factory.create(:acceptance_criterion)
+    @criterion = FactoryGirl.create(:acceptance_criterion)
     @story = @criterion.story
-    @sprint = Factory.create(:sprint, :backlog => @criterion.story.theme.backlog)
+    @sprint = FactoryGirl.create(:sprint, :backlog => @criterion.story.theme.backlog)
     @sprint.stories << @story
   end
 
@@ -40,10 +40,10 @@ describe AcceptanceCriterion do
 
   # rather silly test as we're just testing the functionality of acts_as_list, however an issue occurred where acts_as_list stopped working so this is an extra check
   it 'should allow order to be changed' do
-    c1 = Factory.create(:acceptance_criterion, :criterion => 'Position 1')
+    c1 = FactoryGirl.create(:acceptance_criterion, :criterion => 'Position 1')
     story = c1.story
-    c2 = Factory.create(:acceptance_criterion, :criterion => 'Position 2', :story => story)
-    c3 = Factory.create(:acceptance_criterion, :criterion => 'Position 3', :story => story)
+    c2 = FactoryGirl.create(:acceptance_criterion, :criterion => 'Position 2', :story => story)
+    c3 = FactoryGirl.create(:acceptance_criterion, :criterion => 'Position 3', :story => story)
 
     story.acceptance_criteria.length.should == 3
     story.acceptance_criteria.first.should == c1

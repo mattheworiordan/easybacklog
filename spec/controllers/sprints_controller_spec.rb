@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 describe SprintsController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   describe 'Front end API' do
     before(:each) { accept_json }
 
     context 'user does not have read access (no rights) to the backlog' do
       before(:each) do
-        @sprint = Factory.create(:sprint)
-        @account_user = Factory.create(:account_user_with_no_rights, :account => @sprint.backlog.account)
+        @sprint = FactoryGirl.create(:sprint)
+        @account_user = FactoryGirl.create(:account_user_with_no_rights, :account => @sprint.backlog.account)
         sign_in @account_user.user
         @params = {
           :backlog_id => @sprint.backlog.id,
@@ -32,8 +32,8 @@ describe SprintsController do
 
     context 'user only has read rights to an account' do
       before(:each) do
-        @sprint = Factory.create(:sprint)
-        @account_user = Factory.create(:account_user_with_read_rights, :account => @sprint.backlog.account)
+        @sprint = FactoryGirl.create(:sprint)
+        @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @sprint.backlog.account)
         sign_in @account_user.user
         @params = {
           :backlog_id => @sprint.backlog.id,
@@ -59,8 +59,8 @@ describe SprintsController do
 
     context 'user has full rights to an account' do
       before(:each) do
-        @sprint = Factory.create(:sprint)
-        @account_user = Factory.create(:account_user_with_full_rights, :account => @sprint.backlog.account)
+        @sprint = FactoryGirl.create(:sprint)
+        @account_user = FactoryGirl.create(:account_user_with_full_rights, :account => @sprint.backlog.account)
         sign_in @account_user.user
         @params = {
           :backlog_id => @sprint.backlog.id,
@@ -89,12 +89,12 @@ describe SprintsController do
   end
 
   describe 'API' do
-    let(:account) { Factory.create(:account_with_user) }
+    let(:account) { FactoryGirl.create(:account_with_user) }
     let(:user) { account.users.first }
-    let(:user_token) { Factory.create(:user_token, :user => user) }
-    let(:backlog) { Factory.create(:backlog, :account => account) }
-    let(:theme) { Factory.create(:theme, :backlog => backlog) }
-    let(:sprint) { Factory.create(:sprint, :backlog => backlog) }
+    let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
+    let(:backlog) { FactoryGirl.create(:backlog, :account => account) }
+    let(:theme) { FactoryGirl.create(:theme, :backlog => backlog) }
+    let(:sprint) { FactoryGirl.create(:sprint, :backlog => backlog) }
 
     before(:each) { setup_api_authentication user_token }
 
@@ -106,10 +106,10 @@ describe SprintsController do
     end
 
     def expect_permission_error(http_verb)
-      backlog2 = Factory.create(:backlog, :account => account)
-      sprint2 = Factory.create(:sprint, :backlog => backlog2)
+      backlog2 = FactoryGirl.create(:backlog, :account => account)
+      sprint2 = FactoryGirl.create(:sprint, :backlog => backlog2)
       # assign the user no rights to this backlog
-      Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
+      FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
       get http_verb, { :id => sprint2.id, :backlog_id => backlog2.id }
       response.code.should == status_code(:forbidden)
     end
@@ -121,7 +121,7 @@ describe SprintsController do
     end
 
     context 'index' do
-      before(:each) { 2.times { Factory.create(:sprint_story, :sprint => sprint, :story => Factory.create(:story, :theme => theme)) } }
+      before(:each) { 2.times { FactoryGirl.create(:sprint_story, :sprint => sprint, :story => FactoryGirl.create(:story, :theme => theme)) } }
 
       it 'should return a 404 error if the backlog id does not exist' do
         get :index, { :backlog_id => 0 }
@@ -129,7 +129,7 @@ describe SprintsController do
       end
 
       it 'should return an error if the user does not have access to the backlog' do
-        get :index, { :backlog_id => Factory.create(:backlog).id }
+        get :index, { :backlog_id => FactoryGirl.create(:backlog).id }
         response.code.should == status_code(:forbidden)
       end
 
@@ -162,7 +162,7 @@ describe SprintsController do
     end
 
     context 'show' do
-      before(:each) { 2.times { Factory.create(:sprint_story, :sprint => sprint, :story => Factory.create(:story, :theme => theme)) } }
+      before(:each) { 2.times { FactoryGirl.create(:sprint_story, :sprint => sprint, :story => FactoryGirl.create(:story, :theme => theme)) } }
 
       it 'should return a single sprint' do
         get :show, { :id => sprint.id, :backlog_id => backlog.id }
@@ -216,7 +216,7 @@ describe SprintsController do
       end
 
       it 'should return an error if one of the fields are invalid based on custom business logic for the sprint' do
-        Factory.create(:sprint, :backlog => backlog, :start_on => Date.today.to_s, :duration_days => 10) # set up a sprint that will be overlapped by the next sprint
+        FactoryGirl.create(:sprint, :backlog => backlog, :start_on => Date.today.to_s, :duration_days => 10) # set up a sprint that will be overlapped by the next sprint
         put :create, { :id => sprint.id, :backlog_id => backlog.id, :start_on => Date.today.to_s, :duration_days => 10, :explicit_velocity => 5 }
         response.code.should == status_code(:invalid_params)
         json = JSON.parse(response.body)
@@ -224,7 +224,7 @@ describe SprintsController do
       end
 
       it 'should return an error if the current user does not have permission to create the sprint' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :create, { :backlog_id => backlog.id, :start_on => Date.today.to_s, :duration_days => 10, :explicit_velocity => 5 }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -270,7 +270,7 @@ describe SprintsController do
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :update, { :id => sprint.id, :backlog_id => backlog.id, :duration_days => 10 }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -292,7 +292,7 @@ describe SprintsController do
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         delete :destroy, { :id => sprint.id, :backlog_id => backlog.id }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)

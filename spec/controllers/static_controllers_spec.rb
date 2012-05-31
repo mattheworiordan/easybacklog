@@ -46,7 +46,7 @@ shared_examples "a static API" do
 end
 
 describe LocalesController do
-  subject { Factory.create(:locale) }
+  subject { FactoryGirl.create(:locale) }
 
   describe 'API' do
     it_behaves_like 'a static API'
@@ -54,7 +54,7 @@ describe LocalesController do
 end
 
 describe ScoringRulesController do
-  subject { Factory.create(:scoring_rule) }
+  subject { FactoryGirl.create(:scoring_rule) }
 
   describe 'API' do
     it_behaves_like 'a static API'
@@ -62,7 +62,7 @@ describe ScoringRulesController do
 end
 
 describe SprintStoryStatusesController do
-  subject { Factory.create(:sprint_story_status) }
+  subject { FactoryGirl.create(:sprint_story_status) }
 
   describe 'API' do
     it_behaves_like 'a static API'

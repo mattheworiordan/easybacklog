@@ -34,42 +34,42 @@ describe 'Can Do Module' do
 
   context 'instance methods for an object without inherited parent privileges' do
     before (:each) do
-      @account = Factory.create(:account)
+      @account = FactoryGirl.create(:account)
       @account.class.can_do :privileges => :account_users # force re-initialise so we don't depend on Account specification
     end
 
     it 'should provide appropriate responses to can? method for a regular user with read rights' do
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
       @account.can?(:read, @account_user.user).should be_true
       @account.can?(:full, @account_user.user).should be_false
     end
 
     it 'should provide appropriate responses to cannot? method for a regular user with read rights' do
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
       @account.cannot?(:read, @account_user.user).should be_false
       @account.cannot?(:full, @account_user.user).should be_true
     end
 
     it 'should raise an exception when authorize! is called for a regular user with read rights' do
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
       @account.authorize!(:read, @account_user.user)
       expect { @account.authorize!(:full, @account_user.user) }.to raise_exception CanDo::AuthenticationError
     end
 
     it 'should provide yes responses to all can? methods for a user with admin rights' do
-      @account_user = Factory.create(:account_user_with_account_admin_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_account_admin_rights, :account => @account)
       @account.can?(:read, @account_user.user).should be_true
       @account.can?(:full, @account_user.user).should be_true
     end
 
     it 'should respond with false for all can? queries when user has no rights' do
-      user = Factory.create(:user)
+      user = FactoryGirl.create(:user)
       @account.can?(:read, user).should be_false
       @account.can?(:full, user).should be_false
     end
 
     it 'should respond with false for all can? queries when user has nil (inherited) rights' do
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
       @account_user.update_attributes :privilege => nil
       @account.reload
       @account.can?(:read, @account_user.user).should be_false
@@ -80,7 +80,7 @@ describe 'Can Do Module' do
   # contrived example as account would not inherit from another account, but works for the purposes of this test
   context 'instance methods for an object with inherited parent privileges' do
     before (:each) do
-      @account = Factory.create(:account)
+      @account = FactoryGirl.create(:account)
       @account.class.can_do :privileges => :account_users, :inherited_privilege => :parent_account # force re-initialise so we don't depend on Account specification
       @account.stub(:parent_account ) { @account_parent } # set up reference to @account_parent for psuedo method parent_account
 
@@ -91,7 +91,7 @@ describe 'Can Do Module' do
         has_many :account_users, :dependent => :destroy, :foreign_key => 'account_id'
       end
       @account_parent = AccountParent.create!(:name => 'Account parent', :locale_id => @account.locale_id)
-      @user = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
       @account_parent_account_user = AccountUser.create!(:user_id => @user.id, :account_id => @account_parent.id, :privilege => 'read', :admin => false)
     end
 
@@ -120,7 +120,7 @@ describe 'Can Do Module' do
     end
 
     it 'should provide full privileges when child overwrites parent privileges' do
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
       @account_user.update_attributes :privilege => 'full'
       @account.reload
       @account.can?(:read, @account_user.user).should be_true
@@ -128,7 +128,7 @@ describe 'Can Do Module' do
     end
 
     it 'should provide none privileges when child overwrites parent privileges' do
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
       @account_user.update_attributes :privilege => 'none'
       @account.reload
       @account.can?(:read, @account_user.user).should be_false
@@ -138,9 +138,9 @@ describe 'Can Do Module' do
 
   context 'instance methods for an object with inherited parent privileges and no local privileges' do
     before (:each) do
-      @account = Factory.create(:account)
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
-      @backlog = Factory.create(:backlog, :account => @account)
+      @account = FactoryGirl.create(:account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
+      @backlog = FactoryGirl.create(:backlog, :account => @account)
       @backlog.class.can_do :inherited_privilege => :account # force re-initialise so we don't depend on Account specification
       @user = @backlog.account.users.first
     end
@@ -153,9 +153,9 @@ describe 'Can Do Module' do
 
   context 'instance methods for an object with preferenced inherited parent privileges and no local privileges' do
     before (:each) do
-      @account = Factory.create(:account)
-      @account_user = Factory.create(:account_user_with_read_rights, :account => @account)
-      @backlog = Factory.create(:backlog, :account => @account)
+      @account = FactoryGirl.create(:account)
+      @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @account)
+      @backlog = FactoryGirl.create(:backlog, :account => @account)
       @backlog.class.can_do :inherited_privilege => [:company, :account] # force re-initialise so we don't depend on Account specification
       @user = @backlog.account.users.first
     end
@@ -167,8 +167,8 @@ describe 'Can Do Module' do
     end
 
     it 'should provide full privileges from the company parent as not blank' do
-      company = Factory.create(:company, :account => @account)
-      company_user = Factory.create(:company_user_with_full_rights, :company => company, :user => @user)
+      company = FactoryGirl.create(:company, :account => @account)
+      company_user = FactoryGirl.create(:company_user_with_full_rights, :company => company, :user => @user)
       @backlog.company = company
       @backlog.save!
 

@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe BacklogsController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   describe 'create new backlog with account (has default settings)' do
     before(:each) do
-      @account = Factory.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
+      @account = FactoryGirl.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
       sign_in @account.users.first
     end
 
@@ -101,8 +101,8 @@ describe BacklogsController do
 
   context 'user does not have read access (no rights) to a backlog' do
     before(:each) do
-      @account = Factory.create(:account_with_user_with_no_rights)
-      @backlog = Factory.create(:backlog, :account => @account)
+      @account = FactoryGirl.create(:account_with_user_with_no_rights)
+      @backlog = FactoryGirl.create(:backlog, :account => @account)
       @params = {
         :account_id => @account.id,
         :id => @backlog.id
@@ -137,8 +137,8 @@ describe BacklogsController do
 
   context 'User only has read rights to an account' do
     before(:each) do
-      @account = Factory.create(:account_with_user_with_read_rights)
-      @backlog = Factory.create(:backlog, :account => @account)
+      @account = FactoryGirl.create(:account_with_user_with_read_rights)
+      @backlog = FactoryGirl.create(:backlog, :account => @account)
       sign_in @account.users.first
       @params = {
         :account_id => @account.id,
@@ -240,8 +240,8 @@ describe BacklogsController do
 
   context 'user has full rights to an account' do
     before(:each) do
-      @account = Factory.create(:account_with_user_with_full_rights)
-      @backlog = Factory.create(:backlog, :account => @account)
+      @account = FactoryGirl.create(:account_with_user_with_full_rights)
+      @backlog = FactoryGirl.create(:backlog, :account => @account)
       sign_in @account.users.first
       @params = {
         :account_id => @account.id,
@@ -335,7 +335,7 @@ describe BacklogsController do
   end
 
   context 'new backlog created when account has no defaults set (a new account)' do
-    let(:account) { Factory.create(:account_with_user_with_full_rights, :default_velocity => nil, :default_rate => nil) }
+    let(:account) { FactoryGirl.create(:account_with_user_with_full_rights, :default_velocity => nil, :default_rate => nil) }
     let!(:example_backlog) { account.add_example_backlog(account.users.first) }
     before(:each) { sign_in account.users.first }
 
@@ -372,10 +372,10 @@ describe BacklogsController do
   end
 
   describe 'API' do
-    let(:account) { Factory.create(:account_with_user) }
+    let(:account) { FactoryGirl.create(:account_with_user) }
     let(:user) { account.users.first }
-    let(:user_token) { Factory.create(:user_token, :user => user) }
-    let(:backlog) { Factory.create(:backlog, :account => account) }
+    let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
+    let(:backlog) { FactoryGirl.create(:backlog, :account => account) }
     before(:each) { setup_api_authentication user_token }
 
     def check_backlog_data(data_object, backlog)
@@ -395,9 +395,9 @@ describe BacklogsController do
       end
 
       def expect_permission_error(http_verb)
-        backlog2 = Factory.create(:backlog, :account => account)
+        backlog2 = FactoryGirl.create(:backlog, :account => account)
         # assign the user no rights to this backlog
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
         get http_verb, { :id => backlog2.id, :account_id => account.id }
         response.code.should == status_code(:forbidden)
       end
@@ -409,12 +409,12 @@ describe BacklogsController do
         end
 
         it 'should return an error if the user does not have access to the account' do
-          get :index, { :account_id => Factory.create(:account).id }
+          get :index, { :account_id => FactoryGirl.create(:account).id }
           response.code.should == status_code(:forbidden)
         end
 
         it 'should return a list of active backlogs' do
-          archived_backlog = Factory.create(:backlog, :archived => true, :account => account)
+          archived_backlog = FactoryGirl.create(:backlog, :archived => true, :account => account)
           backlog_id = backlog.id # force create of the backlog
           get :index, { :account_id => account.id }
           response.code.should == status_code(:ok)
@@ -424,7 +424,7 @@ describe BacklogsController do
         end
 
         it 'should include archived backlogs if specified as an option' do
-          archived_backlog = Factory.create(:backlog, :archived => true, :account => account)
+          archived_backlog = FactoryGirl.create(:backlog, :archived => true, :account => account)
           backlog_id = backlog.id # force create of the backlog
           get :index, { :account_id => account.id, :include_archived => true }
           response.code.should == status_code(:ok)
@@ -439,14 +439,14 @@ describe BacklogsController do
 
         # create 2 of each as XmlObject does not recognise elements with only one child
         def create_backlog_data
-          @theme = Factory.create(:theme, :backlog => backlog)
-          Factory.create(:theme, :backlog => backlog)
-          @story = Factory.create(:story, :theme => @theme)
-          Factory.create(:story, :theme => @theme)
-          @criterion = Factory.create(:acceptance_criterion, :story => @story)
-          Factory.create(:acceptance_criterion, :story => @story)
-          @sprint = Factory.create(:sprint, :backlog => backlog)
-          Factory.create(:sprint, :backlog => backlog)
+          @theme = FactoryGirl.create(:theme, :backlog => backlog)
+          FactoryGirl.create(:theme, :backlog => backlog)
+          @story = FactoryGirl.create(:story, :theme => @theme)
+          FactoryGirl.create(:story, :theme => @theme)
+          @criterion = FactoryGirl.create(:acceptance_criterion, :story => @story)
+          FactoryGirl.create(:acceptance_criterion, :story => @story)
+          @sprint = FactoryGirl.create(:sprint, :backlog => backlog)
+          FactoryGirl.create(:sprint, :backlog => backlog)
         end
 
         it 'should allow an API user to GET a backlog' do
@@ -524,8 +524,8 @@ describe BacklogsController do
         end
 
         it 'should return an error if the current user does not have permission to create the backlog' do
-          no_rights_account_user = Factory.create(:account_user_with_no_rights, :account => account)
-          setup_api_authentication Factory.create(:user_token, :user => no_rights_account_user.user)
+          no_rights_account_user = FactoryGirl.create(:account_user_with_no_rights, :account => account)
+          setup_api_authentication FactoryGirl.create(:user_token, :user => no_rights_account_user.user)
           put :create, { :account_id => account.id, :name => 'New name' }
           response.code.should == status_code(:forbidden)
           json = JSON.parse(response.body)
@@ -571,7 +571,7 @@ describe BacklogsController do
         end
 
         it 'should return an error if the current user does not have permission to edit the backlog' do
-          Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+          FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
           put :update, { :id => backlog.id, :account_id => account.id, :name => 'New name' }
           response.code.should == status_code(:forbidden)
           json = JSON.parse(response.body)
@@ -608,7 +608,7 @@ describe BacklogsController do
         end
 
         it 'should return an error if the current user does not have permission to edit the backlog' do
-          Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+          FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
           delete :destroy, { :id => backlog.id, :account_id => account.id }
           response.code.should == status_code(:forbidden)
           json = JSON.parse(response.body)
@@ -652,7 +652,7 @@ describe BacklogsController do
 
     describe 'Backlog snapshots' do
       let(:manual_snapshot) { backlog.create_snapshot 'Manual' }
-      let(:sprint) { Factory.create(:sprint, :backlog => backlog) }
+      let(:sprint) { FactoryGirl.create(:sprint, :backlog => backlog) }
       let(:sprint_snapshot) { sprint.create_snapshot_if_missing }
 
       def expect_404(http_verb)
@@ -664,7 +664,7 @@ describe BacklogsController do
 
       def expect_permission_error(http_verb)
         # assign the user no rights to this backlog
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         get http_verb, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id }
         response.code.should == status_code(:forbidden)
       end
@@ -676,7 +676,7 @@ describe BacklogsController do
         end
 
         it 'should return an error if the user does not have access to the account' do
-          get :index_snapshot, { :account_id => Factory.create(:account).id }
+          get :index_snapshot, { :account_id => FactoryGirl.create(:account).id }
           response.code.should == status_code(:forbidden)
         end
 
@@ -686,7 +686,7 @@ describe BacklogsController do
         end
 
         it 'should return an error if the user does not have access to the backlog' do
-          get :index_snapshot, { :account_id => Factory.create(:account).id }
+          get :index_snapshot, { :account_id => FactoryGirl.create(:account).id }
           response.code.should == status_code(:forbidden)
         end
 
@@ -721,8 +721,8 @@ describe BacklogsController do
         end
 
         it 'should return an error if the current user does not have permission to create the backlog' do
-          no_rights_account_user = Factory.create(:account_user_with_no_rights, :account => account)
-          setup_api_authentication Factory.create(:user_token, :user => no_rights_account_user.user)
+          no_rights_account_user = FactoryGirl.create(:account_user_with_no_rights, :account => account)
+          setup_api_authentication FactoryGirl.create(:user_token, :user => no_rights_account_user.user)
           put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => 'New name' }
           response.code.should == status_code(:forbidden)
           json = JSON.parse(response.body)
@@ -735,14 +735,14 @@ describe BacklogsController do
 
         # create 2 of each as XmlObject does not recognise elements with only one child
         def create_backlog_data_and_snapshots
-          @theme = Factory.create(:theme, :backlog => backlog)
-          Factory.create(:theme, :backlog => backlog)
-          @story = Factory.create(:story, :theme => @theme)
-          Factory.create(:story, :theme => @theme)
-          @criterion = Factory.create(:acceptance_criterion, :story => @story)
-          Factory.create(:acceptance_criterion, :story => @story)
-          @sprint = Factory.create(:sprint, :backlog => backlog)
-          Factory.create(:sprint, :backlog => backlog)
+          @theme = FactoryGirl.create(:theme, :backlog => backlog)
+          FactoryGirl.create(:theme, :backlog => backlog)
+          @story = FactoryGirl.create(:story, :theme => @theme)
+          FactoryGirl.create(:story, :theme => @theme)
+          @criterion = FactoryGirl.create(:acceptance_criterion, :story => @story)
+          FactoryGirl.create(:acceptance_criterion, :story => @story)
+          @sprint = FactoryGirl.create(:sprint, :backlog => backlog)
+          FactoryGirl.create(:sprint, :backlog => backlog)
           manual_snapshot
           sprint_snapshot
         end
@@ -803,7 +803,7 @@ describe BacklogsController do
         end
 
         it 'should return an error if the current user does not have permission to edit the backlog' do
-          Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+          FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
           delete :destroy_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id }
           response.code.should == status_code(:forbidden)
           json = JSON.parse(response.body)

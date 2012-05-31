@@ -1,17 +1,11 @@
-Factory.sequence :sprint_story_status_status do |n|
-  "Accepted#{n}"
-end
+FactoryGirl.define do
+  factory :sprint_story_status do
+    status { |n| "Accepted#{n}" }
+    code { |n|"D#{n}" }
 
-Factory.sequence :sprint_story_status_code do |n|
-  "D#{n}"
-end
-
-Factory.define :sprint_story_status do |a|
-  a.status { Factory.next(:sprint_story_status_status) }
-  a.code { Factory.next(:sprint_story_status_code) }
-end
-
-Factory.define :sprint_story_status_accepted, :parent => :sprint_story_status do |a|
-  a.status 'Accepted'
-  a.code SprintStoryStatus::ACCEPTED
+    factory :sprint_story_status_accepted do
+      status 'Accepted'
+      code SprintStoryStatus::ACCEPTED
+    end
+  end
 end

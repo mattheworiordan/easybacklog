@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 describe AccountUsersController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   context "Invites" do
     before(:each) do
-      @account = Factory.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
+      @account = FactoryGirl.create(:account_with_user, :default_velocity => 1, :default_rate => 2, :default_use_50_90 => false)
       @signed_in_user = @account.users.first
       @account.account_users.first.update_attributes :admin => true
       sign_in @signed_in_user
@@ -32,7 +32,7 @@ describe AccountUsersController do
     end
 
     it 'should update the privileges if user is already invited' do
-      Factory.create(:invited_user, :account => @account, :email => 'john1@test.com', :privilege => 'read')
+      FactoryGirl.create(:invited_user, :account => @account, :email => 'john1@test.com', :privilege => 'read')
       params = {
         :account_id => @account.id,
         :privileges => 'full',
@@ -46,7 +46,7 @@ describe AccountUsersController do
     end
 
     it 'should update the privileges if user already has access to the account' do
-      user = Factory.create(:user, :email => 'john1@test.com')
+      user = FactoryGirl.create(:user, :email => 'john1@test.com')
       @account.add_user user, :read
       @account.account_users.find_by_user_id(user.id).privilege.should == Privilege.find(:read)
 
@@ -63,7 +63,7 @@ describe AccountUsersController do
     end
 
     it 'should add the user to the account if already registered with a different account' do
-      user = Factory.create(:user, :email => 'john1@test.com')
+      user = FactoryGirl.create(:user, :email => 'john1@test.com')
 
       params = {
         :account_id => @account.id,

@@ -3,16 +3,16 @@
 require 'spec_helper'
 
 describe CompanyUsersController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   context 'when updating or viewing privileges' do
     before(:each) do
-      @account = Factory.create(:account)
-      @company = Factory.create(:company, :account => @account)
-      login_user = Factory.create(:user)
+      @account = FactoryGirl.create(:account)
+      @company = FactoryGirl.create(:company, :account => @account)
+      login_user = FactoryGirl.create(:user)
       @account.add_first_user login_user
       sign_in login_user
-      @user = Factory.create(:user)
+      @user = FactoryGirl.create(:user)
       @account.add_user @user, :read
     end
 

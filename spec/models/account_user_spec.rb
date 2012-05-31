@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 describe AccountUser do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:accepted_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   it 'should upgrade privileges' do
-    account = Factory.create(:account)
-    user = Factory.create(:user)
+    account = FactoryGirl.create(:account)
+    user = FactoryGirl.create(:user)
     account.add_user user, Privilege.none
 
     account.account_users.first.upgrade_privilege Privilege.find(:read)
@@ -26,16 +26,16 @@ describe AccountUser do
   end
 
   it 'should return a privilege object' do
-    account = Factory.create(:account)
-    user = Factory.create(:user)
+    account = FactoryGirl.create(:account)
+    user = FactoryGirl.create(:user)
     account.add_user user, 'does not exist'
 
     account.account_users.first.privilege.should == Privilege.none
   end
 
   it 'should allow privilege updates with an object or string' do
-    account = Factory.create(:account)
-    user = Factory.create(:user)
+    account = FactoryGirl.create(:account)
+    user = FactoryGirl.create(:user)
     account.add_user user, 'does not exist'
 
     au = account.account_users.first
@@ -51,12 +51,12 @@ describe AccountUser do
   end
 
   it 'should automatically assign full access privileges to the example backlog for new account users' do
-    account = Factory.create(:account)
-    old_user = Factory.create(:user)
+    account = FactoryGirl.create(:account)
+    old_user = FactoryGirl.create(:user)
     account.add_user old_user, :none
     example_backlog = account.add_example_backlog(old_user)
 
-    new_user = Factory.create(:user)
+    new_user = FactoryGirl.create(:user)
     account.add_user new_user, :read
 
     example_backlog.can?(:read, old_user).should be_false

@@ -18,7 +18,7 @@ describe ApiHelper do
     end
 
     it 'should return a demo user if set up' do
-      user = Factory.create(:user, :email => 'demo-api@easybacklog.com')
+      user = FactoryGirl.create(:user, :email => 'demo-api@easybacklog.com')
       helper.demo_api_user.should == user
     end
   end
@@ -115,9 +115,9 @@ describe ApiHelper do
   end
 
   context 'static lookup data exists' do
-    let!(:locale) { Factory.create(:locale) }
-    let!(:scoring_rule) { Factory.create(:scoring_rule) }
-    let!(:sprint_story_status) { Factory.create(:sprint_story_status) }
+    let!(:locale) { FactoryGirl.create(:locale) }
+    let!(:scoring_rule) { FactoryGirl.create(:scoring_rule) }
+    let!(:sprint_story_status) { FactoryGirl.create(:sprint_story_status) }
 
     describe '#demo_api_locale_id' do
       it 'should return placeholder' do
@@ -137,7 +137,7 @@ describe ApiHelper do
   end
 
   context 'user exists without user token' do
-    let!(:user) { Factory.create(:user, :email => 'demo-api@easybacklog.com') }
+    let!(:user) { FactoryGirl.create(:user, :email => 'demo-api@easybacklog.com') }
 
     describe '#demo_api_user_id' do
       it 'should return user id' do
@@ -152,22 +152,22 @@ describe ApiHelper do
   end
 
   context 'user exists with user token' do
-    let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-    let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+    let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+    let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
 
-    let!(:user) { Factory.create(:user, :email => 'demo-api@easybacklog.com') }
-    let!(:demo_api_user_token) { Factory.create(:user_token, :user => user) }
-    let!(:account_user) { Factory.create(:account_user, :user => user) }
+    let!(:user) { FactoryGirl.create(:user, :email => 'demo-api@easybacklog.com') }
+    let!(:demo_api_user_token) { FactoryGirl.create(:user_token, :user => user) }
+    let!(:account_user) { FactoryGirl.create(:account_user, :user => user) }
     let!(:account) { account_user.account }
-    let!(:backlog) { Factory.create(:backlog, :account => account) }
-    let!(:backlog2) { Factory.create(:backlog, :account => account) }
-    let!(:theme) { Factory.create(:theme, :backlog => backlog) }
-    let!(:theme2) { Factory.create(:theme, :backlog => backlog) }
-    let!(:story) { Factory.create(:story, :theme => theme) }
-    let!(:acceptance_criterion) { Factory.create(:acceptance_criterion, :story => story) }
-    let!(:company) { Factory.create(:company, :account => account) }
-    let!(:sprint) { Factory.create(:sprint, :backlog => backlog) }
-    let!(:sprint_story) { Factory.create(:sprint_story, :sprint => sprint, :story => story) }
+    let!(:backlog) { FactoryGirl.create(:backlog, :account => account) }
+    let!(:backlog2) { FactoryGirl.create(:backlog, :account => account) }
+    let!(:theme) { FactoryGirl.create(:theme, :backlog => backlog) }
+    let!(:theme2) { FactoryGirl.create(:theme, :backlog => backlog) }
+    let!(:story) { FactoryGirl.create(:story, :theme => theme) }
+    let!(:acceptance_criterion) { FactoryGirl.create(:acceptance_criterion, :story => story) }
+    let!(:company) { FactoryGirl.create(:company, :account => account) }
+    let!(:sprint) { FactoryGirl.create(:sprint, :backlog => backlog) }
+    let!(:sprint_story) { FactoryGirl.create(:sprint_story, :sprint => sprint, :story => story) }
 
     describe '#demo_api_user_id' do
       it 'should return user id' do

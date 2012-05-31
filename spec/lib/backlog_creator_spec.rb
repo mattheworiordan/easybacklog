@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Creators::BacklogCreator do
-  let(:account) { Factory.create(:account_with_user, :name => "Acme") }
+  let(:account) { FactoryGirl.create(:account_with_user, :name => "Acme") }
   let(:user) { account.users.first }
   let(:backlog_double) do
     backlog_double = double('Backlog')

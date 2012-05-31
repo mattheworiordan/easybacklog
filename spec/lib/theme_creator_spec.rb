@@ -5,10 +5,10 @@ require 'spec_helper'
 describe Creators::ThemeCreator do
   let(:base_created_at) { Time.parse('1 Jan 2011') }
   let(:base_updated_at) { Time.parse('1 Jan 2012') }
-  let(:backlog_50_90) { Factory.create(:backlog, :use_50_90 => true, :created_at => base_created_at, :updated_at => base_updated_at) }
-  let(:backlog_single_score) { Factory.create(:backlog, :use_50_90 => false, :created_at => base_created_at, :updated_at => base_updated_at) }
+  let(:backlog_50_90) { FactoryGirl.create(:backlog, :use_50_90 => true, :created_at => base_created_at, :updated_at => base_updated_at) }
+  let(:backlog_single_score) { FactoryGirl.create(:backlog, :use_50_90 => false, :created_at => base_created_at, :updated_at => base_updated_at) }
 
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   let(:theme_data) do
     theme = double('Theme')

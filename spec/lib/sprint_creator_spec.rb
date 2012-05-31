@@ -7,14 +7,14 @@ describe Creators::SprintCreator do
   let(:base_updated_at) { Time.parse('1 Jan 2012') }
 
   # set up 2 stories in two themes
-  let(:backlog) { Factory.create(:backlog, :created_at => base_created_at, :updated_at => base_updated_at) }
-  let(:theme_1) { Factory.create(:theme, :backlog => backlog) }
-  let(:theme_2) { Factory.create(:theme, :backlog => backlog) }
-  let(:story_1) { Factory.create(:story, :theme => theme_1) }
-  let(:story_2) { Factory.create(:story, :theme => theme_2) }
+  let(:backlog) { FactoryGirl.create(:backlog, :created_at => base_created_at, :updated_at => base_updated_at) }
+  let(:theme_1) { FactoryGirl.create(:theme, :backlog => backlog) }
+  let(:theme_2) { FactoryGirl.create(:theme, :backlog => backlog) }
+  let(:story_1) { FactoryGirl.create(:story, :theme => theme_1) }
+  let(:story_2) { FactoryGirl.create(:story, :theme => theme_2) }
 
-  let!(:accepted_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:accepted_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   let(:sprint_data) do
     data = double('Sprint')

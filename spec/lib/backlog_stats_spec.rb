@@ -4,15 +4,15 @@ require 'spec_helper'
 describe BacklogStats do
   subject { BacklogStats.new backlog }
 
-  let(:backlog) { Factory.create(:backlog, :velocity => 3, :rate => 800) }
-  let(:theme) { Factory.create(:theme, :backlog => backlog) }
-  let!(:story_complete) { Factory.create(:sprint_story_status_accepted) }
-  let!(:scoring_rule) { Factory.create(:scoring_rule_default) }
+  let(:backlog) { FactoryGirl.create(:backlog, :velocity => 3, :rate => 800) }
+  let(:theme) { FactoryGirl.create(:theme, :backlog => backlog) }
+  let!(:story_complete) { FactoryGirl.create(:sprint_story_status_accepted) }
+  let!(:scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   [[:sprint1, '3 Jan 2011', 13], [:sprint2, '10 Jan 2011', 13], [:sprint3, '17 Jan 2011', 21]].each do |sprint, start_on, points|
     let!(sprint) {
-      sp = Factory.create(:sprint, :backlog => backlog, :start_on => start_on, :number_team_members => 1, :duration_days => 5)
-      story = Factory.create(:story, :theme => theme, :score => points)
+      sp = FactoryGirl.create(:sprint, :backlog => backlog, :start_on => start_on, :number_team_members => 1, :duration_days => 5)
+      story = FactoryGirl.create(:story, :theme => theme, :score => points)
       sp.sprint_stories.create! :story_id => story.id, :sprint_story_status_id => story_complete.id
       sp.reload
       sp.mark_as_complete

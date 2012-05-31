@@ -15,9 +15,9 @@ end
 describe TestingApplicationController do
   # but it has no actual public methods as it's inherited from for other controllers, so lets add that and set authentication required
   describe 'API authentication' do
-    let(:account) { Factory.create(:account_with_user) }
+    let(:account) { FactoryGirl.create(:account_with_user) }
     let(:user) { account.users.first }
-    let(:user_token) { Factory.create(:user_token, :user => user) }
+    let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
 
     it 'should allow an API request to authenticate using basic authentication' do
       request.env['X-Forward-To-API'] = 'true'

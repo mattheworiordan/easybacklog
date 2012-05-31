@@ -3,14 +3,14 @@
 require 'spec_helper'
 
 describe CompaniesController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
 
   describe 'front end' do
     before(:each) do
-      @account = Factory.create(:account)
-      @company = Factory.create(:company, :account => @account)
-      @backlog = Factory.create(:backlog, :company => @company, :account => @account)
-      @user = Factory.create(:user)
+      @account = FactoryGirl.create(:account)
+      @company = FactoryGirl.create(:company, :account => @account)
+      @backlog = FactoryGirl.create(:backlog, :company => @company, :account => @account)
+      @user = FactoryGirl.create(:user)
       sign_in @user
     end
 
@@ -63,10 +63,10 @@ describe CompaniesController do
   end
 
   describe 'API' do
-    let(:company) { Factory.create(:company) }
+    let(:company) { FactoryGirl.create(:company) }
     let(:account) { company.account }
-    let(:user) { Factory.create(:account_user_with_full_rights, :account => account).user }
-    let(:user_token) { Factory.create(:user_token, :user => user) }
+    let(:user) { FactoryGirl.create(:account_user_with_full_rights, :account => account).user }
+    let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
     before(:each) { setup_api_authentication user_token }
 
     def expect_404(http_verb)
@@ -83,8 +83,8 @@ describe CompaniesController do
     end
 
     context 'index' do
-      let! (:company2) { Factory.create(:company, :account => account) }
-      before (:each) { Factory.create(:company_user, :user => user, :company => company2) }
+      let! (:company2) { FactoryGirl.create(:company, :account => account) }
+      before (:each) { FactoryGirl.create(:company_user, :user => user, :company => company2) }
 
       def check_has_valid_companies_data(companies)
         response.code.should == status_code(:ok)
@@ -117,7 +117,7 @@ describe CompaniesController do
       end
 
       it 'should return a 404 error if trying to access another user\'s company' do
-        company2 = Factory.create(:company)
+        company2 = FactoryGirl.create(:company)
         get :show, { :id => company2.id, :account_id => account.id }
         response.code.should == status_code(:not_found)
       end
@@ -131,7 +131,7 @@ describe CompaniesController do
     end
 
     context 'create' do
-      let(:new_locale) { Factory.create(:locale) }
+      let(:new_locale) { FactoryGirl.create(:locale) }
 
       it 'should allow users to create a company' do
         post :create, { :account_id => account.id, :name => 'New name', :default_velocity => 27, :default_rate => 800 }
@@ -168,8 +168,8 @@ describe CompaniesController do
       end
 
       it 'should return an error if the user does not have full access to the account' do
-        account_user2 = Factory.create(:account_user_with_no_rights)
-        user_token2 = Factory.create(:user_token, :user => account_user2.user)
+        account_user2 = FactoryGirl.create(:account_user_with_no_rights)
+        user_token2 = FactoryGirl.create(:user_token, :user => account_user2.user)
         setup_api_authentication user_token2
         post :create, { :account_id => account_user2.account.id, :name => 'New name' }
         response.code.should == status_code(:forbidden)
@@ -177,7 +177,7 @@ describe CompaniesController do
     end
 
     context 'update' do
-      let(:new_locale) { Factory.create(:locale) }
+      let(:new_locale) { FactoryGirl.create(:locale) }
 
       it 'should allow updates to a company' do
         put :update, { :id => company.id, :account_id => account.id, :name => 'New name', :default_velocity => 27 }
@@ -211,9 +211,9 @@ describe CompaniesController do
       end
 
       it 'should return an error if the user does not have full access to the account' do
-        account_user2 = Factory.create(:account_user_with_no_rights)
-        user_token2 = Factory.create(:user_token, :user => account_user2.user)
-        company2 = Factory.create(:company, :account => account_user2.account)
+        account_user2 = FactoryGirl.create(:account_user_with_no_rights)
+        user_token2 = FactoryGirl.create(:user_token, :user => account_user2.user)
+        company2 = FactoryGirl.create(:company, :account => account_user2.account)
         setup_api_authentication user_token2
         put :update, { :id => company2.id, :account_id => account_user2.account.id }
         response.code.should == status_code(:forbidden)

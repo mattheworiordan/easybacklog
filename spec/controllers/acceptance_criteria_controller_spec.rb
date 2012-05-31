@@ -3,17 +3,17 @@
 require 'spec_helper'
 
 describe AcceptanceCriteriaController do
-  let!(:default_scoring_rule) { Factory.create(:scoring_rule_default) }
-  let!(:default_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
-  let!(:done_sprint_story_status) { Factory.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
+  let!(:default_scoring_rule) { FactoryGirl.create(:scoring_rule_default) }
+  let!(:default_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE) }
+  let!(:done_sprint_story_status) { FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED) }
 
   describe 'Front end API' do
     before(:each) { accept_json }
 
     context 'user does not have read access (no rights) to the backlog' do
       before(:each) do
-        @criteria = Factory.create(:acceptance_criterion)
-        @account_user = Factory.create(:account_user_with_no_rights, :account => @criteria.story.theme.backlog.account)
+        @criteria = FactoryGirl.create(:acceptance_criterion)
+        @account_user = FactoryGirl.create(:account_user_with_no_rights, :account => @criteria.story.theme.backlog.account)
         sign_in @account_user.user
         @params = {
           :story_id => @criteria.story.id,
@@ -32,8 +32,8 @@ describe AcceptanceCriteriaController do
 
     context 'user only has read rights to an account' do
       before(:each) do
-        @criteria = Factory.create(:acceptance_criterion)
-        @account_user = Factory.create(:account_user_with_read_rights, :account => @criteria.story.theme.backlog.account)
+        @criteria = FactoryGirl.create(:acceptance_criterion)
+        @account_user = FactoryGirl.create(:account_user_with_read_rights, :account => @criteria.story.theme.backlog.account)
         sign_in @account_user.user
         @params = {
           :story_id => @criteria.story.id,
@@ -59,8 +59,8 @@ describe AcceptanceCriteriaController do
 
     context 'user has full rights to an account' do
       before(:each) do
-        @criteria = Factory.create(:acceptance_criterion)
-        @account_user = Factory.create(:account_user_with_full_rights, :account => @criteria.story.theme.backlog.account)
+        @criteria = FactoryGirl.create(:acceptance_criterion)
+        @account_user = FactoryGirl.create(:account_user_with_full_rights, :account => @criteria.story.theme.backlog.account)
         sign_in @account_user.user
         @params = {
           :story_id => @criteria.story.id,
@@ -86,13 +86,13 @@ describe AcceptanceCriteriaController do
   end
 
   describe 'API' do
-    let(:account) { Factory.create(:account_with_user) }
+    let(:account) { FactoryGirl.create(:account_with_user) }
     let(:user) { account.users.first }
-    let(:user_token) { Factory.create(:user_token, :user => user) }
-    let(:backlog) { Factory.create(:backlog, :account => account) }
-    let(:theme) { Factory.create(:theme, :backlog => backlog) }
-    let(:story) { Factory.create(:story, :theme => theme) }
-    let(:criterion) { Factory.create(:acceptance_criterion, :story => story) }
+    let(:user_token) { FactoryGirl.create(:user_token, :user => user) }
+    let(:backlog) { FactoryGirl.create(:backlog, :account => account) }
+    let(:theme) { FactoryGirl.create(:theme, :backlog => backlog) }
+    let(:story) { FactoryGirl.create(:story, :theme => theme) }
+    let(:criterion) { FactoryGirl.create(:acceptance_criterion, :story => story) }
 
     before(:each) { setup_api_authentication user_token }
 
@@ -104,12 +104,12 @@ describe AcceptanceCriteriaController do
     end
 
     def expect_permission_error(http_verb)
-      backlog2 = Factory.create(:backlog, :account => account)
-      theme2 = Factory.create(:theme, :backlog => backlog2)
-      story2 = Factory.create(:story, :theme => theme2)
-      criterion2 = Factory.create(:acceptance_criterion, :story => story2)
+      backlog2 = FactoryGirl.create(:backlog, :account => account)
+      theme2 = FactoryGirl.create(:theme, :backlog => backlog2)
+      story2 = FactoryGirl.create(:story, :theme => theme2)
+      criterion2 = FactoryGirl.create(:acceptance_criterion, :story => story2)
       # assign the user no rights to this backlog
-      Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
+      FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
       get http_verb, { :id => criterion2.id, :story_id => story2.id }
       response.code.should == status_code(:forbidden)
     end
@@ -129,7 +129,7 @@ describe AcceptanceCriteriaController do
       end
 
       it 'should return an error if the user does not have access to the backlog' do
-        get :index, { :story_id => Factory.create(:story).id }
+        get :index, { :story_id => FactoryGirl.create(:story).id }
         response.code.should == status_code(:forbidden)
       end
 
@@ -185,7 +185,7 @@ describe AcceptanceCriteriaController do
       end
 
       it 'should return an error if the current user does not have permission to create the criterion' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :create, { :story_id => story.id, :criterion => 'New name' }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -224,7 +224,7 @@ describe AcceptanceCriteriaController do
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :update, { :id => criterion.id, :story_id => story.id, :criterion => 'New name' }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
@@ -246,7 +246,7 @@ describe AcceptanceCriteriaController do
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
-        Factory.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         delete :destroy, { :id => criterion.id, :story_id => story.id }
         response.code.should == status_code(:forbidden)
         json = JSON.parse(response.body)
