@@ -26,7 +26,7 @@
       = link_to raw('← Back to backlog'), account_backlog_path(@backlog.account, @backlog), :id => 'back-to-backlog'
 
 - content_for :side_panel do
-  - if is_account_admin?
+  - if is_account_admin? && !@backlog.is_snapshot?
     .backlog-tool-panel
       %h2 Manage users
       Manage the users who have access to this backlog
