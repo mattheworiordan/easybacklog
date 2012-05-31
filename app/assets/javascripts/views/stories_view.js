@@ -42,8 +42,6 @@ App.Views.Stories = {
             // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip
             //  won't do anything until dragging is over
             $('#vtip').remove();
-            view.$('.move-story.vtipActive').mouseleave();
-            view.$('.move-story').removeClass('vtip');
             // because drag does not let events propogage the color picker remains, so manually hide
             $('.color-picker').hide();
             // add a place holder into empty themes
@@ -86,14 +84,12 @@ App.Views.Stories = {
             $('ul.stories').each(function(index, stories) {
               $(stories).append(actionsElem.clone());
             });
-            // add the tips back in to work around jQuery UI and vTip conflict on Firefox
-            view.$('.move-story').addClass('vtip');
           },
           placeholder: 'target-order-highlight',
           axis: 'y',
           items: 'li.story',
           connectWith: 'ul.themes li.theme>.stories>ul.stories'
-        }).find('.move-story').disableSelection();
+        });
 
         // not using standard view events as they fire too late, we need this to fire before colorPicker catches the event
         //  so that we can hide the vtip
@@ -181,6 +177,7 @@ App.Views.Stories = {
     events: {
       "click .delete-story>a": "remove",
       "click .duplicate-story>a": "duplicate",
+      "click .move-story>a": "moveToThemeDialog",
       "click .assign-sprint>a": "assignToSprint",
       "click .status .tab": 'statusChangeClick'
     },
@@ -214,15 +211,6 @@ App.Views.Stories = {
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
-
-        this.$('.move-story a').mousedown(function(event) {
-          App.Views.Stories.Index.stopMoveEvent = false; // unless changed to true when dragged, don't stop this move event
-        }).click(function(event) {
-          event.preventDefault();
-          if (!App.Views.Stories.Index.stopMoveEvent) {
-            show_view.moveToThemeDialog();
-          }
-        });
 
         this.$('.color-picker-icon a').simpleColorPicker({
           onChangeColor: function(col) { show_view.changeColor(col); },
