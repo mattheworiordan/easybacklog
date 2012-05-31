@@ -13,7 +13,7 @@ Feature: Backlog Stories
       And a backlog named "Backlog 1" with 3 themes is set up for "Acme"
       And I am on the backlog "Backlog 1" page
 
-  @javascript
+  @selenium
   Scenario: Set up a basic story ensuring tab order works
     Given the focus is on the "first theme's name"
     When I tab forwards
