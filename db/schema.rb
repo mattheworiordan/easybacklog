@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120520001739) do
+ActiveRecord::Schema.define(:version => 20120601222115) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -180,7 +180,7 @@ ActiveRecord::Schema.define(:version => 20120520001739) do
 
   add_index "sprint_stories", ["sprint_id", "story_id"], :name => "index_sprint_stories_on_sprint_id_and_story_id"
   add_index "sprint_stories", ["sprint_id"], :name => "index_sprint_stories_on_sprint_id"
-  add_index "sprint_stories", ["story_id"], :name => "index_sprint_stories_on_story_id"
+  add_index "sprint_stories", ["story_id"], :name => "index_sprint_stories_on_story_id", :unique => true
 
   create_table "sprint_story_statuses", :force => true do |t|
     t.string  "status"
