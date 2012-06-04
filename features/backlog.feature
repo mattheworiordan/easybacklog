@@ -42,7 +42,7 @@ Feature: Backlog
     # now check that duplicate works, but assign a company too to ensure that copies across
     When I follow "Project X"
       And I follow "Settings"
-      And I choose "Yes, I would like to assign this to a client"
+      And I choose "Yes, I would like to assign this to a company"
       # no companies exist yet, so don't give the user an option to select a company
     Then the focus is on the "new backlog new company field"
     When I fill in "New company name" with "Separate company"
@@ -64,7 +64,7 @@ Feature: Backlog
   Scenario: Create backlog with company and make sure defaults are used and update settings
     When I follow "Create a new backlog"
     Then the "No, this is an internal project" checkbox should be checked
-    When I choose "Yes, I would like to assign this to a client"
+    When I choose "Yes, I would like to assign this to a company"
     # no companies exist yet, so don't give the user an option to select a company
     Then the "new backlog company drop down" should not be visible
       And the "new backlog new company field" should be visible
@@ -93,7 +93,7 @@ Feature: Backlog
       And the "Rate" field should contain "800"
       And the "Velocity" field should contain "3"
       And the "Use the 50/90 estimation method" checkbox should be checked
-    When I choose "Yes, I would like to assign this to a client"
+    When I choose "Yes, I would like to assign this to a company"
     Then the "new backlog company drop down" should be visible
       And the "new backlog new company field" should not be visible
       And "Company cheap" should be selected for "new backlog company drop down"
@@ -110,7 +110,7 @@ Feature: Backlog
     # go into Backlog settings and add a new company and change all settings
     When I follow "Settings"
     Then the "No, this is an internal project" checkbox should not be checked
-      And the "Yes, I would like to assign this to a client" checkbox should be checked
+      And the "Yes, I would like to assign this to a company" checkbox should be checked
     When I fill in "Name the backlog" with "New backlog name"
       And I follow "add a new company"
       And I fill in "New company name" with "New company"
@@ -122,7 +122,7 @@ Feature: Backlog
       And I should see "New company" within "backlog company"
     When I follow "Settings"
     Then the "No, this is an internal project" checkbox should not be checked
-      And the "Yes, I would like to assign this to a client" checkbox should be checked
+      And the "Yes, I would like to assign this to a company" checkbox should be checked
       And "New company" should be selected for "new backlog company drop down"
       And the "Rate" field should contain "200"
       And the "Velocity" field should contain "1"
@@ -364,7 +364,7 @@ Feature: Backlog
     When I follow "Create a new backlog"
     Then the "Velocity" field should contain "1"
       And the "Rate (optional)" field should contain "2"
-    When I choose "Yes, I would like to assign this to a client"
+    When I choose "Yes, I would like to assign this to a company"
       And I select "Microsoft" from "Which company?"
       And I wait for AJAX for 1 second
     Then the "Velocity" field should contain "3"
