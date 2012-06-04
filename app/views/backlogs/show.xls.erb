@@ -68,6 +68,7 @@
       <Font ss:Bold='1' ss:Color='#000000' ss:FontName='Calibri' ss:Size='14' />
       <Interior ss:Color='#CCFFFF' ss:Pattern='Solid' />
     </Style>
+    <%= colour_styles(@backlog) %>
   </Styles>
   <%= render :partial => 'backlog_report_worksheet', :locals => { :backlog => @backlog, :total_columns => export_to_excel_column_count(@backlog) } %>
   <%= render :partial => 'story_list_worksheet', :locals => { :backlog => @backlog, :total_columns => export_to_excel_column_count(@backlog) } %>

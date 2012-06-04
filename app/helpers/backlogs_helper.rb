@@ -53,4 +53,35 @@ module BacklogsHelper
       raw content.gsub(/[\n\r]/,'&#13;')
     end
   end
+
+  def colour_styles(backlog)
+    @colours = []
+    backlog.themes.each do |theme|
+      theme.stories.each do |story|
+        if story.color.present? && story.color.match(/[a-f0-9]{6}/i)
+          if !@colours.include?(story.color)
+            @colours.push(story.color)
+          end
+        end
+      end
+    end
+    raw(@colours.map.with_index do |color, idx|
+      <<-XML
+      <Style ss:ID='story-color-#{idx}'>
+        <Borders>
+          <Border ss:Position='Left' ss:Color='##{color}' ss:Weight='3' ss:LineStyle='Continuous' />
+        </Borders>
+      </Style>
+      XML
+    end.join("\n"))
+  end
+
+  def style_for_color(color)
+    color_index = @colours.index(color)
+    if color_index.present?
+      " ss:StyleID='story-color-#{color_index}'"
+    else
+      ''
+    end
+  end
 end

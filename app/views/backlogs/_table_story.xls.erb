@@ -3,7 +3,7 @@
   <Data ss:Type='String'><%= story.theme.name %></Data>
 </Cell>
 <% end %>
-<Cell ss:Index='2' >
+<Cell ss:Index='2'<%= style_for_color(story.color) %>>
   <Data ss:Type='String'><%= "#{story.theme.code}#{story.unique_id}" %></Data>
 </Cell>
 <Cell>
