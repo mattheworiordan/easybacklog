@@ -258,9 +258,15 @@ When /^I drag story with as equal to "([^"]+)" to the (.+) theme position (\d+)?
   sleep 0.5
 end
 
-Then /^(?:|the )story with as equal to "([^"]+)" should be in position (\d+)$/ do |story_as, position|
-  page.evaluate_script(%{$('li.story:has(".user-story .as-a .data:contains(#{story_as})")').attr('id') ===
-    $('li.story:eq(#{position.to_i-1})').attr('id')}).should be_true
+Then /^(?:|the )story with (as|code) equal to "([^"]+)" should (be in position (\d+)|not be visible)$/ do |target_field, story_as, visibility, position|
+  target = target_field == 'as' ? '.user-story .as-a' : '.unique-id'
+  target = %{li.story:visible:has("#{target} .data:contains(#{story_as})")}
+  if visibility == 'not be visible'
+    page.evaluate_script(%{$('#{target}').length}).should == 0
+  else
+    page.evaluate_script(%{$('#{target}').attr('id') ===
+      $('li.story:visible:eq(#{position.to_i-1})').attr('id')}).should be_true
+  end
 end
 
 Then /^story with as equal to "([^"]*)" should(| not) be in theme "([^"]*)"$/ do |story_as, negation, theme_name|
@@ -329,7 +335,7 @@ When /^I (move|delete|duplicate|assign to a sprint) the (.*) story(| within the 
 end
 
 ##
-# Sprints
+# Sprints within the backlog tab
 
 When /^the (.* story)(| within the .* theme) should (not be assigned to a sprint|be assigned to sprint (\d+))/ do |story_path, theme_info, negation, sprint_iteration|
   story_selector = selector_to("#{story_path}'s sprint tab#{theme_info}")
@@ -339,6 +345,28 @@ When /^the (.* story)(| within the .* theme) should (not be assigned to a sprint
     script = %{$('#{story_selector} a[href="##{sprint_iteration}"]').length > 0}
   end
   page.evaluate_script(script).should be_true
+end
+
+##
+# Sprints within the sprints tab
+
+Then /^I should see (\d+) sprint stor(?:y|ies) within the (assigned|unassigned) sprint stories$/ do |sprint_story_count, area|
+  target = if area == 'unassigned'
+    '.unassigned-stories-container'
+  else
+    '.stories-container'
+  end
+  page.evaluate_script("$('#{target} .story-card').length").should == sprint_story_count.to_i
+end
+
+When /^I click move on the (\w+) (assigned|unassigned) sprint story$/ do |index, area|
+  target = if area == 'unassigned'
+    '.unassigned-stories-container'
+  else
+    '.stories-container'
+  end
+  page.evaluate_script("$('#{target} .story-card:#{string_quantity_to_numeric_pseudo_selector(index)}').length").should == 1
+  page.execute_script("$('#{target} .story-card:#{string_quantity_to_numeric_pseudo_selector(index)} .move').click()");
 end
 
 ##

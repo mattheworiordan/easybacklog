@@ -49,7 +49,7 @@ var SprintStory = Backbone.Model.extend({
         this._story = theme.Stories().get(this.get('story_id'));
       }
       if (!this._story) {
-        throw "Data inconsistency error, story " + this.get('story_id') + " does not exist"
+        throw "Data inconsistency error, story " + this.get('story_id') + " does not exist";
       }
     }
     return this._story;

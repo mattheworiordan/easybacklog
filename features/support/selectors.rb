@@ -140,10 +140,11 @@ module HtmlSelectorHelpers
 
     ##
     # Backlog stories
-    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) story(?:'s | )?(.+?)?(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) (visible |)story(?:'s | )?(.+?)?(?: within the (first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme)?$/
       position = string_quantity_to_numeric_pseudo_selector($1)
-      theme_scope = $3.blank? ? '' : "li.theme:#{string_quantity_to_numeric_pseudo_selector($3)} "
-      selector = case $2
+      theme_scope = $4.blank? ? '' : "li.theme:#{string_quantity_to_numeric_pseudo_selector($4)} "
+      visible = $2 == 'visible ' ? ':visible' : ''
+      selector = case $3
       when /code|unique id/i
         '.unique-id .data'
       when 'days'
@@ -187,9 +188,9 @@ module HtmlSelectorHelpers
         # matching the entire story element
         ''
       else
-        raise "Invalid story field '#{$2}'"
+        raise "Invalid story field '#{$3}'"
       end
-      "#{theme_scope}li.story:#{position} #{selector}"
+      "#{theme_scope}li.story#{visible}:#{position} #{selector}"
 
     when /^story code$/
       'li.story .unique-id'

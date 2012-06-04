@@ -220,6 +220,50 @@ Feature: Backlog
       And the "filter notifier" should be visible
 
   @javascript
+  Scenario: Assign a story to a sprint after filter applied
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    # TH31 is not assigned to a sprint
+    Then the first story within the second theme should not be assigned to a sprint
+    When I hover over the "filter menu"
+      And I check "Hide stories assigned to sprints"
+      And I wait for AJAX for 1 second
+    Then there should be 0 "accepted stories"
+      And there should be 0 "assigned to sprint stories"
+      And the story with code equal to "TH31" should be in position 1
+    When I click on "3 backlog tab"
+    Then I should see 1 sprint story within the assigned sprint stories
+    When I click move on the first unassigned sprint story
+    Then I should see 2 sprint stories within the unassigned sprint stories
+    When I click on the "Backlog backlog tab"
+    # filter should update in realtime so sprint story 31 should no longer be visible
+    Then the first visible story within the second theme should not be assigned to a sprint
+      And the story with code equal to "TH32" should be in position 1
+      And the story with code equal to "TH31" should not be visible
+
+@javascript
+  Scenario: Remove a story from a sprint after filter applied
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    # TH11 is assigned to sprint 3
+    Then the first story within the first theme should be assigned to sprint 3
+    When I hover over the "filter menu"
+      And I check "Hide stories assigned to sprints"
+      And I wait for AJAX for 1 second
+    Then there should be 0 "accepted stories"
+      And there should be 0 "assigned to sprint stories"
+      And the story with code equal to "TH31" should be in position 1
+    When I click on "3 backlog tab"
+    Then I should see 1 sprint story within the assigned sprint stories
+    # click on TH11 to unassign from sprint 3
+    When I click move on the first assigned sprint story
+    Then I should see 0 sprint stories within the assigned sprint stories
+    When I click on the "Backlog backlog tab"
+    # filter should update in realtime so sprint story should no longer be visible
+    Then the story with code equal to "TH11" should be in position 1
+      And the story with code equal to "TH31" should be in position 2
+
+  @javascript
   Scenario: Remember filter preferences for this user
     Given an example backlog for testing is set up for the account "Acme"
       And I am on the backlog "Cucumber example backlog" page

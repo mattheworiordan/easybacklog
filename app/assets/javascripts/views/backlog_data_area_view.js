@@ -110,14 +110,14 @@ App.Views.BacklogDataArea = {
               _.delay(function() {  // give user a chance to move mouse onto either of the nodes, menu or menu container
                 if (overEitherNode === false) {
                   $('#backlog-data-area .filter').removeClass('hover');
-                  $('section.for-backlog .filter-container').hide();
+                  $('#filter-container').hide();
                 }
               }, 50);
             }
           },
           showMenu = function() {
-            $('#backlog-data-area .filter').addClass('hover');
-            $('section.for-backlog .filter-container').show().position({
+            $('#filter').addClass('hover');
+            $('#filter-container').show().position({
               of: $('#backlog-data-area .filter'),
               my: 'right top',
               at: 'right bottom',
@@ -130,7 +130,7 @@ App.Views.BacklogDataArea = {
                 filterType = $(event.target).attr('id').replace(/^filter_/, '');
 
             // uncheck other boxes
-            $('section.for-backlog .filter-container input[type=checkbox]:not(#' + $(event.target).attr('id') + ')').removeAttr('checked');
+            $('#filter-container input[type=checkbox]:not(#' + $(event.target).attr('id') + ')').removeAttr('checked');
 
             // show filtering notice if filtering
             if (isHiding) {
@@ -146,34 +146,23 @@ App.Views.BacklogDataArea = {
             // iterate through each story that is completed and hide
             backlog.Themes().each(function(theme) {
               theme.Stories().each(function(story) {
-                if (story.SprintStory())
-                {
-                  if (isHiding && (
-                        ((filterType === 'completed') && story.SprintStory().Status().IsAccepted()) ||
-                        (filterType === 'assigned')
-                      ) ) {
-                    story.set({ meta_filtered: true });
-                  } else {
-                    story.set({ meta_filtered: false });
-                  }
-                }
+                story.trigger('change:meta_filtered');
               });
-              theme.trigger('change:meta_story_filter'); // if a story is collapsed, we need to tell the theme that the filtered children have changed so it can update stats
             });
           },
           filterNoticeClicked = function(event) {
             event.preventDefault();
-            var filterCheckbox = $('.filter-container input[type=checkbox]').removeAttr('checked');
+            var filterCheckbox = $('#filter-container input[type=checkbox]').removeAttr('checked');
             filterChangeEvent({ target: filterCheckbox });
           };
 
       // allow click to active menu for testing
       $('#backlog-data-area .filter').mouseover(showMenu).click(showMenu).mouseout(hideMenu);
-      $('section.for-backlog .filter-container').mouseover(function() {
+      $('#filter-container').mouseover(function() {
         overEitherNode = true;
       }).mouseout(hideMenu);
 
-      $('.filter-container input[type=checkbox]').change(filterChangeEvent);
+      $('#filter-container input[type=checkbox]').change(filterChangeEvent);
       // event fired from filter notice shown
       $('.filter-notifier a').click(filterNoticeClicked);
 
@@ -182,7 +171,7 @@ App.Views.BacklogDataArea = {
         // wait until the page has rendered
         _.delay(function() {
           var filterType = backlog.UserSettings().get('filter'),
-              filterCheckbox = $('.filter-container input#filter_' + filterType + '[type=checkbox]').attr('checked', 'checked');
+              filterCheckbox = $('#filter-container input#filter_' + filterType + '[type=checkbox]').attr('checked', 'checked');
           if (filterCheckbox.length) { // ensure filter is valid before continuing
             filterChangeEvent({ target: filterCheckbox });
             // interface has moved because the notice is showing at the top of the page, so blur the selected item, and show the editable text again

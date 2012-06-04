@@ -4,11 +4,13 @@ var Story = Backbone.Model.extend({
   // as delete events for SprintStory are never sent to the browser because no realtime system exists
   // we have to manually delete SprintStory when Story models are deleted
   initialize: function() {
+    var that = this;
     this.bind('destroy', function() {
       if (this.SprintStory()) {
         this.SprintStory().Sprint().SprintStories().remove(this.SprintStory());
       }
     });
+    this.bind('change:meta_filtered', function() { that.Theme().LazyStoryFilterUpdate(); });
   },
 
   Theme: function() {

@@ -105,5 +105,17 @@ var Theme = Backbone.Model.extend({
         options.error(event);
       }
     });
+  },
+
+  // lazy method to fire events to view to trigger updates to the UI as each story in a filter change may call this method
+  // using debounce ensures this method is never called more than once in 200ms
+  LazyStoryFilterUpdate: function() {
+    var that = this;
+    if (!this._lazyStoryFilterUpdate) {
+      this._lazyStoryFilterUpdate = _.debounce(function() {
+        that.trigger('change:meta_story_filter'); // notify the view that stories within this theme may have been filtered / revealed
+      }, 200);
+    }
+    this._lazyStoryFilterUpdate();
   }
 });

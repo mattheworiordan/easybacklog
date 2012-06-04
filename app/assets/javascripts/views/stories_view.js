@@ -192,6 +192,10 @@ App.Views.Stories = {
         // if sprint_story_status_id or sprint_story_id is set by story then we need to update the view
         that.updateViewWithModelData(model.changedAttributes());
       });
+      this.model.bind('change:meta_filtered', function(model) {
+        // meta_filtered change means filter status has changed so we need to trigger event to story view to check if it should be visible or not
+        that.updateViewWithModelData('filter_change');
+      });
     },
 
     render: function() {
@@ -247,7 +251,34 @@ App.Views.Stories = {
 
     // called whenever a change is made to the model
     updateViewWithModelData: function(attributes) {
-      var that = this;
+      var that = this,
+          filterFn = function() {
+            var filtered = $('#filter-container input[type=checkbox]:checked'),
+              shouldBeFiltered = false,
+              el = $(that.el);
+            if (filtered.length) {
+              var filterType = $(filtered[0]).attr('id').replace(/^filter_/, '');
+              if (that.model.SprintStory())
+              {
+                if (
+                      ((filterType === 'completed') && that.model.SprintStory().Status().IsAccepted()) ||
+                      (filterType === 'assigned')
+                    ) {
+                  shouldBeFiltered = true;
+                }
+              }
+            }
+            if (shouldBeFiltered && !that.model.get('meta_filtered')) {
+              that.model.set({ 'meta_filtered': true });
+            } else if (!shouldBeFiltered && that.model.get('meta_filtered')) {
+              that.model.set({ 'meta_filtered': false });
+            }
+            if (that.model.get('meta_filtered') || that.model.get('meta_collapsed')) {
+              el.slideUp(null, function() { el.hide(); });
+            } else {
+              el.slideDown(null, function() { el.show(); });
+            }
+          };
 
       if (attributes === 'all') {
         // just populate the entire element as we're initializing
@@ -256,13 +287,11 @@ App.Views.Stories = {
         // sprint story status has changed, lets update the entire HTML as it may or may not be locked now
         $(this.el).html( JST['templates/stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
         this.configureView();
-      } else if (attributes && (('meta_filtered' in attributes) || ('meta_collapsed' in attributes)) ) {
-        // story has been filtered
-        if (this.model.get('meta_filtered') || this.model.get('meta_collapsed')) {
-          $(this.el).slideUp();
-        } else {
-          $(this.el).slideDown();
-        }
+        filterFn();
+      } else if (attributes === 'filter_change') { // story filter has changed
+        filterFn();
+      } else if ('meta_collapsed' in attributes) { // story has been collapsed as part of a theme
+        filterFn();
       }
 
       // set class so that other elements (mainly for tab order) know if this class is locked or not

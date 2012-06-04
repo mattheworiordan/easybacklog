@@ -298,6 +298,29 @@ Feature: Backlog Themes
       And the "first story element within the second theme" should be visible
 
   @javascript
+  Scenario: Collapse stories and ensure story filter changes apply
+    Given an example backlog for testing is set up for the account "Acme"
+      And I am on the backlog "Cucumber example backlog" page
+    When I assign to a sprint the first story within the second theme
+    Then a "assign story dialog box" should be visible
+    When I select "Sprint 3" from "Assign story"
+      And I press "Assign"
+      And I wait for 0.5 seconds
+    Then the first story within the second theme should be assigned to sprint 3
+    When I collapse the second theme
+    Then I should see the text "3 stories collapsed" within the "second theme"
+    When I hover over the "filter menu"
+      And I check "Hide stories assigned to sprints"
+      And I wait for AJAX for 1 second
+    Then I should see the text "2 stories collapsed" within the "second theme"
+    When I click on "3 backlog tab"
+    Then I should see 2 sprint stories within the assigned sprint stories
+    When I click move on the first unassigned sprint story
+    Then I should see 3 sprint stories within the assigned sprint stories
+    When I click on the "Backlog backlog tab"
+    Then I should see the text "1 story collapsed" within the "second theme"
+
+  @javascript
   Scenario: Remember collapsed theme preferences for this user
     Given an example backlog for testing is set up for the account "Acme"
       And I am on the backlog "Cucumber example backlog" page

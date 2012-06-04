@@ -17,7 +17,7 @@ $(function() {
     overlay: true,
     onHide: function() {
       // ensure filter is not enabled
-      $('.filter-container input#filter_completed').attr('checked', false).change();
+      $('#filter-container input#filter_completed').attr('checked', false).change();
 
       // mark all themes as expanded and trigger them to reset themselves
       $('li.theme').removeClass('collapsed');
@@ -169,7 +169,7 @@ $(function() {
     position: 6,
     width: 330,
     offset: { top: 20, left: 0},
-    onShow: function() { $('.filter-container input#filter_completed').attr('checked', false).change().bind('change.guiders', function() { nextFn(); }) },
+    onShow: function() { $('#filter-container input#filter_completed').attr('checked', false).change().bind('change.guiders', function() { nextFn(); }) },
     onHide: function() { unbind(); }
   });
 
@@ -184,7 +184,7 @@ $(function() {
     width: 330,
     offset: { top: 20, left: 0 },
     onShow: function() { $('#backlog-container .filter-notifier a').bind('click.guiders', function() { nextFn(); }); },
-    onHide: function() { unbind(); $('.filter-container input#filter_completed').attr('checked', false).change(); }
+    onHide: function() { unbind(); $('#filter-container input#filter_completed').attr('checked', false).change(); }
   });
 
   guiders.createGuider({
