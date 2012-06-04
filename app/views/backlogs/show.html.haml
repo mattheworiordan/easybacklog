@@ -30,7 +30,7 @@
       != render :partial => 'snapshot_select', :locals => { :truncate_at => 35, :select_id=> 'menu_snapshot_select' }
   - if can?(:full)
     .button-holder
-      %a#new-snapshot.button{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog)} Create new snapshot
+      %a#new-snapshot.button{:href => create_snapshot_account_backlog_path(@backlog.account, @backlog.all_snapshot_master || @backlog)} Create new snapshot
     .description
       Creates an exact copy of the current backlog for later reference
   .button-holder
