@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120601222115) do
+ActiveRecord::Schema.define(:version => 20120604204532) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -208,8 +208,8 @@ ActiveRecord::Schema.define(:version => 20120601222115) do
     t.integer  "theme_id",                                 :null => false
     t.integer  "unique_id",                                :null => false
     t.string   "as_a"
-    t.string   "i_want_to"
-    t.string   "so_i_can"
+    t.text     "i_want_to"
+    t.text     "so_i_can"
     t.text     "comments"
     t.decimal  "score_50",   :precision => 5, :scale => 1
     t.decimal  "score_90",   :precision => 5, :scale => 1
