@@ -404,8 +404,8 @@ form.new_account, form.edit_account, form.new_user {
   }
 }
 
-/* Editing my settings */
-form.edit_user {
+/* Editing my settings / sign up */
+form.edit_user, form.new_user {
   i {
     color: #999;
     font-size: 90%;

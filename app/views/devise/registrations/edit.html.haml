@@ -5,7 +5,7 @@
     Edit My Settings
 
 = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
-  != render :partial => 'form', :locals => { :f => f }
+  != render :partial => 'form', :locals => { :f => f, :user => resource }
 
   %p
     = f.label :current_password

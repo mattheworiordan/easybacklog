@@ -30,7 +30,7 @@
       Your details
       %span.hint (step 2 of 2)
     .data-area.no-padding
-      != render :partial => 'form', :locals => { :f => f }
+      != render :partial => 'form', :locals => { :f => f, :user => resource }
 
     %p
       = f.submit "Sign up"
