@@ -39,8 +39,7 @@ group :assets do
 end
 
 group :development, :test, :cucumber do
-  gem 'ruby-debug-base19', '~> 0.11.26'
-  gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'debugger'
   gem 'awesome_print'
   gem 'watchr'
   gem 'growl'
@@ -55,7 +54,7 @@ group :test, :cucumber do
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'webrat'
-  gem 'cucumber-rails'
+  gem "cucumber-rails", :require => false
   gem 'autotest'
   gem 'autotest-growl'
   gem 'autotest-rails'
