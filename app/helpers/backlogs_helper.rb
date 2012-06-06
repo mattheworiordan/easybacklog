@@ -50,7 +50,7 @@ module BacklogsHelper
       content
     else
       html_encoded = h(content)
-      raw content.gsub(/[\n\r]/,'&#13;')
+      raw html_encoded.gsub(/[\n\r]/,'&#13;')
     end
   end
 
