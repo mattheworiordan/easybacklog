@@ -12,14 +12,6 @@ GIT
     recursive-open-struct (0.2.2)
 
 GIT
-  remote: git://github.com/thoughtbot/capybara-webkit.git
-  revision: 2fef84403173c8c789efae911dff380034bbca81
-  specs:
-    capybara-webkit (0.9.0)
-      capybara (>= 1.0.0, < 1.2)
-      json
-
-GIT
   remote: https://github.com/assaf/vanity
   revision: 901a8e51e93e1efb96e13f845e363dbbf1a1903c
   specs:
@@ -88,6 +80,9 @@ GEM
       xpath (~> 0.1.4)
     capybara-screenshot (0.1.10)
       capybara (>= 1.0)
+    capybara-webkit (0.12.1)
+      capybara (>= 1.0.0, < 1.2)
+      json
     childprocess (0.3.1)
       ffi (~> 1.0.6)
     chunky_png (1.2.5)
@@ -303,9 +298,9 @@ DEPENDENCIES
   autotest-growl
   autotest-rails
   awesome_print
-  capybara (~> 1.0)
+  capybara
   capybara-screenshot
-  capybara-webkit!
+  capybara-webkit
   compass
   compass-960-plugin
   compass-rails
