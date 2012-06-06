@@ -153,3 +153,75 @@ Feature: Invite and Sign Up
     Then the "text input fields" should not be disabled
       And the "checkboxes" should not be disabled
       And the "radio buttons" should not be disabled
+
+  @javascript
+  Scenario: Check that new users given different rights have their rights after signing up
+    Given the database has the necessary lookup tables
+      And no emails have been sent
+      And a user named "John" is registered
+      And I am signed in as "John"
+      And an account called "Acme" is set up for "John" who should have account admin rights
+      And a standard backlog named "Website backlog" is set up for "Acme"
+      And I am on the accounts page
+    Then I should see "Website backlog"
+    When I follow "Account"
+      And I follow "Manage Users"
+      And I follow "Invite new users"
+      And I fill in "emails" with "read_rights@test.com"
+      And I choose "View all backlogs in this account"
+      And I press "Send invites"
+    Then I should see the notice "1 person was added to your account."
+    When I follow "Invite new users"
+      And I fill in "emails" with "full_rights@test.com"
+      And I choose "Full control to view and update all backlogs in this account"
+      And I press "Send invites"
+    Then I should see the notice "1 person was added to your account."
+
+    # now log in as read_rights@test.com
+    When I sign out
+      And "read_rights@test.com" opens the email with subject "Invite to join easyBacklog"
+    When they click the first link in the email
+    Then I should see "Get access to account" within the "primary page heading"
+      And I should see "Acme" within the "primary page heading"
+    When I fill in "Full name" with "Read only"
+      And I fill in "Sign Up Email" using Javascript with "read_rights@test.com"
+      And I fill in "Password" with "password"
+      And I fill in "Password confirmation" with "password"
+      And I press "Register"
+    Then I should see "You've now got access to “Acme”" within the "primary page heading"
+    When I follow "View the Acme account"
+    # user has no access so should see not account management features
+    Then I should see "Acme" within the "primary page heading"
+      And I should not see "Account" within the "top nav"
+      And I should see "Website backlog"
+
+    # now log in as full_rights@test.com
+    When I sign out
+      And "full_rights@test.com" opens the email with subject "Invite to join easyBacklog"
+    When they click the first link in the email
+    Then I should see "Get access to account" within the "primary page heading"
+      And I should see "Acme" within the "primary page heading"
+    When I fill in "Full name" with "Full rights"
+      And I fill in "Sign Up Email" using Javascript with "full_rights@test.com"
+      And I fill in "Password" with "password"
+      And I fill in "Password confirmation" with "password"
+      And I press "Register"
+    Then I should see "You've now got access to “Acme”" within the "primary page heading"
+    When I follow "View the Acme account"
+    # user has no access so should see not account management features
+    Then I should see "Acme" within the "primary page heading"
+      And I should see "Account" within the "top nav"
+      And I should see "Website backlog"
+
+    # now log back in as admin and check that all the rights are set correctly
+    Given I sign out
+      And I am signed in as "John"
+      And I am on the accounts page
+    When I follow "Account"
+      And I follow "Manage Users"
+    Then I should see the following data in column 1 of "account user table" table:
+      | Full rights     |
+      | John            |
+      | Read only       |
+      And "Read only access to all" should be selected for "Read only"
+      And "Full access to all" should be selected for "Full rights"

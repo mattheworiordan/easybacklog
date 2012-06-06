@@ -20,17 +20,17 @@
     .input-row
       %b What account permissions do you want to assign to the people you have invited above?
     .input-row
-      = radio_button_tag :privileges, :none
-      = label_tag :privileges_none, 'None, I will assign them permission to access individual backlogs afterwards'
+      = radio_button_tag :privileges, Privilege.find(:none)
+      = label_tag "privileges_#{Privilege.find(:none)}", 'None, I will assign them permission to access individual backlogs afterwards'
     .input-row
-      = radio_button_tag :privileges, :readonly
-      = label_tag :privileges_readonly, 'View all backlogs in this account'
+      = radio_button_tag :privileges, Privilege.find(:read)
+      = label_tag "privileges_#{Privilege.find(:read)}", 'View all backlogs in this account'
     .input-row
-      = radio_button_tag :privileges, :readstatus
-      = label_tag :privileges_readstatus, 'View all backlogs in this account plus update the status of stories and tasks'
+      = radio_button_tag :privileges, Privilege.find(:readstatus)
+      = label_tag "privileges_#{Privilege.find(:readstatus)}", 'View all backlogs in this account plus update the status of stories and tasks'
     .input-row
-      = radio_button_tag :privileges, :full
-      = label_tag :privileges_full, 'Full control to view and update all backlogs in this account'
+      = radio_button_tag :privileges, Privilege.find(:full)
+      = label_tag "privileges_#{Privilege.find(:full)}", 'Full control to view and update all backlogs in this account'
 
     %br/
     = submit_tag "Send invites"
