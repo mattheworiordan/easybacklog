@@ -448,9 +448,9 @@ Then /^the actual completed velocity in the stats JSON for backlog "([^"]+)" sho
     (function() {
       var json;
       $.ajaxSetup({async:false});
-      $.get('/backlogs/#{backlog.id}/backlog-stats', {}, function(data) {
+      $.get('/accounts/#{backlog.account.id}/backlogs/#{backlog.id}/stats', {}, function(data) {
         json = data;
-      });
+      }, 'json');
       return json;
     })();
   JS
