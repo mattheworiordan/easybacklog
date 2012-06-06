@@ -1,31 +1,31 @@
 #themes-header{ :class => reduced_column_class(backlog) }
   .columns
     .theme
-      %div= t 'backlog.theme', :default => 'Theme'
+      %div= t 'backlog.theme'
     .unique-id
-      %div= t 'backlog.id', :default => 'ID'
+      %div= t 'backlog.id'
     .user-story
-      %div= t 'backlog.user_story', :default => 'User Story'
+      %div= t 'backlog.user_story'
     .acceptance-criteria
-      %div= t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria'
+      %div= t 'backlog.acceptance_criteria'
     .comments
-      %div= t 'backlog.comments', :default => 'Comments'
+      %div= t 'backlog.comments'
     - if backlog.use_50_90?
       .score-50
-        %div= t 'backlog.points_50', :default => '50'
+        %div= t 'backlog.points_50'
       .score-90
-        %div= t 'backlog.points_90', :default => '90'
+        %div= t 'backlog.points_90'
     - else
       .score
-        %div= t 'backlog.points_heading', :default => 'Points'
+        %div= t 'backlog.points_heading'
     - if backlog.cost_estimatable?
       .cost-formatted
-        %div= t 'backlog.cost', :default => 'Cost'
+        %div= t 'backlog.cost'
     - if backlog.days_estimatable?
       .days-formatted
-        %div= t 'backlog.days', :default => 'Days'
+        %div= t 'backlog.days'
 #themes-container{ :class => reduced_column_class(backlog) }
   %div.loading
     %span.progress-icon
     %p
-      = "#{t 'backlog.loading', :default => 'Loading'}..."
+      = "#{t 'loading'}..."

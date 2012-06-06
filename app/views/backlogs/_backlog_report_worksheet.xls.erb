@@ -30,51 +30,51 @@
       </Cell>
       <Cell ss:MergeAcross='4' ss:StyleID='top-base-stats'>
         <Data ss:Type='String'><%= if backlog.cost_estimatable?
-                "#{t 'backlog.rate', :default => 'Rate'}: #{backlog.rate_formatted}, "
+                "#{t 'backlog.rate'}: #{backlog.rate_formatted}, "
               end %><%= if backlog.days_estimatable?
-                "#{t 'backlog.velocity', :default => 'Velocity'}: #{backlog.velocity}"
+                "#{t 'backlog.velocity'}: #{backlog.velocity}"
               end %></Data>
       </Cell>
     </Row>
     <Row>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.theme', :default => 'Theme' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.theme' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.id', :default => 'ID' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.id' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.user_story', :default => 'User Story' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.user_story' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.acceptance_criteria' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.comments', :default => 'Comments' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.comments' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.sprint', :default => 'Sprint' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.sprint' %></Data>
       </Cell>
       <% if backlog.use_50_90? %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.points_50', :default => '50' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.points_50' %></Data>
         </Cell>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.points_90', :default => '90' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.points_90' %></Data>
         </Cell>
       <% else %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.points', :default => 'Points' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.points' %></Data>
         </Cell>
       <% end %>
       <% if backlog.cost_estimatable? %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.cost', :default => 'Cost' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.cost' %></Data>
         </Cell>
       <% end %>
       <% if backlog.days_estimatable? %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.days', :default => 'Days' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.days' %></Data>
         </Cell>
       <% end %>
     </Row>
@@ -83,7 +83,7 @@
       <Cell ss:MergeAcross='3' ss:StyleID='backlog-summary'>
         <Data ss:Type='String'><%
           backlog_name = backlog.backlog_root ? backlog.backlog_root.name : backlog.name
-          concat (t 'backlog.totals.backlog', :default => "Total for backlog '#{backlog_name}'", :name => backlog_name)
+          concat (t 'backlog.totals.backlog', :name => backlog_name)
         %></Data>
       </Cell>
       <Cell ss:MergeAcross='4' ss:StyleID='backlog-total'>

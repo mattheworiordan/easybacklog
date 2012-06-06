@@ -20,9 +20,9 @@ module BacklogsHelper
       context.backlog
     end
 
-    totals = "#{format('%0.1f', context.points)} #{t (context.points == 1 ? 'backlog.totals.point' : 'backlog.totals.points'), :default => 'points'}"
+    totals = "#{format('%0.1f', context.points)} #{t (context.points == 1 ? 'backlog.totals.point' : 'backlog.totals.points')}"
     totals += " / #{context.cost_formatted}" if backlog.cost_estimatable?
-    totals += " / #{context.days_formatted} #{t (context.days.to_f == 1 ? 'backlog.totals.day' : 'backlog.totals.days'), :default => 'days'}" if backlog.days_estimatable?
+    totals += " / #{context.days_formatted} #{t (context.days.to_f == 1 ? 'backlog.totals.day' : 'backlog.totals.days')}" if backlog.days_estimatable?
     totals
   end
 

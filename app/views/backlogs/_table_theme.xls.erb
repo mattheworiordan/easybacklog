@@ -25,7 +25,7 @@
 <% if show_totals %>
   <Row>
     <Cell ss:Index='2' ss:MergeAcross='2' ss:StyleID='theme-summary'>
-      <Data ss:Type='String'><%= t 'backlog.totals.theme', :default => "Total for theme '#{theme.name}'", :name => theme.name %></Data>
+      <Data ss:Type='String'><%= t 'backlog.totals.theme', :name => theme.name %></Data>
     </Cell>
     <Cell ss:MergeAcross='4' ss:StyleID='theme-total'>
       <Data ss:Type='String'><%= export_totals(theme)%></Data>

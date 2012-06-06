@@ -20,43 +20,43 @@
     <% end %>
     <Row>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.theme', :default => 'Theme' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.theme' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.id', :default => 'ID' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.id' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.user_story', :default => 'User Story' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.user_story' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.acceptance_criteria', :default => 'Acceptance Criteria' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.acceptance_criteria' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.comments', :default => 'Comments' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.comments' %></Data>
       </Cell>
       <Cell ss:StyleID='table-header'>
-        <Data ss:Type='String'><%= t 'backlog.sprint', :default => 'Sprint' %></Data>
+        <Data ss:Type='String'><%= t 'backlog.sprint' %></Data>
       </Cell>
       <% if backlog.use_50_90? %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.points_50', :default => '50' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.points_50' %></Data>
         </Cell>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.points_90', :default => '90' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.points_90' %></Data>
         </Cell>
       <% else %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.points', :default => 'Points' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.points' %></Data>
         </Cell>
       <% end %>
       <% if backlog.cost_estimatable? %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.cost', :default => 'Cost' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.cost' %></Data>
         </Cell>
       <% end %>
       <% if backlog.days_estimatable? %>
         <Cell ss:StyleID='table-header'>
-          <Data ss:Type='String'><%= t 'backlog.days', :default => 'Days' %></Data>
+          <Data ss:Type='String'><%= t 'backlog.days' %></Data>
         </Cell>
       <% end %>
     </Row>
