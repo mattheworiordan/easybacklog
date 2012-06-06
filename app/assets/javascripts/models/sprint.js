@@ -29,6 +29,10 @@ var Sprint = Backbone.Model.extend({
     return this.collection.CurrentSprint() === this;
   },
 
+  IsLocked: function() {
+    return this.collection.backlog.IsLocked();
+  },
+
   CanEdit: function() {
     return this.collection.backlog.CanEdit();
   },

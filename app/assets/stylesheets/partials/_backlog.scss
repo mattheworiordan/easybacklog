@@ -941,6 +941,9 @@ ul.themes {
               min-height: 16px;
               .tab {
                 cursor: pointer;
+                &.disabled {
+                  cursor: default;
+                }
                 background-color: lighten($title-area-color, 15%);
                 color: white;
                 font-size: 12px;

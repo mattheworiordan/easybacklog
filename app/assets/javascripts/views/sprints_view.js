@@ -524,11 +524,17 @@ App.Views.Sprints = {
     },
 
     setStatusHover: function() {
-      App.Views.Helpers.setStatusHover.apply(this, arguments);
+      if (this.model.IsLocked()) {
+        App.Views.Helpers.disableStatus.apply(this, arguments);
+      } else {
+        App.Views.Helpers.setStatusHover.apply(this, arguments);
+      }
     },
 
     statusChangeClick: function() {
-      App.Views.Helpers.statusChangeClick.apply(this, arguments);
+      if (!this.model.IsLocked()) {
+        App.Views.Helpers.statusChangeClick.apply(this, arguments);
+      }
     },
 
     setEditableState: function() {

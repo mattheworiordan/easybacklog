@@ -52,6 +52,10 @@ App.Views.Helpers = {
     );
   },
 
+  disableStatus: function() {
+    $(this.el).find('.status .tab').addClass('disabled');
+  },
+
   statusChangeClick: function(event) {
     var that = this,
         dropDown = $(JST['templates/stories/status-drop-down']({ model: this.model })),

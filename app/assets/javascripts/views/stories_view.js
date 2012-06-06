@@ -228,6 +228,7 @@ App.Views.Stories = {
         });
 
         App.Views.Helpers.enableActionMenu(this, '.story-actions');
+        this.setStatusHover();
       } else {
         // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
         if (!this.model.IsLocked()) {
@@ -238,6 +239,9 @@ App.Views.Stories = {
               new App.Views.Warning({ message: message });
             });
           });
+          this.setStatusHover();
+        } else {
+          this.disableStatus();
         }
       }
 
@@ -245,8 +249,6 @@ App.Views.Stories = {
 
       // activate roll over links for comments and acceptance criteria
       App.Views.Helpers.activateUrlify(this.el);
-
-      this.setStatusHover();
     },
 
     // called whenever a change is made to the model
@@ -306,8 +308,14 @@ App.Views.Stories = {
       App.Views.Helpers.setStatusHover.apply(this, arguments);
     },
 
+    disableStatus: function() {
+      App.Views.Helpers.disableStatus.apply(this, arguments);
+    },
+
     statusChangeClick: function(event) {
-      App.Views.Helpers.statusChangeClick.apply(this, arguments);
+      if (!this.model.IsLocked()) {
+        App.Views.Helpers.statusChangeClick.apply(this, arguments);
+      }
     },
 
     makeFieldsEditable: function() {

@@ -24,7 +24,11 @@
     <div class="handle"><div class="change-size">expand</div></div>
   </div>
   <div class="unassigned-stories-container story-droppable">
-    <% if (!model.CanEdit()) { %>
+    <% if (model.IsLocked()) { %>
+      <div class="notice locked">
+        You cannot assign any stories to this sprint as the backlog is locked
+      </div>
+    <% } else if (!model.CanEdit()) { %>
       <div class="notice locked">
         You cannot assign any stories to sprints as you don't have permission
       </div>
