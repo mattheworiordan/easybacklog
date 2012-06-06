@@ -55,6 +55,10 @@ App.Views.Stories = {
             var themeId, newTheme, storyId, storyLi;
             App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
             $('ul.themes li.story.placeholder').remove(); // clear placeholders
+            // show the new story button again
+            $('ul.stories').each(function(index, stories) {
+              $(stories).append(actionsElem.clone());
+            });
             if ($(view.el).parents('li.theme')[0] !== $(event.target).parents('li.theme')[0]) {
               // user has dragged story to a new a theme
               themeId = $(event.target).parents('li.theme').attr('id').replace('theme-','');
@@ -80,10 +84,6 @@ App.Views.Stories = {
             } else {
               orderChangedEvent();
             }
-            // show the new story button again
-            $('ul.stories').each(function(index, stories) {
-              $(stories).append(actionsElem.clone());
-            });
           },
           placeholder: 'target-order-highlight',
           axis: 'y',
