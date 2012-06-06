@@ -54,13 +54,14 @@ group :test, :cucumber do
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'webrat'
-  gem "cucumber-rails", :require => false
+  gem 'cucumber-rails', :require => false
   gem 'autotest'
   gem 'autotest-growl'
   gem 'autotest-rails'
   gem 'database_cleaner'
-  gem 'capybara'
-  gem 'capybara-webkit'
+  gem 'selenium-webdriver', '~> 2.22.2'
+  gem 'capybara', '~> 1.0'
+  gem 'capybara-webkit', :git => 'git://github.com/thoughtbot/capybara-webkit.git'
   gem 'timecop'
   gem 'launchy', '>=2'
   gem 'pdf-reader'
