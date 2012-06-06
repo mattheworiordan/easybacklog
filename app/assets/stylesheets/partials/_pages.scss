@@ -108,7 +108,7 @@ section .dash-board-company {
     width: 400px;
     float: left;
     padding: 10px 10px 15px 10px;
-    background-color: #CFC;
+    background-color: lighten($title-area-color,40%);
     -moz-border-radius: 10px;
     border-radius: 10px;
     .button {
@@ -117,20 +117,24 @@ section .dash-board-company {
     h2 {
       background-color: transparent;
     }
+    form#new_user i {
+      color: $title-area-color;
+    }
   }
   .or {
     width: 40px;
     float: left;
     font-weight: bold;
     font-size: 130%;
-    padding: 90px 0 0 10px;
+    padding: 180px 0 0 10px;
     text-align:center;
   }
   .login {
     width: 400px;
+    margin-top: 50px;
     margin-left: 480px;
     padding: 10px;
-    background-color: #D6D6D6;
+    background-color: #E0E0E0;
     @include border-radius(10px);
     input[type=submit] {
       @include grey-button-style;
@@ -405,7 +409,7 @@ form.new_account, form.edit_account, form.new_user {
 }
 
 /* Editing my settings / sign up */
-form.edit_user, form.new_user {
+form.edit_user, form.new_user, form#new_user {
   i {
     color: #999;
     font-size: 90%;
