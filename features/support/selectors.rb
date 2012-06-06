@@ -132,7 +132,7 @@ module HtmlSelectorHelpers
       'ul.themes li.theme:nth-child(1) .theme-data .name'
 
     when /^move theme handle$/
-      '.theme .move-theme'
+      '.theme>.move-theme'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) theme's add story button$/
       position = string_quantity_to_numeric_pseudo_selector($1)
