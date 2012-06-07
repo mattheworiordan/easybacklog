@@ -6,7 +6,7 @@ class Backlog < ActiveRecord::Base
   belongs_to :snapshot_for_sprint, :class_name => 'Sprint'
 
   has_many :themes, :dependent => :destroy, :order => 'position'
-  has_many :sprints, :dependent => :destroy, :order => 'iteration'
+  has_many :sprints, :order => 'iteration'
   has_many :sprint_snapshots, :source => :snapshot, :conditions => ['deleted <> ?', true], :through => :sprints, :order => 'sprints.iteration desc'
   has_many :backlog_users, :dependent => :destroy
   has_many :backlog_user_settings, :dependent => :destroy
@@ -23,6 +23,7 @@ class Backlog < ActiveRecord::Base
   before_save :check_can_modify, :update_sprint_estimation_method
   after_save :update_account_defaults_if_empty, :unless => Proc.new { |b| b.prohibit_account_updates || b.is_snapshot? }
   attr_accessor :prohibit_account_updates # a property used to signify this is a snapshot being built or a demo (example) backlog and thus it should not fire after filters
+  before_destroy :delete_sprints_in_descending_order
 
   before_validation :prohibit_rate_if_velocity_empty
 
@@ -347,5 +348,11 @@ class Backlog < ActiveRecord::Base
       if velocity_changed? && velocity.blank?
         sprints.each { |sprint| sprint.convert_to_explicit_velocity }
       end
+    end
+
+    # we cannot use the default sprints :dependent => destroy functionality as sprints need to be deleted
+    # in descending order as you can't delete the 1st sprint if sprint 2 exists
+    def delete_sprints_in_descending_order
+      sprints.order('iteration').reverse.each { |sprint| sprint.destroy }
     end
 end

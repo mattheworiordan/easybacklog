@@ -13,13 +13,14 @@ def confirm_duplicate_backlogs(backlog1, backlog2)
 end
 
 def assert_backlog_not_editable(backlog)
+  themes_count = backlog.themes.count
   expect { backlog.themes.first.stories.first.acceptance_criteria.first.criterion = 'Changed'; backlog.save! }.to raise_error
   expect { backlog.themes.first.stories.first.acceptance_criteria.first.destroy }.to raise_error
   expect { backlog.themes.first.stories.first.as_a = 'Changed'; backlog.save! }.to raise_error
   expect { backlog.themes.first.stories.first.destroy }.to raise_error
   expect { backlog.themes.first.name = 'Changed'; backlog.save! }.to raise_error
   expect { backlog.themes.first.destroy }.to raise_error
-  backlog.themes.reload.count.should eql(1)
+  backlog.themes.reload.count.should == themes_count
   expect { backlog.name = 'Changed'; backlog.save! }.to raise_error
 end
 
