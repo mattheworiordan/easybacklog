@@ -8,5 +8,17 @@ FactoryGirl.define do
     association :author, :factory => :user
     association :last_modified_user, :factory => :user
     after(:create) { |backlog| backlog.account.backlogs.reload } # parent model needs refreshing as it will not know a new model has been created
+
+    trait :with_stories do
+      after(:create) do |instance|
+        create_list :theme, 2, :with_stories, :backlog => instance
+      end
+    end
+
+    trait :with_sprints do
+      after(:create) do |instance|
+        create_list :sprint, 2, :backlog => instance
+      end
+    end
   end
 end

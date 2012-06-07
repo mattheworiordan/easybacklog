@@ -198,21 +198,6 @@ describe Sprint do
     end
   end
 
-  it 'should ensure when a sprint is destroyed all related snapshots are deleted' do
-    backlog = FactoryGirl.create(:backlog, :name => 'Parent')
-    sprint = FactoryGirl.create(:sprint, :backlog => backlog)
-    sprint.create_snapshot_if_missing
-    sprint.reload
-
-    sprint.snapshot.should be_present
-    sprint_snapshot_id = sprint.snapshot.id
-
-    sprint.destroy
-
-    # check that snapshot has been deleted with the sprint
-    Backlog.where("id in (#{sprint_snapshot_id})").count.should eql(0)
-  end
-
   it 'should create a snapshot when marked as complete' do
     # if we've not yet created a snapshot for this sprint because date is in the future, create a snapshot immediately
     # so we get the best possible picture of the sprint at the time
@@ -400,5 +385,33 @@ describe Sprint do
     sprint.reload
     expect { sprint.update_attributes! :number_team_members => 3 }.should raise_error
     expect { sprint.destroy }.should raise_error
+  end
+
+  context 'has snapshots' do
+    it 'should delete the associated snapshot if it exists when this sprint is deleted' do
+      backlog = FactoryGirl.create(:backlog, :with_stories, :with_sprints)
+      sprint_count = backlog.sprints.count
+      sprint_count.should > 0
+      sprint = backlog.sprints.last
+
+      sprint.create_snapshot_if_missing
+      sprint.reload
+      sprint.snapshot.should be_present
+      sprint.destroy
+
+      backlog.reload
+      backlog.sprints.count.should == sprint_count - 1
+    end
+  end
+
+  context 'has sprint stories' do
+    it 'should remove all assigned sprint stories when sprint is deleted' do
+      backlog = FactoryGirl.create(:backlog, :with_stories, :with_sprints)
+      sprint = backlog.sprints.last
+      story = backlog.themes.first.stories.first
+      sprint_story_id = FactoryGirl.create(:sprint_story, :sprint => sprint, :story => story).id
+      sprint.destroy
+      SprintStory.find_by_id(sprint_story_id).should be_blank
+    end
   end
 end

@@ -1,6 +1,6 @@
 class Sprint < ActiveRecord::Base
   belongs_to :backlog
-  has_one :snapshot, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :dependent => :destroy, :foreign_key => 'snapshot_for_sprint_id'
+  has_one :snapshot, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_for_sprint_id'
   has_many :stories, :before_add => :check_editable_before_stories_changed, :before_remove => :check_editable_before_stories_changed, :through => :sprint_stories
   has_many :sprint_stories, :order => 'position ASC', :dependent => :destroy
 
@@ -18,6 +18,7 @@ class Sprint < ActiveRecord::Base
   after_validation :check_date_overlaps_and_successive, :ensure_all_stories_are_accepted, :disallow_number_team_members_if_not_estimatable
   before_validation :stop_create_update_if_backlog_locked
   before_destroy :stop_destroy_if_backlog_locked, :ensure_sprint_allows_delete
+  after_destroy :mark_snapshot_as_deleted_if_destroyed
   after_save :manage_sprint_snapshot
 
   scope :in_need_of_snapshot, includes([:backlog]).
@@ -287,5 +288,10 @@ class Sprint < ActiveRecord::Base
 
     def stop_destroy_if_backlog_locked
       raise ActiveRecordExceptions::BacklogLocked.new('Sprint cannot be deleted as the backlog is not editable') if backlog.locked?
+    end
+
+    # snapshots are not actually deleted but simply marked as deleted so that they can be recevored if necessary, later they are cleaned up
+    def mark_snapshot_as_deleted_if_destroyed
+      snapshot.mark_deleted if snapshot.present?
     end
 end
