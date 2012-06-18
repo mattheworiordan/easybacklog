@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120604204532) do
+ActiveRecord::Schema.define(:version => 20120618175213) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -52,7 +52,7 @@ ActiveRecord::Schema.define(:version => 20120604204532) do
     t.integer "backlog_id",       :null => false
     t.integer "user_id",          :null => false
     t.string  "filter"
-    t.string  "collapsed_themes"
+    t.text    "collapsed_themes"
   end
 
   add_index "backlog_user_settings", ["backlog_id", "user_id"], :name => "index_backlog_user_settings_on_backlog_id_and_user_id"
