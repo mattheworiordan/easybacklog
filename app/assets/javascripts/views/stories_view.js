@@ -35,9 +35,8 @@ App.Views.Stories = {
         // allow stories to be sorted using JQuery UI
         $(this.el).sortable({
           start: function(event, ui) {
-            // hide the new story button when dragging
-            actionsElem = view.$('>.actions').clone();
-            $('ul.stories>li.actions').remove();
+            // hide the visible new story buttons when dragging
+            $('ul.stories>li.actions:visible').data('hidden-during-reorder',true).hide();
             view.storyDragged = true; // log that a drag has occurred to prevent click event executing on story
             // jQuery UI & vTip conflict, had to manually fire a mouseleave event and remove the vtip class so vtip
             //  won't do anything until dragging is over
@@ -55,10 +54,8 @@ App.Views.Stories = {
             var themeId, newTheme, storyId, storyLi;
             App.Views.Stories.Index.stopMoveEvent = true; // stop the event firing for the move dialog
             $('ul.themes li.story.placeholder').remove(); // clear placeholders
-            // show the new story button again
-            $('ul.stories').each(function(index, stories) {
-              $(stories).append(actionsElem.clone());
-            });
+            // restore the story hidden buttons that were visible before (not all as some might be hidden due to a theme being collapsed)
+            $('ul.stories>li.actions:hidden').filter(function(i, elem) { return $(elem).data('hidden-during-reorder'); }).removeData('hidden-during-reorder').show();
             if ($(view.el).parents('li.theme')[0] !== $(event.target).parents('li.theme')[0]) {
               // user has dragged story to a new a theme
               themeId = $(event.target).parents('li.theme').attr('id').replace('theme-','');
