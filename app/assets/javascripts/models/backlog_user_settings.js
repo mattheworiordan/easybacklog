@@ -19,7 +19,7 @@ var BacklogUserSettings = Backbone.Model.extend({
 
   addCollapsedTheme: function(themeId) {
     var themes = this.themeList();
-    if (themes.indexOf(String(themeId)) === -1) {
+    if (_(themes).indexOf(String(themeId)) === -1) {
       themes.push(String(themeId));
     }
     this.save({ 'collapsed_themes': themes.join(',') });
@@ -27,7 +27,7 @@ var BacklogUserSettings = Backbone.Model.extend({
 
   removeCollapsedTheme: function(themeId) {
     var themes = this.themeList();
-        index = themes.indexOf(String(themeId));
+        index = _(themes).indexOf(String(themeId));
     if (index !== -1) {
       themes.splice(index, 1);
     }
@@ -35,6 +35,6 @@ var BacklogUserSettings = Backbone.Model.extend({
   },
 
   isCollapsedTheme: function(themeId) {
-    return this.themeList().indexOf(String(themeId)) !== -1;
+    return _(this.themeList()).indexOf(String(themeId)) !== -1;
   }
 });
