@@ -69,7 +69,7 @@
     var target = this,
         form, elem, targetProps = {},
         showEditableField, editableFieldFactory, restoreTarget, saveChanges,
-        addPlaceHolderIfEmpty, stripPlaceHolder;
+        addPlaceHolderIfEmpty, stripPlaceHolder, editableVisible;
 
     /*
      * Functions
@@ -78,7 +78,7 @@
     showEditableField = function(evt) {
       var getBackgroundColor, positioningSpan, offsetBy, inputText,
           eventAlreadyProcessed = false, // multiple keydown events are sometimes fired, ensure we only deal with the first valid one
-          relayEvents, assignBinding;
+          relayEvents, assignBinding, repositionCallback;
 
       stripPlaceHolder();
 
@@ -124,10 +124,20 @@
 
       form.css('position','absolute')
         .css('margin', '0').css('padding', '0')
-        .css('top', options.offsetY + $(target).position().top + 'px')
-        .css('left', options.offsetY + $(positioningSpan).position().left + 'px')
         .css('z-index', options.zIndex)
+        .css('left', options.offsetY + $(positioningSpan).position().left + 'px')
         .append(elem);
+
+      // keep updating vertical position as sometimes another DOM element may be updated which causes this field to jump and down
+      // horizontal adjustments were tried, but failed...
+      editableVisible = true;
+      repositionCallback = function() {
+        if (editableVisible) {
+          form.css('top', options.offsetY + $(target).position().top + 'px');
+          setTimeout(repositionCallback, 250);
+        }
+      }
+      repositionCallback();
 
       // calculate offset of positionSpan to left hand side of node so we can reduce the width of the editable text field
       offsetBy = $(positioningSpan).position().left - $(target).position().left;
@@ -273,6 +283,9 @@
 
       // remove catch all event to see if user clicked outside this elem
       $('html').unbind('click.editable');
+
+      // prevent the repositioning setTimeout from firing
+      editableVisible = false;
     };
 
     saveChanges = function() {
