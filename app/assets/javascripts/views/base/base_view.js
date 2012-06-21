@@ -53,13 +53,18 @@ App.Views.BaseView = Backbone.View.extend({
       var saveModelFunc = function() {
         this_model.save({}, {
           error: function(model, response) {
-            var errorMessage = 'Unable to save changes...';
-            try {
-              errorMessage = $.parseJSON(response.responseText).message;
-              if (errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)) {
-                errorMessage = 'Score ' + errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)[1];
-              }
-            } catch (e) { if(window.console) { console.log(e); } }
+            var errorMessage;
+            if (response.status == 401) {
+              errorMessage = "You're no longer logged in and we can't save your changes.  Please <a href='#refresh' onclick='window.location.reload(); return false;'>reload this page</a> to log in";
+            } else {
+              try {
+                errorMessage = $.parseJSON(response.responseText).message;
+                if (errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)) {
+                  errorMessage = 'Score ' + errorMessage.match(/^Score 50(.*), Score 90(?:\1)$/)[1];
+                }
+              } catch (e) { if(window.console) { console.log(e); } }
+            }
+            errorMessage = errorMessage || "Unfortunately we've hit a snag and we're unable to save your changes...";
             var errorView = new App.Views.Error({ message: errorMessage});
             // exception to deal with unique-id showing code from parent model in value
             fieldWithValue.html(_.isEmpty(beforeChangeValue) ? view.defaultEditableOptions.placeHolder : multiLineHtmlEncode(beforeChangeValue));
