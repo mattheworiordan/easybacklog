@@ -191,7 +191,7 @@ App.Views.Themes = {
 
       // check if collapsed
       if (this.model.Backlog().UserSettings().isCollapsedTheme(this.model.get('id'))) {
-        _.delay(function() { that.expandCollapse(); }, 100);
+        _.delay(function() { that.expandCollapse({ doNotPersistChange: true }); }, 100);
       }
       return (this);
     },
@@ -534,12 +534,14 @@ App.Views.Themes = {
       }
     },
 
-    expandCollapse: function() {
+    expandCollapse: function(options) {
       $(this.el).toggleClass('collapsed');
-      if ($(this.el).hasClass('collapsed')) {
-        this.model.Backlog().UserSettings().addCollapsedTheme(this.model.get('id'));
-      } else {
-        this.model.Backlog().UserSettings().removeCollapsedTheme(this.model.get('id'));
+      if (!options || !options.doNotPersistChange) { // doNotPersistChange indicates that this expand/collapse is being called at initialisation time so does not need to be saved to the DB
+        if ($(this.el).hasClass('collapsed')) {
+          this.model.Backlog().UserSettings().addCollapsedTheme(this.model.get('id'));
+        } else {
+          this.model.Backlog().UserSettings().removeCollapsedTheme(this.model.get('id'));
+        }
       }
       this.updateThemeViewAfterExpandOrCollapse();
     },
