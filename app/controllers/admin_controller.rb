@@ -39,13 +39,13 @@ class AdminController < ApplicationController
 
   def home
     @stats = {
-      :user_count => User.all.count,
+      :user_count => User.count,
       :user_count_within_14_days => User.where("created_at >= ?", 14.days.ago).count,
-      :account_count => Account.all.count,
+      :account_count => Account.count,
       :backlog_count => Backlog.masters.count,
-      :story_count => Story.all.count,
-      :pending_invites => InvitedUser.all.count,
-      :beta_signups => BetaSignup.all.count
+      :story_count => Story.count,
+      :pending_invites => InvitedUser.count,
+      :beta_signups => BetaSignup.count
     }
 
     @recent_cron_logs = CronLog.order('created_at DESC').limit(10)
