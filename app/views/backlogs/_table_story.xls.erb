@@ -8,11 +8,11 @@
 </Cell>
 <Cell>
   <Data ss:Type='String'><Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.as_a', :default => 'As a'}"%></Font> <%= excel_xml_breaks "#{story.as_a}"%>
-&#13;<Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.i_want_to', :default => 'I want to'}" %></Font> <%= excel_xml_breaks "#{story.i_want_to}" %>
-&#13;<Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.so_i_can', :default => 'So I can'}" %></Font> <%= excel_xml_breaks "#{story.so_i_can}" %></Data>
+&#10;&#13;<Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.i_want_to', :default => 'I want to'}" %></Font> <%= excel_xml_breaks "#{story.i_want_to}" %>
+&#10;&#13;<Font html:Color="#999999" xmlns="http://www.w3.org/TR/REC-html40"><%= "#{t 'backlog.so_i_can', :default => 'So I can'}" %></Font> <%= excel_xml_breaks "#{story.so_i_can}" %></Data>
 </Cell>
 <Cell>
-  <Data ss:Type='String'><%= raw story.acceptance_criteria.each_with_index.map { |criterion, index| "#{criterion.index_to_letters(index)}) #{excel_xml_breaks criterion.criterion}" }.join("&#13;")%></Data>
+  <Data ss:Type='String'><%= raw story.acceptance_criteria.each_with_index.map { |criterion, index| "#{criterion.index_to_letters(index)}) #{excel_xml_breaks criterion.criterion}" }.join("&#10;&#13;")%></Data>
 </Cell>
 <Cell>
   <Data ss:Type='String'><%= excel_xml_breaks story.comments %></Data>
