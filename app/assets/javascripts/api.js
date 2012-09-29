@@ -3,7 +3,6 @@
 //= require conditional/syntax-highlighter/shCore
 //= require conditional/syntax-highlighter/shBrushJScript
 //= require conditional/syntax-highlighter/shBrushXml
-//= require shared/user_echo
 
 $(function() {
   SyntaxHighlighter.defaults['gutter'] = false;
