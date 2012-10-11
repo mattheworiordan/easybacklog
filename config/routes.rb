@@ -138,6 +138,7 @@ Ibacklog::Application.routes.draw do
         match 'move-to-theme' => 'stories#move_to_theme', :via => [:post]
       end
     end
+    get 'stories/:id' => 'stories#show_without_theme_id'
     resources :stories, :only => [] do
       resources :acceptance_criteria, :path => 'acceptance-criteria', :except => [:new, :edit]
     end

@@ -955,7 +955,7 @@
       Please see arguments specified in the content types above.
 
       %h4.returns Returns
-      An #{link_to 'backlog object', '#backlog-object'}.
+      A #{link_to 'backlog object', '#backlog-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}'
@@ -1470,7 +1470,7 @@
       Please see arguments specified in the section #{link_to 'Retrieve a Backlog', '#backlog-retrieve'} above.
 
       %h4.returns Returns
-      An #{link_to 'snapshot object', '#snapshot-object'}.
+      A #{link_to 'snapshot object', '#snapshot-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'accounts/{ACCOUNT_ID}/backlogs/{BACKLOG_ID}/snapshots/{SNAPSHOT_ID}'
@@ -1700,7 +1700,7 @@
           Passing in this optional parameter will include all children #{link_to 'stories', '#stories'} and #{link_to 'acceptance criteria', '#acceptance-criteria'} for this object.
 
       %h4.returns Returns
-      An #{link_to 'theme object', '#theme-object'}.
+      A #{link_to 'theme object', '#theme-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'backlogs/{BACKLOG_ID}/themes/{THEME_ID}'
@@ -2056,7 +2056,7 @@
           Passing in this optional parameter will include all children #{link_to 'sprint stories', '#sprint-stories'} for this sprint.
 
       %h4.returns Returns
-      An #{link_to 'sprint object', '#sprint-object'}.
+      A #{link_to 'sprint object', '#sprint-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'backlogs/{BACKLOG_ID}/sprints/{SPRINT_ID}'
@@ -2389,7 +2389,7 @@
           Passing in this optional parameter will include all children #{link_to 'acceptance criteria', '#acceptance-criteria'} for this story.
 
       %h4.returns Returns
-      An #{link_to 'story object', '#story-object'}.
+      A #{link_to 'story object', '#story-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'themes/{THEME_ID}/stories/{STORY_ID}'
@@ -2397,6 +2397,47 @@
         .prompt
         :preserve
           curl #{api_end_point}themes/#{demo_api_theme_id}/stories/#{demo_api_story_id} \
+             -H "Authorization: token #{demo_api_user_token}"
+
+      %code.rest.rest-response
+        %pre{:class => 'brush: js'}
+          :preserve
+            {
+              "as_a":"user",
+              "color":"",
+              "comments":"Assumed use of JQuery Lightbox",
+              "created_at":"2011-01-03T15:03:00Z",
+              "i_want_to":"view a set of simple screen shots",
+              "id":3158,
+              "position":1,
+              "so_i_can":"understand how the products work",
+              "theme_id":1131,
+              "unique_id":5,
+              "updated_at":"2012-05-23T17:42:10Z",
+              "score":"3.0"
+            }
+
+  .route-section
+    .route-info
+      %h3 Retrieve a Story Shortcut
+
+      %p This method shortcut only supports GET requests and enables quite retrieval of stories based on Story_ID without having to know the Theme_ID of the parent theme.
+
+      %h4 Arguments
+      %dl.argument-list
+        %dt include_associated_data
+        %dd
+          Passing in this optional parameter will include all children #{link_to 'acceptance criteria', '#acceptance-criteria'} for this story.
+
+      %h4.returns Returns
+      A #{link_to 'story object', '#story-object'}.
+
+    .route-example
+      %code.rest.rest-definition= definition_url_wrappable 'stories/{STORY_ID}'
+      %code.rest.rest-request
+        .prompt
+        :preserve
+          curl #{api_end_point}stories/#{demo_api_story_id} \
              -H "Authorization: token #{demo_api_user_token}"
 
       %code.rest.rest-response
@@ -2923,7 +2964,7 @@
       None
 
       %h4.returns Returns
-      An #{link_to 'sprint story object', '#sprint-story-object'}.
+      A #{link_to 'sprint story object', '#sprint-story-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'sprints/{SPRINT_ID}/sprint-stories/{SPRINT_STORY_ID}'
@@ -3162,7 +3203,7 @@
       This request requires no arguments.
 
       %h4.returns Returns
-      An #{link_to 'locale object', '#locale-object'}.
+      A #{link_to 'locale object', '#locale-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'locale/{LOCALE_ID}'
@@ -3281,7 +3322,7 @@
       This request requires no arguments.
 
       %h4.returns Returns
-      An #{link_to 'scoring rule object', '#scoring-rule-object'}.
+      A #{link_to 'scoring rule object', '#scoring-rule-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'scoring-rules/{SCORING_RULE_ID}'
@@ -3395,7 +3436,7 @@
       This request requires no arguments.
 
       %h4.returns Returns
-      An #{link_to 'sprint story status object', '#sprint-story-status-object'}.
+      A #{link_to 'sprint story status object', '#sprint-story-status-object'}.
 
     .route-example
       %code.rest.rest-definition= definition_url_wrappable 'sprint-story-statuses/{SPRINT_STORY_STATUS_ID}'

@@ -1,6 +1,7 @@
 class StoriesController < ApplicationController
   respond_to *API_FORMATS
-  before_filter :enforce_mime_type_for_api, :authenticate_user!, :set_theme_and_protect
+  before_filter :enforce_mime_type_for_api, :authenticate_user!
+  before_filter :set_theme_and_protect, :except => [:show_without_theme_id]
   after_filter :update_backlog_metadata, :only => [:create, :update, :destroy, :move_to_theme]
   before_filter :stop_updates_if_locked, :only => [:create, :update, :destroy]
 
@@ -32,6 +33,16 @@ class StoriesController < ApplicationController
         end
       end
     end
+  end
+
+  ## included in API
+  def show_without_theme_id
+    # there are use cases where a user may know a story ID but not a theme ID so they need a way to access it directly
+    # such as when they get a story ID from a sprint_story
+    @story = Story.find(params[:id])
+    params[:theme_id] = @story.theme_id # simply set the theme_id manually in the params
+    set_theme_and_protect # ensure user has access
+    show
   end
 
   ## included in API

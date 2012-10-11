@@ -217,6 +217,44 @@ describe StoriesController do
       it('should return an error if the user does not have access to the backlog') { expect_permission_error(:show) }
     end
 
+    context 'show_without_theme_id' do
+      it 'should return a single story' do
+        get :show_without_theme_id, { :id => story.id }
+
+        response.code.should == status_code(:ok)
+        json = JSON.parse(response.body)
+        json['id'].should == story.id
+        json['comments'].should == story.comments
+      end
+
+      it 'should return all children' do
+        2.times { FactoryGirl.create(:acceptance_criterion, :story => story) }
+        get :show_without_theme_id, { :id => story.id, :include_associated_data => true }
+
+        response.code.should == status_code(:ok)
+        json = JSON.parse(response.body)
+        json['id'].should == story.id
+        json['acceptance_criteria'].length.should == 2
+      end
+
+      it('should return a 404 error if the id does not exist') do
+        get :show_without_theme_id, { :id => 0 }
+        response.code.should == status_code(:not_found)
+        json = JSON.parse(response.body)
+        json['message'].should match(/Story does not exist/i)
+      end
+
+      it('should return an error if the user does not have access to the backlog') do
+        backlog2 = FactoryGirl.create(:backlog, :account => account)
+        theme2 = FactoryGirl.create(:theme, :backlog => backlog2)
+        story2 = FactoryGirl.create(:story, :theme => theme2)
+        # assign the user no rights to this backlog
+        FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
+        get :show_without_theme_id, { :id => story2.id }
+        response.code.should == status_code(:forbidden)
+      end
+    end
+
     context 'create' do
       it 'should allow new stories to be created' do
         story
