@@ -116,7 +116,7 @@ describe AcceptanceCriteriaController do
 
     context 'only support JSON and XML' do
       it 'should return a 406 for all unsupported mime types' do
-        check_unsupported_mimetypes %w(index show create update destroy)
+        check_unsupported_mimetypes %w(index show create update destroy), :id, :story_id
       end
     end
 

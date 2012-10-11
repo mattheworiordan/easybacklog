@@ -152,4 +152,7 @@ Ibacklog::Application.routes.draw do
   end
 
   get '/status' => 'health#status'
+
+  # route used solely for testing Application Controller
+  resources :testing, :controller => 'testing_application' if Rails.env.test?
 end

@@ -121,7 +121,7 @@ describe ThemesController do
 
     context 'only support JSON and XML' do
       it 'should return a 406 for all unsupported mime types' do
-        check_unsupported_mimetypes %w(index show create update destroy add_existing_story move_to_backlog)
+        check_unsupported_mimetypes %w(index show create update destroy add_existing_story move_to_backlog), :id, :backlog_id
       end
     end
 

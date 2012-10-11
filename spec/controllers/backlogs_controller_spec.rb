@@ -671,12 +671,12 @@ describe BacklogsController do
 
       context 'index' do
         it 'should return a 404 error if the account id does not exist' do
-          get :index_snapshot, { :account_id => 0 }
+          get :index_snapshot, { :account_id => 0, :id => 0 }
           response.code.should == status_code(:not_found)
         end
 
         it 'should return an error if the user does not have access to the account' do
-          get :index_snapshot, { :account_id => FactoryGirl.create(:account).id }
+          get :index_snapshot, { :account_id => FactoryGirl.create(:account).id, :id => 0 }
           response.code.should == status_code(:forbidden)
         end
 
@@ -686,7 +686,8 @@ describe BacklogsController do
         end
 
         it 'should return an error if the user does not have access to the backlog' do
-          get :index_snapshot, { :account_id => FactoryGirl.create(:account).id }
+          backlog = FactoryGirl.create(:backlog)
+          get :index_snapshot, { :account_id => backlog.account_id, :id => backlog.id }
           response.code.should == status_code(:forbidden)
         end
 

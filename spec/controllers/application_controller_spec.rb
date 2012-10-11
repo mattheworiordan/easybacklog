@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# create a testing controller here as we can't test application controller directly unfortunately
 class TestingApplicationController < ApplicationController
   before_filter :authenticate_user!
   respond_to *API_FORMATS

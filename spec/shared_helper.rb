@@ -24,11 +24,21 @@ def assert_backlog_not_editable(backlog)
   expect { backlog.name = 'Changed'; backlog.save! }.to raise_error
 end
 
-def check_unsupported_mimetypes(actions)
+def check_unsupported_mimetypes(actions, *params)
+  # take params in format :a, :b and convert to { :a => 0, :b => 0 }
+  params = Hash[params.map { |d| [d, 0] }]
   %w(text/html text/plain doesnotexist).each do |mime_type|
     actions.each do |action|
       request.env['HTTP_ACCEPT'] = mime_type
-      get action.to_sym
+      if action.match(/^index|get|list/i)
+        get action.to_sym, params
+      elsif action.match(/^update/i)
+        put action.to_sym, params
+      elsif action.match(/^delete|destroy/i)
+        delete action.to_sym, params
+      else
+        post action.to_sym, params
+      end
       response.code.should == status_code(:not_acceptable)
     end
   end

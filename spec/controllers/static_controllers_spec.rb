@@ -10,12 +10,12 @@ shared_examples "a static API" do
 
   context 'only support JSON and XML' do
     it 'should return a 406 for all unsupported mime types' do
-      check_unsupported_mimetypes %w(index show)
+      check_unsupported_mimetypes %w(index show), :id
     end
   end
 
   it 'should return a list' do
-    get :index
+    get :index, { :id => 0 }
     response.code.should == status_code(:ok)
     json = JSON.parse(response.body)
     json.length.should == 1
@@ -24,7 +24,7 @@ shared_examples "a static API" do
 
   it 'should support XML' do
     accept_xml
-    get :index
+    get :index, { :id => 0 }
     response.code.should == status_code(:ok)
     xml = XMLObject.new(response.body)
   end

@@ -125,7 +125,7 @@ describe StoriesController do
 
     context 'only support JSON and XML' do
       it 'should return a 406 for all unsupported mime types' do
-        check_unsupported_mimetypes %w(index show create update destroy move_to_theme)
+        check_unsupported_mimetypes %w(index show create update destroy move_to_theme), :id, :theme_id, :new_theme_id
       end
     end
 

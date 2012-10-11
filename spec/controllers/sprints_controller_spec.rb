@@ -116,7 +116,7 @@ describe SprintsController do
 
     context 'only support JSON and XML' do
       it 'should return a 406 for all unsupported mime types' do
-        check_unsupported_mimetypes %w(index show create update destroy)
+        check_unsupported_mimetypes %w(index show create update destroy), :id, :backlog_id
       end
     end
 
@@ -234,7 +234,7 @@ describe SprintsController do
       it 'should return an error if the backlog is not editable' do
         sprint # create sprint before backlog marked as archived
         backlog.mark_archived
-        put :update, { :backlog_id => backlog.id, :duration_days => 10 }
+        put :update, { :backlog_id => backlog.id, :duration_days => 10, :id => sprint.id }
         response.code.should == status_code(:forbidden)
       end
     end
