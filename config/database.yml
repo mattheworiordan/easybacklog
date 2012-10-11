@@ -2,7 +2,7 @@
 #   gem install sqlite3-ruby (not necessary on OS X Leopard)
 development:
   adapter: postgresql
-  database: easybacklog_dev
+  database: easybacklog_production
   host: localhost
   pool: 5
   timeout: 5000

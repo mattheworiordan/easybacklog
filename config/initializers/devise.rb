@@ -74,7 +74,6 @@ Devise.setup do |config|
   config.case_insensitive_keys = [:email]
 
   config.reset_password_within = 4.hours
-  config.use_salt_as_remember_token = true
 
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this

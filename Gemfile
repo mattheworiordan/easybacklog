@@ -10,6 +10,7 @@ gem 'ejs'
 
 # authentication
 gem 'devise'
+gem 'devise-encryptable'
 gem 'acts_as_list' # orderable items
 
 # pdf generation
