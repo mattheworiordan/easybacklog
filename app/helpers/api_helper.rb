@@ -83,7 +83,7 @@ module ApiHelper
 
   def api_end_point
     if Rails.env.development?
-      'http://api-local:3000/'
+      "#{request.protocol}#{request.host_with_port}/"
     elsif Rails.env.test?
       'https://api.easybacklog.com/'
     else
