@@ -13,9 +13,6 @@ class ApplicationController < ActionController::Base
   before_filter :set_default_locale
   before_filter :prepare_api_request, :if => :is_api?
 
-  rescue_from ActiveRecord::RecordNotFound, :with => :render_not_found
-  rescue_from ActiveModel::MassAssignmentSecurity::Error, :with => :render_unprocessable_entity
-  rescue_from ActiveRecordExceptions::BacklogLocked, :with => :render_forbidden
   rescue_from StandardError, :with => :render_all_error_for_api
 
   # Devise hook
@@ -306,11 +303,21 @@ class ApplicationController < ActionController::Base
     end
 
     def render_all_error_for_api(e)
-      if is_api?
-        send_error "An internal server error has occured: #{e.message}", :http_status => :forbidden
-        notify_airbrake(e)
+      case
+      when e.kind_of?(ActiveRecord::RecordNotFound)
+        render_not_found
+      when e.kind_of?(ActiveModel::MassAssignmentSecurity::Error)
+        render_unprocessable_entity
+      when e.kind_of?(ActiveRecordExceptions::BacklogLocked)
+        render_forbidden
       else
-        raise e
+        if is_api?
+          send_error "An internal server error has occured: #{e.message}", :http_status => :internal_server_error
+          puts ">> ERROR: #{e.message}"
+          notify_airbrake(e)
+        else
+          raise e
+        end
       end
     end
 end
