@@ -8,3 +8,4 @@ TODO.rb
 public/test-*.*
 *.dat
 bin
+.powrc
