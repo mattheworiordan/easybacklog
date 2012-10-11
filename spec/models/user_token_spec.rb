@@ -18,6 +18,6 @@ describe UserToken do
   it 'should not allow changes to the record' do
     a = FactoryGirl.create(:user_token)
     a.access_token = 'test'
-    expect { a.save! }.should raise_error ActiveRecord::ReadOnlyRecord
+    expect { a.save! }.to raise_error ActiveRecord::ReadOnlyRecord
   end
 end

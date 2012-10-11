@@ -22,21 +22,21 @@ describe Sprint do
 
   it 'should not allow overlapping iterations in terms of days' do
     sprint1 = FactoryGirl.create(:sprint, :start_on => Date.today, :duration_days => 10)
-    expect { sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
-    expect { sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today + 9.days, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
+    expect { sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today, :backlog_id => sprint1.backlog.id) }.to raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
+    expect { sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today + 9.days, :backlog_id => sprint1.backlog.id) }.to raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
     sprint1.iteration.should == 1
 
     sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today + 10.days, :backlog_id => sprint1.backlog.id)
     sprint2.start_on = Date.today
-    expect { sprint2.save! }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
+    expect { sprint2.save! }.to raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 1/
     sprint2.iteration.should == 2
 
     sprint1.reload
     sprint1.duration_days = 15
-    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 2/
+    expect { sprint1.save! }.to raise_error ActiveRecord::RecordInvalid, /Start date and duration overlaps with sprint 2/
 
     sprint1.duration_days = 5
-    expect { sprint1.save! }.should_not raise_error
+    expect { sprint1.save! }.to_not raise_error
   end
 
   it 'should not allow you to delete a sprint unless it is the last sprint' do
@@ -48,17 +48,17 @@ describe Sprint do
 
     sprint2.reload
     sprint2.deletable?.should be_false
-    expect { sprint2.destroy }.should raise_error
+    expect { sprint2.destroy }.to raise_error
     sprint3.reload
     sprint3.deletable?.should be_false
-    expect { sprint3.destroy }.should raise_error
+    expect { sprint3.destroy }.to raise_error
     sprint4.reload
     sprint4.deletable?.should be_true
     sprint4.destroy
     sprint3.reload
     sprint3.destroy
     sprint1.reload
-    expect { sprint1.destroy }.should raise_error
+    expect { sprint1.destroy }.to raise_error
   end
 
   it 'should not allow you to change a sprint iteration' do
@@ -66,12 +66,12 @@ describe Sprint do
     backlog = sprint1.backlog
     sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today + 1.day, :duration_days => 1, :backlog_id => backlog.id)
     sprint1.iteration = 3
-    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+    expect { sprint1.save! }.to raise_error ActiveRecord::RecordInvalid
     sprint2.iteration = 4
-    expect { sprint2.save! }.should raise_error ActiveRecord::RecordInvalid
+    expect { sprint2.save! }.to raise_error ActiveRecord::RecordInvalid
 
     sprint1.iteration = 3
-    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+    expect { sprint1.save! }.to raise_error ActiveRecord::RecordInvalid
   end
 
   it 'should not allow you to make changes once marked as completed' do
@@ -88,15 +88,15 @@ describe Sprint do
     sprint1.save!
 
     story2 = FactoryGirl.create(:story, :theme_id => theme.id)
-    expect { sprint1.stories << story2 }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
-    expect { sprint1.stories.delete(sprint1.stories.first) }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
+    expect { sprint1.stories << story2 }.to raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
+    expect { sprint1.stories.delete(sprint1.stories.first) }.to raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
 
     # All sprint fields should be non-editable
     sprint1.start_on = Date.today + 1.day
-    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+    expect { sprint1.save! }.to raise_error ActiveRecord::RecordInvalid
     sprint1.reload
     sprint1.duration_days = sprint1.duration_days + 1
-    expect { sprint1.save! }.should raise_error ActiveRecord::RecordInvalid
+    expect { sprint1.save! }.to raise_error ActiveRecord::RecordInvalid
   end
 
   it 'should not allow to be marked as complete if any of the stories are not accepted' do
@@ -104,29 +104,29 @@ describe Sprint do
     theme = FactoryGirl.create(:theme, :backlog_id => sprint.backlog.id)
 
     # 0 stories, so allow mark as complete
-    expect { sprint.mark_as_complete }.should_not raise_error
+    expect { sprint.mark_as_complete }.to_not raise_error
 
     sprint.mark_as_incomplete
     sprint.stories << FactoryGirl.create(:story, :theme_id => theme.id)
     sprint.reload
-    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not accepted/
+    expect { sprint.mark_as_complete }.to raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not accepted/
 
     sprint.stories.first.sprint_story_status = accepted_sprint_story_status
-    expect { sprint.mark_as_incomplete }.should_not raise_error
+    expect { sprint.mark_as_incomplete }.to_not raise_error
 
     sprint.stories << FactoryGirl.create(:story, :theme_id => theme.id)
     sprint.reload
-    expect { sprint.mark_as_complete }.should raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not accepted/
+    expect { sprint.mark_as_complete }.to raise_error ActiveRecord::RecordInvalid, /Sprint cannot be marked as complete when it contains stories that are not accepted/
   end
 
   it 'should not allow a successive sprint start on or before a previous sprint even if it doesn\'t overlap' do
     sprint1 = FactoryGirl.create(:sprint, :start_on => Date.today, :duration_days => 10)
-    expect { sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today - 10.days, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date is before sprint 1/
+    expect { sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today - 10.days, :backlog_id => sprint1.backlog.id) }.to raise_error ActiveRecord::RecordInvalid, /Start date is before sprint 1/
 
     sprint2 = FactoryGirl.create(:sprint, :start_on => Date.today + 30.days, :backlog_id => sprint1.backlog.id)
 
     # in between sprint 1 and 2, but still before print 2
-    expect { FactoryGirl.create(:sprint, :start_on => Date.today + 15.days, :backlog_id => sprint1.backlog.id) }.should raise_error ActiveRecord::RecordInvalid, /Start date is before sprint 2/
+    expect { FactoryGirl.create(:sprint, :start_on => Date.today + 15.days, :backlog_id => sprint1.backlog.id) }.to raise_error ActiveRecord::RecordInvalid, /Start date is before sprint 2/
   end
 
   it 'should calculate total story points and allowed points based on backlog & sprint settings and stories assigned' do
@@ -355,12 +355,12 @@ describe Sprint do
 
   it 'should require an explicit velocity when backlog average velocity not set' do
     backlog = FactoryGirl.create(:backlog, :velocity => nil, :rate => nil)
-    expect { FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => nil) }.should raise_error ActiveRecord::RecordInvalid, /Explicit velocity can't be blank/
+    expect { FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => nil) }.to raise_error ActiveRecord::RecordInvalid, /Explicit velocity can't be blank/
   end
 
   it 'should not allow number_team_members to be set when backlog average velocity is not set' do
     backlog = FactoryGirl.create(:backlog, :velocity => nil, :rate => nil)
-    expect { FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 5) }.should raise_error ActiveRecord::RecordInvalid, /Number team members is not editable with this backlog/
+    expect { FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 5) }.to raise_error ActiveRecord::RecordInvalid, /Number team members is not editable with this backlog/
   end
 
   it 'should update explicit velocity based on calculated velocity when backlog settings change triggered' do
@@ -378,13 +378,13 @@ describe Sprint do
   it 'should not allow a new sprint to be created or edited or deleted if the backlog is locked' do
     backlog = FactoryGirl.create(:backlog, :velocity => 4)
     backlog.mark_archived
-    expect { FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3) }.should raise_error
+    expect { FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3) }.to raise_error
     backlog.recover_from_archive
     sprint = FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3)
     backlog.mark_archived
     sprint.reload
-    expect { sprint.update_attributes! :number_team_members => 3 }.should raise_error
-    expect { sprint.destroy }.should raise_error
+    expect { sprint.update_attributes! :number_team_members => 3 }.to raise_error
+    expect { sprint.destroy }.to raise_error
   end
 
   context 'has snapshots' do

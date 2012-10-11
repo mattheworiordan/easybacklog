@@ -22,8 +22,8 @@ describe SprintStory do
   it 'should not allow the sprint scoring fields to be modified directly' do
     @story.sprint_story.sprint_score_50_when_assigned = 2
     @story.sprint_story.sprint_score_90_when_assigned = 3
-    expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /Sprint score 50 when assigned is not editable/
-    expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /Sprint score 90 when assigned is not editable/
+    expect { @story.sprint_story.save! }.to raise_error ActiveRecord::RecordInvalid, /Sprint score 50 when assigned is not editable/
+    expect { @story.sprint_story.save! }.to raise_error ActiveRecord::RecordInvalid, /Sprint score 90 when assigned is not editable/
   end
 
   it 'should not be allowed to be reassigned to a complete sprint' do
@@ -35,12 +35,12 @@ describe SprintStory do
 
     # cannot assign to sprint1 as it is complete
     @story.sprint_story.sprint = sprint1
-    expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
+    expect { @story.sprint_story.save! }.to raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
 
     sprint1.mark_as_incomplete
     @story.reload
     @story.sprint_story.sprint = sprint1
-    expect { @story.sprint_story.save! }.should_not raise_error
+    expect { @story.sprint_story.save! }.to_not raise_error
   end
 
   it 'should not be allowed to be reassigned from a complete sprint' do
@@ -51,10 +51,10 @@ describe SprintStory do
 
     # cannot assign to sprint2 as it's assigned to sprint1 which is complete
     @story.sprint_story.sprint = sprint2
-    expect { @story.sprint_story.save! }.should raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
+    expect { @story.sprint_story.save! }.to raise_error ActiveRecord::RecordInvalid, /cannot be assigned to a complete sprint or removed from a sprint that is completed/
 
     sprint1.mark_as_incomplete
-    expect { @story.sprint_story.save! }.should_not raise_error
+    expect { @story.sprint_story.save! }.to_not raise_error
   end
 
   it 'should be allocated a sprint story status whenever it is added to a sprint' do
@@ -64,7 +64,7 @@ describe SprintStory do
   it 'should not allow an accepted story to be deleted (unassigned) from a sprint' do
     @story.sprint_story.update_attributes :sprint_story_status_id => accepted_sprint_story_status.id
     @story.reload
-    expect { @story.sprint_story.destroy }.should raise_error SprintStory::RecordNotDestroyable
+    expect { @story.sprint_story.destroy }.to raise_error SprintStory::RecordNotDestroyable
   end
 
   it 'should not allow a sprint story to be deleted from a complete sprint' do
@@ -72,9 +72,9 @@ describe SprintStory do
     @sprint.reload
     @sprint.mark_as_complete
     # try deleting the sprint story 3 ways, admittedly probably unnecessary, but this is a test after all and it's good to make sure
-    expect { @story.sprint_story.destroy }.should raise_error SprintStory::RecordNotDestroyable
-    expect { @sprint.sprint_stories.destroy @story.sprint_story }.should raise_error SprintStory::RecordNotDestroyable
-    expect { @sprint.stories.destroy @story }.should raise_error ActiveRecord::RecordNotSaved
+    expect { @story.sprint_story.destroy }.to raise_error SprintStory::RecordNotDestroyable
+    expect { @sprint.sprint_stories.destroy @story.sprint_story }.to raise_error SprintStory::RecordNotDestroyable
+    expect { @sprint.stories.destroy @story }.to raise_error ActiveRecord::RecordNotSaved
   end
 
   it 'should not allow changes to the status or position once the sprint is complete' do
@@ -91,25 +91,25 @@ describe SprintStory do
     backlog = FactoryGirl.create(:backlog, :velocity => 4)
     sprint = FactoryGirl.create(:sprint, :backlog => backlog)
     backlog.mark_archived
-    expect { FactoryGirl.create(:sprint_story, :sprint => sprint) }.should raise_error
+    expect { FactoryGirl.create(:sprint_story, :sprint => sprint) }.to raise_error
     backlog.recover_from_archive
     sprint_story = FactoryGirl.create(:sprint_story, :sprint => sprint)
     backlog.mark_archived
     sprint_story.reload
-    expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.should raise_error
-    expect { sprint_story.destroy }.should raise_error
+    expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.to raise_error
+    expect { sprint_story.destroy }.to raise_error
   end
 
   it 'should not allow a new sprint story to be created or edited or deleted if the sprint is completed (locked)' do
     backlog = FactoryGirl.create(:backlog, :velocity => 4)
     sprint = FactoryGirl.create(:sprint, :backlog => backlog)
     sprint.mark_as_complete
-    expect { FactoryGirl.create(:sprint_story, :sprint => sprint) }.should raise_error
+    expect { FactoryGirl.create(:sprint_story, :sprint => sprint) }.to raise_error
     sprint.mark_as_incomplete
     sprint_story = FactoryGirl.create(:sprint_story, :sprint => sprint)
     sprint.mark_as_complete
     sprint_story.reload
-    expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.should raise_error
-    expect { sprint_story.destroy }.should raise_error
+    expect { sprint_story.update_attributes! :sprint_story_status_id => accepted_sprint_story_status.id }.to raise_error
+    expect { sprint_story.destroy }.to raise_error
   end
 end

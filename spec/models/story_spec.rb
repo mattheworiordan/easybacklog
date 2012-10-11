@@ -145,11 +145,11 @@ describe Story do
     story.reload
 
     story.score_50 = 2
-    expect { story.save! }.should raise_error ActiveRecord::RecordInvalid, /Changes to a completed story are not allowed/
+    expect { story.save! }.to raise_error ActiveRecord::RecordInvalid, /Changes to a completed story are not allowed/
 
     story.reload
     story.position = 2
-    expect { story.save! }.should_not raise_error
+    expect { story.save! }.to_not raise_error
   end
 
   it 'should not allow to be assigned or removed from a sprint when the sprint is marked as complete' do
@@ -158,22 +158,22 @@ describe Story do
     sprint = FactoryGirl.create(:sprint, :backlog_id => story.theme.backlog.id, :completed_at => Time.now)
     sprint.completed?.should == true
 
-    expect { sprint.stories << story }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
+    expect { sprint.stories << story }.to raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
 
     sprint.mark_as_incomplete
     story.reload
-    expect { sprint.stories << story }.should_not raise_error
+    expect { sprint.stories << story }.to_not raise_error
 
     story.sprint_story_status = accepted
     sprint.reload
     sprint.mark_as_complete
     story.reload
-    expect { sprint.stories.destroy(story) }.should raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
+    expect { sprint.stories.destroy(story) }.to raise_error ActiveRecord::RecordNotSaved, /Stories cannot be added\/removed from this sprint as the sprint is complete/
 
     sprint.mark_as_incomplete
     story.sprint_story_status = default_sprint_story_status
     story.save!
-    expect { sprint.stories.destroy(story) }.should_not raise_error
+    expect { sprint.stories.destroy(story) }.to_not raise_error
   end
 
   context 'moving to another theme' do

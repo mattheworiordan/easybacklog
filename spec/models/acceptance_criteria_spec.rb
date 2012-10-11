@@ -21,13 +21,13 @@ describe AcceptanceCriterion do
 
     @criterion.reload
     @criterion.criterion = 'new criterion'
-    expect { @criterion.save! }.should raise_error ActiveRecord::RecordInvalid, /Cannot edit as story is marked as accepted and therefore locked/
+    expect { @criterion.save! }.to raise_error ActiveRecord::RecordInvalid, /Cannot edit as story is marked as accepted and therefore locked/
 
     @criterion.reload
     @criterion.position = 5
-    expect { @criterion.save! }.should raise_error ActiveRecord::RecordInvalid, /Cannot edit as story is marked as accepted and therefore locked/
+    expect { @criterion.save! }.to raise_error ActiveRecord::RecordInvalid, /Cannot edit as story is marked as accepted and therefore locked/
 
-    expect { @criterion.destroy }.should raise_error AcceptanceCriterion::RecordLocked, /Cannot delete as story is marked as accepted and therefore locked/
+    expect { @criterion.destroy }.to raise_error AcceptanceCriterion::RecordLocked, /Cannot delete as story is marked as accepted and therefore locked/
   end
 
   it 'method index_to_letters should convert an index starting from zero into letters' do
