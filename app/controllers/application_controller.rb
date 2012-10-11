@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActiveRecord::RecordNotFound, :with => :render_not_found
   rescue_from ActiveModel::MassAssignmentSecurity::Error, :with => :render_unprocessable_entity
   rescue_from ActiveRecordExceptions::BacklogLocked, :with => :render_forbidden
+  rescue_from StandardError, :with => :render_all_error_for_api
 
   # Devise hook
   def after_sign_in_path_for(resource_or_scope)
@@ -302,5 +303,14 @@ class ApplicationController < ActionController::Base
 
     def render_forbidden(e)
       send_error "#{e.message}", :http_status => :forbidden
+    end
+
+    def render_all_error_for_api(e)
+      if is_api?
+        send_error "An internal server error has occured: #{e.message}", :http_status => :forbidden
+        notify_airbrake(e)
+      else
+        raise e
+      end
     end
 end
