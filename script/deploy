@@ -18,7 +18,7 @@ options = {}
 optparse = OptionParser.new do |opts|
   # Set a banner, displayed at the top
   # of the help screen.
-  opts.banner = "Usage: deploy [environment] [--rebase]"
+  opts.banner = "Usage: deploy [environment] [--rebase]\n  environments supported: #{ENVIRONMENTS.join(', ')}"
 
   options[:rebase] = false
   opts.on('-r', '--rebase', 'Rebase the environment branch onto the current branch (use when assets have not changed but repository has)') do
