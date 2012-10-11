@@ -307,9 +307,9 @@ class ApplicationController < ActionController::Base
       when e.kind_of?(ActiveRecord::RecordNotFound)
         render_not_found
       when e.kind_of?(ActiveModel::MassAssignmentSecurity::Error)
-        render_unprocessable_entity
+        render_unprocessable_entity e
       when e.kind_of?(ActiveRecordExceptions::BacklogLocked)
-        render_forbidden
+        render_forbidden e
       else
         if is_api?
           send_error "An internal server error has occured: #{e.message}", :http_status => :internal_server_error
