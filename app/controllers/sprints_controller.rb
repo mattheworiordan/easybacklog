@@ -128,7 +128,7 @@ class SprintsController < ApplicationController
     def set_backlog_and_protect
       @backlog = Backlog.find(params[:backlog_id])
       if @backlog.account.users.find_by_id(current_user.id).blank?
-        send_error 'You do not have permission to view this theme', :http_status => :forbidden
+        send_error 'You do not have permission to view this backlog', :http_status => :forbidden
         return false
       end
     end
