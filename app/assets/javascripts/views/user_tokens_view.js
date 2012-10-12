@@ -10,7 +10,7 @@ App.Views.UserTokens = {
       this.collection.each (function(userToken) {
         view.addToView(userToken);
       });
-      this.collection.bind('add', function(userToken) {
+      this.collection.on('add', function(userToken) {
         view.addToView(userToken);
       });
     },
@@ -35,7 +35,7 @@ App.Views.UserTokens = {
 
     initialize: function() {
       var view = this;
-      this.model.bind('change', function() { view.render(); });
+      this.model.on('change', function() { view.render(); });
     },
 
     render: function() {

@@ -17,12 +17,12 @@ App.Views.BaseView = Backbone.View.extend({
       _.bindAll(this, 'changeEvent');
       var changeEvent = this.changeEvent;
       // if anything happens to the model pass on a change event
-      this.model.bind('all', function(eventName) { changeEvent(eventName, this); });
+      this.model.on('all', function(eventName) { changeEvent(eventName, this); });
     }
 
     if (this.updateStatistics) {
       _.bindAll(this, 'updateStatistics');
-      this.model.bind('statisticsUpdated', this.updateStatistics);
+      this.model.on('statisticsUpdated', this.updateStatistics);
     }
   },
 

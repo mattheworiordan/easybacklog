@@ -16,7 +16,7 @@ App.Views.SprintTabs = {
       this.router = this.options.router;
       _.bindAll(this, 'showNew', 'getModelFromIteration', 'restoreTab');
 
-      this.collection.bind('change', function(evt) {
+      this.collection.on('change', function(evt) {
         if (evt !== 'change:update_tabs') { // don't trigger events that trickle back up and cause recursion
           // update the tabs in case current tab is different by sending change event to all tabs
           view.collection.each(function(sprint) { sprint.trigger('change:update_tabs'); });
@@ -319,9 +319,9 @@ App.Views.SprintTabs = {
       this.parentView = this.options.parentView;
       _.bindAll(this, 'remove');
 
-      if (this.model.bind) {
+      if (this.model.on) {
         // if a real model (not a pseudo model for backlog/stats tabs)
-        this.model.bind('change:update_tabs', function(evt) {
+        this.model.on('change:update_tabs', function(evt) {
           // sprint has changed, update the view as we might need to change which tab is shown as (current)
           view.render();
         });

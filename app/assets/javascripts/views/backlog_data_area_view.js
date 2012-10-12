@@ -9,7 +9,7 @@ App.Views.BacklogDataArea = {
 
     initialize: function(options) {
       _.bindAll(this, 'print', 'newSnapshot', 'jumpToSnapshot', 'compareSnapshot', 'sprintsChanged');
-      this.model.Sprints().bind('change:completed_at', this.sprintsChanged);
+      this.model.Sprints().on('change:completed_at', this.sprintsChanged);
     },
 
     render: function() {

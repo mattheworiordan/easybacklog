@@ -5,12 +5,12 @@ var Story = Backbone.Model.extend({
   // we have to manually delete SprintStory when Story models are deleted
   initialize: function() {
     var that = this;
-    this.bind('destroy', function() {
+    this.on('destroy', function() {
       if (this.SprintStory()) {
         this.SprintStory().Sprint().SprintStories().remove(this.SprintStory());
       }
     });
-    this.bind('change:meta_filtered', function() { that.Theme().LazyStoryFilterUpdate(); });
+    this.on('change:meta_filtered', function() { that.Theme().LazyStoryFilterUpdate(); });
   },
 
   Theme: function() {

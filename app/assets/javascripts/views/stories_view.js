@@ -189,11 +189,11 @@ App.Views.Stories = {
       App.Views.BaseView.prototype.initialize.call(this);
       _.bindAll(this, 'navigateEvent', 'moveToThemeDialog', 'moveToTheme', 'changeColor', 'updateViewWithModelData');
 
-      this.model.bind('change', function(model) {
+      this.model.on('change', function(model) {
         // if sprint_story_status_id or sprint_story_id is set by story then we need to update the view
         that.updateViewWithModelData(model.changedAttributes());
       });
-      this.model.bind('change:meta_filtered', function(model) {
+      this.model.on('change:meta_filtered', function(model) {
         // meta_filtered change means filter status has changed so we need to trigger event to story view to check if it should be visible or not
         that.updateViewWithModelData('filter_change');
       });
