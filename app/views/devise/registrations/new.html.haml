@@ -1,3 +1,4 @@
+- title 'Sign up'
 - content_for :title do
   %h1 Sign up to easyBacklog
 - content_for :head do
@@ -5,7 +6,9 @@
 
 = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
   %p
-    Please complete all fields below to set up a new account.
+    It's free to sign up, however we do need a few details to help set up your account for you.
+    %br
+    Please complete all the fields below.
 
   #sign-up
     - unless @account.blank?

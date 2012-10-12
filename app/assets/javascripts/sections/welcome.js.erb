@@ -1,0 +1,93 @@
+<%# encoding: utf-8 %>
+
+/*global $,document,jQuery */
+$(document).ready(function () {
+  var visibleCriteriaCard, lightBoxOptions, featureNavs, animatingCards;
+
+  featureNavs = $('.feature-nav ul li');
+  animatingCards = false;
+
+  // show's relevant card based on selected feature nav
+  function showCard (moveForward) {
+    var selectedIndex, visibleCard, visibleStoryCard;
+    featureNavs.each(function (index, elem) {
+      if ($(elem).hasClass('selected')) {
+        selectedIndex = index + 1;
+      }
+    });
+
+    // move forward one card
+    if (moveForward) {
+      featureNavs.removeClass('selected');
+      if (selectedIndex < featureNavs.length) {
+        selectedIndex += 1;
+      } else {
+        selectedIndex = 1;
+      }
+      $('.feature-nav ul li:nth-child(' + selectedIndex + ')').addClass('selected');
+    }
+
+    // make card + 2 (2 other child elements of .dual-cards exist) visible
+    visibleCard = $('.dual-cards .card.visible').css('z-index', 10);
+    visibleStoryCard = visibleCard.find('.story-card');
+    visibleCriteriaCard = visibleCard.find('.criteria-card');
+
+    animatingCards = true;
+
+    $('.dual-cards .card:nth-child(' + (selectedIndex+2) + ')').addClass('visible').css('z-index', 5);
+
+    visibleStoryCard.animate({
+      left: '-=330',
+      top: '-=60'
+    }, 300, 'easeInCubic', function () {
+      visibleCard.css('z-index', 1);
+      visibleStoryCard.animate({
+        left: '+=330',
+        top: '+=60'
+      }, 300, 'easeOutCubic', function () {
+        visibleCard.removeClass('visible');
+        animatingCards = false;
+      });
+    });
+    visibleCriteriaCard.animate({
+      left: '+=330',
+      top: '+=60'
+    }, 300, 'easeInCubic', function () {
+      visibleCriteriaCard.animate({
+        left: '-=330',
+        top: '-=60'
+      }, 300, 'easeOutCubic');
+    });
+  }
+
+  // set class on clicked nav li
+  featureNavs.click(function () {
+    if (!animatingCards) {
+      if (!$(this).hasClass('selected')) {
+        featureNavs.removeClass('selected');
+        $(this).addClass('selected');
+        showCard();
+      }
+    }
+  }).disableSelection();
+
+  // if a card is clicked, move to the next one
+  $('.dual-cards .card').click(function () {
+    if (!animatingCards) { showCard(true); }
+  }).disableSelection();
+
+  // lightbox relevant media items
+  lightBoxOptions = { imageBtnPrev: '<%= image_path 'welcome/lightbox-prev.png' %>', imageBtnNext: '<%= image_path 'welcome/lightbox-next.png' %>' };
+  $('.content-mix a.light-box').lightBox(lightBoxOptions);
+  $('.features a.light-box').lightBox(lightBoxOptions);
+  $('a.light-box-group, .screen-shots a').lightBox($.extend(lightBoxOptions, {fixedNavigation:true}));
+});
+
+// for split a/b testing, we try showing intro video automatically to some users
+// we only do this on first visit though
+function showIntroVideo() {
+  if ($.cookie('seen_intro_video') !== 'true') {
+    $.cookie('seen_intro_video', 'true', { expires: 365 });
+    $('a.light-box.video-demo').click();
+  }
+}

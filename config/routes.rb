@@ -86,15 +86,13 @@ Ibacklog::Application.routes.draw do
 
     get '/sprint-story-statuses' => 'sprint_story_statuses#index'
 
-    resources :beta_signups, :only => [:index, :create, :show]
-
     get '/users/email_available' => 'devise/users#email_available'
     get '/contact' => 'pages#contact', :as => 'contact'
     get '/faq' => 'pages#faq', :as => 'faq'
     get '/browser-support' => 'pages#browser_support', :as => 'browser_support'
     get '/raise-error' => 'pages#raise_error'
 
-    get '/beta/:unique_code' => 'beta_signups#index', :constraints => { :code => /[a-z0-9]{6}/i }, :as => 'beta_signup_referral'
+    get '/beta/:unique_code' => 'welcome#index', :constraints => { :code => /[a-z0-9]{6}/i }, :as => 'beta_signup_referral'
 
     get '/dashboard' => 'pages#home', :as => 'dashboard'
 
@@ -104,7 +102,7 @@ Ibacklog::Application.routes.draw do
     get '/bunker/emulate/:user_id' => 'admin#emulate_user', :as => 'admin_emulate_user'
     match '/vanity(/:action(/:id(.:format)))', :controller=>:vanity, :as => 'vanity'
 
-    root :to => 'beta_signups#index'
+    root :to => 'welcome#index'
   end
 
   constraints(ApiDomain) do

@@ -1,7 +1,6 @@
 %p.new-account-notice
   %b
-    If you would like to set up a new account,
-    =link_to 'apply to join our beta programme here.', root_path + '#apply'
+    If you would like to set up a new account, you can #{link_to 'sign up for free now', new_user_registration_path}.
 
 = form_for("user", :url => new_user_session_path, :protocol => link_protocol) do |f|
   %p

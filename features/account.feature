@@ -241,7 +241,7 @@ Feature: Account
       And I press "Update"
     Then I should see "Your settings have been updated"
     When I sign out
-      And I follow "Log In"
+      And I follow "Log in"
       And I fill in "Email" with "michael@acme.com"
       And I fill in "Password" with "new_password"
       And I press "Log in"

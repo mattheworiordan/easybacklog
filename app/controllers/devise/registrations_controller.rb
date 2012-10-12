@@ -7,14 +7,9 @@ class Devise::RegistrationsController < DeviseController
   # GET /resource/sign_up
   def new
     build_resource({})
-    if params[:sign_up_code] != 'd7g3h2y'
-      flash[:warning] = 'You need a valid sign up code to register'
-      redirect_to new_session_path(resource)
-    else
-      @account = Account.new
-      resource = build_resource({})
-      respond_with resource
-    end
+    @account = Account.new
+    resource = build_resource({})
+    respond_with resource
   end
 
   # POST /resource/sign_up

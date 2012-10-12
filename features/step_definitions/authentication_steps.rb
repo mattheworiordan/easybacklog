@@ -4,7 +4,7 @@ end
 
 Given /^(?:|I )am signed in as "([^\"]+)"$/ do |user_name|
   step %{I am on the home page}
-  step %{I follow "Log In"}
+  step %{I follow "Log in"}
   step %{I fill in "Email" with "#{user_name.gsub(/ /,'')}@acme.com"}
   step %{I fill in "Password" with "password"}
   step %{I press "Log in"}

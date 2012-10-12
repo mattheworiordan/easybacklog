@@ -339,19 +339,14 @@ module HtmlSelectorHelpers
 
 
     ##
-    # Beta sign up launch page
+    # Welcome landing page
     when /^visible story card$/
       '.dual-cards .card.visible'
 
-    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) beta feature$/
+    when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) welcome feature$/
       position = string_quantity_to_numeric_pseudo_selector($1)
       ".feature-nav ul li:#{position}"
 
-    when /^beta page error message$/
-      '.request-access .error-message'
-
-    when /^beta page request access area$/
-      '.request-access'
 
     ## Account settings
     #

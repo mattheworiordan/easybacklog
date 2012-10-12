@@ -561,3 +561,15 @@ a.toggle-switch{
 a.toggle-switch.checked{
   background-position:top left;
 }
+
+#authentication_shared_links {
+  margin-left: -1em;
+  a {
+    padding-left: 1em;
+    border-right: 1px solid #CCC;
+    padding-right: 1em;
+    &:last-child {
+      border-right: none;
+    }
+  }
+}

@@ -5,7 +5,6 @@
         .icon
       = link_to root_path do
         easyBacklog
-      %sup BETA
     - if !accounts.blank? && accounts.count >= 1
       .divider
       .account
@@ -62,6 +61,8 @@
   - else
     -# %div= link_to 'Sign up', new_user_registration_url(:protocol => link_protocol)
     %div= link_to 'Log in', new_user_session_url(:protocol => link_protocol)
+    .divider
+    %div= link_to 'Sign up for free', new_user_registration_path
     .divider
     %div= link_to 'FAQ', faq_path
     .divider

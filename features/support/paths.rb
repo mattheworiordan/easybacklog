@@ -15,7 +15,7 @@ module NavigationHelpers
       accounts_path
 
     when /^the sign up page$/
-      new_user_registration_path :sign_up_code => 'd7g3h2y'
+      new_user_registration_path
 
     when /^the new account page$/
       new_account_path

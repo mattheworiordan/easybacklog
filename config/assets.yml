@@ -43,9 +43,9 @@ javascripts:
     - public/javascripts/vendor/conditional/jquery.validate.js
   snapshots:
     - public/javascripts/sections/snapshots.js
-  beta_signup:
+  welcome:
     - public/javascripts/vendor/conditional/jquery.lightbox-0.5.js
-    - public/javascripts/sections/beta_signup.js
+    - public/javascripts/sections/welcome.js
   charts:
     - public/javascripts/vendor/conditional/highcharts.src.js
   company:
