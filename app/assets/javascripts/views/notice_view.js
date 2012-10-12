@@ -14,10 +14,10 @@ App.Views.Notice = Backbone.View.extend({
     render: function() {
         var view = this;
 
-        $(this.el).html(this.message);
-        $(this.el).hide();
+        this.$el.html(this.message);
+        this.$el.hide();
         $('#alert-space').html(this.el);
-        $(this.el).slideDown();
+        this.$el.slideDown();
         _.delay(function() {
             $(view.el).slideUp();
             _.delay(function() {

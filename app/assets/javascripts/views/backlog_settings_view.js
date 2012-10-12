@@ -25,7 +25,7 @@ App.Views.BacklogSettings = {
       if (this.model.get('iteration') === 'Backlog') {
         this.retrieveBacklogSettings();
         App.Views.BacklogCreateUpdateMethods.initializeManageBacklog(); // special non name spaced method to access manage_backlog.js initialize
-        this.el = $('section.content .backlog-settings-body');
+        this.setElement($('section.content .backlog-settings-body'));
         changeBackCancelText(this, '#cancel_backlog_update');
       } else {
         this.storeBacklogSettings();
@@ -33,7 +33,7 @@ App.Views.BacklogSettings = {
         $('section.title h1').html('Sprint ' + this.model.get('iteration') + ' settings');
         this.showSprintDeletePanel();
         $('section.side-panel a.delete-sprint').click(this.deleteSprint); // outside of the view DOM element
-        this.el = $('section.content .backlog-settings-body').html(JST['templates/sprints/edit-sprint']({ model: this.model, backlog: this.model.Backlog() }));
+        this.setElement($('section.content .backlog-settings-body').html(JST['templates/sprints/edit-sprint']({ model: this.model, backlog: this.model.Backlog() })));
         this.$('#start-on').datepicker().datepicker("setDate", parseRubyDate(this.model.get('start_on')));
         this.$('a#sprint_submit').click(this.updateSprint);
         this.$('a#sprint_cancel').click(this.cancel);
@@ -55,7 +55,7 @@ App.Views.BacklogSettings = {
 
     // store the state of the current tab's HTML so we can check if changes have been made or not
     storeState: function() {
-      this.stateHtml = $(this.el).clone();
+      this.stateHtml = this.$el.clone();
     },
 
     // if we have a previous state then return true if HTML has changed
@@ -65,7 +65,7 @@ App.Views.BacklogSettings = {
     },
 
     restoreState: function() {
-      $(this.el).replaceWith(this.stateHtml);
+      this.$el.replaceWith(this.stateHtml);
     },
 
     // keep a deep copy of the static Backlog elements relevant to this page

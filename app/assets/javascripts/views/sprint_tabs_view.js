@@ -61,7 +61,7 @@ App.Views.SprintTabs = {
         this.adjustTabConstraints();
 
         // fix the slight variances in the DOM where the tab system is one pixel too high or low
-        $(this.el).css('top', ($('#themes-header').offset().top - $(this.el.find('ul li:first')).outerHeight()) + 'px');
+        this.$el.css('top', ($('#themes-header').offset().top - $(this.$('ul li:first')).outerHeight()) + 'px');
       }
 
       // set up the infinity tabs JQuery plugin so that tabs scroll
@@ -73,12 +73,12 @@ App.Views.SprintTabs = {
     adjustTabConstraints: function(resizeExpected) {
       var that = this;
       // set the UL width as it is not auto-sized as position is fixed, and then resize as the document is resized
-      this.totalTabWidth = $('#backlog-data-area .backlog-stats').offset().left - $(this.el).offset().left;
+      this.totalTabWidth = $('#backlog-data-area .backlog-stats').offset().left - this.$el.offset().left;
       this.windowWidth = $(window).width();
-      $(this.el).css('width', this.totalTabWidth + 'px');
+      this.$el.css('width', this.totalTabWidth + 'px');
 
       if (resizeExpected) {
-        $(this.el).find('ul.infinite-tabs').infiniteTabs('adjust-to-fit');
+        this.$el.find('ul.infinite-tabs').infiniteTabs('adjust-to-fit');
       }
 
       if (!this.resizeEventAdded) {
@@ -330,13 +330,13 @@ App.Views.SprintTabs = {
 
     render: function() {
       this.updateView();
-      if (this.model.active) { $(this.el).addClass('active'); }
-      if (this.model.locked) { $(this.el).addClass('locked'); }
+      if (this.model.active) { this.$el.addClass('active'); }
+      if (this.model.locked) { this.$el.addClass('locked'); }
       return this;
     },
 
     updateView: function() {
-      $(this.el).html( JST['templates/sprints/tabs/show']({ model: this.model }) );
+      this.$el.html( JST['templates/sprints/tabs/show']({ model: this.model }) );
     },
 
     activate: function() {

@@ -29,11 +29,11 @@ App.Views.Stories = {
       });
 
       if (this.collection.theme.IsEditable()) {
-        if (!this.collection.theme.isNew()) { $(this.el).append(JST['templates/stories/new']()); }
+        if (!this.collection.theme.isNew()) { this.$el.append(JST['templates/stories/new']()); }
         var orderChangedEvent = this.orderChanged;
         var actionsElem;
         // allow stories to be sorted using JQuery UI
-        $(this.el).sortable({
+        this.$el.sortable({
           start: function(event, ui) {
             // hide the visible new story buttons when dragging
             $('ul.stories>li.actions:visible').data('hidden-during-reorder',true).hide();
@@ -119,7 +119,7 @@ App.Views.Stories = {
         event.preventDefault();
         if (event.shiftKey) { // <-- moving back
           event.preventDefault();
-          thisTheme = $(this.el).parents('li.theme');
+          thisTheme = this.$el.parents('li.theme');
           lastStory = thisTheme.find('li.story:not(.locked):last:visible .score-90 .data, li.story:not(.locked):last:visible .score .data');
           if (lastStory.length) {
             App.Views.Helpers.scrollIntoBacklogView(lastStory, function() {
@@ -131,7 +131,7 @@ App.Views.Stories = {
             });
           }
         } else { // --> moving forward
-          nextTheme = $(this.el).parents('li.theme').next();
+          nextTheme = this.$el.parents('li.theme').next();
           if (nextTheme.hasClass('theme')) {
             // next theme exists, focus on the theme name field
             App.Views.Helpers.scrollIntoBacklogView(nextTheme.find('.theme-data .name .data'), function(elem) {
@@ -281,10 +281,10 @@ App.Views.Stories = {
 
       if (attributes === 'all') {
         // just populate the entire element as we're initializing
-        $(this.el).html( JST['templates/stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
+        this.$el.html( JST['templates/stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
       } else if (attributes && (attributes.sprint_story_status_id || attributes.sprint_story_id)) {
         // sprint story status has changed, lets update the entire HTML as it may or may not be locked now
-        $(this.el).html( JST['templates/stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
+        this.$el.html( JST['templates/stories/show'](App.Views.Helpers.addUseOptions({ model: this.model }, this.options)) );
         this.configureView();
         filterFn();
       } else if (attributes === 'filter_change') { // story filter has changed
@@ -295,9 +295,9 @@ App.Views.Stories = {
 
       // set class so that other elements (mainly for tab order) know if this class is locked or not
       if (this.model.IsEditable()) {
-        $(this.el).removeClass('locked');
+        this.$el.removeClass('locked');
       } else {
-        $(this.el).addClass('locked');
+        this.$el.addClass('locked');
       }
     },
 
@@ -426,7 +426,7 @@ App.Views.Stories = {
               this.$('.' + viewElements[_.indexOf(viewElements, dataElem) + 1]).click();
             } else {
               // move onto next view as we're at the last element
-              sibling = $(this.el).nextAll('li:not(.locked):first:visible');
+              sibling = this.$el.nextAll('li:not(.locked):first:visible');
               if (sibling.find('a.new-story').length) {
                 // just a new story button
                 App.Views.Helpers.scrollIntoBacklogView(sibling.find('a.new-story'), function(elem) {
@@ -453,7 +453,7 @@ App.Views.Stories = {
               }
             } else {
               // user is at first field in story, so jump back to theme or previous story
-              previousUnlocked = $(this.el).prevAll('li:not(.locked):first:visible');
+              previousUnlocked = this.$el.prevAll('li:not(.locked):first:visible');
               if (previousUnlocked.length) {
                 // jump to end of previous story
                 App.Views.Helpers.scrollIntoBacklogView(previousUnlocked.find('.score-90 .data, .score .data'), function(elem) {
@@ -461,7 +461,7 @@ App.Views.Stories = {
                 });
               } else {
                 // no previous stories so jump to theme
-                App.Views.Helpers.scrollIntoBacklogView($(this.el).parents('li.theme').find('.theme-data >.name .data'), function(elem) {
+                App.Views.Helpers.scrollIntoBacklogView(this.$el.parents('li.theme').find('.theme-data >.name .data'), function(elem) {
                   elem.click();
                 });
               }
@@ -503,7 +503,7 @@ App.Views.Stories = {
           this.$('div.' + fieldChanged.replace(/_/gi, '-') + '>div.data').html(newValue);
         }
         if (eventName == 'change:id') {
-          $(this.el).attr('id', 'story-' + model.get('id'));
+          this.$el.attr('id', 'story-' + model.get('id'));
         }
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
@@ -561,7 +561,7 @@ App.Views.Stories = {
       var themeId = $(dialog).find('select#theme-target option:selected').attr('id');
       if (themeId != this.model.Theme().get('id')) {
         if (window.console) { console.log('Moving to theme-' + themeId); }
-        $(this.el).insertBefore($('li.theme#theme-' + themeId + ' ul.stories>li:last'));
+        this.$el.insertBefore($('li.theme#theme-' + themeId + ' ul.stories>li:last'));
         this.model.MoveToTheme(themeId, {
           success: function(model, response) {
             var errorView = new App.Views.Notice({ message: 'The story was moved successfully.'});
@@ -601,7 +601,7 @@ App.Views.Stories = {
       this.model.collection.add(model);
       var storyView = new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({ model: model, id: 0 }, this.options)); // set id 0 as will change when model is saved
       var newStoryDomElem = $(storyView.render().el);
-      newStoryDomElem.insertBefore($(this.el).parents('ul.stories').find('>li.actions'));
+      newStoryDomElem.insertBefore(this.$el.parents('ul.stories').find('>li.actions'));
       model.save(false, {
         success: function(model, response) {
           model.AcceptanceCriteria().each(function(criterion) {

@@ -23,7 +23,7 @@ App.Views.BacklogDataArea = {
       this.enableFilterMenu();
 
       if (!this.model.IsEditable()) {
-        $(this.el).addClass('not-editable');
+        this.$el.addClass('not-editable');
         $('#backlog-container').addClass('not-editable');
         $('#add-sprint').hide();
       }

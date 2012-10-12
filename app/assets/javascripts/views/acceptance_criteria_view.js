@@ -17,7 +17,7 @@ App.Views.AcceptanceCriteria = {
 
     render: function() {
       var parentView = this;
-      $(this.el).html(JST['templates/acceptance_criteria/index']({ collection: this.collection.models }));
+      this.$el.html(JST['templates/acceptance_criteria/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
         var view = new App.Views.AcceptanceCriteria.Show({ model: model, id: parentView.childId(model), parentView: parentView });
@@ -125,7 +125,7 @@ App.Views.AcceptanceCriteria = {
     render: function() {
       var that = this;
 
-      $(this.el).html( JST['templates/acceptance_criteria/show']({ model: this.model }) );
+      this.$el.html( JST['templates/acceptance_criteria/show']({ model: this.model }) );
 
       if (this.model.IsEditable()) {
         this.makeFieldsEditable();
@@ -133,7 +133,7 @@ App.Views.AcceptanceCriteria = {
         // only show warnings about user's ability to edit if the backlog itself is not locked anyway such as an archive or snapshot
         if (!this.model.IsLocked()) {
           // make all editable fields show warning that item is not editable
-          $(this.el).find('>div.data').click(function() {
+          this.$el.find('>div.data').click(function() {
             var message = that.model.CanEdit() ? 'You cannot edit a story that is marked as accepted' : 'You do not have permission to edit story criteria for this backlog';
             new App.Views.Warning({ message: message });
           });
@@ -145,7 +145,7 @@ App.Views.AcceptanceCriteria = {
 
     changeEvent: function(eventName, model) {
       if (eventName == 'change:id') {
-        $(this.el).attr('id', 'acceptance-criteria-' + model.get('id'));
+        this.$el.attr('id', 'acceptance-criteria-' + model.get('id'));
       }
     },
 
@@ -199,7 +199,7 @@ App.Views.AcceptanceCriteria = {
         onKeyDown: ac_view.navigateEvent // make all input and textarea fields respond to Tab/Enter
       });
 
-      $(this.el).find('>div.data').editable(contentUpdatedFunc, defaultOptions);
+      this.$el.find('>div.data').editable(contentUpdatedFunc, defaultOptions);
     },
 
     // Tab or Enter key pressed so let's move on
@@ -222,7 +222,7 @@ App.Views.AcceptanceCriteria = {
             if ($.trim(this.$('textarea').val()) === '') // current last criterion is empty
             {
               // move to comments field
-              App.Views.Helpers.scrollIntoBacklogView($(this.el).parents('li.story').find('div.comments .data'), function(elem) {
+              App.Views.Helpers.scrollIntoBacklogView(this.$el.parents('li.story').find('div.comments .data'), function(elem) {
                 elem.click();
               });
             } else {
@@ -233,7 +233,7 @@ App.Views.AcceptanceCriteria = {
         } else { // moving <--
           if ( _.first(liElem) == _.first(liElem.parent('ul').find('li.criterion')) ) {
             // move to user story field so-i-can
-            App.Views.Helpers.scrollIntoBacklogView($(this.el).parents('li.story').find('div.so-i-can .data'), function(elem) {
+            App.Views.Helpers.scrollIntoBacklogView(this.$el.parents('li.story').find('div.so-i-can .data'), function(elem) {
               elem.click();
             });
           } else {

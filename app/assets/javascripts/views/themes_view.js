@@ -25,7 +25,7 @@ App.Views.Themes = {
 
     render: function() {
       var that = this;
-      $(this.el).html(JST['templates/themes/index']({ collection: this.collection.models }));
+      this.$el.html(JST['templates/themes/index']({ collection: this.collection.models }));
 
       this.collection.each(function(model) {
         var view = new App.Views.Themes.Show(App.Views.Helpers.addUseOptions({ model: model, id: that.childId(model) }, that.options));
@@ -160,7 +160,7 @@ App.Views.Themes = {
 
     render: function() {
       var view, that = this;
-      $(this.el).html( JST['templates/themes/show']({ model: this.model }) );
+      this.$el.html( JST['templates/themes/show']({ model: this.model }) );
       view = new App.Views.Stories.Index(App.Views.Helpers.addUseOptions({ collection: this.model.Stories() }, this.options));
       this.$('>.stories').prepend(view.render().el);
 
@@ -231,7 +231,7 @@ App.Views.Themes = {
         if (!event.shiftKey) { // going -->
           $(event.target).blur();
           // currently on theme name field
-          storyElem = $(this.el).find('li.story:not(.locked):first:visible');
+          storyElem = this.$el.find('li.story:not(.locked):first:visible');
           if (storyElem.length) {
             // move to story item
             App.Views.Helpers.scrollIntoBacklogView(storyElem.find('.unique-id .data'), function(elem) {
@@ -239,8 +239,8 @@ App.Views.Themes = {
             });
           } else {
             // focus on next theme button if next theme li holds add theme & reorder theme buttons
-            $(this.el).next().find('a.new-theme').focus();
-            thisThemeAddStory = $(this.el).find('ul.stories li.actions:not(.locked):visible a.new-story');
+            this.$el.next().find('a.new-theme').focus();
+            thisThemeAddStory = this.$el.find('ul.stories li.actions:not(.locked):visible a.new-story');
             if (thisThemeAddStory.length) {
               // and if a new story button exists move focus to that, takes precedence over new theme button from above
               App.Views.Helpers.scrollIntoBacklogView(thisThemeAddStory, function(elem) {
@@ -248,7 +248,7 @@ App.Views.Themes = {
               });
             } else {
               // active next theme's text field if that exists, typically happens if this theme is empty and no new story button exists (caught in next step)
-              App.Views.Helpers.scrollIntoBacklogView($(this.el).next().find('.theme-data > .name .data'), function(elem) {
+              App.Views.Helpers.scrollIntoBacklogView(this.$el.next().find('.theme-data > .name .data'), function(elem) {
                 elem.click();
               });
             }
@@ -256,7 +256,7 @@ App.Views.Themes = {
         } else { // going <--
           dataField = $(event.target).parents('.data');
           if (dataField.parent().hasClass('name')) { // on theme name field
-            prev = $(this.el).prev(); // previous theme
+            prev = this.$el.prev(); // previous theme
             if (prev.length) { // previous theme exists
               target = prev.find('ul.stories li.actions:not(.locked):visible a.new-story');
               if (target.length) {
@@ -291,7 +291,7 @@ App.Views.Themes = {
         App.Controllers.Statistics.updateStatistics(this.model.get('score_statistics'));
       }
       if (eventName === 'change:id') {
-        $(this.el).attr('id', 'theme-' + model.get('id'));
+        this.$el.attr('id', 'theme-' + model.get('id'));
         if (!this.$('ul.stories li.actions .new-story').length) {
           // not yet added the Add Story button as theme not created so add now
           if (!this.model.isNew()) {
@@ -535,9 +535,9 @@ App.Views.Themes = {
     },
 
     expandCollapse: function(options) {
-      $(this.el).toggleClass('collapsed');
+      this.$el.toggleClass('collapsed');
       if (!options || !options.doNotPersistChange) { // doNotPersistChange indicates that this expand/collapse is being called at initialisation time so does not need to be saved to the DB
-        if ($(this.el).hasClass('collapsed')) {
+        if (this.$el.hasClass('collapsed')) {
           this.model.Backlog().UserSettings().addCollapsedTheme(this.model.get('id'));
         } else {
           this.model.Backlog().UserSettings().removeCollapsedTheme(this.model.get('id'));
@@ -549,7 +549,7 @@ App.Views.Themes = {
     updateThemeViewAfterExpandOrCollapse: function() {
       var nonStoryListItems = this.$('ul.stories>li:not(.story)'),
           storyCount = this.model.Stories().select(function(story) { return story.get('meta_filtered') !== true; }).length,
-          isCollapsed = $(this.el).is('.collapsed');
+          isCollapsed = this.$el.is('.collapsed');
 
       this.model.Stories().each(function(story) { story.set({ meta_collapsed: isCollapsed }); });
       if (isCollapsed) {

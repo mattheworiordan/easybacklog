@@ -15,7 +15,7 @@ App.Views.BacklogStats = {
 
     render: function() {
       var that = this;
-      $(this.el).html(JST['templates/backlogs/sprint-progress-stats']({ model: this.model }));
+      this.$el.html(JST['templates/backlogs/sprint-progress-stats']({ model: this.model }));
       $('#backlog-data-area .backlog-stats').html('');
       that.waitUntilChartsLoaded(function() {
         that.showCharts();

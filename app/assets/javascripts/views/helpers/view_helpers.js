@@ -46,20 +46,20 @@ App.Views.Helpers = {
   // because we change the DOM whilst the mouse is over the element
   // the :hover does not work corretly, we need to use JQuery hover instead and manually deal with exceptions
   setStatusHover: function() {
-    $(this.el).find('.status .tab').hover(
+    this.$el.find('.status .tab').hover(
       function() { $(this).addClass('hover'); },
       function() { $(this).removeClass('hover'); }
     );
   },
 
   disableStatus: function() {
-    $(this.el).find('.status .tab').addClass('disabled');
+    this.$el.find('.status .tab').addClass('disabled');
   },
 
   statusChangeClick: function(event) {
     var that = this,
         dropDown = $(JST['templates/stories/status-drop-down']({ model: this.model })),
-        tab = $(this.el).find('.status .tab'),
+        tab = this.$el.find('.status .tab'),
         revertCallBack;
 
     if (tab.hasClass('open')) {
@@ -93,7 +93,7 @@ App.Views.Helpers = {
       }
 
       dropDown.css('position','absolute').position({
-        of: $(this.el).find('.status .tab'),
+        of: this.$el.find('.status .tab'),
         my: 'center top',
         at: 'center bottom',
         offset: "0 0"
@@ -126,15 +126,15 @@ App.Views.Helpers = {
 
   statusDropDownChanged: function(id, code, name) {
     var that = this,
-        tab = $(this.el).find('.status .tab');
+        tab = this.$el.find('.status .tab');
 
     // update the status tab
     tab.attr('class', 'tab status-code-' + code).removeClass('hover').find('span').text(name);
     // now update whether the story is locked for moving or not
     if (code === this.model.SprintStory().Status().AcceptedCode) {
-      $(this.el).addClass('locked');
+      this.$el.addClass('locked');
     } else {
-      $(this.el).removeClass('locked');
+      this.$el.removeClass('locked');
     }
 
     this.model.SprintStory().set({ sprint_story_status_id: Number(id) });

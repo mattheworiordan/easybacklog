@@ -24,7 +24,7 @@ App.Views.Sprints = {
           sortFn;
 
       // load sprints view
-      $(this.el).html(JST['templates/sprints/show']({ model: this.model }));
+      this.$el.html(JST['templates/sprints/show']({ model: this.model }));
 
       // if contracted, then update the sizes of the divs
       that.toggleUnassignedStoriesSize(true);
@@ -106,10 +106,10 @@ App.Views.Sprints = {
           that = this;
 
       if (dontToggle !== true) {
-        $(this.el).toggleClass('contracted-unassigned-stories');
+        this.$el.toggleClass('contracted-unassigned-stories');
       }
 
-      if ($(this.el).hasClass('contracted-unassigned-stories')) {
+      if (this.$el.hasClass('contracted-unassigned-stories')) {
         newStoryContainerSize = storyContainerSizes[0];
       } else {
         newStoryContainerSize = storyContainerSizes[1];
@@ -434,7 +434,7 @@ App.Views.Sprints = {
     },
 
     render: function() {
-      $(this.el).html(JST['templates/sprints/help']({ backlog: this.model }));
+      this.$el.html(JST['templates/sprints/help']({ backlog: this.model }));
       this.pod = $(JST['templates/sprints/help-pod']({ backlog: this.model }));
       this.pod.find('a.add-new-sprint').click(this.addSprint);
       this.$('a.add-new-sprint').click(this.addSprint);
@@ -472,30 +472,30 @@ App.Views.Sprints = {
 
     render: function() {
       var that = this;
-      $(this.el).html(JST['templates/sprints/sprint-story']({ model: this.model }));
+      this.$el.html(JST['templates/sprints/sprint-story']({ model: this.model }));
       this.setStatusHover();
 
       // set heights of story cards to no greater than contractedHeight, must do after this element has actually rendered in the page
       setTimeout(function() {
         that.resetToggle();
       }, 1);
-      $(this.el).data('reset-toggle', this.resetToggle);
+      this.$el.data('reset-toggle', this.resetToggle);
 
       // allow move to be called for the move all incomplete stories dialog box
-      $(this.el).data('move-story', function() { that.moveStory(); });
+      this.$el.data('move-story', function() { that.moveStory(); });
 
       // resolve hover issue with IE, see http://stackoverflow.com/questions/7891761/
-      $(this.el).hover(function() {
+      this.$el.hover(function() {
         $(this).addClass('hover');
       }, function() {
         $(this).removeClass('hover');
       });
 
       // store data so we can identify this DOM element
-      $(this.el).data('story_id', this.model.get('id'));
+      this.$el.data('story_id', this.model.get('id'));
 
       // add reference to method to update sprintStoryStatus as this will change when moved
-      $(this.el).data('update-sprint-story-status', this.updateSprintStoryStatus);
+      this.$el.data('update-sprint-story-status', this.updateSprintStoryStatus);
 
       if (this.model.get('color')) { App.Views.Helpers.setStoryColor(this.el, this.model.get('color')); }
 
@@ -508,17 +508,17 @@ App.Views.Sprints = {
     // set the heights of the story card so that it's no more than this.contractedHeight
     // if it is, then set to this.contractedHeight and show the more button
     resetToggle: function() {
-      $(this.el).css('height', 'auto');
-      if ($(this.el).height() > this.contractedHeight + this.heightBuffer) {
-        $(this.el).data('original-height', $(this.el).height());
+      this.$el.css('height', 'auto');
+      if (this.$el.height() > this.contractedHeight + this.heightBuffer) {
+        this.$el.data('original-height', this.$el.height());
         this.toggleMore(0);
       } else {
-        $(this.el).find('.more').css('display', 'none');
+        this.$el.find('.more').css('display', 'none');
       }
     },
 
     updateSprintStoryStatus: function() {
-      $(this.el).find('.status').html( $(JST['templates/sprints/sprint-story']({ model: this.model })).find('.status') );
+      this.$el.find('.status').html( $(JST['templates/sprints/sprint-story']({ model: this.model })).find('.status') );
       this.setStatusHover();
       this.setEditableState();
     },
@@ -539,28 +539,28 @@ App.Views.Sprints = {
 
     setEditableState: function() {
       if (this.model.IsEditable()) {
-        $(this.el).removeClass('locked');
+        this.$el.removeClass('locked');
       } else {
-        $(this.el).addClass('locked');
+        this.$el.addClass('locked');
       }
     },
 
     toggleMore: function(speed) {
       var delay = isNaN(parseInt(speed)) ? 'fast' : speed,
           that = this;
-      $(this.el).find('.more').css('display', 'block');
-      if ($(this.el).css('height') === this.contractedHeight + 'px') {
-        $(this.el).animate({ height: $(this.el).data('original-height') }, delay, null, that.parentView.positionStoriesContainerOnScroll);
-        $(this.el).find('.more').addClass('less').find('.tab').text('less');
+      this.$el.find('.more').css('display', 'block');
+      if (this.$el.css('height') === this.contractedHeight + 'px') {
+        this.$el.animate({ height: this.$el.data('original-height') }, delay, null, that.parentView.positionStoriesContainerOnScroll);
+        this.$el.find('.more').addClass('less').find('.tab').text('less');
       } else {
-        $(this.el).animate({ height: this.contractedHeight + 'px' }, delay, null, that.parentView.positionStoriesContainerOnScroll);
-        $(this.el).find('.more').removeClass('less').find('.tab').text('more');
+        this.$el.animate({ height: this.contractedHeight + 'px' }, delay, null, that.parentView.positionStoriesContainerOnScroll);
+        this.$el.find('.more').removeClass('less').find('.tab').text('more');
       }
     },
 
     moveStory: function() {
-      $(this.el).removeClass('hover'); // see IE issue http://stackoverflow.com/questions/7891761/
-      if ($(this.el).parents('.stories-container .cards').length == 0) {
+      this.$el.removeClass('hover'); // see IE issue http://stackoverflow.com/questions/7891761/
+      if (this.$el.parents('.stories-container .cards').length == 0) {
         // moving to bottom of sprint
         this.parentView.$('.stories-container .cards').append(this.el);
       } else {

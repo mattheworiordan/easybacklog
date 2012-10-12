@@ -39,13 +39,13 @@ App.Views.UserTokens = {
     },
 
     render: function() {
-      $(this.el).html(JST['templates/user_tokens/show']({ userToken: this.model }));
+      this.$el.html(JST['templates/user_tokens/show']({ userToken: this.model }));
       return this;
     },
 
     deleteEvent: function() {
-      var parentList = $(this.el).parent();
-      $(this.el).remove();
+      var parentList = this.$el.parent();
+      this.$el.remove();
       this.model.destroy();
       if (parentList.find('div:not(.none)').length === 0) {
         parentList.find('div.none').show();
