@@ -3,8 +3,8 @@
 App.Views.BacklogDataArea = {
   Show: App.Views.BaseView.extend({
     events: {
-      "click #backlog-data-area .actions #print": "print",
-      "click #backlog-data-area a#backlog-settings-link": 'backlogSettings'
+      "click .actions #print": "print",
+      "click a#backlog-settings-link": 'backlogSettings'
     },
 
     initialize: function(options) {
