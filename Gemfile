@@ -34,6 +34,10 @@ gem 'deep_merge', :require => 'deep_merge/rails_compat'
 # speed up generation of assets by only regenerating changed files
 gem 'turbo-sprockets-rails3'
 
+# improved hosting on Heroku
+gem 'unicorn'
+gem 'foreman'
+
 group :assets do
   gem 'sass-rails'
   gem 'compass'
