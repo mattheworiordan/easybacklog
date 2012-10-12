@@ -46,7 +46,7 @@ group :assets do
   gem 'uglifier'
 end
 
-group :development, :test, :cucumber do
+group :development, :test do
   gem 'debugger'
   gem 'awesome_print'
   gem 'watchr'
@@ -56,7 +56,7 @@ group :development, :test, :cucumber do
   # gem 'pry-doc' # apparently causing segmentation faults http://stackoverflow.com/questions/8065611/ruby-1-9-3-p0-and-rspec-causes-frequent-segmentation-faults/8619319#8619319
 end
 
-group :test, :cucumber do
+group :test do
   gem 'rspec','>=2.7.0'
   gem 'rspec-rails','>=2.7.0'
   gem 'shoulda-matchers'
