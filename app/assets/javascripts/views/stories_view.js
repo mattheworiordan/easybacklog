@@ -56,16 +56,17 @@ App.Views.Stories = {
             $('ul.themes li.story.placeholder').remove(); // clear placeholders
             // restore the story hidden buttons that were visible before (not all as some might be hidden due to a theme being collapsed)
             $('ul.stories>li.actions:hidden').filter(function(i, elem) { return $(elem).data('hidden-during-reorder'); }).removeData('hidden-during-reorder').show();
-            if ($(view.el).parents('li.theme')[0] !== $(event.target).parents('li.theme')[0]) {
+            if (view.$el.parents('li.theme')[0] !== $(event.toElement).parents('li.theme')[0]) {
+              console.log('new theme');
               // user has dragged story to a new a theme
-              themeId = $(event.target).parents('li.theme').attr('id').replace('theme-','');
-              storyLi = $(event.target).is('li.story') ? $(event.target) : $(event.target).parents('li.story');
+              themeId = $(event.toElement).parents('li.theme').attr('id').replace('theme-','');
+              storyLi = $(event.toElement).is('li.story') ? $(event.toElement) : $(event.toElement).parents('li.story');
               storyId = storyLi.attr('id').replace('story-','');
               newTheme = view.collection.theme.Backlog().Themes().get(Number(themeId));
               newTheme.AddExistingStory(storyId, {
                 success: function() {
                   orderChangedEvent({ reloadStatistics: true });
-                  orderChangedEvent({ reloadStatistics: true }, $(event.target).parents('ul.stories').find('>li.story'), newTheme.Stories());
+                  orderChangedEvent({ reloadStatistics: true }, $(event.toElement).parents('ul.stories').find('>li.story'), newTheme.Stories());
                 },
                 error: function(event) {
                   var errorView, errorMessage = 'Server error trying to move story to new theme. Please reload this page.';
