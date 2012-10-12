@@ -270,9 +270,15 @@ App.Views.Helpers = {
         _.delay(function () {
           $(document).on('click.actionMenu', hideCallBack);
         });
-        // relay events up to original
+        // relay events up to original by using the events mapping in the Backbone view
         menu.on('click', 'a', function(event) {
-          originalMenu.find('li.' + $(this).parent('li').attr('class') + ' a:first').trigger(event);
+          var regEx = new RegExp('\\.' + $(this).parent('li').attr('class'),'i');
+          eventToFire = _(_.keys(view.events)).find(function(eventSelector) { return eventSelector.match(regEx); });
+          if (eventToFire) {
+            view[view.events[eventToFire]](event);
+          } else {
+            console.error('Cannot fire menu event: Event for ' + $(this).parent('li').attr('class') + ' does not exist');
+          }
         });
       }
     });
