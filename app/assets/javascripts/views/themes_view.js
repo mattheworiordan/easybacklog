@@ -35,9 +35,10 @@ App.Views.Themes = {
       this.$('ul.themes').append(JST['templates/themes/new']());
 
       if (this.collection.backlog.IsEditable()) {
-        var orderChangedEvent = this.orderChanged;
-        var actionsElem;
-        var moveThemeTitle;
+        var orderChangedEvent = this.orderChanged,
+            actionsElem,
+            moveThemeTitle;
+
         // allow themes to be sorted using JQuery UI
         this.$('ul.themes').sortable({
           start: function(event, ui) {
@@ -49,6 +50,11 @@ App.Views.Themes = {
           axis: 'y',
           handle: '.move-theme'
         }).find('.move-theme').disableSelection();
+
+        if (App.environment === 'test') {
+          // create a reference so can simulate a drag&drop event in tests
+          this.$('ul.themes').data('orderChangedEvent', orderChangedEvent);
+        }
       } else {
         this.$('ul.themes>li.actions').remove();
       }

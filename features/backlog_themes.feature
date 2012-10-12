@@ -126,7 +126,7 @@ Feature: Backlog Themes
     # we should be on the first theme text area
     Then the focussed element should be the "name field of the first theme"
 
-  @selenium
+  @javascript
   Scenario: Reorder themes
     When I follow "Reorder themes"
       Then I should see the warning "You need more than one theme to reorder"
@@ -138,11 +138,14 @@ Feature: Backlog Themes
     # drag handles are not visible unless you are re-ordering themes
     Then the "move theme handle" should not be visible
     When I follow "Reorder themes"
-    # drag handles are now visible
+      # drag handles are now visible, but let animation complete
+      And I wait for 0.5 seconds
     Then the "move theme handle" should be visible
     When I follow "Stop ordering"
+      And I wait for 0.5 seconds
     Then the "move theme handle" should not be visible
     When I reorder the first theme
+      And I wait for 0.5 seconds
     Then the "move theme handle" should be visible
     When I drag theme "Theme 2" down by 2 positions
     Then theme "Theme 2" should be in position 4

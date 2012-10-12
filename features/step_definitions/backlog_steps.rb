@@ -222,12 +222,17 @@ end
 #
 
 When /^I drag theme "([^"]+)" (down|up) by (\d+) positions?$/ do |theme_name, direction, positions|
-  move_by = direction == 'up' ? -positions.to_i : positions.to_i
+  move_by = direction == 'up' ? -positions.to_i - 1: positions.to_i
   page.evaluate_script(%{ $('ul.themes li.theme:has(.theme-data .name .data:contains("#{theme_name}"))').length }).should > 0
   page.execute_script %{
-    $('ul.themes li.theme:has(.theme-data .name .data:contains("#{theme_name}"))').
-      simulateDragSortable({move:#{move_by}, handle:'.move-theme', listItem:'li.theme', placeHolder:'.target-order-highlight'});
+    var elem = $('ul.themes li.theme:has(.theme-data .name .data:contains("#{theme_name}"))');
+    var themeListContainer = elem.parents('ul.themes:first');
+    var elemPosition = elem.index();
+    var moveAfterElem = $(themeListContainer).find('li.theme:eq(' + (elemPosition + #{move_by}) + ')');
+    jQuery(moveAfterElem).after(elem);
+    themeListContainer.data('orderChangedEvent')();
   }
+  # page.execute_script "$('ul.themes li.theme').css('height','');" # restore
   sleep 0.1
 end
 
