@@ -292,7 +292,7 @@ Feature: Backlog
       And I press "Create new backlog"
     Then I should see the notice "Backlog was successfully created."
     When I follow "Add theme"
-      And I wait for 0.25 seconds
+      And I wait for 0.5 seconds
     When I change the current editable text to "First"
       And I tab forwards and wait for AJAX to update
     Then the focussed element should have the text "Add story"
@@ -314,8 +314,10 @@ Feature: Backlog
     And I press "Update backlog settings"
     Then I should see "This field is required"
     When I fill in "Velocity" with "aa"
+      And the focus is blurred
     Then I should see "Please enter a valid number"
     When I fill in "Velocity" with "3"
+      And the focus is blurred
     Then I should not see "Please enter a valid number"
       And I should not see "This field is required"
     When I press "Update backlog settings"
@@ -328,8 +330,10 @@ Feature: Backlog
     When I follow "Settings"
     Then the "Yes, I would like to automatically estimate the days required to deliver my backlog" checkbox should be checked
     When I fill in "Rate (optional)" with "aa"
+      And the focus is blurred
     Then I should see "Please enter a valid number"
     When I fill in "Rate (optional)" with "300"
+      And the focus is blurred
     Then I should not see "Please enter a valid number"
     When I press "Update backlog settings"
     Then I should see the notice "Backlog settings were successfully updated"

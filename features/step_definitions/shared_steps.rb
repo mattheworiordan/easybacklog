@@ -82,6 +82,10 @@ When /^(?:|I )(click|hover over) (?:|the element |on |on the |the )"([^"]+)"(?: 
   page.execute_script "$('#{scope}#{selector.gsub(/'/,'"')}')#{action}"
 end
 
+When /^(?:|I )I blur the focus|the focus is blurred$/ do
+  page.execute_script "$(':focus').blur()"
+end
+
 When /^(?:|I )fill in "([^"]+)" using Javascript with "([^"]+)"$/ do |selector, value|
   page.evaluate_script("$('#{selector_to(selector)}').length").should > 0
   page.execute_script "$('#{selector_to(selector)}').val('#{value}').keyup().blur();"
