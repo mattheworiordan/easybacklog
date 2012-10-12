@@ -14,15 +14,12 @@
  *
  * This file MUST be included before JQuery or Sizzle is loaded
  *
- * Refer to http://blog.mattheworiordan.com/post/9308775285 for more info
+ * Refer to https://github.com/mattheworiordan/jquery-focus-selenium-webkit-fix for more info
  *
  **/
 
-/* Prevent use of native find selector */
-document.querySelectorAll = false;
-
-/* Prevent use of native matches selector */
-document.documentElement.matchesSelector = false;
-document.documentElement.mozMatchesSelector = false;
-document.documentElement.webkitMatchesSelector = false;
-document.documentElement.msMatchesSelector = false;
+/* replace the focus selector with our own version */
+jQuery.find.selectors.filters.focus = function(elem) {
+  var doc = elem.ownerDocument;
+  return elem === doc.activeElement && !!(elem.type || elem.href);
+}
