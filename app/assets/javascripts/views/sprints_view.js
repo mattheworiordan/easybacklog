@@ -218,7 +218,7 @@ App.Views.Sprints = {
           });
           that.model.SprintStories().add(newSprintStory);
           that.persistOrderActions += 1;
-          newSprintStory.save(false, {
+          newSprintStory.save(null, {
             success: function(model, response) {
               that.updateStatistics(model.get('sprint_statistics'));
               that.model.set(model.get('sprint_statistics')); // update Sprint with new statistics
@@ -336,7 +336,7 @@ App.Views.Sprints = {
     updatedSprintCompletedStatus: function() {
       var that = this;
 
-      this.model.save(false, {
+      this.model.save(null, {
         success: function(model, response) {
           that.updateSprintButtonsView();
           new App.Views.Notice({ message: 'Sprint status updated'});

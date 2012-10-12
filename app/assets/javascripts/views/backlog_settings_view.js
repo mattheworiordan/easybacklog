@@ -189,7 +189,7 @@ App.Views.BacklogSettings = {
           }
 
           if (this.$('#sprint_status_completed').is(':checked')) {
-            this.model.save(false,
+            this.model.save(null,
               {
                 success: function() {
                   // need to save and then mark as complete as cannot save fields when completed
@@ -216,7 +216,7 @@ App.Views.BacklogSettings = {
     saveSprintFields: function(callbackOnSuccess) {
       var view = this;
 
-      this.model.save(false, {
+      this.model.save(null, {
         success: function() {
           var cancelButton = view.$('#sprint_cancel');
           new App.Views.Notice({ message: 'Sprint number ' + view.model.get('iteration') + ' has been updated'});

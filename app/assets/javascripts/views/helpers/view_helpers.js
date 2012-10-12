@@ -138,7 +138,7 @@ App.Views.Helpers = {
     }
 
     this.model.SprintStory().set({ sprint_story_status_id: Number(id) });
-    this.model.SprintStory().save(false, {
+    this.model.SprintStory().save(null, {
       success: function(model) {
         // Store updated statistics in sprint model
         // If parentView exists, let it handle updating the view

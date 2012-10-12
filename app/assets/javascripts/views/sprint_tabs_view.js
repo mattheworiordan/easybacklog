@@ -207,7 +207,7 @@ App.Views.SprintTabs = {
             }
 
             view.collection.add(model);
-            model.save(false, {
+            model.save(null, {
               success: function(model, response) {
                 view.showNew(model);
                 new App.Views.Notice({ message: 'Sprint number ' + model.get('iteration') + ' has been added'});

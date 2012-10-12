@@ -587,7 +587,8 @@ App.Views.Stories = {
     // duplicate story event fired
     duplicate: function(event) {
       var model = new Story(),
-          attributes = _.clone(this.model.attributes);
+          attributes = _.clone(this.model.attributes),
+          view = this;
       event.preventDefault();
       delete attributes.id;
       delete attributes.unique_id;
@@ -602,15 +603,17 @@ App.Views.Stories = {
       var storyView = new App.Views.Stories.Show(App.Views.Helpers.addUseOptions({ model: model, id: 0 }, this.options)); // set id 0 as will change when model is saved
       var newStoryDomElem = $(storyView.render().el);
       newStoryDomElem.insertBefore(this.$el.parents('ul.stories').find('>li.actions'));
-      model.save(false, {
+      model.save(null, {
         success: function(model, response) {
           model.AcceptanceCriteria().each(function(criterion) {
             criterion.save(); // we need to save the models as they were added when story had no ID and were thus never saved
           });
         },
         error: function(model, error) {
-          if (window.console) { console.log(JSON.stringify(error)); }
-          var errorView = new App.Views.Error({ message: 'The story could not be copied.  Please refresh your browser.'});
+          if (window.console) { console.error(JSON.stringify(error)); }
+          var errorView = new App.Views.Error({ message: "We're sorry, there has been a problem and the story could not be copied.  Please try again." });
+          view.model.collection.remove(model);
+          newStoryDomElem.animate({ backgroundColor: '#FF0' }, 500, function() { newStoryDomElem.slideUp(); });
         }
       });
       _.delay(function() {
@@ -681,7 +684,7 @@ App.Views.Stories = {
                     });
                     sprint.SprintStories().add(sprintStory);
                   }
-                  sprintStory.save(false, {
+                  sprintStory.save(null, {
                     success: function(model, response) {
                       if (reassigned) {
                         view.model.SprintStory().Sprint().SprintStories().remove(sprintStory);

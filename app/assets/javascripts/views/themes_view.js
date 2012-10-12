@@ -424,7 +424,7 @@ App.Views.Themes = {
                     sprint_id: sprintId
                   });
                   sprint.SprintStories().add(sprintStory);
-                  sprintStory.save(false, {
+                  sprintStory.save(null, {
                     success: function(model, response) {
                       assignedStories += 1;
                       if (assignedStories === unassignedStories.length) {
