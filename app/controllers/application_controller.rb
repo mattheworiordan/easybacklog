@@ -314,7 +314,7 @@ class ApplicationController < ActionController::Base
         if is_api?
           send_error "An internal server error has occured: #{e.message}", :http_status => :internal_server_error
           puts ">> ERROR: #{e.message}"
-          notify_airbrake(e)
+          Exceptional.handle(e, 'Error caught by API and handled gracefully')
         else
           raise e
         end

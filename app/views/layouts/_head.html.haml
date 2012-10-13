@@ -14,7 +14,10 @@
 
   = yield(:head)
 
-  = airbrake_javascript_notifier unless Rails.env.test?
+  - unless %w(test).include?(Rails.env)
+    :javascript
+      Exceptional.setHost('exceptional-api.heroku.com');
+      Exceptional.setKey('#{Exceptional::Config.api_key}');
 
   - # Javascript library to simulate drag & drop re-ordering of lists and to fix :focus pseudo selector not working in Selenium / Capybara-webkit
   = javascript_include_tag 'test' if Rails.env.test? || Rails.env.development?

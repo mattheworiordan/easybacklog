@@ -3,6 +3,7 @@
 //= require conditional/syntax-highlighter/shCore
 //= require conditional/syntax-highlighter/shBrushJScript
 //= require conditional/syntax-highlighter/shBrushXml
+//= require vendor_all/exceptional
 
 $(function() {
   SyntaxHighlighter.defaults['gutter'] = false;

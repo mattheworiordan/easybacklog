@@ -16,7 +16,7 @@ gem 'acts_as_list' # orderable items
 # pdf generation
 gem 'prawn', '~> 0.12'
 
-gem 'airbrake'
+gem 'exceptional'
 
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
