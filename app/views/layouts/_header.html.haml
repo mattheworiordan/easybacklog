@@ -31,7 +31,7 @@
         .link= link_to 'My settings', edit_user_registration_path
         .link= link_to 'API access', user_tokens_path
         .nav-divider
-        .link= link_to 'Sign out', destroy_user_session_path
+        .link= link_to 'Log out', destroy_user_session_path
     .divider
     - # only show the account tab if user is an account admin, has enough rights to edit the account details or has access to multiple accounts
     - if is_account_admin? || current_account.present? && current_account.can?(:full, current_user) || (!accounts.blank? && accounts.count > 1)

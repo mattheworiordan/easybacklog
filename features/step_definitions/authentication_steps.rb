@@ -16,5 +16,5 @@ When /^(?:|I )sign out$/ do
   if supports_javascript
     step %{I click on the "user account dropdown" within "top nav"}
   end
-  step %{I follow "Sign out" within "top nav"}
+  step %{I follow "Log out" within "top nav"}
 end
