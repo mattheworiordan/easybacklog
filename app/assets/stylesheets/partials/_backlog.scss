@@ -420,6 +420,7 @@ section.content .not-editable-backlog-notice {
 }
 
 #backlog-tabs {
+  display: none; /* do not show the backlog tabs until the tabs are ready as they often overlay other elements */
   position: fixed;
   top: 63px;
   left: 5px;

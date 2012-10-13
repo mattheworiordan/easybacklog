@@ -61,7 +61,7 @@ App.Views.SprintTabs = {
         this.adjustTabConstraints();
 
         // fix the slight variances in the DOM where the tab system is one pixel too high or low
-        this.$el.css('top', ($('#themes-header').offset().top - $(this.$('ul li:first')).outerHeight()) + 'px');
+        this.$el.css('display', 'block').css('top', ($('#themes-header').offset().top - $(this.$('ul li:first')).outerHeight()) + 'px');
       }
 
       // set up the infinity tabs JQuery plugin so that tabs scroll
