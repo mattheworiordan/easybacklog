@@ -152,7 +152,7 @@ Ibacklog::Application.routes.draw do
     resources :scoring_rules, :path => 'scoring-rules', :only => [:index, :show]
     resources :sprint_story_statuses, :path => 'sprint-story-statuses', :only => [:index, :show]
 
-    root :to => 'api#index'
+    root :to => 'api#index', :as => :api_root
   end
 
   # special monitoring route
