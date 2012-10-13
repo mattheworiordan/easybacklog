@@ -16,7 +16,9 @@ gem 'acts_as_list' # orderable items
 # pdf generation
 gem 'prawn', '~> 0.12'
 
+# monitoring and reporting of errors
 gem 'exceptional'
+gem 'newrelic_rpm'
 
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
