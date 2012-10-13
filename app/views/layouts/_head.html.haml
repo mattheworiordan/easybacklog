@@ -14,7 +14,7 @@
 
   = yield(:head)
 
-  - unless %w(test).include?(Rails.env)
+  - unless %w(test dev).include?(Rails.env)
     :javascript
       Exceptional.setHost('exceptional-api.heroku.com');
       Exceptional.setKey('#{Exceptional::Config.api_key}');
