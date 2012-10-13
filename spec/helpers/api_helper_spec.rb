@@ -8,7 +8,7 @@ describe ApiHelper do
   describe '#api_end_point' do
     it 'should return a valid URL' do
       # silly test, but want to make sure we know if this is broken mistakenly
-      helper.api_end_point.should == 'https://api.easybacklog.com/'
+      helper.api_end_point.should == 'https://easybacklog.com/api/'
     end
   end
 

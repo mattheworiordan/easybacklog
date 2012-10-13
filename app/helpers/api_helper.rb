@@ -83,11 +83,11 @@ module ApiHelper
 
   def api_end_point
     if Rails.env.development?
-      "#{request.protocol}#{request.host_with_port}/"
-    elsif Rails.env.test?
-      'https://api.easybacklog.com/'
+      "#{request.protocol}#{request.host_with_port}/api/"
+    elsif Rails.env.staging?
+      'https://easybacklog-staging.heroku.com/api/'
     else
-      "https://#{request.host}/"
+      "https://#{request.host}/api"
     end
   end
 end
