@@ -30,6 +30,7 @@ class Devise::RegistrationsController < DeviseController
         flash[:notice] = 'Your new account has been created for you'
         sign_in(resource_name, resource)
         respond_with resource, :location => after_update_path_for(resource)
+        UsersNotifier.new_user(resource, @account).deliver if @account.present? # send a notification to an admin
       else
         unless @account.blank?
           # error is added to locale yet select is using locale_id so does not highlight the error, therefore shift the error to locale_id

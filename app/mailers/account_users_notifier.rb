@@ -18,4 +18,12 @@ class AccountUsersNotifier < ActionMailerBase
       format.text
     end
   end
+
+  def account_users_limit(account)
+    @account = account
+    logger.info ">>> Sent notification email #{account.users.count}"
+    mail(:to => 'matt@easybacklog.com', :subject => "easyBacklog - account #{account.name} now has #{account.users.count} users") do |format|
+      format.text
+    end
+  end
 end
