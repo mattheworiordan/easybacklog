@@ -87,7 +87,7 @@ module ApiHelper
     elsif Rails.env.staging?
       'https://easybacklog-staging.heroku.com/api/'
     else
-      "https://#{request.host}/api"
+      "https://#{request.host}/api/"
     end
   end
 end
