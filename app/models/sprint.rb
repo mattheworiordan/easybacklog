@@ -63,11 +63,11 @@ class Sprint < ActiveRecord::Base
     end
   end
 
-  def total_expected_points
+  def total_expected_points(backlog_velocity = backlog.velocity)
     if explicit_velocity.present?
       explicit_velocity
     else
-      backlog.velocity * number_team_members * duration_days
+      backlog_velocity * number_team_members * duration_days
     end
   end
 
@@ -158,9 +158,9 @@ class Sprint < ActiveRecord::Base
   end
 
   # method typically called when a backlog velocity is removed and we therefore need to retain the velocity set for each sprint
-  def convert_to_explicit_velocity
+  def convert_to_explicit_velocity(old_velocity)
     if explicit_velocity.blank?
-      update_attribute :explicit_velocity, total_expected_points
+      update_attribute :explicit_velocity, total_expected_points(old_velocity)
       update_attribute :number_team_members, nil
     end
   end

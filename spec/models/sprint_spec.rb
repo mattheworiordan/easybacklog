@@ -364,12 +364,13 @@ describe Sprint do
   end
 
   it 'should update explicit velocity based on calculated velocity when backlog settings change triggered' do
-    backlog = FactoryGirl.create(:backlog, :velocity => 4)
+    velocity = 4
+    backlog = FactoryGirl.create(:backlog, :velocity => velocity)
     sprint = FactoryGirl.create(:sprint, :backlog => backlog, :number_team_members => 2, :duration_days => 3)
     sprint.mark_as_complete # ensure we test with completed sprints which are technically not editable
     sprint.total_expected_points.should == 4 * 2 * 3
 
-    sprint.convert_to_explicit_velocity
+    sprint.convert_to_explicit_velocity velocity
 
     sprint.total_expected_points.should == 4 * 2 * 3
     sprint.number_team_members.should be_nil

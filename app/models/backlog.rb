@@ -346,7 +346,7 @@ class Backlog < ActiveRecord::Base
     # based on the backlog velocity
     def update_sprint_estimation_method
       if velocity_changed? && velocity.blank?
-        sprints.each { |sprint| sprint.convert_to_explicit_velocity }
+        sprints.each { |sprint| sprint.convert_to_explicit_velocity(velocity_was) }
       end
     end
 
