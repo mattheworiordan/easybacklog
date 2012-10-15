@@ -72,11 +72,11 @@ class Sprint < ActiveRecord::Base
   end
 
   def total_allocated_points
-    ScoreCalculator.total_points stories
+    ScoreCalculator.total_points cached_stories
   end
 
   def total_completed_points
-    ScoreCalculator.total_points stories.select { |s| s.accepted? }
+    ScoreCalculator.total_points cached_stories.select { |s| s.accepted? }
   end
 
   # calculate total expected points based on the backlog average velocity as opposed to configured velocity
@@ -293,5 +293,10 @@ class Sprint < ActiveRecord::Base
     # snapshots are not actually deleted but simply marked as deleted so that they can be recevored if necessary, later they are cleaned up
     def mark_snapshot_as_deleted_if_destroyed
       snapshot.mark_deleted if snapshot.present?
+    end
+
+    # if stories are eager loaded, this is more performatn as sprint_stories are cached
+    def cached_stories
+      sprint_stories.map(&:story)
     end
 end

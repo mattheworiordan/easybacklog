@@ -75,7 +75,8 @@ class Story < ActiveRecord::Base
 
   # story is marked as accepted and assigned to a sprint
   def accepted?
-    self.sprint.present? && self.sprint_story_status.present? && self.sprint_story_status.code == SprintStoryStatus::ACCEPTED
+    # don't use self.sprint shortcut as it does not use eager loading
+    self.sprint_story.present? && self.sprint_story.sprint.present? && self.sprint_story_status.present? && self.sprint_story_status.code == SprintStoryStatus::ACCEPTED
   end
 
   def sprint_story_status=(status)
