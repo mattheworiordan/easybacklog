@@ -5,10 +5,10 @@ class Theme < ActiveRecord::Base
 
   acts_as_list :scope => :backlog
 
-  belongs_to :backlog
+  belongs_to :backlog, :inverse_of => :themes
   validates_presence_of :backlog
 
-  has_many :stories, :dependent => :destroy, :order => 'position'
+  has_many :stories, :dependent => :destroy, :order => 'position', :inverse_of => :theme
 
   validates_uniqueness_of :name, :scope => [:backlog_id]
   validates_presence_of :name

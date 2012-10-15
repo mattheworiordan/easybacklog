@@ -1,5 +1,5 @@
 class UserToken < ActiveRecord::Base
-  belongs_to :user
+  belongs_to :user, :inverse_of => :user_tokens
   attr_accessible
   validates_presence_of :access_token, :basic_authentication_token
 

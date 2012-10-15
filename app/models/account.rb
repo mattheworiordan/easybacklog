@@ -1,10 +1,10 @@
 class Account < ActiveRecord::Base
-  has_many :account_users, :dependent => :destroy
+  has_many :account_users, :dependent => :destroy, :inverse_of => :account
   has_many :users, :through => :account_users
-  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL', :dependent => :destroy
-  has_many :invited_users, :dependent => :destroy
-  has_many :companies, :dependent => :destroy
-  belongs_to :locale
+  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL', :dependent => :destroy, :inverse_of => :account
+  has_many :invited_users, :dependent => :destroy, :inverse_of => :account
+  has_many :companies, :dependent => :destroy, :inverse_of => :account
+  belongs_to :locale, :inverse_of => :accounts
   belongs_to :scoring_rule
 
   validates_uniqueness_of :name

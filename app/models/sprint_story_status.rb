@@ -4,7 +4,7 @@ class SprintStoryStatus < ActiveRecord::Base
   IN_PROGRESS = 'P'
   COMPLETED = 'R' # completed / ready for testing
 
-  has_many :sprint_stories
+  has_many :sprint_stories, :inverse_of => :sprint_story_status
 
   acts_as_list
 

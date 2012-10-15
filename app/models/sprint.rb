@@ -1,8 +1,8 @@
 class Sprint < ActiveRecord::Base
-  belongs_to :backlog
-  has_one :snapshot, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_for_sprint_id'
+  belongs_to :backlog, :inverse_of => :sprints
+  has_one :snapshot, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_for_sprint_id', :inverse_of => :snapshot_for_sprint
   has_many :stories, :before_add => :check_editable_before_stories_changed, :before_remove => :check_editable_before_stories_changed, :through => :sprint_stories
-  has_many :sprint_stories, :order => 'position ASC', :dependent => :destroy
+  has_many :sprint_stories, :order => 'position ASC', :dependent => :destroy, :inverse_of => :sprint
 
   validates_uniqueness_of :iteration, :scope => [:backlog_id], :message => 'has already been taken for another sprint'
   validates_presence_of :iteration, :start_on, :duration_days

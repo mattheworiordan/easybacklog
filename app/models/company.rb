@@ -1,7 +1,7 @@
 class Company < ActiveRecord::Base
-  belongs_to :account
-  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL', :dependent => :destroy
-  has_many :company_users, :dependent => :destroy
+  belongs_to :account, :inverse_of => :companies
+  has_many :backlogs, :conditions => 'snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL', :dependent => :destroy, :inverse_of => :company
+  has_many :company_users, :dependent => :destroy, :inverse_of => :company
 
   validates_uniqueness_of :name, :scope => [:account_id], :message => 'has already been taken for another company'
   validates_presence_of :name

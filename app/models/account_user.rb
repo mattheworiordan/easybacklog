@@ -1,6 +1,6 @@
 class AccountUser < ActiveRecord::Base
-  belongs_to :user
-  belongs_to :account
+  belongs_to :user, :inverse_of => :account_users
+  belongs_to :account, :inverse_of => :account_users
   validates_presence_of :user_id, :account_id
   validates_inclusion_of :admin, :in => [true, false]
 

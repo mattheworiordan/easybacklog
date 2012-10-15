@@ -4,10 +4,10 @@ class Story < ActiveRecord::Base
 
   acts_as_list :scope => :theme
 
-  belongs_to :theme
+  belongs_to :theme, :inverse_of => :stories
   has_one :sprint, :through => :sprint_story
-  has_one :sprint_story, :dependent => :destroy
-  has_many :acceptance_criteria, :dependent => :destroy, :order => 'position'
+  has_one :sprint_story, :dependent => :destroy, :inverse_of => :story
+  has_many :acceptance_criteria, :dependent => :destroy, :order => 'position', :inverse_of => :story
 
   validates_presence_of :theme
   validates_uniqueness_of :unique_id, :scope => [:theme_id], :message => 'ID has already been taken'

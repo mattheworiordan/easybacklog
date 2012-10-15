@@ -1,8 +1,8 @@
 class SprintStory < ActiveRecord::Base
   acts_as_list :scope => :sprint
-  belongs_to :sprint
-  belongs_to :story
-  belongs_to :sprint_story_status
+  belongs_to :sprint, :inverse_of => :sprint_stories
+  belongs_to :story, :inverse_of => :sprint_story
+  belongs_to :sprint_story_status, :inverse_of => :sprint_stories
 
   validates_presence_of :story_id, :sprint_id, :sprint_story_status_id
   validates_uniqueness_of :story_id, :scope => :sprint_id

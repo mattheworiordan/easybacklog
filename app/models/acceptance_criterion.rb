@@ -4,7 +4,7 @@ class AcceptanceCriterion < ActiveRecord::Base
 
   acts_as_list :scope => :story
 
-  belongs_to :story
+  belongs_to :story, :inverse_of => :acceptance_criteria
 
   before_validation :check_story_editable
   before_destroy :prevent_delete_if_story_not_editable

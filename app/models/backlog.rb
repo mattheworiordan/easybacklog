@@ -1,19 +1,19 @@
 class Backlog < ActiveRecord::Base
-  belongs_to :account
+  belongs_to :account, :inverse_of => :backlogs
   belongs_to :author, :class_name => 'User'
   belongs_to :last_modified_user, :class_name => 'User'
-  belongs_to :company
-  belongs_to :snapshot_for_sprint, :class_name => 'Sprint'
+  belongs_to :company, :inverse_of => :backlogs
+  belongs_to :snapshot_for_sprint, :class_name => 'Sprint', :inverse_of => :snapshot
 
-  has_many :themes, :dependent => :destroy, :order => 'position'
-  has_many :sprints, :order => 'iteration'
+  has_many :themes, :dependent => :destroy, :order => 'position', :inverse_of => :backlog
+  has_many :sprints, :order => 'iteration', :inverse_of => :backlog
   has_many :sprint_snapshots, :source => :snapshot, :conditions => ['deleted <> ?', true], :through => :sprints, :order => 'sprints.iteration desc'
-  has_many :backlog_users, :dependent => :destroy
-  has_many :backlog_user_settings, :dependent => :destroy
+  has_many :backlog_users, :dependent => :destroy, :inverse_of => :backlog
+  has_many :backlog_user_settings, :dependent => :destroy, :inverse_of => :backlog
 
   # self references for snapshots
-  has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy
-  belongs_to :snapshot_master, :class_name => 'Backlog'
+  has_many :snapshots, :class_name => 'Backlog', :conditions => ['deleted <> ?', true], :foreign_key => 'snapshot_master_id', :order => 'created_at desc', :dependent => :destroy, :inverse_of => :snapshot_master
+  belongs_to :snapshot_master, :class_name => 'Backlog', :inverse_of => :snapshots
 
   validates_presence_of :name
   validates_numericality_of :rate, :velocity, :greater_than => 0, :allow_nil => true
