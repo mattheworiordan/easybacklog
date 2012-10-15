@@ -4,7 +4,7 @@ class BacklogsController < ApplicationController
   include AccountResource
   include ActionView::Helpers::TextHelper
   after_filter :update_backlog_metadata, :only => [:update]
-  BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => :story } } ]
+  BACKLOG_INCLUDES = [ { :themes => { :stories => :acceptance_criteria } }, { :sprints => { :sprint_stories => [:story, :sprint_story_status] } } ]
 
   ## included in API
   def index
