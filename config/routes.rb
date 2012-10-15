@@ -111,7 +111,7 @@ Ibacklog::Application.routes.draw do
   # easyBacklog API routes
   #
 
-  scope '/api' do
+  scope '/api', :as => :api do
     resources :accounts, :only => [:index, :show, :update] do
       resources :backlogs, :except => [:new, :edit] do
         member do
@@ -152,7 +152,7 @@ Ibacklog::Application.routes.draw do
     resources :scoring_rules, :path => 'scoring-rules', :only => [:index, :show]
     resources :sprint_story_statuses, :path => 'sprint-story-statuses', :only => [:index, :show]
 
-    root :to => 'api#index', :as => :api_root
+    root :to => 'api#index'
   end
 
   # special monitoring route
