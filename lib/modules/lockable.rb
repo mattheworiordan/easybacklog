@@ -5,7 +5,7 @@ module Lockable
 
   # raise an exception if trying to delete as returning false does not stop the destroy event from executing
   def destroy
-    raise ActiveRecordExceptions::BacklogLocked.new(not_editable_reason) unless editable?
+    raise ActiveRecordExceptions::BacklogLocked.new(not_editable_reason) unless destroyable?
     super
   end
 

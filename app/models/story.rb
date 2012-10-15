@@ -27,6 +27,10 @@ class Story < ActiveRecord::Base
     backlog.editable?
   end
 
+  def destroyable?
+    editable? || backlog.destroyable?
+  end
+
   def backlog
     theme.backlog
   end

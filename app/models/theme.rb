@@ -25,6 +25,10 @@ class Theme < ActiveRecord::Base
     backlog.editable?
   end
 
+  def destroyable?
+    editable? || backlog.destroyable?
+  end
+
   def points
     ScoreCalculator.total_points stories
   end

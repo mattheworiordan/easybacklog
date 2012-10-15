@@ -163,13 +163,16 @@ class Backlog < ActiveRecord::Base
     new_backlog
   end
 
-  # editable if this not a snapshot i.e. a snapshot master exists
-  #  or if deleted or archived
+  # editable if this not a snapshot i.e. a snapshot master exists, and not an archive or deleted
   def editable?
-    # allow an archived and deleted backlog to be editable so that it can be destroyed, else editable? blocks all destroy
-    snapshot_master.blank? && snapshot_for_sprint.blank? && ((!self.archived? && !self.deleted?) || (self.archived? && self.deleted?))
+    snapshot_master.blank? && snapshot_for_sprint.blank? && !archived? && !deleted?
   end
   alias_method :is_editable, :editable?
+
+  # only allow backlogs marked as deleted to be destroyed
+  def destroyable?
+    deleted?
+  end
 
   def all_snapshot_master
     self.snapshot_master || (self.snapshot_for_sprint.present? && self.snapshot_for_sprint.backlog)

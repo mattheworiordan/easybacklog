@@ -46,7 +46,7 @@ class Sprint < ActiveRecord::Base
 
   # editable if completed_at is not set, or completed_at has been changed but not yet saved
   def editable?
-    completed_at.blank? || completed_at_changed?
+    (completed_at.blank? || completed_at_changed?) && backlog.editable?
   end
 
   def completed?
