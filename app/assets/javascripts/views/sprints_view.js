@@ -257,11 +257,11 @@ App.Views.Sprints = {
       var storyContainer = this.$('.stories-container'),
           unassignedContainer = this.$('.unassigned-stories-container'),
           storiesDivider = this.$('.stories-divider'),
-          height = storyContainer.outerHeight(),
+          allStoriesHeight = storyContainer.height(),
           windowHeight = $(window).height(),
           scrollAmount = $(window).scrollTop(),
           // max scroll is at least until story container has moved up to tabs, and at most when half the stories remain on the page
-          maxScroll = Math.max(height - (windowHeight/2) + $('.main-content-pod').offset().top, $('.main-content-pod').offset().top);
+          maxScroll = Math.max(allStoriesHeight - (windowHeight/2) + $('.main-content-pod').offset().top, $('.main-content-pod').offset().top);
 
       // cache the top as this shouldn't change but does when position is adjusted
       if (!this.storiesContainerTop) {
