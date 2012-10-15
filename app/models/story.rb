@@ -130,7 +130,7 @@ class Story < ActiveRecord::Base
             theme.stories
           else
             theme.stories.where('id <> ?', self.id)
-          end).map(&:unique_id).sort
+          end).reject { |s| s.new_record? }.map(&:unique_id).sort
 
           self.unique_id = if taken_ids.empty?
             1
