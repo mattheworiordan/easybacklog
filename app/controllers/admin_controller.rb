@@ -8,17 +8,19 @@ class AdminController < ApplicationController
       :model => User,
       :name => 'Users',
       :columns => [:name, :email, { :accounts => :name }, :created_at, { :action => [:emulate] }],
-
+      :filter => [:name, :email]
     },
     :backlog => {
       :model => Backlog.masters,
       :name => 'Backlogs',
-      :columns => [:name, { :account => :name }, :created_at]
+      :columns => [:name, { :account => :name }, :created_at],
+      :filter => [:name]
     },
     :account => {
       :model => Account,
       :name => 'Accounts',
-      :columns => [:name, { :users => :name }, 'backlogs.count', :created_at]
+      :columns => [:name, { :users => :name }, 'backlogs.count', :created_at],
+      :filter => [:name]
     },
     :story => {
       :model => Story,
@@ -56,7 +58,16 @@ class AdminController < ApplicationController
     if DATA.has_key? table.to_sym
       data = DATA[table.to_sym]
       @title = data[:name]
-      @data = data[:model].order('created_at DESC').paginate(:page => params[:page], :per_page => 25)
+      @data = data[:model].order('created_at DESC')
+      @filter = DATA[table.to_sym][:filter] ? true : false
+      if @filter
+        if params[:filter] && params[:filter].strip.present?
+          param_safe = ActiveRecord::Base::sanitize("%#{params[:filter].strip}%")
+          @data = @data.where(DATA[table.to_sym][:filter].map { |f| "#{f} ilike #{param_safe}" }.join(' or '))
+        end
+      end
+      @data = @data.paginate(:page => params[:page], :per_page => 25)
+
       @processed_data = @data.map do |row_data|
         row = {}
         data[:columns].map do |col|
@@ -74,7 +85,7 @@ class AdminController < ApplicationController
                   ''
                 elsif relation.respond_to? :count
                   # relation is a has_many, get a list
-                  row[col] = relation.map { |relation_row| relation_row.send relation_field }.join(', ')
+                  row[col] = relation.map { |relation_row| [object_url(relation_row), relation_row.send(relation_field)] }
                 else
                   # relation is a single record
                   row[col] = relation.send relation_field
@@ -122,6 +133,19 @@ class AdminController < ApplicationController
           send_command_from_string(new_object, commands[1..-1].join('.'))
         else
           new_object
+        end
+      end
+
+      def object_url(obj)
+        case
+        when obj.kind_of?(User)
+          admin_data_path('user', :filter => obj.name)
+        when obj.kind_of?(Account)
+          admin_data_path('account', :filter => obj.name)
+        when obj.kind_of?(Backlog)
+          admin_data_path('backlog', :filter => obj.name)
+        else
+          raise "Unknown object type #{obj.class}"
         end
       end
 end

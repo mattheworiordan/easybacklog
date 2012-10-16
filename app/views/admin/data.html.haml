@@ -1,11 +1,19 @@
 - title 'Admin bunker'
 - content_for :head do
   = stylesheet_link_tag 'admin', :media => 'all'
+  = javascript_include_tag 'admin'
 - content_for :title do
   %h1 View Data: Admin bunker
 %p
   .back= link_to "« Back", admin_path
   %h2= @title
+
+  - if @filter
+    .admin-filter
+      = label_tag :filter, "Filter #{@title.downcase} by:"
+      = text_field_tag :filter, params[:filter]
+      = button_tag 'Search'
+      %a.cancel clear
 
   - if @data.length == 0
     No data
@@ -25,7 +33,9 @@
           - row.each do |col_name, col_val|
             %td
               - if col_name == :action && col_val =~ /^emulate:(\d+)$/
-                = link_to "Emulate »", admin_emulate_user_path($1)
+                = link_to raw("Emulate&nbsp;»"), admin_emulate_user_path($1)
+              - elsif col_val.kind_of?(Array)
+                = raw col_val.map { |d| link_to d[1], d[0] }.join(', ')
               - else
                 = col_val.kind_of?(Time) ? col_val.strftime('%d/%m/%y') : col_val
 

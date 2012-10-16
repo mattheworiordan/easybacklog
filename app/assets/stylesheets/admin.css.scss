@@ -1,3 +1,6 @@
+@import 'partials/extensions';
+@import 'partials/mixins_and_constants';
+
 table {
   &.admin-data, &.people, &.cron-jobs {
     th {
@@ -13,4 +16,32 @@ table {
 
 .back {
   float: right;
+}
+
+.admin-filter {
+  border: 1px solid #999;
+  border-radius: 10px;
+  padding: 5px 15px;
+  background-color: #EEE;
+  width: 420px;
+  margin: 0 auto;
+  input {
+    margin: 0 0.5em;
+    border-radius: 5px;
+    border: 1px solid #999;
+    width: 150px;
+    height: 20px;
+  }
+  button {
+    height: 23px;
+    @include button-style;
+    padding: 0 1em;
+  }
+  a.cancel {
+    color: #666;
+    cursor: pointer;
+    &:hover {
+      color: #F00;
+    }
+  }
 }
