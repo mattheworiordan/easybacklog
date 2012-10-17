@@ -44,10 +44,10 @@ Feature: Company
 
     # check company name validation is working
     When I fill in "Company Name" with "Google"
-    And I wait for AJAX for 1 second
+      And the focus is blurred
     Then I should see "A company with this name is already set up"
     When I fill in "Company Name" with "Oracle"
-    And I wait for AJAX for 1 second
+      And the focus is blurred
     Then I should not see "A company with this name is already set up"
 
     # now check behaviour of scoring options

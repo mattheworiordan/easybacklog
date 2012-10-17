@@ -38,21 +38,26 @@ Feature: Backlog Sprints
     When I fill in "Sprint start date" with "02/01/2012"
       Then I should not see "Date missing"
     When I click on "Sprint start date"
+      And the focus is on the "Sprint start date"
     Then the "date picker" should be visible
     When the focus is on the "Sprint start date"
       And I press escape
       And I wait for AJAX for 1 second
       Then the "date picker" should not be visible
     When I fill in "Duration of sprint in working days" with "0"
+      And the focus is blurred
       Then I should see "Sprint duration must be at least 1 day"
     When I fill in "Duration of sprint in working days" with "a"
+      And the focus is blurred
       Then I should see "Enter a value using whole numbers"
       And I should see "(enter duration of sprint)" within "new sprint expected velocity"
     When I fill in "Duration of sprint in working days" with ""
+      And the focus is blurred
       Then I should see "Sprint duration is required"
     When I fill in "Duration of sprint in working days" with "8"
       And I fill in "Enter your team size" with "a"
-      Then I should see "Team size must be a valid number"
+      And the focus is blurred
+    Then I should see "Team size must be a valid number"
       And I should see "(enter your team size)" within "new sprint expected velocity"
     When I fill in "Enter your team size" with "0"
       And I press "Create"
@@ -78,8 +83,10 @@ Feature: Backlog Sprints
     Then the "Velocity in points" field should be empty
       And "Enter your team size" should be disabled
     When I fill in "Velocity in points" with "a"
+      And the focus is blurred
     Then I should see "Velocity must be a valid number"
     When I fill in "Velocity in points" with ""
+      And the focus is blurred
     Then I should see "Velocity is required"
     When I fill in "Velocity in points" with "30"
       And I press "Create"
@@ -110,19 +117,25 @@ Feature: Backlog Sprints
       And I should see "← Back" within the "content area"
     When I fill in "Sprint start date" with "01/01/2012"
       And I fill in "Duration of sprint in days" with "a"
-      Then I should see "discard changes" within the "content area"
-    Then I should see "Enter a value using whole numbers"
+      And the focus is blurred
+    Then I should see "discard changes" within the "content area"
+      And I should see "Enter a value using whole numbers"
       And I should see "(enter duration of sprint)" within "edit sprint expected velocity"
     When I fill in "Duration of sprint in days" with ""
+      And the focus is blurred
     Then I should see "Sprint duration is required"
     When I fill in "Duration of sprint in days" with "5"
+      And the focus is blurred
     Then I should see "20" within "edit sprint expected velocity"
     When I fill in "Number of team members" with "a"
+      And the focus is blurred
     Then I should see "Team size must be a valid number"
       And I should see "(enter your team size)" within "edit sprint expected velocity"
     When I fill in "Number of team members" with ""
+      And the focus is blurred
     Then I should see "Team size is required"
     When I fill in "Number of team members" with "3"
+      And the focus is blurred
     Then I should see "30" within "edit sprint expected velocity"
     When I follow "Update sprint settings"
     Then I should see "Sprint number 1 has been updated"
@@ -146,9 +159,11 @@ Feature: Backlog Sprints
     When I choose "Manually define a team velocity for this sprint"
       And I wait for AJAX for 1 second
     Then the "Number of team members" should not be visible
-      And I fill in "Velocity in points" with "a"
+    When I fill in "Velocity in points" with "a"
+      And the focus is blurred
     Then I should see "Velocity must be a valid number"
     When I fill in "Velocity in points" with ""
+      And the focus is blurred
     Then I should see "Velocity is required"
     When I fill in "Velocity in points" with "20"
       And I follow "Update sprint settings"
@@ -203,8 +218,10 @@ Feature: Backlog Sprints
       And the "Team velocity for this sprint" field should contain "3"
       And the "edit sprint estimation question" should not be visible
     When I fill in "Team velocity for this sprint" with "a"
+      And the focus is blurred
       Then I should see "Velocity must be a valid number"
     When I fill in "Team velocity for this sprint" with ""
+      And the focus is blurred
       Then I should see "Velocity is required"
     When I fill in "Team velocity for this sprint" with "3.2"
       And I follow "Update sprint settings"
