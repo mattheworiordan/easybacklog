@@ -452,14 +452,7 @@ module HtmlSelectorHelpers
         # if location does not already look like a selector
         if supports_javascript && location.present? && location.kind_of?(String) && !(location =~ /^[a-z0-9_-]*[\.#][a-z_-]+/i)
           # try and find a label containing the text set for location which is pointing to a form element
-          label_selector = page.evaluate_script <<-JS
-            // wrap in try catch so we don't get script errors
-            var ret = false;
-            try {
-              ret = $('label:contains("#{location.gsub(/"/, '')}")').attr('for');
-            } catch (e) { true; }
-            ret;
-          JS
+          label_selector = page.evaluate_script %[$('label:contains("#{location.gsub(/"/, '')}")').attr('for')]
           if label_selector.present? && page.evaluate_script("$('##{label_selector}').length") >= 1
             location = "##{label_selector}"
           end
