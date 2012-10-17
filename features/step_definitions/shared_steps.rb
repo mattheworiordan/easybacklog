@@ -155,7 +155,13 @@ end
 
 Then /^I should see the following data in column (\d+) of "([^"]+)" table:$/ do |data_column, table_path, expected_table|
   table_path = selector_to(table_path)
-  actual_table = find(table_path).all('tr').map { |row| row.all("th:nth-child(#{data_column}),td:nth-child(#{data_column})").map { |cell| cell.text.strip } }
+  actual_table = find(table_path).all('tr').map do |row|
+    row.all("th:nth-child(#{data_column}),td:nth-child(#{data_column})").map do |cell|
+      text = cell.text.strip
+      text = text.gsub(cell.find('select,input').text.strip, '') if cell.has_css?('select,input') # strip out any text from form elements
+      text
+    end
+  end
   # remove column heading
   actual_table.shift if find(table_path).has_css?('th')
   actual_table = table(actual_table)
