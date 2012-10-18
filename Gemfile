@@ -49,7 +49,7 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'debugger'
+  gem 'debugger', '>= 1.2.1'
   gem 'awesome_print'
   gem 'watchr'
   gem 'growl'
