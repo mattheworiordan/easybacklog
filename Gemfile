@@ -83,10 +83,8 @@ end
 group :development do
   # multiple environments for Heroku
   gem 'taps', '>=0.3.23'
-  gem 'heroku'
-  gem 'heroku_san'
   gem 'ruby_parser' # for Devise generators
   gem 'hpricot' # for Devise generators
   gem 'jslint_on_rails'
-  gem 'quiet_assets', :group => :development # reduce verbosity of console messages for serving up assets
+  gem 'quiet_assets' # reduce verbosity of console messages for serving up assets
 end
