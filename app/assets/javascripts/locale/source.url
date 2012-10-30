@@ -1,0 +1,1 @@
+https://github.com/jquery/jquery-ui/tree/master/ui/i18n
