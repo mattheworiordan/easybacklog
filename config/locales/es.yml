@@ -23,7 +23,7 @@ es:
       backlog_total: 'Total del backlog'
       backlog: "Total para el backlog '%{name}'"
       sprint_total: 'Total del sprint'
-      theme: "Total para el tam '%{name}'"
+      theme: "Total para el tema '%{name}'"
       points: puntos
       days: días
       point: punto
