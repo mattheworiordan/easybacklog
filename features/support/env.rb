@@ -37,6 +37,15 @@
   require 'email_spec' # add this line if you use spork
   require 'email_spec/cucumber'
 
+  # if not logged in, experienced issue with Firefox being launched as 0x0 width & height
+  Before('@javascript,@selenium') do
+    if Capybara.current_driver == :selenium
+      Capybara.current_session.driver.browser.manage.window.resize_to 1000,720
+    elsif Capybara.current_driver == :webkit
+      Capybara.current_session.driver.resize_window 1000,720
+    end
+  end
+
   # Remove/comment out the lines below if your app doesn't have a database.
   # For some databases (like MongoDB and CouchDB) you may need to use :truncation instead.
   begin
