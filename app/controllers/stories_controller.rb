@@ -41,8 +41,7 @@ class StoriesController < ApplicationController
     # such as when they get a story ID from a sprint_story
     @story = Story.find(params[:id])
     params[:theme_id] = @story.theme_id # simply set the theme_id manually in the params
-    set_theme_and_protect # ensure user has access
-    show
+    set_theme_and_protect { show } # ensure user has access
   end
 
   ## included in API
@@ -128,10 +127,12 @@ class StoriesController < ApplicationController
   private
     # set the @theme instance variable from nested oute
     # ensure user has access to this based on account
-    def set_theme_and_protect
+    def set_theme_and_protect(&block)
       @theme = Theme.find(params[:theme_id])
       if @theme.backlog.account.users.find_by_id(current_user.id).blank?
         send_error 'You do not have permission to view this story', :http_status => :forbidden, :redirect_to => accounts_path
+      else
+        yield if block_given?
       end
     end
 
