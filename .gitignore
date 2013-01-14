@@ -9,3 +9,4 @@ public/test-*.*
 *.dat
 bin
 .powrc
+.rvmrc
