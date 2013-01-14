@@ -303,6 +303,7 @@ class ApplicationController < ActionController::Base
     end
 
     def render_all_error_for_api(e)
+      logger.info ">> ERROR: #{e.message}"
       case
       when e.kind_of?(ActiveRecord::RecordNotFound)
         render_not_found
@@ -313,7 +314,6 @@ class ApplicationController < ActionController::Base
       else
         if is_api?
           send_error "An internal server error has occured: #{e.message}", :http_status => :internal_server_error
-          puts ">> ERROR: #{e.message}"
           Exceptional.handle(e, 'Error caught by API and handled gracefully')
         else
           raise e
