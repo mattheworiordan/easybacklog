@@ -24,8 +24,8 @@ $col-days-width: 4%;
   &>div {
     margin: 0 0 1px 1px;
     padding: 2px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-width: 1px 0px 0px 1px;
+    // border: 1px solid rgba(0,0,0,0.15);
+    // border-width: 1px 0px 0px 1px;
   }
 }
 
@@ -516,6 +516,8 @@ section.content .not-editable-backlog-notice {
   display: none;
 }
 
+@import 'blocks/story';
+
 #themes-header {
   position: fixed;
   z-index: 5;
@@ -880,189 +882,6 @@ ul.themes {
         li.target-order-highlight {
           margin: 0 0 0 0;
           height: 5em;
-        }
-        /* story row */
-        li.story {
-          padding: 2px 0 5px 1px;
-          overflow: hidden;
-          clear: left;
-          margin: 0;
-          position: relative;
-          .background-color-indicator {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            left: 0px;
-            margin: 2px 0 2px 0;
-          }
-          /* place holder is shown when a list is empty and dragging across lists */
-          &.placeholder {
-            height: 1px;
-          }
-          &>.unique-id {
-            @include table-col($col-unique-id-width);
-
-            >.data {
-              margin-bottom: 0;
-              padding-bottom: 0;
-            }
-            >.story-actions {
-              border-top: none;
-              margin: 0 0 0 1px;
-              padding: 2px 0 0 3px;
-              overflow: hidden;
-            }
-            .sprint-story-info {
-              border-top: none;
-            }
-            .sprint {
-              padding: 5px 0 2px 3px;
-              .tab {
-                border: 1px solid rgba(0,0,0,0.5);
-                font-size: 12px;
-                padding: 1px 8px 1px 8px;
-                @include border-radius(10px);
-                display: inline;
-                a {
-                  color: rgba(0,0,0,0.75);
-                  &:hover {
-                    text-decoration: none;
-                    color: #000;
-                  }
-                }
-                &:hover {
-                  border-color: #000;
-                  background-color: rgba(0,0,0,0.05);
-                }
-              }
-            }
-            .status {
-              padding: 5px 0 0 3px;
-              position: relative;
-              min-height: 16px;
-              .tab {
-                cursor: pointer;
-                &.disabled {
-                  cursor: default;
-                }
-                background-color: lighten($title-area-color, 15%);
-                color: white;
-                font-size: 12px;
-                padding: 1px 5px 1px 5px;
-                &.status-code-T, &.status-code-R, &.status-code-D {
-                  padding: 1px 8px 1px 8px;
-                }
-                @include border-radius(10px);
-                display: inline;
-                a {
-                  color: white;
-                  &:hover {
-                    text-decoration: none;
-                  }
-                }
-                @include status-code-arrows(0.75em);
-                @include status-code-colors;
-              }
-            }
-          }
-          &>.user-story, &>.acceptance-criteria, &>.comments {
-            @include table-col($col-main-width);
-            &>div {
-              margin-bottom: 0;
-              &:nth-child(2),&:nth-child(3) {
-                border-top: 0;
-              };
-            }
-          }
-          &>.score-50, &>.score-90, &>.score {
-            @include table-col($col-score-width);
-            &>div {
-              min-height: 1.1em;
-            }
-          }
-          &>.score {
-            @include table-col($col-score-width * 2);
-          }
-          &>.cost-formatted { @include table-col($col-cost-width); text-align: right; &>div { border: none; padding: 3px; } }
-          &>.days-formatted { /* $col-days-width */
-            &>div {
-              margin: 1px 0 1px 1px;
-              padding: 3px;
-            }
-            text-align: right;
-          }
-
-          &>div.user-story {
-            /* ensure div wraps the children */
-            &>div {
-              overflow: hidden;
-            }
-            /* as a, i want to, so i can text */
-            .heading {
-              float: left;
-              clear: left;
-              padding-right: 0.25em;
-              color: rgba(0,0,0,0.65);
-              font-style: italic;
-            }
-          }
-          ul.acceptance-criteria {
-            margin: 0;
-            list-style: none;
-            /* cross hair only enabled if item is editable */
-            .index.cross-hair-enabled {
-              cursor: move;
-            }
-            li:hover {
-              .cross-hair-enabled.index {
-                display: none;
-              }
-              .cross-hair-enabled.cross-hair-indicator {
-                display: block;
-              }
-            }
-            /* acceptance criteria row */
-            li.criterion {
-              margin: 0;
-            }
-            li.actions {
-              margin-bottom: 4px;
-              position: relative;
-            }
-            li.new-acceptance-criterion {
-              margin: -2px 0 0 -2px;
-            }
-            .index {
-              width: 1.5em;
-              float: left;
-              clear: left;
-              display: block;
-            }
-            .cross-hair-indicator {
-              width: 1.5em;
-              cursor: move;
-              float: left;
-              clear: left;
-              display: none;
-              background: image-url('cross-hair.png') no-repeat left center;
-            }
-            .data {
-              clear: right;
-              cursor: text;
-              margin-left: 1.5em;
-            }
-            li.target-order-highlight {
-              height: 1.5em;
-            }
-          }
-          a.urlified {
-            color: #00D;
-            cursor: text;
-            &:hover {
-              text-decoration: none;
-            }
-          }
         }
       }
     }
