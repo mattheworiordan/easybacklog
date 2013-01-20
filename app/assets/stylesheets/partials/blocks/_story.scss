@@ -4,7 +4,8 @@
  * This is a row representing a story mainly used in the backlog
  */
 li.story {
-  padding: 2px 0 5px 1px;
+  cursor: default;
+  padding: 2px 0 5px 8px;
   overflow: hidden;
   clear: left;
   margin: 0;
@@ -15,13 +16,16 @@ li.story {
     border-top: none;
   }
 
+  .data {
+    cursor: text;
+  }
   .background-color-indicator {
     position: absolute;
     top: 0;
     bottom: 0;
     width: 4px;
     left: 0px;
-    margin: 2px 0 2px 0;
+    margin: 0;
   }
   /* place holder is shown when a list is empty and dragging across lists */
   &.placeholder {
