@@ -654,13 +654,17 @@ ul.themes {
 
   /* theme row */
   li.theme {
-    /* add padding to every theme row after the first */
-    &:nth-child(1n+2) {
-      padding: 5px 0 0 0;
-    }
+    padding: 8px 0;
     margin: 0;
     clear: left;
     overflow: hidden;
+    border-top: solid 2px #eee;
+
+    /* remove styles for first */
+    &:first-child {
+      padding-top: 0;
+      border-top: none;
+    }
 
     /* this box appears when in theme re-order mode */
     .move-theme {
