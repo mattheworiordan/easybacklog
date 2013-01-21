@@ -19,14 +19,22 @@ li.story {
   .data {
     cursor: text;
   }
+
+  /* we could use this as the drag handle if it were bigger */
   .background-color-indicator {
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 2px;
+    bottom: 2px;
     width: 4px;
-    left: 0px;
+    left: 2px;
     margin: 0;
+    @include transition(all .2s ease-out);
   }
+  &:hover .background-color-indicator {
+    left: 0;
+    width: 8px;
+  }
+
   /* place holder is shown when a list is empty and dragging across lists */
   &.placeholder {
     height: 1px;
