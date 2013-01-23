@@ -86,7 +86,7 @@ App.Views.Stories = {
               orderChangedEvent();
             }
           },
-          handle: '.unique-id',
+          cancel: '.data',
           placeholder: 'target-order-highlight',
           axis: 'y',
           items: 'li.story',
