@@ -1,6 +1,6 @@
 - content_for :title do
   - if can? :full
-    = link_to "Manage account", edit_account_path(current_account), :class => 'back'
+    = link_to "Manage account", edit_account_path(@account), :class => 'back'
 
   %h1
     = truncate(@account.name, :length => 50)

@@ -6,6 +6,12 @@ Ibacklog::Application.routes.draw do
   #
 
   resources :accounts, :only => [:index, :show, :new, :create, :edit, :update] do
+    member do
+      get 'archives' => 'accounts#archives', :as => 'archives'
+    end
+    collection do
+      get 'name_available' => 'accounts#name_available'
+    end
     resources :backlogs, :only => [:index, :show, :new, :create, :update, :destroy] do
       resources :users, :controller => 'backlog_users', :only => [:index, :update]
       collection do
@@ -47,12 +53,6 @@ Ibacklog::Application.routes.draw do
       member do
         get ':security_code' => 'invites#show', :as => 'show'
       end
-    end
-    member do
-      get 'archives' => 'accounts#archives', :as => 'archives'
-    end
-    collection do
-      get 'name_available' => 'accounts#name_available'
     end
   end
 
