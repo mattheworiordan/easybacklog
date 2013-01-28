@@ -902,6 +902,7 @@ ul.themes {
           }
           &>.unique-id {
             @include table-col($col-unique-id-width);
+
             >.data {
               margin-bottom: 0;
               padding-bottom: 0;
