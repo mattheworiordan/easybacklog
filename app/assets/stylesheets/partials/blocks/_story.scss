@@ -4,7 +4,8 @@
  * This is a row representing a story mainly used in the backlog
  */
 li.story {
-  cursor: default;
+  background-color: rgba(255,255,255,.9);
+  cursor: move;
   padding: 5px 0 5px 8px;
   overflow: hidden;
   clear: left;
@@ -200,6 +201,16 @@ li.story {
     cursor: text;
     &:hover {
       text-decoration: none;
+    }
+  }
+
+  // Sorting
+  &.ui-sortable-helper {
+    border: none;
+    @include rotate(-1deg);
+
+    & * {
+      cursor: move !important;
     }
   }
 }
