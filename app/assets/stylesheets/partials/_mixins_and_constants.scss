@@ -1,23 +1,24 @@
 /* global type and spacing constants */
 $baseline: 8px;
+$base-brand-font: "ClarendonRoman", "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
+$base-pretty-font: "Lucida Grande", Arial, Helvetica, sans-serif;
+
+/* colors */
+$link-button-color: #001F83; /* links and buttons that are styled */
+$title-area-color: #4070B8; /* area beneath the black toolbar */
+$light-text-on-title-area-color: #88B6EB;
+$roll-over-header-color: #FFF;
 
 /* 960.gs configuration */
 $ninesixty-columns: 12;
 $ninesixty-gutter-width: 20px;
 $ninesixty-vertical: 15px;
 
-$link-button-color: #001F83; /* links and buttons that are styled */
-$title-area-color: #4070B8; /* area beneath the black toolbar */
-$light-text-on-title-area-color: #88B6EB;
-
 $standard-header-padding-height: 4px;
 $standard-header-padding: ($standard-header-padding-height - 2px) $ninesixty-gutter-width $standard-header-padding-height $ninesixty-gutter-width; /* padding for the black header area */
 $standard-body-margin: (-$ninesixty-vertical) (-$ninesixty-gutter-width) $ninesixty-vertical (-$ninesixty-gutter-width);
 $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-vertical $ninesixty-gutter-width;
 
-$base-brand-font: "ClarendonRoman", "Lucida Grande", "Verdana", Arial, Helvetica, sans-serif;
-$base-pretty-font: "Lucida Grande", Arial, Helvetica, sans-serif;
-$roll-over-header-color: #FFF;
 
 /* Firefox and Chrome on Windows don't anti-alias type, so we can "force" a correction of this issue */
 @mixin fix-type {
