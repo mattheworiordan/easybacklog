@@ -13,6 +13,13 @@ li.story {
   position: relative;
   border-top: solid 2px #eee;
 
+  &.has-color {
+    border-top-color: white;
+    + li.story {
+      border-top-color: white;
+    }
+  }
+
   &:first-child {
     border-top: none;
   }

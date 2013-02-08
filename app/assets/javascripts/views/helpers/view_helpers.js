@@ -229,10 +229,11 @@ App.Views.Helpers = {
 
     if (colorWithoutHex.toLowerCase() === 'ffffff') {
       colorWithoutHex = colorWithHex = '';
-      $(target).css('background-color','transparent');
+      $(target).css('background-color','transparent').removeClass('has-color');
       colorIndicator.addClass('no-color');
     } else {
-      $(target).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.15)');
+      $(target).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.15)')
+        .addClass('has-color');
       colorIndicator.removeClass('no-color');
     }
     colorIndicator.css('background-color', colorWithHex ? colorWithHex : '#DDDDDD');
