@@ -114,8 +114,8 @@
 - else
   :javascript
     $(function() {
-      if ($.datepicker.regional['#{current_account_locale_code}']) {
-        $.datepicker.setDefaults($.datepicker.regional['#{current_account_locale_code}']);
+      if ($.datepicker.regional['#{current_locale_code}']) {
+        $.datepicker.setDefaults($.datepicker.regional['#{current_locale_code}']);
       }
 
       var router = new App.Routers.BacklogSettings();

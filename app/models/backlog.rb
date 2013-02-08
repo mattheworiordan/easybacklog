@@ -4,6 +4,7 @@ class Backlog < ActiveRecord::Base
   belongs_to :last_modified_user, :class_name => 'User'
   belongs_to :company, :inverse_of => :backlogs
   belongs_to :snapshot_for_sprint, :class_name => 'Sprint', :inverse_of => :snapshot
+  belongs_to :locale
 
   has_many :themes, :dependent => :destroy, :order => 'position', :inverse_of => :backlog
   has_many :sprints, :order => 'iteration', :inverse_of => :backlog
@@ -18,7 +19,7 @@ class Backlog < ActiveRecord::Base
   validates_presence_of :name
   validates_numericality_of :rate, :velocity, :greater_than => 0, :allow_nil => true
 
-  attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id
+  attr_accessible :account, :name, :rate, :velocity, :use_50_90, :scoring_rule_id, :locale_id
 
   before_save :check_can_modify, :update_sprint_estimation_method
   after_save :update_account_defaults_if_empty, :unless => Proc.new { |b| b.prohibit_account_updates || b.is_snapshot? }
@@ -93,11 +94,11 @@ class Backlog < ActiveRecord::Base
   end
 
   def cost_formatted
-    (cost || 0).to_currency(:precision => 0, :locale => account.locale.code.to_s)
+    (cost || 0).to_currency(:precision => 0, :locale => locale.code.to_s)
   end
 
   def rate_formatted
-    (rate || 0).to_currency(:precision => 0, :locale => account.locale.code.to_s)
+    (rate || 0).to_currency(:precision => 0, :locale => locale.code.to_s)
   end
 
   def days_formatted
@@ -295,6 +296,14 @@ class Backlog < ActiveRecord::Base
 
   def delete_user(user)
     backlog_users.where(:user_id => user.id).each { |cu| cu.delete }
+  end
+
+  def locale
+    super || default_locale
+  end
+
+  def default_locale
+    company.try(:locale) || account.locale
   end
 
   def as_json(options={})

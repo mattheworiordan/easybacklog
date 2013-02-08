@@ -114,8 +114,6 @@ describe Account do
     end
   end
 
-
-
   context "Adding a user" do
     before(:each) do
       @account = FactoryGirl.create(:account)

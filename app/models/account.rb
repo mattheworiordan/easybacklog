@@ -50,8 +50,8 @@ class Account < ActiveRecord::Base
   end
 
   # add an example backlog for new accounts
-  def add_example_backlog(author)
-    example_data = XMLObject.new(Rails.root.join('db/samples/new_account_backlog.xml'))
+  def add_example_backlog(author, xml_file_name = 'new_account_backlog.xml')
+    example_data = XMLObject.new(Rails.root.join("db/samples/#{xml_file_name}"))
     backlog_builder = Creators::BacklogCreator.new
     backlog_builder.create example_data, self, author
   end

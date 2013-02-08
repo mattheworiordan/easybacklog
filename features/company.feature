@@ -85,6 +85,31 @@ Feature: Company
       And the "Rate (optional)" field should contain "55"
 
   @javascript
+  Scenario: Allow company locale to be set as default (inherit) or set explicitly
+    When I am on the accounts page
+    When I follow "Apple Inc"
+    Then I should see the page title "Company settings"
+      # locale for new accounts defaults to British English in Cucumber environment
+      And "Use default British English..." should be selected for "What is your preferred language setting?"
+    When I select "American English" from "What is your preferred language setting?"
+      And I press "Update company"
+    Then I should see the notice "Company defaults were successfully updated"
+    When I follow "Apple Inc"
+    Then I should see the page title "Company settings"
+      And "American English" should be selected for "What is your preferred language setting?"
+    When I follow "cancel"
+      And I follow "Backlog 1"
+      And I follow "Settings"
+    Then "Use default American English..." should be selected for "What is your preferred language setting?"
+    When I am on the accounts page
+      And I follow "Apple Inc"
+      And I select "Use default British English..." from "What is your preferred language setting?"
+      And I press "Update company"
+      And I follow "Backlog 1"
+      And I follow "Settings"
+    Then "Use default British English..." should be selected for "What is your preferred language setting?"
+
+  @javascript
   Scenario: No access user is given read privileges for the company so should see the company backlogs but not change the company settings
     Given a user named "Mike no access" is created with no rights and assigned to account "Acme"
       And a user named "Z at bottom" is created with no rights and assigned to account "Acme"

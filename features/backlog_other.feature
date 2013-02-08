@@ -211,3 +211,21 @@ Feature: Backlog Other Functionality
       And the "checkboxes" should be disabled
       And the "radio buttons" should be disabled
       And I should see the text "You cannot delete a sprint snapshot"
+
+  @javascript
+  Scenario: Allow backlog locale to be set as default (inherit) or set explicitly, and language and currency must update
+    When I am on the accounts page
+    When I follow "Backlog 1"
+      And I follow "Settings"
+    Then I should see the page title "Backlog settings"
+      # locale for new accounts defaults to British English in Cucumber environment
+      And "Use default British English..." should be selected for "What is your preferred language setting?"
+    When I follow "← Back"
+    Then I should see the text "£" within "backlog totals"
+    When I follow "Settings"
+    Then I should see the page title "Backlog settings"
+    When I select "France French" from "What is your preferred language setting?"
+      And I press "Update backlog settings"
+    Then I should see the notice "Backlog settings were successfully updated"
+      And I should see the text "€" within "backlog totals"
+      And I should see the text "Thème"

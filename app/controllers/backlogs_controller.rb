@@ -374,10 +374,10 @@ class BacklogsController < ApplicationController
   end
   helper_method :sprints_json
 
-  def current_account_locale_code
-    @backlog.account.locale.code
+  def current_locale_code
+    @backlog.locale.code
   end
-  helper_method :current_account_locale_code
+  helper_method :current_locale_code
 
   def is_example_backlog?
     @backlog.name =~ /example corporate website backlog/i
@@ -480,7 +480,7 @@ class BacklogsController < ApplicationController
 
     def set_locale
       # only localise to the language, ignore the country
-      I18n.locale = @backlog.account.locale.code.split('-').first.to_sym
+      I18n.locale = @backlog.locale.code.split('-').first.to_sym
     end
 
     def enforce_can(rights, message)

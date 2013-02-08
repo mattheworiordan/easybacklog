@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120618175213) do
+ActiveRecord::Schema.define(:version => 20130208123306) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(:version => 20120618175213) do
     t.integer  "company_id"
     t.integer  "snapshot_for_sprint_id"
     t.integer  "scoring_rule_id"
+    t.integer  "locale_id"
   end
 
   add_index "backlogs", ["account_id"], :name => "index_backlogs_on_account_id"
@@ -114,6 +115,7 @@ ActiveRecord::Schema.define(:version => 20120618175213) do
     t.boolean  "default_use_50_90"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "locale_id"
   end
 
   add_index "companies", ["account_id"], :name => "index_companies_on_account_id"

@@ -721,4 +721,66 @@ describe Backlog do
       end
     end
   end
+
+  context 'locale' do
+    let(:account_locale) { FactoryGirl.create(:locale) }
+    let(:company_locale) { FactoryGirl.create(:locale) }
+    let(:other_locale) { FactoryGirl.create(:locale) }
+    let(:account) { FactoryGirl.create(:account, locale: account_locale) }
+
+    context 'inheriting from company' do
+      let(:company) { FactoryGirl.create(:company, account: account, locale: company_locale) }
+      subject { FactoryGirl.create(:backlog, company: company, account: account, locale: nil) }
+
+      it 'should inherit from the company if not set at a backlog level' do
+        subject.locale.should == company_locale
+        subject.locale_id.should == nil
+      end
+
+      it 'should use the set locale if chosen' do
+        subject.locale = other_locale
+        subject.locale.should == other_locale
+        subject.locale_id.should == other_locale.id
+      end
+
+      it 'should allow the locale to be set to nil and thus inherit from company' do
+        subject.locale = other_locale
+        subject.locale = nil
+        subject.locale.should == company_locale
+      end
+
+      it 'should inherit from the account if company locale is set to nil' do
+        company.locale = nil
+        subject.locale.should == account_locale
+        subject.locale_id.should == nil
+      end
+
+      it 'should always provide access to default locale' do
+        subject.default_locale.should == company_locale
+        subject.locale = other_locale
+        subject.default_locale.should == company_locale
+      end
+    end
+
+    context 'inheriting from account without a company' do
+      subject { FactoryGirl.create(:backlog, company: nil, account: account, locale: nil) }
+
+      it 'should inherit from the account if not set at a backlog level' do
+        subject.locale.should == account_locale
+        subject.locale_id.should == nil
+      end
+
+      it 'should use the set locale if chosen' do
+        subject.locale = other_locale
+        subject.locale.should == other_locale
+        subject.locale_id.should == other_locale.id
+      end
+
+      it 'should always provide access to default locale' do
+        subject.default_locale.should == account_locale
+        subject.locale = other_locale
+        subject.default_locale.should == account_locale
+      end
+    end
+  end
 end

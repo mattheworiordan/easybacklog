@@ -12,6 +12,37 @@ describe Company do
     company.default_rate.should == 50
   end
 
+  context 'locale' do
+    let(:default_locale) { FactoryGirl.create(:locale) }
+    let(:other_locale) { FactoryGirl.create(:locale) }
+    let(:account) { FactoryGirl.create(:account, locale: default_locale) }
+    subject { FactoryGirl.create(:company, account: account) }
+
+    it 'should inherit from the account if not set' do
+      subject.locale.should == default_locale
+      subject.locale_id.should == nil
+    end
+
+    it 'should use the set locale if chosen' do
+      subject.locale = other_locale
+      subject.locale.should == other_locale
+      subject.locale_id.should == other_locale.id
+    end
+
+    it 'should allow the locale to be set to nil and thus inherit' do
+      subject.locale = other_locale
+      subject.locale = nil
+      subject.locale.should == default_locale
+      subject.locale_id.should == nil
+    end
+
+    it 'should always provide access to default locale' do
+      subject.default_locale.should == default_locale
+      subject.locale = other_locale
+      subject.default_locale.should == default_locale
+    end
+  end
+
   context 'company_users' do
     let(:account) { FactoryGirl.create(:account) }
     let(:user) { FactoryGirl.create(:user) }

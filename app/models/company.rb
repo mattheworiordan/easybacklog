@@ -1,5 +1,6 @@
 class Company < ActiveRecord::Base
   belongs_to :account, :inverse_of => :companies
+  belongs_to :locale
   has_many :backlogs, :conditions => 'snapshot_master_id IS NULL and snapshot_for_sprint_id IS NULL', :dependent => :destroy, :inverse_of => :company
   has_many :company_users, :dependent => :destroy, :inverse_of => :company
 
@@ -7,7 +8,7 @@ class Company < ActiveRecord::Base
   validates_presence_of :name
   validates_numericality_of :default_rate, :default_velocity, :greater_than_or_equal_to => 0, :allow_nil => true
 
-  attr_accessible :name, :default_rate, :default_velocity, :default_use_50_90
+  attr_accessible :name, :default_rate, :default_velocity, :default_use_50_90, :locale_id
 
   before_validation :prohibit_rate_if_velocity_empty
 
@@ -29,6 +30,14 @@ class Company < ActiveRecord::Base
 
   def delete_user(user)
     company_users.where(:user_id => user.id).each { |cu| cu.delete }
+  end
+
+  def locale
+    super || default_locale
+  end
+
+  def default_locale
+    account.locale
   end
 
   private
