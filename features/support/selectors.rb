@@ -47,6 +47,9 @@ module HtmlSelectorHelpers
     when /^backlog company$/
       '#backlog-data-area h3.company'
 
+    when /^backlog stats$/
+      '#backlog-data-area .backlog-stats'
+
     when /^backlog totals$/
       '#backlog-data-area .backlog-stats .output'
 
