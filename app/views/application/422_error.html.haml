@@ -1,0 +1,14 @@
+- title "#{error_message} (422 Error)"
+
+- content_for :title do
+  %h1= "#{error_message}"
+
+%p
+  Unfortunately there has been an internal error or your browser has incorrectly formatted your request.
+
+%p
+  Please
+  = link_to 'contact us', contact_path
+  if you need any assistance.
+%p
+  =link_to raw('&laquo; Back home'), root_path, :class => 'button'
