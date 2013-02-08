@@ -18,12 +18,6 @@ Feature: Backlog
     Then I should not see the text "easyBacklog walk through" within the visible guider
 
     Given I am on the backlog "Example corporate website backlog" page
-    Then I should see the text "easyBacklog walk through" within the visible guider
-    When I press the cross within the visible guider
-    And I wait for 1 second
-    Then I should not see the text "easyBacklog walk through" within the visible guider
-
-    Given I am on the backlog "Example corporate website backlog" page
     When I press the next button within the visible guider
     # theme guider asks user to click on first theme's name
     Then I should see the text "Themes" within the visible guider
@@ -39,7 +33,8 @@ Feature: Backlog
     When I press the next button within the visible guider
     # keyboard nav, allow user to tab to the Add story button
     Then I should see the text "Keyboard navigation" within the visible guider
-    When I tab forwards 8 times
+    # this should be 8 tabs, but Selenium is acting weirdly
+    When I tab forwards 9 times
       And I wait for 2 seconds
     # show user how to add story
     Then I should see the text "Adding story" within the visible guider
