@@ -3,11 +3,13 @@
 
 - # We are editing account/company/backlog details so show default day rate & velocity & 50_90 rule
 
-= f.label :locale_id, "What is your preferred language setting?", :class => 'spacer'
-.input-row
-  = f.select('locale_id', [[ "Use default #{f.object.default_locale.name}...", nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
-  .form-hint.inline
-    We use this to ensure currency amounts and formatting is accurate to your locality
+- # only ask the user for a default locale if the current object supports it i.e. Company or Backlog
+- if f.object.respond_to?(:default_locale)
+  = f.label :locale_id, "What is your preferred language setting?", :class => 'spacer'
+  .input-row
+    = f.select('locale_id', [[ "Use default #{f.object.default_locale.name}...", nil ]].concat(Locale.order("position").map { |p| [ p.name, p.id ] }) )
+    .form-hint.inline
+      We use this to ensure currency amounts and formatting is accurate to your locality
 
 .label-spacer
 
