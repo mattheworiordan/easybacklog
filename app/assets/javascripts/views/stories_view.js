@@ -247,7 +247,7 @@ App.Views.Stories = {
         }
       }
 
-      if (this.model.get('color')) { this.changeColor(this.model.get('color'), { silent: true }); }
+      this.changeColor(this.model.get('color'), { silent: true });
 
       // activate roll over links for comments and acceptance criteria
       App.Views.Helpers.activateUrlify(this.el);

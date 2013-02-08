@@ -219,18 +219,23 @@ App.Views.Helpers = {
     });
   },
 
-  setStoryColor: function(target, color) {
-    var colorWithoutHex = (color.match(/^#/) ? color.substring(1) : color),
+  setStoryColor: function(target, colorArg) {
+    var color = colorArg || '#FFFFFF',
+        colorWithoutHex = (color.match(/^#/) ? color.substring(1) : color),
         colorWithHex = '#' + colorWithoutHex,
         colors = colorWithoutHex.match(/[\d\w]{2}/g),
-        boxShadowCss = '0 0 3px 1px rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.35)';
+        boxShadowCss = '0 0 3px 1px rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.35)',
+        colorIndicator = $(target).find('.background-color-indicator');
+
     if (colorWithoutHex.toLowerCase() === 'ffffff') {
       colorWithoutHex = colorWithHex = '';
       $(target).css('background-color','transparent');
+      colorIndicator.addClass('no-color');
     } else {
       $(target).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.15)');
+      colorIndicator.removeClass('no-color');
     }
-    $(target).find('.background-color-indicator').css('background-color', colorWithHex);
+    colorIndicator.css('background-color', colorWithHex ? colorWithHex : '#DDDDDD');
     if ($(target).is('.story-card')) {
       $(target).css('border-color', colorWithHex);
       $(target).css('box-shadow', boxShadowCss).css('-moz-box-shadow', boxShadowCss).css('-webkit-box-shadow', boxShadowCss).css('-o-box-shadow', boxShadowCss);
