@@ -1,0 +1,35 @@
+pl:
+  backlog:
+    backlog: Backlog
+    theme: Temat
+    id: ID
+    user_story: Historia użytkownika
+    acceptance_criteria: Kryteria akceptacji
+    comments: Komentarze
+    points_50: '50'
+    points_90: '90'
+    points_heading: Punkty
+    cost: Koszt
+    days: Dni
+    as_a: Jako
+    i_want_to: Chcę
+    so_i_can: Aby
+    rate: Stawka
+    velocity: Szybkość
+    sprint: Sprint
+    sprint_lower: sprint
+    code: Kod
+    totals:
+      backlog_total: 'Suma backloga'
+      backlog: "Suma dla backloga '%{name}'"
+      sprint_total: 'Suma sprintu'
+      theme: "Suma dla tematu '%{name}'"
+      points: punkty(-ów)
+      days: dni
+      point: punkt
+      day: dzień
+      pts_allocated: 5 punktów przypisano
+      pts_expected: 5 punktów planowano
+      pts_completed: 5 puktów ukończono
+  loading: Wczytywanie
+  refresh: Odśwież stronę
