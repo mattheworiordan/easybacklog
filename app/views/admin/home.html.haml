@@ -43,7 +43,7 @@
   var adminClientId = 'admin-' + Math.floor(Math.random()*10000).toString(36);
   var adminPoll = function() {
     $.ajax({
-      url: 'https://realtime-easybacklog.dotcloud.com/admin-monitor',
+      url: 'https://realtime-easybacklog.aws.af.cm/admin-monitor',
       data: { id: adminClientId },
       type: 'POST',
       dataType: 'json',
