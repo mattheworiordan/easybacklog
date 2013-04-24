@@ -2,7 +2,7 @@
 
 App.Views.BacklogPresence = {
   Show: App.Views.BaseView.extend({
-    presenceServerUrl: window.location.protocol + '//realtime-easybacklog.dotcloud.com/',
+    presenceServerUrl: window.location.protocol + '//realtime-easybacklog.aws.af.cm/',
 
     initialize: function(options) {
       this.userId = Math.floor(Math.random()*1000000000).toString(36);
