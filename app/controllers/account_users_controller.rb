@@ -70,7 +70,7 @@ class AccountUsersController < ApplicationController
         if account_user.empty?
           invited_user = User.where('UPPER(email) = ?', email.upcase).first
           current_account.add_user invited_user, privilege
-          AccountUsersNotifier.access_granted(current_user, current_account, invited_user).deliver
+          AccountUsersNotifier.delay.access_granted(current_user, current_account, invited_user)
         else
           # simply upgrade privileges of user
           current_account.account_users.find_by_user_id(account_user.first.id).upgrade_privilege privilege
@@ -84,7 +84,7 @@ class AccountUsersController < ApplicationController
           invited_user = current_account.invited_users.where('UPPER(email) = ?', email.upcase).first
           invited_user.update_attributes! :privilege => privilege
         end
-        AccountUsersNotifier.invite_to_join(current_user, current_account, invited_user).deliver
+        AccountUsersNotifier.delay.invite_to_join(current_user, current_account, invited_user)
       end
     end
 end

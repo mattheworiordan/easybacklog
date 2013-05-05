@@ -28,6 +28,6 @@ class AccountUser < ActiveRecord::Base
     def send_internal_notifications
       # send notification to admin if account has 5/10/15/etc users
       account.users.reload
-      AccountUsersNotifier.account_users_limit(account).deliver if (account.users.count > 0 && (account.users.count % 5 == 0))
+      AccountUsersNotifier.delay.account_users_limit(account) if (account.users.count > 0 && (account.users.count % 5 == 0))
     end
 end
