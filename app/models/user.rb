@@ -10,7 +10,8 @@ class User < ActiveRecord::Base
   has_many :invited_users, :inverse_of => :invitee_user
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+         :recoverable, :rememberable, :trackable, :validatable,
+         :async # async sidekiq email delivery
 
   attr_accessible :name, :email, :password, :password_confirmation, :remember_me
 

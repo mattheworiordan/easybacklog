@@ -40,6 +40,12 @@ gem 'turbo-sprockets-rails3'
 gem 'unicorn'
 gem 'foreman'
 
+# queuing
+gem 'sidekiq'
+gem 'slim', '>= 1.3.0'
+gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'devise-async'
+
 group :assets do
   gem 'sass-rails'
   gem 'compass'
@@ -82,8 +88,6 @@ group :test do
 end
 
 group :development do
-  # multiple environments for Heroku
-  gem 'taps', '>=0.3.23'
   gem 'ruby_parser' # for Devise generators
   gem 'hpricot' # for Devise generators
   gem 'jslint_on_rails'

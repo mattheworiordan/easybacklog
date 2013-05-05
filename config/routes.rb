@@ -1,3 +1,5 @@
+require 'sidekiq/web'
+
 Ibacklog::Application.routes.draw do
   devise_for :users
 
@@ -104,6 +106,11 @@ Ibacklog::Application.routes.draw do
   get '/bunker/export/:data' => 'admin#export', :as => 'admin_export'
   get '/bunker/emulate/:user_id' => 'admin#emulate_user', :as => 'admin_emulate_user'
   match '/vanity(/:action(/:id(.:format)))', :controller=>:vanity, :as => 'vanity'
+
+  admin_constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin_rights? }
+  constraints admin_constraint do
+    mount Sidekiq::Web => '/bunker/sidekiq'
+  end
 
   root :to => 'welcome#index'
 
