@@ -12,7 +12,10 @@ gem 'ejs'
 # authentication
 gem 'devise'
 gem 'devise-encryptable'
-gem 'acts_as_list' # orderable items
+gem 'devise-async'
+
+# orderable items
+gem 'acts_as_list', require: false
 
 # pdf generation
 gem 'prawn', '~> 0.12'
@@ -41,10 +44,9 @@ gem 'unicorn'
 gem 'foreman'
 
 # queuing
-gem 'sidekiq', '>= 2.3'
+gem 'sidekiq', '>= 2.3', require: false
 gem 'slim', '>= 1.3.0'
-gem 'sinatra', '>= 1.3.0', :require => nil
-gem 'devise-async'
+gem 'sinatra', '>= 1.3.0', require: false
 
 group :assets do
   gem 'sass-rails'
