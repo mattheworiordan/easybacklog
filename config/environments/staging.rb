@@ -27,7 +27,7 @@ Ibacklog::Application.configure do
 
   # Heroku support
   config.assets.initialize_on_precompile = false
-  config.assets.compile = false # do not live compile assets
+  config.assets.compile = true # compile assets at Heroku
 
   config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
   config.assets.compress = true
