@@ -346,6 +346,7 @@ DEPENDENCIES
   pry
   pry-rails!
   quiet_assets
+  rack
   rack-force_domain!
   rails (~> 3.2)
   recursive-open-struct!

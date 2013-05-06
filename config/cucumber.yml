@@ -5,10 +5,11 @@ rerun_opts = if rerun_tests.to_s.strip.empty?
 else
   "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --strict #{rerun_tests}"
 end
-std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --tags --strict ~@wip"
 first_try = "--format rerun --out tmp/cucumber-rerun.txt"
+std_opts = "--format #{ENV['CUCUMBER_FORMAT'] || 'pretty'} --strict --tags ~@wip"
 %>
 default: <%= std_opts %> features
 wip: --tags @wip:10 --wip features
+rerun: <%= rerun_opts %> --format rerun --out rerun.txt --strict --tags ~@wip
 first_try: <%= first_try %> features
 second_try: <%= rerun_opts %>

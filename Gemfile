@@ -20,6 +20,7 @@ gem 'prawn', '~> 0.12'
 gem 'exceptional'
 gem 'newrelic_rpm'
 
+gem 'rack'
 gem 'rack-force_domain', :git => 'https://github.com/cwninja/rack-force_domain.git'
 
 gem 'shortly' # shorten URLs using an external service such as bit.ly
