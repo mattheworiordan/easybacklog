@@ -4,4 +4,4 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-Ibacklog::Application.load_tasks
+EasyBacklog::Application.load_tasks
