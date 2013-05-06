@@ -23,7 +23,7 @@ before_fork do |server, worker|
 
   # if staging, then save money by spawning sidekiq in the web process
   if run_sidekiq_in_this_thread
-    @resque_pid ||= spawn("bundle exec sidekiq -c 2")
+    @resque_pid ||= spawn("bundle exec sidekiq -c 2 -q mailer -q default")
     Rails.logger.info('Spawned sidekiq #{@request_pid}')
   end
 end
