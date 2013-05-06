@@ -32,9 +32,3 @@ staging: &staging
 
 cucumber: &cucumber
   <<: *test
-
-api_production:
-  <<: *production
-
-api_staging:
-  <<: *staging

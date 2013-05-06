@@ -8,7 +8,7 @@
 # Usage: ./compile [environment]
 
 # supported environments
-ENVIRONMENTS = ['ci','staging','production','api-staging','api-production']
+ENVIRONMENTS = ['ci','staging','production']
 
 if ARGV.length == 0
   puts "Error: Usage: compile [environment]"
