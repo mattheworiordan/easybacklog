@@ -41,7 +41,7 @@ gem 'unicorn'
 gem 'foreman'
 
 # queuing
-gem 'sidekiq'
+gem 'sidekiq', '>= 2.3'
 gem 'slim', '>= 1.3.0'
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'devise-async'
