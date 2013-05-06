@@ -16,7 +16,7 @@
         "test_environment": {
           "cucumber_environment": {"cucumber": []},
           "test_helper": {"test": ["rspec", "testrb"]},
-          "console": ["test_console"]
+          "test_console": ["tc"]
         }
       }
     }

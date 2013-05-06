@@ -20,5 +20,11 @@ FactoryGirl.define do
         create_list :sprint, 2, :backlog => instance
       end
     end
+
+    trait :with_a_snapshot do
+      after(:create) do |instance|
+        create(:backlog, :snapshot_master => instance)
+      end
+    end
   end
 end

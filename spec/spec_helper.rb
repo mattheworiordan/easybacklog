@@ -1,5 +1,10 @@
+require 'capybara/rails'
+require 'capybara/rspec'
 require 'shared_helper'
+require 'authentication_helper'
 # require 'spork'
+
+include Warden::Test::Helpers
 
 # Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
@@ -35,6 +40,10 @@ require 'shared_helper'
 
     # https://github.com/plataformatec/devise/wiki/How-To%3a-Controllers-and-Views-tests-with-Rails-3-%28and-rspec%29
     config.include Devise::TestHelpers, :type => :controller
+
+    config.include FactoryGirl::Syntax::Methods # allow user of create as opposed to FactoryGirl.create
+
+    config.include Capybara::DSL
   end
 # end
 

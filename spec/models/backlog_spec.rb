@@ -91,7 +91,7 @@ describe Backlog do
       snapshot2 = FactoryGirl.create(:backlog, :snapshot_master_id => parent.id, :account => parent.account)
       parent.destroy
 
-      # check that snapshots have been deleted in the proces
+      # check that snapshots have been deleted in the process
       Backlog.where("id in (#{snapshot1.id},#{snapshot2.id})").count.should eql(0)
     end
 
@@ -155,6 +155,17 @@ describe Backlog do
 
       assert_backlog_not_editable manual_snapshot
     end
+
+    it 'should be editable if the backlog has a not_ready_since date set' do
+      backlog = FactoryGirl.create(:backlog, :with_sprints, :with_stories, :with_a_snapshot)
+      snapshot = backlog.snapshots.first
+      assert_backlog_not_editable snapshot
+      snapshot.reload
+      snapshot.update_attribute :not_ready_status, 'Updating'
+      snapshot.update_attribute :not_ready_since, Time.now
+      snapshot.update_attributes name: 'Testing name can be changed'
+      snapshot.name.should == 'Testing name can be changed'
+    end
   end
 
   it 'should allow a backlog snapshot to be created' do
@@ -194,6 +205,25 @@ describe Backlog do
     # check that both snapshots still reference the original correctly
     @old_snapshot.snapshot_master.should eql(@backlog)
     @newer_snapshot.snapshot_master.should eql(@backlog)
+  end
+
+  context 'snapshots created asynchronously' do
+    let(:acceptance_criterion) { FactoryGirl.create(:acceptance_criterion) }
+    let(:subject) { acceptance_criterion.story.theme.backlog }
+
+    after { BacklogWorker::CopyChildrenToBacklog.rspec_reset }
+
+    it 'should use the BacklogWorker::CopyChildrenToBacklog' do
+      BacklogWorker::CopyChildrenToBacklog.should_receive(:perform)
+      subject.create_snapshot('new', async: true)
+    end
+
+    it 'should return the new snapshot WIP whilst asynchronously copying children' do
+      BacklogWorker::CopyChildrenToBacklog.stub(:perform_async)
+      new_snapshot = subject.create_snapshot('new', async: true)
+      new_snapshot.should_not be_changed
+      new_snapshot.name.should == 'new'
+    end
   end
 
   it 'should provide a compare_with method returning a comparison object' do

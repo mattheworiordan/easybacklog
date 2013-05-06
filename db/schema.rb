@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130208123306) do
+ActiveRecord::Schema.define(:version => 20130505223706) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -86,6 +86,8 @@ ActiveRecord::Schema.define(:version => 20130208123306) do
     t.integer  "snapshot_for_sprint_id"
     t.integer  "scoring_rule_id"
     t.integer  "locale_id"
+    t.string   "not_ready_status"
+    t.date     "not_ready_since"
   end
 
   add_index "backlogs", ["account_id"], :name => "index_backlogs_on_account_id"
@@ -224,6 +226,19 @@ ActiveRecord::Schema.define(:version => 20130208123306) do
   add_index "stories", ["as_a"], :name => "index_stories_on_as_a"
   add_index "stories", ["theme_id", "unique_id"], :name => "index_stories_on_theme_id_and_unique_id", :unique => true
   add_index "stories", ["theme_id"], :name => "index_stories_on_theme_id"
+
+  create_table "tasks", :force => true do |t|
+    t.integer  "story_id",                                             :null => false
+    t.text     "description"
+    t.integer  "position",                                             :null => false
+    t.decimal  "score",                  :precision => 5, :scale => 1
+    t.integer  "sprint_story_status_id"
+    t.datetime "created_at",                                           :null => false
+    t.datetime "updated_at",                                           :null => false
+  end
+
+  add_index "tasks", ["sprint_story_status_id"], :name => "index_tasks_on_sprint_story_status_id"
+  add_index "tasks", ["story_id"], :name => "index_tasks_on_story_id"
 
   create_table "themes", :force => true do |t|
     t.integer  "backlog_id"

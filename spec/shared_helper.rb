@@ -14,11 +14,11 @@ end
 
 def assert_backlog_not_editable(backlog)
   themes_count = backlog.themes.count
-  expect { backlog.themes.first.stories.first.acceptance_criteria.first.criterion = 'Changed'; backlog.save! }.to raise_error
+  expect { backlog.themes.first.stories.first.acceptance_criteria.first.tap { |t| t.criterion = 'Changed'; t.save! } }.to raise_error
   expect { backlog.themes.first.stories.first.acceptance_criteria.first.destroy }.to raise_error
-  expect { backlog.themes.first.stories.first.as_a = 'Changed'; backlog.save! }.to raise_error
+  expect { backlog.themes.first.stories.first.tap { |t| t.as_a = 'Changed'; t.save! } }.to raise_error
   expect { backlog.themes.first.stories.first.destroy }.to raise_error
-  expect { backlog.themes.first.name = 'Changed'; backlog.save! }.to raise_error
+  expect { backlog.themes.first.tap { |t| t.name = 'Changed'; t.save! } }.to raise_error
   expect { backlog.themes.first.destroy }.to raise_error
   backlog.themes.reload.count.should == themes_count
   expect { backlog.name = 'Changed'; backlog.save! }.to raise_error

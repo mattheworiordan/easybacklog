@@ -146,27 +146,32 @@ class Backlog < ActiveRecord::Base
   end
 
   # snapshot is a non-editable copy of a backlog in time
-  def create_snapshot(snapshot_name)
+  def create_snapshot(snapshot_name, options = {})
     new_backlog = account.backlogs.new(safe_attributes.merge({ :name => snapshot_name }))
     new_backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a snapshot
     # these 2 attributes are protected
     new_backlog.author = self.author
     new_backlog.last_modified_user = self.last_modified_user
+    new_backlog.snapshot_master = self
+    new_backlog.not_ready_status = "Building snapshot"
+    new_backlog.not_ready_since = Time.now
     new_backlog.save!
 
     # copy the children
-    self.copy_children_to_backlog new_backlog
-
-    # now lock the record and assign the snapshot master to self
-    new_backlog.snapshot_master = self
-    new_backlog.save!
+    if options[:async]
+      BacklogWorker::CopyChildrenToBacklog.perform_async(self.id, new_backlog.id)
+    else
+      self.copy_children_to_backlog new_backlog
+      new_backlog.update_attribute :not_ready_status, nil
+      new_backlog.update_attribute :not_ready_since, nil
+    end
 
     new_backlog
   end
 
   # editable if this not a snapshot i.e. a snapshot master exists, and not an archive or deleted
   def editable?
-    snapshot_master.blank? && snapshot_for_sprint.blank? && !archived? && !deleted?
+    ((snapshot_master.blank? && snapshot_for_sprint.blank?) || not_ready_since.present?) && !archived? && !deleted?
   end
   alias_method :is_editable, :editable?
 
@@ -332,9 +337,10 @@ class Backlog < ActiveRecord::Base
     #  but do allow editing if snapshot_master, snapshot_for_sprint, archived or deleted has changed
     #  snapshot_master is needed so that the snapshot can be created without an error blocking editing being thrown
     def check_can_modify
-      if !editable?
-        unless snapshot_master_id_changed? || archived_changed? || deleted_changed? || snapshot_for_sprint_id_changed?
-          raise ActiveRecord::RecordNotSaved, 'Backlog is not editable (locked)'
+      unless editable? || new_record?
+        editable_fields = %w(snapshot_master_id archived deleted snapshot_for_sprint_id not_ready_status not_ready_since)
+        if (changed - editable_fields).present?
+          raise ActiveRecord::RecordNotSaved, 'Backlog is not editable (locked)' + changed.join(',')
         end
       end
     end
