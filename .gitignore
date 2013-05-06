@@ -10,3 +10,4 @@ public/test-*.*
 bin
 .powrc
 .rvmrc
+public/assets
