@@ -1,5 +1,6 @@
 require 'shared_helper'
 require 'authentication_helper'
+require 'support/feature_helper'
 
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
@@ -38,4 +39,31 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods # allow user of create as opposed to FactoryGirl.create
 
   config.include Capybara::DSL
+
+  config.include FeatureHelper, type: :request
+
+  config.before(:each, type: :request) do
+    create(:locale, :name => 'American English', :code => 'en-US', :position => 5)
+    create(:locale, :name => 'British English', :code => 'en-GB', :position => 10)
+    create(:locale, :name => 'France French ', :code => 'fr-FR', :position => 10)
+    create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
+    create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
+    create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)
+    create(:sprint_story_status, :status => 'Completd', :code => SprintStoryStatus::COMPLETED)
+    create(:scoring_rule_fib)
+    create(:scoring_rule_modified_fib)
+    create(:scoring_rule_any)
+  end
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each, type: :request) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each, type: :request) do
+    DatabaseCleaner.clean
+  end
 end

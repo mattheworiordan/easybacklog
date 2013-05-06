@@ -8,15 +8,14 @@ feature 'Backlog', :js => true do
     backlog = create(:backlog, account: account, not_ready_since: Time.now)
 
     login user
-    visit account_backlog_path(backlog, account)
-    puts account_backlog_path(backlog, account)
+    page.visit account_backlog_path(account, backlog)
 
-    page.should have_content('This backlog is still being prepared, however it should be ready within a few seconds. Please wait...')
+    page.should have_content('This backlog is still being prepared')
 
-    backlog.update_attribute not_ready_since: nil
-    sleep 5
+    backlog.update_attribute :not_ready_since, nil
+    sleep 7
 
-    page.should_not have_content('This backlog is still being prepared, however it should be ready within a few seconds. Please wait...')
+    page.should_not have_content('This backlog is still being prepared')
   end
 
   scenario 'Snapshot being viewed is not ready due to queue job not being complete' do
@@ -24,13 +23,13 @@ feature 'Backlog', :js => true do
     snapshot = create(:backlog, snapshot_master: backlog, not_ready_since: Time.now)
 
     login user
-    visit account_backlog_path(snapshot, account)
+    page.visit snapshot_account_backlog_path(account, backlog, snapshot)
 
-    page.should have_content('This snapshot is still being prepared, however it should be ready within a few seconds. Please wait...')
+    page.should have_content('This snapshot is still being prepared')
 
-    snapshot.update_attribute not_ready_since: nil
-    sleep 5
+    snapshot.update_attribute :not_ready_since, nil
+    sleep 7
 
-    page.should_not have_content('This snapshot is still being prepared, however it should be ready within a few seconds. Please wait...')
+    page.should_not have_content('This snapshot is still being prepared')
   end
 end

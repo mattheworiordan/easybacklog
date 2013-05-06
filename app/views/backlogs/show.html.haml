@@ -108,12 +108,25 @@
 #sprints-help-container
 #stats-container
 
-#loading-new-snapshot
-  %div.background.ui-widget-overlay
-  %div.loading
-    %span.progress-icon
-    %p
-      Loading...
+- if @backlog.not_ready?
+  #backlog-snapshot-not-ready
+    This #{@backlog.is_snapshot? ? 'snapshot' : 'backlog'} is still being prepared.
+    %br
+    This page will automatically refresh as soon as your #{@backlog.is_snapshot? ? 'snapshot' : 'backlog'} is ready.
+  :javascript
+    $(document).ready(function() {
+      setTimeout(function() {
+        window.location.reload();
+      }, 5000);
+    });
+- else
+  #loading-new-snapshot
+    %div.background.ui-widget-overlay
+    %div.loading
+      %span.progress-icon
+      %p
+        Loading, please wait...
+
 :javascript
   $(document).ready(function() {
     if ($.datepicker.regional['#{current_locale_code}']) {
@@ -135,7 +148,7 @@
     presence.render();
 
     router.setTabsReference(sprintTabs);
-    Backbone.history.start();
+    #{ @backlog.not_ready? ? '' : 'Backbone.history.start();' }
 
     // validation only needed for tabs, so load after page is ready
     $('head').append('#{j(javascript_include_tag 'validation', 'backlog_async')}');

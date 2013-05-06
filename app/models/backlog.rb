@@ -180,6 +180,10 @@ class Backlog < ActiveRecord::Base
     deleted?
   end
 
+  def not_ready?
+    not_ready_since.present?
+  end
+
   def all_snapshot_master
     self.snapshot_master || (self.snapshot_for_sprint.present? && self.snapshot_for_sprint.backlog)
   end
