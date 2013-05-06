@@ -38,4 +38,6 @@ Ibacklog::Application.configure do
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
+
+  config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect'
 end
