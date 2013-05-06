@@ -1,6 +1,6 @@
 require 'sidekiq/testing/inline' # set sidekiq to run job immediate in sync to fulfill test
 
-Ibacklog::Application.configure do
+EasyBacklog::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
   # In the development environment your application's code is reloaded on

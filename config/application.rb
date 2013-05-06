@@ -11,7 +11,7 @@ if defined?(Bundler)
   Bundler.require *Rails.groups(:assets => %w(development test))
 end
 
-module Ibacklog
+module EasyBacklog
   class Application < Rails::Application
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{Rails.root}/lib/modules #{Rails.root}/lib/classes #{Rails.root}/app/reports)

@@ -1,6 +1,6 @@
 require 'sidekiq/web' unless Rails.groups.include?('assets')
 
-Ibacklog::Application.routes.draw do
+EasyBacklog::Application.routes.draw do
   devise_for :users unless Rails.groups.include?('assets')
 
   ## 

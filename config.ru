@@ -3,4 +3,4 @@
 require ::File.expand_path('../config/environment',  __FILE__)
 use Rack::ForceDomain, ENV["DOMAIN"]
 use Rack::Deflater
-run Ibacklog::Application
+run EasyBacklog::Application
