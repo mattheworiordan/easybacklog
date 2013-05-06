@@ -55,7 +55,13 @@ class StoryCardsReport
         pdf.text_box "#{I18n.t 'backlog.theme'}: #{story.theme.name}",
           :size => 15,
           :at => [pdf.bounds.width * 0.05, pdf.bounds.height * 0.83],
-          :width => pdf.bounds.width,
+          :width => pdf.bounds.width * 0.70,
+          :height => pdf.bounds.height * 0.1
+        points = [story.score_50,story.score_90].compact.map { |d| '%g' % d }.join(' / ')
+        pdf.formatted_text_box [{:text => "#{points}", :color => '000000'}],
+          :align => :right, :size => 14,
+          :at => [pdf.bounds.width * 0.75, pdf.bounds.height * 0.83],
+          :width => pdf.bounds.width * 0.2,
           :height => pdf.bounds.height * 0.1
         pdf.formatted_text_box [
             {:text => "#{I18n.t 'backlog.as_a'} ", :color => '666666'}, {:text => "#{story.as_a}", :styles => [:bold]},
