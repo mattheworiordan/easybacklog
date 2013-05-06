@@ -1,7 +1,6 @@
 class WelcomeController < ApplicationController
   layout 'application.960'
   basic_allowed :index, :create
-  use_vanity :current_user
 
   def index
     if user_signed_in?

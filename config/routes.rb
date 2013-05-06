@@ -105,7 +105,6 @@ Ibacklog::Application.routes.draw do
   get '/bunker/data/:table' => 'admin#data', :as => 'admin_data'
   get '/bunker/export/:data' => 'admin#export', :as => 'admin_export'
   get '/bunker/emulate/:user_id' => 'admin#emulate_user', :as => 'admin_emulate_user'
-  match '/vanity(/:action(/:id(.:format)))', :controller=>:vanity, :as => 'vanity'
 
   admin_constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin_rights? }
   constraints admin_constraint do

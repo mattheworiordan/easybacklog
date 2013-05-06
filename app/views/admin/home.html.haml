@@ -13,7 +13,6 @@
     %li= link_to "Stories: #{@stats[:story_count]}", admin_data_path('story')
     %li= link_to "Pending invites: #{@stats[:pending_invites]}", admin_data_path('invited_user')
     %li= link_to "Beta Signups (deprecated): #{@stats[:beta_signups]}", admin_data_path('beta_signup')
-    %li= link_to "A/B Split Tests", vanity_path, { :target => '_blank' }
     %li= link_to "Sidekiq", '/bunker/sidekiq/'
 
   %h2 Exports

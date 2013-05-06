@@ -31,8 +31,6 @@ gem 'will_paginate'
 # load XML as an object
 gem 'xml-object'
 
-gem 'vanity', :git => 'https://github.com/assaf/vanity'
-
 gem 'deep_merge', :require => 'deep_merge/rails_compat'
 
 # speed up generation of assets by only regenerating changed files

@@ -35,7 +35,4 @@ Ibacklog::Application.configure do
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
-
-  # bug with Vanity, disable for now
-  Vanity.playground.collecting = false
 end
