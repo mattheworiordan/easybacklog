@@ -181,6 +181,7 @@ App.Views.Stories = {
       "click .duplicate-story>a": "duplicate",
       "click .move-story>a": "moveToThemeDialog",
       "click .assign-sprint>a": "assignToSprint",
+      "click .print-story>a": "printStory",
       "click .status .tab": 'statusChangeClick'
     },
 
@@ -624,6 +625,12 @@ App.Views.Stories = {
       _.delay(function() {
         newStoryDomElem.find('.user-story .as-a>.data').click(); // focus on as_a after enough time for DOM to update
       }, 400);
+    },
+
+    printStory: function() {
+      var evt = jQuery.Event("click");
+      evt.story = this.model;
+      $('#backlog-data-area .actions #print').trigger(evt);
     },
 
     assignToSprint: function(event) {

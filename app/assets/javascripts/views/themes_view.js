@@ -156,6 +156,7 @@ App.Views.Themes = {
       "click .re-order-themes a": 'reOrderThemes',
       "click .assign-stories-sprint a": 'assignStoriesToSprint',
       "click .move-theme a": 'moveToAnotherBacklog',
+      "click .print-theme a": 'printTheme',
       "click .theme-collapse-icon a, .container .collapsed-title": 'expandCollapse'
     },
 
@@ -384,6 +385,12 @@ App.Views.Themes = {
 
     reOrderThemes: function() {
       $('ul.themes .actions a.reorder-themes:first').trigger('click');
+    },
+
+    printTheme: function() {
+      var evt = jQuery.Event("click");
+      evt.theme = this.model;
+      $('#backlog-data-area .actions #print').trigger(evt);
     },
 
     assignStoriesToSprint: function() {

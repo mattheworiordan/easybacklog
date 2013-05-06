@@ -432,11 +432,14 @@ class BacklogsController < ApplicationController
             elsif params[:print_scope] =~ /theme-(\d+)/
               # print_scope has an ID so user has selected a single theme
               @backlog.themes.select { |t| t.id.to_s == $1 }
+            elsif params[:print_scope] =~ /story-(\d+)/
+              # print_scope has an ID so user has selected a single story
+              @backlog.stories.select { |t| t.id.to_s == $1 }
             else
               # print_scope is blank therefore display all themes
               @backlog.themes
             end
-            stories = stories.map { |t| t.stories }.flatten
+            stories = stories.map { |t| t.respond_to?(:stories) ? t.stories : t }.flatten
             output = StoryCardsReport.new.to_pdf(stories, params[:page_size], params[:fold_side])
             send_data output, :filename => filename, :type => "application/pdf"
           end

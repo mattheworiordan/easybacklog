@@ -7,6 +7,7 @@ class Backlog < ActiveRecord::Base
   belongs_to :locale
 
   has_many :themes, :dependent => :destroy, :order => 'position', :inverse_of => :backlog
+  has_many :stories, :through => :themes
   has_many :sprints, :order => 'iteration', :inverse_of => :backlog
   has_many :sprint_snapshots, :source => :snapshot, :conditions => ['deleted <> ?', true], :through => :sprints, :order => 'sprints.iteration desc'
   has_many :backlog_users, :dependent => :destroy, :inverse_of => :backlog

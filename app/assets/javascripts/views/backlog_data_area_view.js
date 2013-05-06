@@ -226,6 +226,16 @@ App.Views.BacklogDataArea = {
           }
         }
       });
+      if (event.theme && event.theme.get('id')) {
+        $('#dialog-print #print-scope #theme-' + event.theme.get('id')).attr('selected', true);
+      }
+      if (event.story && event.story.get('id')) {
+        var story = event.story,
+            optGroup = $('<optgroup label="Only the chosen story">'),
+            opt = $('<option id="story-' + event.story.get('id') + '" selected="SELECTED">' + htmlEncode(story.Theme().get('code') + story.get('unique_id')) + '</option>');
+        optGroup.append(opt);
+        $('#dialog-print #print-scope').append(optGroup);
+      }
     },
 
     newSnapshot: function(event) {
