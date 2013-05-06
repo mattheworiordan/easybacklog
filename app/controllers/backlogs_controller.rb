@@ -246,12 +246,14 @@ class BacklogsController < ApplicationController
         @new_backlog.prohibit_account_updates = true # ensure updates to account are not fired as this is a duplicate so ignore any account updates
         @new_backlog.author = @backlog.author
         @new_backlog.last_modified_user = current_user
+        @new_backlog.not_ready_status = "Duplicating backlog"
+        @new_backlog.not_ready_since = Time.now
         if request.post?
           if @new_backlog.save
-            @backlog.copy_children_to_backlog(@new_backlog)
+            BacklogWorker::CopyChildrenToBacklog.perform_async(@backlog.id, @new_backlog.id)
             respond_with(@new_backlog, :location => account_backlog_path(current_account, @new_backlog)) do |format|
               format.html do
-                flash[:notice] = 'Backlog was duplicated successfully.'
+                flash[:notice] = 'Backlog is being duplicated...'
                 redirect_to account_backlog_path(current_account, @new_backlog)
               end
             end
