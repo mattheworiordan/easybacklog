@@ -1,5 +1,3 @@
-require 'sidekiq/testing/inline' # set sidekiq to run job immediate in sync to fulfill test
-
 EasyBacklog::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
 
