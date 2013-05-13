@@ -5,14 +5,28 @@ class BacklogStatsController < ApplicationController
   include AccountResource
 
   def show
-    @backlog = Backlog.find(params[:id])
+    # preload backlog, sprints, and all sprint backlogs to reduce loading of data from the database
+    @backlog = Backlog.includes(:stories,
+        :sprints =>
+        {
+          :sprint_stories => [:story, :sprint_story_status],
+          :snapshot =>
+            [
+              :stories,
+              { :sprints =>
+                { :sprint_stories => [:story, :sprint_story_status] }
+              }
+            ]
+        }
+      ).find(params[:id])
+
     if @backlog.account.users.find(current_user.id).blank?
       send_json_error 'You do not have permission to view this backlog'
     else
       if @backlog.points == 0
         respond_with :zero_points => true
       else
-        backlog_stats = BacklogStats.new @backlog
+        backlog_stats = BacklogStats.new(@backlog)
         render_options = request.format.to_sym == :xml ? { :root => 'statistics'} : {}
         data = {
           :burn_down => backlog_stats.burn_down_data,

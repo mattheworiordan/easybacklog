@@ -80,9 +80,15 @@ class Sprint < ActiveRecord::Base
   end
 
   # calculate total expected points based on the backlog average velocity as opposed to configured velocity
-  def total_expected_based_on_average_points
-    if (backlog.sprints.completed.present?)
-      backlog.sprints.completed.inject(0) { |sum, sprint| sum + sprint.total_completed_points }.to_f / backlog.sprints.completed.count
+  def total_expected_based_on_average_points(options = {})
+    completed_sprints = if options[:sprints_cached]
+      backlog.sprints.select { |s| s.completed? }
+    else
+      backlog.sprints.completed
+    end
+
+    if (completed_sprints.present?)
+      completed_sprints.inject(0) { |sum, sprint| sum + sprint.total_completed_points }.to_f / completed_sprints.count
     else
       total_expected_points
     end
@@ -94,8 +100,14 @@ class Sprint < ActiveRecord::Base
 
   # calculates completed on based on day before next sprint starting
   # or if not, calculates it based on working days
-  def completed_on
-    next_sprint = backlog.sprints.find_by_iteration(iteration + 1)
+  def completed_on(options = {})
+    # if sprints_cached true, then find the sprint in memory
+    next_sprint = if options[:sprints_cached]
+      backlog.sprints.find { |s| s.iteration == iteration + 1 }
+    else
+      backlog.sprints.find_by_iteration(iteration + 1)
+    end
+
     if next_sprint
       completed_on_date = next_sprint.start_on - 1.days
       completed_on_date = completed_on_date - 1.day if completed_on_date.saturday?

@@ -12,7 +12,7 @@ class BacklogStats
     actual_points = trend_points
     trend_finished = false
 
-    sprints = @backlog.sprints.order('iteration asc')
+    sprints = @backlog.sprints.sort_by(&:iteration)
 
     # start with sprint zero as nothing burnt down yet
     sprint = sprints.first.dup
@@ -28,7 +28,7 @@ class BacklogStats
         expected_points = sprint.total_expected_points
         trend_points -= expected_points
 
-        trend << burn_down_json(sprint, trend_points, expected_points, sprint.completed_on, sprint.duration_days) unless trend_finished
+        trend << burn_down_json(sprint, trend_points, expected_points, sprint.completed_on(sprints_cached: true), sprint.duration_days) unless trend_finished
         trend_finished = true if trend_points < 0
       end
 
@@ -36,16 +36,17 @@ class BacklogStats
         if sprint.completed?
           # log actual sprint data
           actual_points -= sprint.total_completed_points
-          actual << burn_down_json(sprint, actual_points, sprint.total_completed_points, sprint.completed_on, sprint.duration_days)
+          actual << burn_down_json(sprint, actual_points, sprint.total_completed_points, sprint.completed_on(sprints_cached: true), sprint.duration_days)
         else
           # sprint is not complete, need to start working on projected data
           if projected.empty?
             # add first point as last completed sprint
-            lastCompleted = sprints.completed.last
-            projected << burn_down_json(lastCompleted, actual_points, lastCompleted.total_completed_points, lastCompleted.completed_on, lastCompleted.duration_days)
+            lastCompleted = sprints.select { |s| s.completed? }.last
+            projected << burn_down_json(lastCompleted, actual_points, lastCompleted.total_completed_points, lastCompleted.completed_on(sprints_cached: true), lastCompleted.duration_days)
           end
-          actual_points -= sprint.total_expected_based_on_average_points
-          projected << burn_down_json(sprint, actual_points, sprint.total_expected_based_on_average_points, sprint.completed_on, sprint.duration_days)
+          total_expected_based_on_average_points = sprint.total_expected_based_on_average_points(sprints_cached: true)
+          actual_points -= total_expected_based_on_average_points
+          projected << burn_down_json(sprint, actual_points, total_expected_based_on_average_points, sprint.completed_on(sprints_cached: true), sprint.duration_days)
         end
         last_projected = sprint
       end
@@ -53,8 +54,8 @@ class BacklogStats
 
     # first sprint was completed, and there were no further sprints, so projected would be empty
     if projected.empty?
-      lastCompleted = sprints.completed.last
-      projected << burn_down_json(lastCompleted, actual_points, lastCompleted.total_completed_points, lastCompleted.completed_on, lastCompleted.duration_days)
+      lastCompleted = sprints.select { |s| s.completed? }.last
+      projected << burn_down_json(lastCompleted, actual_points, lastCompleted.total_completed_points, lastCompleted.completed_on(sprints_cached: true), lastCompleted.duration_days)
     end
 
     if trend_points > 0
@@ -64,7 +65,8 @@ class BacklogStats
     end
 
     unless actual_points <= 0
-      projected.concat complete_trend(actual_points, last_projected, true) unless last_projected.total_expected_based_on_average_points == 0
+      total_expected_based_on_average_points = last_projected.total_expected_based_on_average_points(sprints_cached: true)
+      projected.concat complete_trend(actual_points, last_projected, true) unless total_expected_based_on_average_points == 0
     end
 
     { :trend => trend, :actual => actual, :projected => projected }
@@ -73,7 +75,7 @@ class BacklogStats
   def velocity_stats
     json = {
       :expected_sprint => @backlog.sprints.last.total_expected_points,
-      :actual_sprint => @backlog.sprints.last.total_expected_based_on_average_points
+      :actual_sprint => @backlog.sprints.last.total_expected_based_on_average_points(sprints_cached: true)
     }
     json.merge! :actual_day => @backlog.average_velocity, :expected_day => @backlog.velocity if @backlog.days_estimatable? && @backlog.all_sprints_team_velocity_estimatable?
     json
@@ -85,9 +87,8 @@ class BacklogStats
     points_completed = 0
     last_sprint = nil
 
-    sprints = @backlog.sprints.completed.order('iteration asc')
-
-    @backlog.sprints.completed.order('iteration asc').map do |sprint|
+    completed_sprints = @backlog.sprints.select { |s| s.completed? }
+    completed_sprints.sort_by(&:iteration).map do |sprint|
       total << burn_up_json(sprint, sprint.snapshot.points)
       actual << burn_up_json(sprint, points_completed)
       points_completed += sprint.total_completed_points
@@ -109,7 +110,8 @@ class BacklogStats
   end
 
   def velocity_completed
-    @backlog.sprints.completed.order('iteration asc').map do |sprint|
+    completed_sprints = @backlog.sprints.select { |s| s.completed? }
+    completed_sprints.sort_by(&:iteration).map do |sprint|
       json = {
         :starts_on => sprint.start_on,
         :completed_on => sprint.assumed_completed_on,
@@ -162,12 +164,15 @@ class BacklogStats
       json
     end
 
-    def complete_trend(trend_points, lastSprint, useActualAverage=false)
+    def complete_trend(trend_points, sprint, useActualAverage=false)
       trend_data = []
-      sprint = lastSprint.dup
+
+      start_on_was = sprint.start_on
+      iteration_was = sprint.iteration
+
       while trend_points > 0
         points_this_sprint = if useActualAverage
-          sprint.total_expected_based_on_average_points
+          sprint.total_expected_based_on_average_points(sprints_cached: true)
         else
           sprint.total_expected_points
         end
@@ -183,6 +188,11 @@ class BacklogStats
 
         trend_data << burn_down_json(sprint, trend_points, points_this_sprint, sprint.assumed_completed_on, sprint.duration_days)
       end
+
+      # return the model to the previous state
+      sprint.start_on = start_on_was
+      sprint.iteration = iteration_was
+
       trend_data
     end
 end
