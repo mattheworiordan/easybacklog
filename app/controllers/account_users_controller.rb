@@ -23,8 +23,9 @@ class AccountUsersController < ApplicationController
   end
 
   def destroy
-    @user = current_account.account_users.find_by_user_id(params[:id])
-    @user.destroy
+    @account_user = current_account.account_users.find_by_user_id(params[:id])
+    flash[:notice] = "Access for #{@account_user.user.name} to this account has been revoked"
+    @account_user.destroy
     redirect_to account_users_path(current_account)
   end
 
@@ -70,7 +71,7 @@ class AccountUsersController < ApplicationController
         if account_user.empty?
           invited_user = User.where('UPPER(email) = ?', email.upcase).first
           current_account.add_user invited_user, privilege
-          AccountUsersNotifier.delay(:queue => 'mailer').access_granted(current_user, current_account, invited_user)
+          AccountUsersNotifier.delay(:queue => 'mailer').access_granted(current_user.id, current_account.id, invited_user.id)
         else
           # simply upgrade privileges of user
           current_account.account_users.find_by_user_id(account_user.first.id).upgrade_privilege privilege
@@ -84,7 +85,7 @@ class AccountUsersController < ApplicationController
           invited_user = current_account.invited_users.where('UPPER(email) = ?', email.upcase).first
           invited_user.update_attributes! :privilege => privilege
         end
-        AccountUsersNotifier.delay(:queue => 'mailer').invite_to_join(current_user, current_account, invited_user)
+        AccountUsersNotifier.delay(:queue => 'mailer').invite_to_join(current_user.id, current_account.id, invited_user.id)
       end
     end
 end

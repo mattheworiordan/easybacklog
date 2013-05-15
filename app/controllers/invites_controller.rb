@@ -26,12 +26,21 @@ class InvitesController < ApplicationController
 
   def destroy
     if is_account_admin?
-      current_account.invited_users.find(params[:id]).destroy
+      invited_user = current_account.invited_users.find(params[:id])
+      invited_user.destroy
+      flash[:notice] = "Invite for #{invited_user.email} to this account has been revoked"
       redirect_to account_users_path(current_account)
     else
       flash[:error] = 'You need admin rights to manage users for this account'
       redirect_to account_path(current_account)
     end
+  end
+
+  def resend
+    @invited_user = current_account.invited_users.find(params[:id])
+    AccountUsersNotifier.delay.invite_to_join(current_user.id, current_account.id, @invited_user.id)
+    flash[:notice] = "Invite for #{@invited_user.email} has been resent"
+    redirect_to account_users_path(current_account)
   end
 
   private

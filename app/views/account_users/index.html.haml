@@ -49,10 +49,13 @@
       %table.invites
         - @invites.each do |invite|
           %tr
-            %td
+            %td.email
               = invite.email
             %td.action
-              = link_to account_invite_path(current_account, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
-                %span.ui-icon.ui-icon-trash
+              .delete-container
+                = link_to account_invite_path(current_account, invite), :method => 'delete', :title => 'Revoke invite?', :confirm => 'Are you sure you want to revoke this invite?' do
+                  %span.ui-icon.ui-icon-trash
+              .resend-container
+                = link_to 'resend invite', resend_account_invite_path(current_account, invite), :method => 'post'
   = link_to 'Invite new users', new_account_user_path(current_account), :class => 'button'
   = link_to 'cancel', account_path(current_account)

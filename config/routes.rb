@@ -53,6 +53,7 @@ EasyBacklog::Application.routes.draw do
     end
     resources :invites, :only => [:destroy] do
       member do
+        post 'resend' => 'invites#resend', :as => 'resend'
         get ':security_code' => 'invites#show', :as => 'show'
       end
     end

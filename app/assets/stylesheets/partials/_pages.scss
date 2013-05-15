@@ -452,3 +452,22 @@ form.edit_user, form.new_user, form#new_user {
     padding: 2px;
   }
 }
+
+table.invites {
+  td.email {
+    padding: 0 1em;
+  }
+  .delete-container {
+    float: left;
+  }
+  .resend-container {
+    float: left;
+    margin-left: 0.5em;
+    border-left: 1px solid #DDD;
+    padding-left: 0.5em;
+    a {
+      font-size: 90%;
+      color: #449adc;
+    }
+  }
+}

@@ -1,4 +1,7 @@
-if !%w(test development).include?(Rails.env)
+# if using foreman, then send using SMTP as part of the worker queue
+if Rails.env.test? || Rails.env.development? && ENV['FOREMAN'].blank?
+  puts ">> Mail will not be delivered as we are in #{Rails.env} mode"
+else
   ActionMailer::Base.smtp_settings = {
     :address        => 'smtp.sendgrid.net',
     :port           => '587',
