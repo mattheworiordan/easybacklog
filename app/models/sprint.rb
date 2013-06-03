@@ -154,14 +154,12 @@ class Sprint < ActiveRecord::Base
       # these 2 attributes are protected
       new_backlog.author = backlog.author
       new_backlog.last_modified_user = backlog.last_modified_user
-      new_backlog.save!
-
-      # copy the children
-      backlog.copy_children_to_backlog new_backlog
-
-      # now lock the record and assign the snapshot master to self
       new_backlog.snapshot_for_sprint = self
+      new_backlog.not_ready_status = "Building automatic sprint snapshot"
+      new_backlog.not_ready_since = Time.now
       new_backlog.save!
+
+      BacklogWorker::CopyChildrenToBacklog.perform_async(backlog.id, new_backlog.id)
 
       new_backlog
     else
