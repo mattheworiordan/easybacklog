@@ -69,9 +69,9 @@ class AccountUsersController < ApplicationController
         # add user and rights if they already have access
         account_user = current_account.users.where('UPPER(email) = ?', email.upcase)
         if account_user.empty?
-          invited_user = User.where('UPPER(email) = ?', email.upcase).first
-          current_account.add_user invited_user, privilege
-          AccountUsersNotifier.delay(:queue => 'mailer').access_granted(current_user.id, current_account.id, invited_user.id)
+          user_invited = User.where('UPPER(email) = ?', email.upcase).first
+          current_account.add_user user_invited, privilege
+          AccountUsersNotifier.delay(:queue => 'mailer').access_granted(current_user.id, current_account.id, user_invited.id)
         else
           # simply upgrade privileges of user
           current_account.account_users.find_by_user_id(account_user.first.id).upgrade_privilege privilege

@@ -10,8 +10,8 @@ class AccountUsersNotifier < ActionMailerBase
   end
 
   # user has been added to an account and already has a login so immediately has access
-  def access_granted(invitee_user_id, account_id, invited_user_id)
-    @invited_user = InvitedUser.find(invited_user_id)
+  def access_granted(invitee_user_id, account_id, user_invited_id)
+    @invited_user = User.find(user_invited_id)
     @invitee_user = User.find(invitee_user_id)
     @account = Account.find(account_id)
     mail(:to => @invited_user.email, :subject => 'Access granted to an account on easyBacklog') do |format|
