@@ -5,7 +5,7 @@ module BacklogsHelper
 
   # if JSON is embedded in CDATA Javascript and there is a value of </script> it closes the opening <script> tag incorrectly
   def embedded_json_safe(json)
-    json.gsub(/<\/script>/i,'<" + "/script>')
+    json.gsub(/<\/script/i,'<" + "/script')
   end
 
   def sprint_story_statuses_json
