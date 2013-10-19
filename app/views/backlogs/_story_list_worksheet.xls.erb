@@ -6,6 +6,7 @@
     <Column ss:AutoFitWidth="1" ss:Width="240" /> <!--Acceptance Criteria-->
     <Column ss:AutoFitWidth="1" ss:Width="240" /> <!--Comments-->
     <Column ss:AutoFitWidth="1" ss:Width="50" /> <!--Sprint-->
+    <Column ss:AutoFitWidth="1" ss:Width="50" /> <!--Status-->
     <% if backlog.use_50_90? %>
       <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Score 50-->
       <Column ss:AutoFitWidth="1" ss:Width="45" /> <!--Score 90-->
@@ -36,6 +37,9 @@
       </Cell>
       <Cell ss:StyleID='table-header'>
         <Data ss:Type='String'><%= t 'backlog.sprint' %></Data>
+      </Cell>
+      <Cell ss:StyleID='table-header'>
+        <Data ss:Type='String'><%= t 'backlog.status' %></Data>
       </Cell>
       <% if backlog.use_50_90? %>
         <Cell ss:StyleID='table-header'>

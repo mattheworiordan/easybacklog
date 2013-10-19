@@ -19,6 +19,7 @@ en:
     sprint: Sprint
     sprint_lower: sprint
     code: Code
+    status: Status
     totals:
       backlog_total: 'Backlog total'
       backlog: "Total for backlog '%{name}'"

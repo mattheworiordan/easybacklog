@@ -38,7 +38,7 @@ module BacklogsHelper
   end
 
   def export_to_excel_column_count(backlog)
-    total_columns = 7
+    total_columns = 8
     total_columns += 1 if @backlog.use_50_90? # 50/90 rule uses 2 columns
     total_columns += 1 if backlog.cost_estimatable?
     total_columns += 1 if backlog.days_estimatable?

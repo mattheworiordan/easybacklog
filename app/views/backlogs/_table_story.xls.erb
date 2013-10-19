@@ -20,6 +20,9 @@
 <Cell>
   <Data ss:Type='String'><%= "#{t 'backlog.sprint', :default => 'Sprint'} #{story.sprint_story.sprint.iteration}" if story.sprint_story.present? %></Data>
 </Cell>
+<Cell>
+  <Data ss:Type='String'><%= story.sprint_story.sprint_story_status.status if story.sprint_story.present? %></Data>
+</Cell>
 <% if use_50_90 %>
   <Cell ss:StyleID='numeric'>
     <Data ss:Type='String'><%= story.score_50 %></Data>
