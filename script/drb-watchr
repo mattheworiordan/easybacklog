@@ -1,7 +1,0 @@
-#!/bin/sh
-
-echo "Starting spork instances for Cuce and Rspec"
-bundle exec spork cucumber & bundle exec spork rspec &
-
-echo "Starting watchr"
-bundle exec watchr script/watchr.rb

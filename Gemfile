@@ -58,10 +58,8 @@ end
 group :development, :test do
   gem 'debugger'
   gem 'awesome_print'
-  gem 'watchr'
-  gem 'growl'
   gem 'pry'
-  gem 'pry-rails', :git => 'git://github.com/chrisfarber/pry-rails.git'
+  gem 'pry-rails'
   # gem 'pry-doc' # apparently causing segmentation faults http://stackoverflow.com/questions/8065611/ruby-1-9-3-p0-and-rspec-causes-frequent-segmentation-faults/8619319#8619319
   gem 'better_errors'
 end
@@ -73,9 +71,6 @@ group :test do
   gem 'factory_girl_rails'
   gem 'webrat'
   gem 'cucumber-rails', :require => false
-  gem 'autotest'
-  gem 'autotest-growl'
-  gem 'autotest-rails'
   gem 'database_cleaner'
   gem 'selenium-webdriver', '~> 2.22'
   gem 'capybara', '~> 1.0'

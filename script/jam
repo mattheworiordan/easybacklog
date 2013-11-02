@@ -1,9 +1,0 @@
-#!/bin/sh
-
-echo "--- Compiling assets ---"
-# jammit -f --base-url="http://easybacklog.com/"
-bundle exec rake assets:precompile
-
-echo "--- Committing ---"
-git add public/assets/*
-git commit -m "Assets compiled and added"
