@@ -123,7 +123,11 @@ class Story < ActiveRecord::Base
 
     def score_90_greater_than_50
       unless score_50.blank? || score_90.blank?
-        errors.add(:score_90, 'must be less than or equal to score 50') if score_90 < score_50
+        if (score_90_changed?)
+          errors.add(:score_90, 'must be greater than or equal to score 50') if score_90 < score_50
+        else
+          errors.add(:score_50, 'must be less than or equal to score 90') if score_90 < score_50
+        end
       end
     end
 

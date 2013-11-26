@@ -130,7 +130,16 @@ Feature: Backlog Stories
     When I click on the "first story's 50 score"
       And I change the current editable text to "5"
       And I tab forwards and wait for AJAX
-    Then I should see the error "Score 90 must be less than or equal to score 50"
+    Then I should see the error "Score 50 must be less than or equal to score 90"
+    When I click on the "second story's 50 score"
+      And I change the current editable text to "5"
+      And I tab forwards and wait for AJAX
+    Then I should see "5" within the "second story's 50 score"
+    When I click on the "second story's 90 score"
+      And I change the current editable text to "3"
+      And I tab forwards and wait for AJAX
+      Then I should see the error "Score 90 must be greater than or equal to score 50"
+
 
   @selenium
   Scenario: Re-order stories and move stories to new themes

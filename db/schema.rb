@@ -61,8 +61,8 @@ ActiveRecord::Schema.define(:version => 20130505223706) do
     t.integer  "backlog_id", :null => false
     t.integer  "user_id",    :null => false
     t.string   "privilege"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "backlog_users", ["backlog_id", "user_id"], :name => "index_backlog_users_on_backlog_id_and_user_id"
@@ -126,8 +126,8 @@ ActiveRecord::Schema.define(:version => 20130505223706) do
     t.integer  "company_id", :null => false
     t.integer  "user_id",    :null => false
     t.string   "privilege"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "company_users", ["company_id", "user_id"], :name => "index_company_users_on_company_id_and_user_id"

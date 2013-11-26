@@ -93,13 +93,32 @@ describe Story do
     story.should validate_format_of(:score_50).with('').with_message(/is not a number/) # allow null
   end
 
-  it 'should ensure score 50 is greater than score 90' do
-    story = FactoryGirl.create(:story)
-    story.score_50 = 13
-    story.score_90 = 1
-    story.should have(1).error_on(:score_90)
-    story.score_50 = 1
-    story.should have(0).errors_on(:score_90)
+  context 'score 50/90 validation' do
+    let(:story) { FactoryGirl.create(:story) }
+
+    it 'should ensure score 50 is greater than score 90' do
+      story.score_50 = 13
+      story.score_90 = 1
+      story.should have(1).error_on(:score_90)
+      story.score_50 = 1
+      story.should have(0).errors_on(:score_90)
+    end
+
+    it 'should ensure score 50 is greater than score 90 when score 90 changed' do
+      story.score_50 = 8
+      story.save!
+      story.score_90 = 3
+      story.should have(1).errors_on(:score_90)
+      story.errors[:score_90].should be_any { |m| m =~ /must be greater than or equal to score 50/ }
+    end
+
+    it 'should ensure score 50 is greater than score 90 when score 90 changed' do
+      story.score_90 = 5
+      story.save!
+      story.score_50 = 8
+      story.should have(1).errors_on(:score_50)
+      story.errors[:score_50].should be_any { |m| m =~ /must be less than or equal to score 90/ }
+    end
   end
 
   it 'should ensure days and costs are accurate' do
