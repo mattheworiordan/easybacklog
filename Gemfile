@@ -1,7 +1,8 @@
 source 'http://rubygems.org'
-ruby '1.9.3'
 
-gem 'rails', '3.2.12'
+ruby '2.1.2'
+
+gem 'rails', '~> 3'
 gem 'pg'
 gem 'jquery-rails'
 
@@ -45,6 +46,9 @@ gem 'sidekiq', '>= 2.3', require: false
 gem 'slim', '>= 1.3.0'
 gem 'sinatra', '>= 1.3.0', require: false
 
+# better web server in development
+gem 'thin', group: :development
+
 group :assets do
   gem 'sass-rails'
   gem 'compass'
@@ -56,11 +60,10 @@ group :assets do
 end
 
 group :development, :test do
-  gem 'debugger'
   gem 'awesome_print'
   gem 'pry'
   gem 'pry-rails'
-  # gem 'pry-doc' # apparently causing segmentation faults http://stackoverflow.com/questions/8065611/ruby-1-9-3-p0-and-rspec-causes-frequent-segmentation-faults/8619319#8619319
+  gem 'pry-byebug'
   gem 'better_errors'
 end
 
