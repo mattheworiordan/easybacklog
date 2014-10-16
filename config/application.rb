@@ -21,6 +21,7 @@ module EasyBacklog
     # config.time_zone = 'Central Time (US & Canada)'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
+    config.i18n.enforce_available_locales = true
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', 'framework', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
 
@@ -31,8 +32,6 @@ module EasyBacklog
     config.filter_parameters += [:password, :password_confirmation]
 
     config.middleware.use Rack::ForceDomain, ENV["DOMAIN"]
-
-    Dir["#{Rails.root}/lib/core_extensions/*.rb"].each { |file| require file }
 
     config.fonts_domain = ""
 
