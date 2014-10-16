@@ -112,16 +112,21 @@ class AdminController < ApplicationController
   def export
     data = case params[:data]
     when 'all_users'
-      [['full name','first name','email']].concat(User.all.map { |d| [d.name, d.name.split(' ').first.titleize, d.email] }).map{ |d| d.join(',') }.join("\n")
+      csv_data = User.all.map { |d| [d.name, d.name.split(' ').first.titleize, d.email, d.created_at, d.last_sign_in_at, d.sign_in_count] }
+      [['full name', 'first name', 'email', 'created', 'last sign in', 'sign ins']].concat(csv_data)
+    when 'all_accounts'
+      csv_data = Account.select('*, (select count(*) from account_users where account_users.account_id = accounts.id) as users_count').
+        map { |a| [a.name, a.created_at, a.users_count] }
+      [['name', 'created', 'users']].concat(csv_data)
     when 'beta_signup'
-      [['name','email']].concat(BetaSignup.all.map { |d| ['beta tester', d.email] }).map{ |d| d.join(',') }.join("\n")
+      [['name','email']].concat(BetaSignup.all.map { |d| ['beta tester', d.email] })
     when 'not_signed_up_7_days'
-      [['email','company','applied days ago']].concat(BetaSignup.where('LOWER(email) not in (select LOWER(email) from users)').map { |d| [d.email, "#{d.company}".gsub(/,/, ' '), (Date.today - d.created_at.to_date).to_i] }.select { |d| d[2] >= 7 }).map{ |d| d.join(',') }.join("\n")
+      [['email','company','applied days ago']].concat(BetaSignup.where('LOWER(email) not in (select LOWER(email) from users)').map { |d| [d.email, "#{d.company}".gsub(/,/, ' '), (Date.today - d.created_at.to_date).to_i] }.select { |d| d[2] >= 7 })
     when 'not_used_7_days'
-      [['email','sign ins', 'days since signed in','days since created','full name','first name']].concat(User.where('created_at >= ?', '7 Nov 2011').order('sign_in_count desc').map { |m| [m.email, m.sign_in_count, (Date.today - m.current_sign_in_at.to_date).to_i, (Date.today - m.created_at.to_date).to_i, m.name, m.name.split(' ').first.titleize] }.select { |d| d[2] >= 7 }).map { |d| d.join(',') }.join("\n")
+      [['email','sign ins', 'days since signed in','days since created','full name','first name']].concat(User.where('created_at >= ?', '7 Nov 2011').order('sign_in_count desc').map { |m| [m.email, m.sign_in_count, (Date.today - m.current_sign_in_at.to_date).to_i, (Date.today - m.created_at.to_date).to_i, m.name, m.name.split(' ').first.titleize] }.select { |d| d[2] >= 7 })
     end
-    headers["Content-Type"] = 'text/plain'
-    render :text => data
+    headers["Content-Type"] = 'text/csv'
+    render :text => to_csv(data)
   end
 
     private
@@ -147,5 +152,13 @@ class AdminController < ApplicationController
         else
           raise "Unknown object type #{obj.class}"
         end
+      end
+
+      def to_csv(data)
+        data.map do |rows|
+          rows.map do |cols|
+            cols.to_s.gsub(',', ' ')
+          end.join(',')
+        end.join("\n")
       end
 end
