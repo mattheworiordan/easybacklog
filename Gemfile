@@ -54,7 +54,7 @@ group :assets do
   gem 'compass'
   gem 'compass-rails'
   gem 'compass-960-plugin'
-  gem 'uglifier'
+  gem 'uglifier', require: true
   # speed up generation of assets by only regenerating changed files
   gem 'turbo-sprockets-rails3'
 end
