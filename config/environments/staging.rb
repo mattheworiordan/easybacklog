@@ -31,7 +31,7 @@ EasyBacklog::Application.configure do
 
   config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
   config.assets.compress = true
-  config.fonts_domain = '//easybacklog-staging.heroku.com'
+  config.fonts_domain = '//easybacklog-staging.herokuapp.com'
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
