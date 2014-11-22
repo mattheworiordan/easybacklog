@@ -41,6 +41,8 @@ module EasyBacklog
 
     config.dns = ENV['DOMAIN'] ? ENV['DOMAIN'] : 'localhost'
 
+    GC::Profiler.enable # https://docs.newrelic.com/docs/agents/ruby-agent/features/garbage-collection#gc_setup
+
     # pre-compile all javascript/scss files in assets/stylesheets, assets/javascripts, assets/javascripts/sections
     ['stylesheets','javascripts','javascripts/sections'].each do |path|
       Rails.root.join('app','assets',path).each_child do |d|
