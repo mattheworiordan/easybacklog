@@ -1,8 +1,8 @@
 # See: https://gist.github.com/1401792
 
-run_sidekiq_in_this_thread = true # %w(staging).include?(ENV['RAILS_ENV'])
+run_sidekiq_in_this_thread = true
 
-worker_processes (run_sidekiq_in_this_thread ? 2 : 3) # amount of unicorn workers to spin up, reduce if staging for sidekiq
+worker_processes 2 # amount of unicorn workers to spin up, reduce if staging for sidekiq
 timeout 30         # restarts workers that hang for 30 seconds
 preload_app true   # for newrelic to work with Unicorn
 
@@ -23,7 +23,7 @@ before_fork do |server, worker|
 
   # if staging, then save money by spawning sidekiq in the web process
   if run_sidekiq_in_this_thread
-    @resque_pid ||= spawn("bundle exec sidekiq -c 2 -q mailer -q default")
+    @resque_pid ||= spawn("bundle exec sidekiq -c 1 -q mailer -q default")
     Rails.logger.info('Spawned sidekiq #{@request_pid}')
   end
 end
