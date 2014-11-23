@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
-ruby File.read(File.expand_path("../.ruby-version", __FILE__)).strip
+# Load Ruby Version into Gemfile for use with Heroku, but strip patch version as not allowed with Heroku
+ruby File.read(File.expand_path("../.ruby-version", __FILE__)).strip.gsub(/\-p\d+$/, '')
 
 gem 'rails', '~> 3'
 gem 'pg'
