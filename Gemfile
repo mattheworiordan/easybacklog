@@ -4,6 +4,7 @@ source 'http://rubygems.org'
 ruby File.read(File.expand_path("../.ruby-version", __FILE__)).strip.gsub(/\-p\d+$/, '')
 
 gem 'rails', '~> 3'
+gem 'activerecord', git: 'https://github.com/rails/rails.git', branch: '3-2-stable'
 gem 'pg'
 gem 'jquery-rails'
 
