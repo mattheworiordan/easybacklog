@@ -274,7 +274,7 @@ GEM
     turbo-sprockets-rails3 (0.3.6)
       railties (> 3.2.8, < 4.0.0)
       sprockets (>= 2.0.0)
-    tzinfo (0.3.42)
+    tzinfo (0.3.43)
     uglifier (2.5.3)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
