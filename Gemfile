@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 # Load Ruby Version into Gemfile for use with Heroku, but strip patch version as not allowed with Heroku
 ruby File.read(File.expand_path("../.ruby-version", __FILE__)).strip.gsub(/\-p\d+$/, '')
 
-gem 'rails', '~> 3'
+gem 'rails', '~> 3.2.18'
 gem 'pg'
 gem 'jquery-rails'
 
@@ -61,6 +61,7 @@ group :assets do
 end
 
 group :development, :test do
+  gem 'simplecov'
   gem 'awesome_print'
   gem 'pry'
   gem 'pry-rails'
@@ -69,6 +70,8 @@ group :development, :test do
 end
 
 group :test do
+  gem 'minitest'
+  gem 'test-unit'
   gem 'rspec','>=2.7.0'
   gem 'rspec-rails','>=2.7.0'
   gem 'shoulda-matchers'
@@ -83,6 +86,7 @@ group :test do
   gem 'launchy', '>=2'
   gem 'pdf-reader'
   gem 'email_spec'
+  gem 'eventmachine', '~> 1.0.4'
   gem 'capybara-screenshot'
   gem 'recursive-open-struct', :git => 'git://github.com/mattheworiordan/recursive-open-struct.git'
 end

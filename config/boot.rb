@@ -13,4 +13,4 @@ rescue Bundler::GemNotFound => e
 end if File.exist?(gemfile)
 
 require 'yaml'
-YAML::ENGINE.yamler= 'psych'
+# YAML::ENGINE.yamler= 'psych'
