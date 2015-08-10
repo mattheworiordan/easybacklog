@@ -1,3 +1,8 @@
+require 'simplecov'
+SimpleCov.start 'rails' do
+  add_filter '/.bundle'
+end
+
 require 'shared_helper'
 require 'authentication_helper'
 require 'support/feature_helper'

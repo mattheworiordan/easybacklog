@@ -12,3 +12,4 @@ bin
 .rvmrc
 public/assets
 .env
+/coverage
