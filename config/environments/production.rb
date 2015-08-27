@@ -38,4 +38,6 @@ EasyBacklog::Application.configure do
 
   # ensure MD5 fingerprinting is on
   config.assets.digest = true
+
+  config.lograge.enabled = true
 end
