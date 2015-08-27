@@ -72,6 +72,10 @@ group :development, :test do
   gem 'better_errors'
 end
 
+group :production, :staging do
+  gem 'rails_12factor'
+end
+
 group :test do
   gem 'minitest'
   gem 'test-unit'
