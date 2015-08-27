@@ -141,15 +141,16 @@ describe Backlog do
     end
   end
 
-  context 'editable and destroyable' do
+  context 'editable and destroyable snapshots' do
     it 'should not be editable or destroyable if a sprint backlog' do
       backlog = FactoryGirl.create(:backlog, :with_sprints, :with_stories)
       sprint_snapshot = backlog.sprints.last.create_snapshot_if_missing
+      sprint_snapshot.reload
 
       assert_backlog_not_editable sprint_snapshot
     end
 
-    it 'should not be editable or destroyable if a manual backlog' do
+    it 'should not be editable or destroyable if a manual snapshot' do
       backlog = FactoryGirl.create(:backlog, :with_sprints, :with_stories)
       manual_snapshot = backlog.create_snapshot('snapshot name')
 
