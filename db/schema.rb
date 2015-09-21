@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130505223706) do
+ActiveRecord::Schema.define(:version => 20150921124206) do
 
   create_table "acceptance_criteria", :force => true do |t|
     t.integer "story_id",  :null => false
@@ -204,6 +204,7 @@ ActiveRecord::Schema.define(:version => 20130505223706) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.decimal  "explicit_velocity",   :precision => 5, :scale => 1
+    t.string   "name"
   end
 
   add_index "sprints", ["backlog_id"], :name => "index_sprints_on_backlog_id"

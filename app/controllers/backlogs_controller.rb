@@ -309,7 +309,7 @@ class BacklogsController < ApplicationController
     backlog_methods = [:points, :days, :cost_formatted, :rate_formatted, :is_locked, :valid_scores]
     theme_fields = [:id, :name, :code, :position]
     theme_methods = [:points, :cost_formatted, :days]
-    sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days, :explicit_velocity]
+    sprint_fields = [:id, :iteration, :start_on, :number_team_members, :duration_days, :explicit_velocity, :name]
     sprint_story_fields = [:id, :story_id, :sprint_story_status_id, :position]
     story_fields = [:id, :unique_id, :as_a, :i_want_to, :so_i_can, :comments, :score_50, :score_90, :position, :color]
     criteria_fields =  [:id, :criterion, :position]

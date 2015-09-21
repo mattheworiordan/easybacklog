@@ -11,7 +11,7 @@ class Sprint < ActiveRecord::Base
   validates_numericality_of :duration_days, :iteration, :greater_than => 0, :message => 'must be a number greater than or equal to one'
   validates_numericality_of :number_team_members, :explicit_velocity, :greater_than => 0, :allow_nil => true
 
-  attr_accessible :number_team_members, :duration_days, :start_on, :completed_at, :explicit_velocity
+  attr_accessible :number_team_members, :duration_days, :start_on, :completed_at, :explicit_velocity, :name
 
   before_validation :restrict_iteration_changes, :assign_iteration
   before_validation :restrict_changes_if_completed, :manage_completeness_amongst_other_sprints
