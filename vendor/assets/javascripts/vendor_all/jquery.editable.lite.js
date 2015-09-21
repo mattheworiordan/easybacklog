@@ -167,9 +167,9 @@
         if (!eventAlreadyProcessed) { // if blurring as a result of a key press, then allow this blur event to be ignored
           eventAlreadyProcessed = true;
           if (options.acceptChangesOnBlur) {
-            saveChanges();
+            setTimeout(saveChanges, 1);
           } else {
-            restoreTarget();
+            setTimeout(restoreTarget, 1);
           }
           $(elem).unbind('blur');
         }
@@ -196,7 +196,7 @@
               event.stopPropagation();
             } else {
               eventAlreadyProcessed = true;
-              saveChanges();
+              setTimeout(saveChanges, 1);
             }
           } else if (event.which === 27) { // escape key
             eventAlreadyProcessed = true;
