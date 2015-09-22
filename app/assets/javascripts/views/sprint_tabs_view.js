@@ -67,8 +67,6 @@ App.Views.SprintTabs = {
       // set up the infinity tabs JQuery plugin so that tabs scroll
       view.$('ul.infinite-tabs').infiniteTabs();
 
-      view.$('ul.infinite-tabs').find("span[title]:not([title=''])").tooltip();
-
       return this;
     },
 
@@ -173,7 +171,7 @@ App.Views.SprintTabs = {
 
       $('#dialog-new-sprint').dialog({
         resizable: false,
-        height: backlogVelocity ? 440 : 325, // if no estimate by points per day option, then dialog is a lot smaller
+        height: backlogVelocity ? 400 : 285, // if no estimate by points per day option, then dialog is a lot smaller
         width: 470,
         modal: true,
         buttons: {
@@ -193,8 +191,7 @@ App.Views.SprintTabs = {
 
             modelData = {
               start_on: $.datepicker.formatDate('yy-mm-dd', dialog.find('#start-on').datepicker('getDate')),
-              duration_days: dialog.find('#duration-days').val(),
-              name: dialog.find('#name').val(),
+              duration_days: dialog.find('#duration-days').val()
             };
             if (!backlogVelocity || dialog.find('#use-explicit-velocity').is(':checked')) {
               modelData['explicit_velocity'] = dialog.find('#explicit-velocity').val();

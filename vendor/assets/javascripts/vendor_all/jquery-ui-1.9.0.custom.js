@@ -1,7 +1,9 @@
-/*! jQuery UI - v1.9.2 - 2015-09-21
+/* Package includes Core, Widget, Mouse, Position, Sortable, Autocomplete, Button, Dialog, DatePicker, Effects Core, Highlight, Drop, Slide */
+
+/*! jQuery UI - v1.9.0 - 2012-10-11
 * http://jqueryui.com
-* Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.position.js, jquery.ui.draggable.js, jquery.ui.resizable.js, jquery.ui.sortable.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.menu.js, jquery.ui.tooltip.js, jquery.ui.effect.js, jquery.ui.effect-drop.js, jquery.ui.effect-highlight.js, jquery.ui.effect-slide.js
-* Copyright 2015 jQuery Foundation and other contributors; Licensed MIT */
+* Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.position.js, jquery.ui.draggable.js, jquery.ui.resizable.js, jquery.ui.sortable.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.menu.js, jquery.ui.effect.js, jquery.ui.effect-drop.js, jquery.ui.effect-highlight.js, jquery.ui.effect-slide.js
+* Copyright (c) 2012 jQuery Foundation and other contributors Licensed MIT */
 
 (function( $, undefined ) {
 
@@ -17,7 +19,7 @@ if ( $.ui.version ) {
 }
 
 $.extend( $.ui, {
-	version: "1.9.2",
+	version: "1.9.0",
 
 	keyCode: {
 		BACKSPACE: 8,
@@ -64,7 +66,7 @@ $.fn.extend({
 
 	scrollParent: function() {
 		var scrollParent;
-		if (($.ui.ie && (/(static|relative)/).test(this.css('position'))) || (/absolute/).test(this.css('position'))) {
+		if (($.browser.msie && (/(static|relative)/).test(this.css('position'))) || (/absolute/).test(this.css('position'))) {
 			scrollParent = this.parents().filter(function() {
 				return (/(relative|absolute|fixed)/).test($.css(this,'position')) && (/(auto|scroll)/).test($.css(this,'overflow')+$.css(this,'overflow-y')+$.css(this,'overflow-x'));
 			}).eq(0);
@@ -123,6 +125,53 @@ $.fn.extend({
 	}
 });
 
+// support: jQuery <1.8
+if ( !$( "<a>" ).outerWidth( 1 ).jquery ) {
+	$.each( [ "Width", "Height" ], function( i, name ) {
+		var side = name === "Width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ],
+			type = name.toLowerCase(),
+			orig = {
+				innerWidth: $.fn.innerWidth,
+				innerHeight: $.fn.innerHeight,
+				outerWidth: $.fn.outerWidth,
+				outerHeight: $.fn.outerHeight
+			};
+
+		function reduce( elem, size, border, margin ) {
+			$.each( side, function() {
+				size -= parseFloat( $.css( elem, "padding" + this ) ) || 0;
+				if ( border ) {
+					size -= parseFloat( $.css( elem, "border" + this + "Width" ) ) || 0;
+				}
+				if ( margin ) {
+					size -= parseFloat( $.css( elem, "margin" + this ) ) || 0;
+				}
+			});
+			return size;
+		}
+
+		$.fn[ "inner" + name ] = function( size ) {
+			if ( size === undefined ) {
+				return orig[ "inner" + name ].call( this );
+			}
+
+			return this.each(function() {
+				$( this ).css( type, reduce( this, size ) + "px" );
+			});
+		};
+
+		$.fn[ "outer" + name] = function( size, margin ) {
+			if ( typeof size !== "number" ) {
+				return orig[ "outer" + name ].call( this, size );
+			}
+
+			return this.each(function() {
+				$( this).css( type, reduce( this, size, true, margin ) + "px" );
+			});
+		};
+	});
+}
+
 // selectors
 function focusable( element, isTabIndexNotNaN ) {
 	var map, mapName, img,
@@ -146,10 +195,10 @@ function focusable( element, isTabIndexNotNaN ) {
 }
 
 function visible( element ) {
-	return $.expr.filters.visible( element ) &&
-		!$( element ).parents().andSelf().filter(function() {
-			return $.css( this, "visibility" ) === "hidden";
-		}).length;
+	return !$( element ).parents().andSelf().filter(function() {
+		return $.css( this, "visibility" ) === "hidden" ||
+			$.expr.filters.hidden( this );
+	}).length;
 }
 
 $.extend( $.expr[ ":" ], {
@@ -200,77 +249,11 @@ $(function() {
 	body.removeChild( div ).style.display = "none";
 });
 
-// support: jQuery <1.8
-if ( !$( "<a>" ).outerWidth( 1 ).jquery ) {
-	$.each( [ "Width", "Height" ], function( i, name ) {
-		var side = name === "Width" ? [ "Left", "Right" ] : [ "Top", "Bottom" ],
-			type = name.toLowerCase(),
-			orig = {
-				innerWidth: $.fn.innerWidth,
-				innerHeight: $.fn.innerHeight,
-				outerWidth: $.fn.outerWidth,
-				outerHeight: $.fn.outerHeight
-			};
-
-		function reduce( elem, size, border, margin ) {
-			$.each( side, function() {
-				size -= parseFloat( $.css( elem, "padding" + this ) ) || 0;
-				if ( border ) {
-					size -= parseFloat( $.css( elem, "border" + this + "Width" ) ) || 0;
-				}
-				if ( margin ) {
-					size -= parseFloat( $.css( elem, "margin" + this ) ) || 0;
-				}
-			});
-			return size;
-		}
-
-		$.fn[ "inner" + name ] = function( size ) {
-			if ( size === undefined ) {
-				return orig[ "inner" + name ].call( this );
-			}
-
-			return this.each(function() {
-				$( this ).css( type, reduce( this, size ) + "px" );
-			});
-		};
-
-		$.fn[ "outer" + name] = function( size, margin ) {
-			if ( typeof size !== "number" ) {
-				return orig[ "outer" + name ].call( this, size );
-			}
-
-			return this.each(function() {
-				$( this).css( type, reduce( this, size, true, margin ) + "px" );
-			});
-		};
-	});
-}
-
-// support: jQuery 1.6.1, 1.6.2 (http://bugs.jquery.com/ticket/9413)
-if ( $( "<a>" ).data( "a-b", "a" ).removeData( "a-b" ).data( "a-b" ) ) {
-	$.fn.removeData = (function( removeData ) {
-		return function( key ) {
-			if ( arguments.length ) {
-				return removeData.call( this, $.camelCase( key ) );
-			} else {
-				return removeData.call( this );
-			}
-		};
-	})( $.fn.removeData );
-}
-
 
 
 
 
 // deprecated
-
-(function() {
-	var uaMatch = /msie ([\w.]+)/.exec( navigator.userAgent.toLowerCase() ) || [];
-	$.ui.ie = uaMatch.length ? true : false;
-	$.ui.ie6 = parseFloat( uaMatch[ 1 ], 10 ) === 6;
-})();
 
 $.fn.extend({
 	disableSelection: function() {
@@ -442,7 +425,7 @@ $.widget = function( name, base, prototype ) {
 		// TODO: remove support for widgetEventPrefix
 		// always use the name + a colon as the prefix, e.g., draggable:start
 		// don't prefix for widgets that aren't DOM-based
-		widgetEventPrefix: existingConstructor ? basePrototype.widgetEventPrefix : name
+		widgetEventPrefix: name
 	}, prototype, {
 		constructor: constructor,
 		namespace: namespace,
@@ -483,17 +466,8 @@ $.widget.extend = function( target ) {
 	for ( ; inputIndex < inputLength; inputIndex++ ) {
 		for ( key in input[ inputIndex ] ) {
 			value = input[ inputIndex ][ key ];
-			if ( input[ inputIndex ].hasOwnProperty( key ) && value !== undefined ) {
-				// Clone objects
-				if ( $.isPlainObject( value ) ) {
-					target[ key ] = $.isPlainObject( target[ key ] ) ?
-						$.widget.extend( {}, target[ key ], value ) :
-						// Don't extend strings, arrays, etc. with objects
-						$.widget.extend( {}, value );
-				// Copy everything else by reference
-				} else {
-					target[ key ] = value;
-				}
+			if (input[ inputIndex ].hasOwnProperty( key ) && value !== undefined ) {
+				target[ key ] = $.isPlainObject( value ) ? $.widget.extend( {}, target[ key ], value ) : value;
 			}
 		}
 	}
@@ -501,7 +475,7 @@ $.widget.extend = function( target ) {
 };
 
 $.widget.bridge = function( name, object ) {
-	var fullName = object.prototype.widgetFullName || name;
+	var fullName = object.prototype.widgetFullName;
 	$.fn[ name ] = function( options ) {
 		var isMethodCall = typeof options === "string",
 			args = slice.call( arguments, 1 ),
@@ -537,7 +511,7 @@ $.widget.bridge = function( name, object ) {
 				if ( instance ) {
 					instance.option( options || {} )._init();
 				} else {
-					$.data( this, fullName, new object( options, this ) );
+					new object( options, this );
 				}
 			});
 		}
@@ -546,7 +520,7 @@ $.widget.bridge = function( name, object ) {
 	};
 };
 
-$.Widget = function( /* options, element */ ) {};
+$.Widget = function( options, element ) {};
 $.Widget._childConstructors = [];
 
 $.Widget.prototype = {
@@ -578,13 +552,7 @@ $.Widget.prototype = {
 			// TODO remove dual storage
 			$.data( element, this.widgetName, this );
 			$.data( element, this.widgetFullName, this );
-			this._on( true, this.element, {
-				remove: function( event ) {
-					if ( event.target === element ) {
-						this.destroy();
-					}
-				}
-			});
+			this._on({ remove: "destroy" });
 			this.document = $( element.style ?
 				// element within the document
 				element.ownerDocument :
@@ -702,36 +670,25 @@ $.Widget.prototype = {
 		return this._setOption( "disabled", true );
 	},
 
-	_on: function( suppressDisabledCheck, element, handlers ) {
-		var delegateElement,
-			instance = this;
-
-		// no suppressDisabledCheck flag, shuffle arguments
-		if ( typeof suppressDisabledCheck !== "boolean" ) {
-			handlers = element;
-			element = suppressDisabledCheck;
-			suppressDisabledCheck = false;
-		}
-
+	_on: function( element, handlers ) {
 		// no element argument, shuffle and use this.element
 		if ( !handlers ) {
 			handlers = element;
 			element = this.element;
-			delegateElement = this.widget();
 		} else {
 			// accept selectors, DOM elements
-			element = delegateElement = $( element );
+			element = $( element );
 			this.bindings = this.bindings.add( element );
 		}
 
+		var instance = this;
 		$.each( handlers, function( event, handler ) {
 			function handlerProxy() {
 				// allow widgets to customize the disabled handling
 				// - disabled as an array instead of boolean
 				// - disabled class as method for disabling individual parts
-				if ( !suppressDisabledCheck &&
-						( instance.options.disabled === true ||
-							$( this ).hasClass( "ui-state-disabled" ) ) ) {
+				if ( instance.options.disabled === true ||
+						$( this ).hasClass( "ui-state-disabled" ) ) {
 					return;
 				}
 				return ( typeof handler === "string" ? instance[ handler ] : handler )
@@ -748,7 +705,7 @@ $.Widget.prototype = {
 				eventName = match[1] + instance.eventNamespace,
 				selector = match[2];
 			if ( selector ) {
-				delegateElement.delegate( selector, eventName, handlerProxy );
+				instance.widget().delegate( selector, eventName, handlerProxy );
 			} else {
 				element.bind( eventName, handlerProxy );
 			}
@@ -875,7 +832,7 @@ $( document ).mouseup( function( e ) {
 });
 
 $.widget("ui.mouse", {
-	version: "1.9.2",
+	version: "1.9.0",
 	options: {
 		cancel: 'input,textarea,button,select,option',
 		distance: 1,
@@ -967,7 +924,7 @@ $.widget("ui.mouse", {
 
 	_mouseMove: function(event) {
 		// IE mouseup check - mouseup happened when mouse was out of window
-		if ($.ui.ie && !(document.documentMode >= 9) && !event.button) {
+		if ($.browser.msie && !(document.documentMode >= 9) && !event.button) {
 			return this._mouseUp(event);
 		}
 
@@ -1533,7 +1490,7 @@ if ( $.uiBackCompat !== false ) {
 (function( $, undefined ) {
 
 $.widget("ui.draggable", $.ui.mouse, {
-	version: "1.9.2",
+	version: "1.9.0",
 	widgetEventPrefix: "drag",
 	options: {
 		addClasses: true,
@@ -1835,7 +1792,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 		}
 
 		if((this.offsetParent[0] == document.body) //This needs to be actually done for all browsers, since pageX/pageY includes this information
-		|| (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() == 'html' && $.ui.ie)) //Ugly IE fix
+		|| (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() == 'html' && $.browser.msie)) //Ugly IE fix
 			po = { top: 0, left: 0 };
 
 		return {
@@ -2088,29 +2045,13 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 
 		$.each(inst.sortables, function(i) {
 
-			var innermostIntersecting = false;
-			var thisSortable = this;
 			//Copy over some variables to allow calling the sortable's native _intersectsWith
 			this.instance.positionAbs = inst.positionAbs;
 			this.instance.helperProportions = inst.helperProportions;
 			this.instance.offset.click = inst.offset.click;
 
 			if(this.instance._intersectsWith(this.instance.containerCache)) {
-				innermostIntersecting = true;
-				$.each(inst.sortables, function () {
-					this.instance.positionAbs = inst.positionAbs;
-					this.instance.helperProportions = inst.helperProportions;
-					this.instance.offset.click = inst.offset.click;
-					if  (this != thisSortable
-						&& this.instance._intersectsWith(this.instance.containerCache)
-						&& $.ui.contains(thisSortable.instance.element[0], this.instance.element[0]))
-						innermostIntersecting = false;
-						return innermostIntersecting;
-				});
-			}
 
-
-			if(innermostIntersecting) {
 				//If it intersects, we use a little isOver variable and set it once, so our move-in stuff gets fired only once
 				if(!this.instance.isOver) {
 
@@ -2354,7 +2295,7 @@ $.ui.plugin.add("draggable", "zIndex", {
 (function( $, undefined ) {
 
 $.widget("ui.resizable", $.ui.mouse, {
-	version: "1.9.2",
+	version: "1.9.0",
 	widgetEventPrefix: "resize",
 	options: {
 		alsoResize: false,
@@ -2542,14 +2483,15 @@ $.widget("ui.resizable", $.ui.mouse, {
 		if (this.elementIsWrapper) {
 			_destroy(this.element);
 			var wrapper = this.element;
-			this.originalElement.css({
-				position: wrapper.css('position'),
-				width: wrapper.outerWidth(),
-				height: wrapper.outerHeight(),
-				top: wrapper.css('top'),
-				left: wrapper.css('left')
-			}).insertAfter( wrapper );
-			wrapper.remove();
+			wrapper.after(
+				this.originalElement.css({
+					position: wrapper.css('position'),
+					width: wrapper.outerWidth(),
+					height: wrapper.outerHeight(),
+					top: wrapper.css('top'),
+					left: wrapper.css('left')
+				})
+			).remove();
 		}
 
 		this.originalElement.css('resize', this.originalResizeStyle);
@@ -2803,8 +2745,8 @@ $.widget("ui.resizable", $.ui.mouse, {
 			this.helper = this.helper || $('<div style="overflow:hidden;"></div>');
 
 			// fix ie6 offset TODO: This seems broken
-			var ie6offset = ($.ui.ie6 ? 1 : 0),
-			pxyoffset = ( $.ui.ie6 ? 2 : -1 );
+			var ie6 = $.browser.msie && $.browser.version < 7, ie6offset = (ie6 ? 1 : 0),
+			pxyoffset = ( ie6 ? 2 : -1 );
 
 			this.helper.addClass(this._helper).css({
 				width: this.element.outerWidth() + pxyoffset,
@@ -3140,7 +3082,7 @@ var isNumber = function(value) {
 (function( $, undefined ) {
 
 $.widget("ui.sortable", $.ui.mouse, {
-	version: "1.9.2",
+	version: "1.9.0",
 	widgetEventPrefix: "sort",
 	ready: false,
 	options: {
@@ -3686,13 +3628,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 		var list = this.currentItem.find(":data(" + this.widgetName + "-item)");
 
-		this.items = $.grep(this.items, function (item) {
+		for (var i=0; i < this.items.length; i++) {
+
 			for (var j=0; j < list.length; j++) {
-				if(list[j] == item.item[0])
-					return false;
+				if(list[j] == this.items[i].item[0])
+					this.items.splice(i,1);
 			};
-			return true;
-		});
+
+		};
 
 	},
 
@@ -3858,26 +3801,16 @@ $.widget("ui.sortable", $.ui.mouse, {
 		if(this.containers.length === 1) {
 			this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
 			this.containers[innermostIndex].containerCache.over = 1;
-		} else {
+		} else if(this.currentContainer != this.containers[innermostIndex]) {
 
 			//When entering a new container, we will find the item with the least distance and append our item near it
-			var dist = 10000; var itemWithLeastDistance = null;
-			var posProperty = this.containers[innermostIndex].floating ? 'left' : 'top';
-			var sizeProperty = this.containers[innermostIndex].floating ? 'width' : 'height';
-			var base = this.positionAbs[posProperty] + this.offset.click[posProperty];
+			var dist = 10000; var itemWithLeastDistance = null; var base = this.positionAbs[this.containers[innermostIndex].floating ? 'left' : 'top'];
 			for (var j = this.items.length - 1; j >= 0; j--) {
 				if(!$.contains(this.containers[innermostIndex].element[0], this.items[j].item[0])) continue;
-				if(this.items[j].item[0] == this.currentItem[0]) continue;
-				var cur = this.items[j].item.offset()[posProperty];
-				var nearBottom = false;
-				if(Math.abs(cur - base) > Math.abs(cur + this.items[j][sizeProperty] - base)){
-					nearBottom = true;
-					cur += this.items[j][sizeProperty];
-				}
-
+				var cur = this.containers[innermostIndex].floating ? this.items[j].item.offset().left : this.items[j].item.offset().top;
 				if(Math.abs(cur - base) < dist) {
 					dist = Math.abs(cur - base); itemWithLeastDistance = this.items[j];
-					this.direction = nearBottom ? "up": "down";
+					this.direction = (cur - base > 0) ? 'down' : 'up';
 				}
 			}
 
@@ -3955,7 +3888,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		if((this.offsetParent[0] == document.body) //This needs to be actually done for all browsers, since pageX/pageY includes this information
-		|| (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() == 'html' && $.ui.ie)) //Ugly IE fix
+		|| (this.offsetParent[0].tagName && this.offsetParent[0].tagName.toLowerCase() == 'html' && $.browser.msie)) //Ugly IE fix
 			po = { top: 0, left: 0 };
 
 		return {
@@ -4224,7 +4157,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 var requestIndex = 0;
 
 $.widget( "ui.autocomplete", {
-	version: "1.9.2",
+	version: "1.9.0",
 	defaultElement: "<input>",
 	options: {
 		appendTo: "body",
@@ -4268,7 +4201,7 @@ $.widget( "ui.autocomplete", {
 			.addClass( "ui-autocomplete-input" )
 			.attr( "autocomplete", "off" );
 
-		this._on( this.element, {
+		this._on({
 			keydown: function( event ) {
 				if ( this.element.prop( "readOnly" ) ) {
 					suppressKeyPress = true;
@@ -4395,7 +4328,6 @@ $.widget( "ui.autocomplete", {
 			.zIndex( this.element.zIndex() + 1 )
 			.hide()
 			.data( "menu" );
-
 		this._on( this.menu.element, {
 			mousedown: function( event ) {
 				// prevent moving focus out of the text field
@@ -4497,7 +4429,7 @@ $.widget( "ui.autocomplete", {
 			.insertAfter( this.element );
 
 		if ( $.fn.bgiframe ) {
-			this.menu.element.bgiframe();
+			 this.menu.element.bgiframe();
 		}
 
 		// turning off autocomplete prevents the browser from remembering the
@@ -4564,7 +4496,7 @@ $.widget( "ui.autocomplete", {
 					url: url,
 					data: request,
 					dataType: "json",
-					success: function( data ) {
+					success: function( data, status ) {
 						response( data );
 					},
 					error: function() {
@@ -4746,7 +4678,7 @@ $.widget( "ui.autocomplete", {
 		return this.menu.element;
 	},
 
-	_value: function() {
+	_value: function( value ) {
 		return this.valueMethod.apply( this.element, arguments );
 	},
 
@@ -4834,7 +4766,7 @@ var lastActive, startXPos, startYPos, clickDragged,
 	};
 
 $.widget( "ui.button", {
-	version: "1.9.2",
+	version: "1.9.0",
 	defaultElement: "<button>",
 	options: {
 		disabled: null,
@@ -4862,14 +4794,12 @@ $.widget( "ui.button", {
 		var that = this,
 			options = this.options,
 			toggleButton = this.type === "checkbox" || this.type === "radio",
-			activeClass = !toggleButton ? "ui-state-active" : "",
+			hoverClass = "ui-state-hover" + ( !toggleButton ? " ui-state-active" : "" ),
 			focusClass = "ui-state-focus";
 
 		if ( options.label === null ) {
 			options.label = (this.type === "input" ? this.buttonElement.val() : this.buttonElement.html());
 		}
-
-		this._hoverable( this.buttonElement );
 
 		this.buttonElement
 			.addClass( baseClasses )
@@ -4878,6 +4808,7 @@ $.widget( "ui.button", {
 				if ( options.disabled ) {
 					return;
 				}
+				$( this ).addClass( "ui-state-hover" );
 				if ( this === lastActive ) {
 					$( this ).addClass( "ui-state-active" );
 				}
@@ -4886,7 +4817,7 @@ $.widget( "ui.button", {
 				if ( options.disabled ) {
 					return;
 				}
-				$( this ).removeClass( activeClass );
+				$( this ).removeClass( hoverClass );
 			})
 			.bind( "click" + this.eventNamespace, function( event ) {
 				if ( options.disabled ) {
@@ -5075,9 +5006,7 @@ $.widget( "ui.button", {
 	},
 
 	refresh: function() {
-		//See #8237 & #8828
-		var isDisabled = this.element.is( "input, button" ) ? this.element.is( ":disabled" ) : this.element.hasClass( "ui-button-disabled" );
-
+		var isDisabled = this.element.is( ":disabled" );
 		if ( isDisabled !== this.options.disabled ) {
 			this._setOption( "disabled", isDisabled );
 		}
@@ -5151,7 +5080,7 @@ $.widget( "ui.button", {
 });
 
 $.widget( "ui.buttonset", {
-	version: "1.9.2",
+	version: "1.9.0",
 	options: {
 		items: "button, input[type=button], input[type=submit], input[type=reset], input[type=checkbox], input[type=radio], a, :data(button)"
 	},
@@ -5210,7 +5139,7 @@ $.widget( "ui.buttonset", {
 }( jQuery ) );
 (function( $, undefined ) {
 
-$.extend($.ui, { datepicker: { version: "1.9.2" } });
+$.extend($.ui, { datepicker: { version: "1.9.0" } });
 
 var PROP_NAME = 'datepicker';
 var dpuuid = new Date().getTime();
@@ -6802,7 +6731,7 @@ $.extend(Datepicker.prototype, {
 			}
 			html += group;
 		}
-		html += buttonPanel + ($.ui.ie6 && !inst.inline ?
+		html += buttonPanel + ($.browser.msie && parseInt($.browser.version,10) < 7 && !inst.inline ?
 			'<iframe src="javascript:false;" class="ui-datepicker-cover" frameborder="0"></iframe>' : '');
 		inst._keyEvent = false;
 		return html;
@@ -7034,7 +6963,7 @@ $.fn.datepicker = function(options){
 $.datepicker = new Datepicker(); // singleton instance
 $.datepicker.initialized = false;
 $.datepicker.uuid = new Date().getTime();
-$.datepicker.version = "1.9.2";
+$.datepicker.version = "1.9.0";
 
 // Workaround for #4055
 // Add another global to avoid noConflict issues with inline event handlers
@@ -7061,7 +6990,7 @@ var uiDialogClasses = "ui-dialog ui-widget ui-widget-content ui-corner-all ",
 	};
 
 $.widget("ui.dialog", {
-	version: "1.9.2",
+	version: "1.9.0",
 	options: {
 		autoOpen: true,
 		buttons: {},
@@ -7112,11 +7041,6 @@ $.widget("ui.dialog", {
 			options = this.options,
 
 			title = options.title || "&#160;",
-			uiDialog,
-			uiDialogTitlebar,
-			uiDialogTitlebarClose,
-			uiDialogTitle,
-			uiDialogButtonPane;
 
 			uiDialog = ( this.uiDialog = $( "<div>" ) )
 				.addClass( uiDialogClasses + options.dialogClass )
@@ -7137,22 +7061,18 @@ $.widget("ui.dialog", {
 				.mousedown(function( event ) {
 					that.moveToTop( false, event );
 				})
-				.appendTo( "body" );
+				.appendTo( "body" ),
 
-			this.element
+			uiDialogContent = this.element
 				.show()
 				.removeAttr( "title" )
 				.addClass( "ui-dialog-content ui-widget-content" )
-				.appendTo( uiDialog );
+				.appendTo( uiDialog ),
 
 			uiDialogTitlebar = ( this.uiDialogTitlebar = $( "<div>" ) )
 				.addClass( "ui-dialog-titlebar  ui-widget-header  " +
 					"ui-corner-all  ui-helper-clearfix" )
-				.bind( "mousedown", function() {
-					// Dialog isn't getting focus when dragging (#8063)
-					uiDialog.focus();
-				})
-				.prependTo( uiDialog );
+				.prependTo( uiDialog ),
 
 			uiDialogTitlebarClose = $( "<a href='#'></a>" )
 				.addClass( "ui-dialog-titlebar-close  ui-corner-all" )
@@ -7161,23 +7081,23 @@ $.widget("ui.dialog", {
 					event.preventDefault();
 					that.close( event );
 				})
-				.appendTo( uiDialogTitlebar );
+				.appendTo( uiDialogTitlebar ),
 
-			( this.uiDialogTitlebarCloseText = $( "<span>" ) )
+			uiDialogTitlebarCloseText = ( this.uiDialogTitlebarCloseText = $( "<span>" ) )
 				.addClass( "ui-icon ui-icon-closethick" )
 				.text( options.closeText )
-				.appendTo( uiDialogTitlebarClose );
+				.appendTo( uiDialogTitlebarClose ),
 
 			uiDialogTitle = $( "<span>" )
 				.uniqueId()
 				.addClass( "ui-dialog-title" )
 				.html( title )
-				.prependTo( uiDialogTitlebar );
+				.prependTo( uiDialogTitlebar ),
 
 			uiDialogButtonPane = ( this.uiDialogButtonPane = $( "<div>" ) )
-				.addClass( "ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" );
+				.addClass( "ui-dialog-buttonpane ui-widget-content ui-helper-clearfix" ),
 
-			( this.uiButtonSet = $( "<div>" ) )
+			uiButtonSet = ( this.uiButtonSet = $( "<div>" ) )
 				.addClass( "ui-dialog-buttonset" )
 				.appendTo( uiDialogButtonPane );
 
@@ -7280,7 +7200,7 @@ $.widget("ui.dialog", {
 		}
 
 		if ( this.options.hide ) {
-			this._hide( this.uiDialog, this.options.hide, function() {
+			this.uiDialog.hide( this.options.hide, function() {
 				that._trigger( "close", event );
 			});
 		} else {
@@ -7379,7 +7299,8 @@ $.widget("ui.dialog", {
 	},
 
 	_createButtons: function( buttons ) {
-		var that = this,
+		var uiDialogButtonPane, uiButtonSet,
+			that = this,
 			hasButtons = false;
 
 		// if we already have a button pane, remove it
@@ -7393,18 +7314,15 @@ $.widget("ui.dialog", {
 		}
 		if ( hasButtons ) {
 			$.each( buttons, function( name, props ) {
-				var button, click;
 				props = $.isFunction( props ) ?
 					{ click: props, text: name } :
 					props;
-				// Default to a non-submitting button
-				props = $.extend( { type: "button" }, props );
-				// Change the context for the click callback to be the main element
-				click = props.click;
-				props.click = function() {
-					click.apply( that.element[0], arguments );
-				};
-				button = $( "<button></button>", props )
+				var button = $( "<button type='button'>" )
+					.attr( props, true )
+					.unbind( "click" )
+					.click(function() {
+						props.click.apply( that.element[0], arguments );
+					})
 					.appendTo( that.uiButtonSet );
 				if ( $.fn.button ) {
 					button.button();
@@ -7536,9 +7454,9 @@ $.widget("ui.dialog", {
 				});
 
 				position = {
-					my: myAt[0] + (offset[0] < 0 ? offset[0] : "+" + offset[0]) + " " +
-						myAt[1] + (offset[1] < 0 ? offset[1] : "+" + offset[1]),
-					at: myAt.join( " " )
+					my: myAt.join( " " ),
+					at: myAt.join( " " ),
+					offset: offset.join( " " )
 				};
 			}
 
@@ -7803,7 +7721,7 @@ $.extend( $.ui.dialog.overlay, {
 		var scrollHeight,
 			offsetHeight;
 		// handle IE
-		if ( $.ui.ie ) {
+		if ( $.browser.msie ) {
 			scrollHeight = Math.max(
 				document.documentElement.scrollHeight,
 				document.body.scrollHeight
@@ -7828,7 +7746,7 @@ $.extend( $.ui.dialog.overlay, {
 		var scrollWidth,
 			offsetWidth;
 		// handle IE
-		if ( $.ui.ie ) {
+		if ( $.browser.msie ) {
 			scrollWidth = Math.max(
 				document.documentElement.scrollWidth,
 				document.body.scrollWidth
@@ -7885,7 +7803,7 @@ $.extend( $.ui.dialog.overlay.prototype, {
 var mouseHandled = false;
 
 $.widget( "ui.menu", {
-	version: "1.9.2",
+	version: "1.9.0",
 	defaultElement: "<ul>",
 	delay: 300,
 	options: {
@@ -8144,35 +8062,21 @@ $.widget( "ui.menu", {
 	},
 
 	refresh: function() {
+		// Initialize nested menus
 		var menus,
 			icon = this.options.icons.submenu,
-			submenus = this.element.find( this.options.menus );
-
-		// Initialize nested menus
-		submenus.filter( ":not(.ui-menu)" )
-			.addClass( "ui-menu ui-widget ui-widget-content ui-corner-all" )
-			.hide()
-			.attr({
-				role: this.options.role,
-				"aria-hidden": "true",
-				"aria-expanded": "false"
-			})
-			.each(function() {
-				var menu = $( this ),
-					item = menu.prev( "a" ),
-					submenuCarat = $( "<span>" )
-						.addClass( "ui-menu-icon ui-icon " + icon )
-						.data( "ui-menu-submenu-carat", true );
-
-				item
-					.attr( "aria-haspopup", "true" )
-					.prepend( submenuCarat );
-				menu.attr( "aria-labelledby", item.attr( "id" ) );
-			});
-
-		menus = submenus.add( this.element );
+			submenus = this.element.find( this.options.menus + ":not(.ui-menu)" )
+				.addClass( "ui-menu ui-widget ui-widget-content ui-corner-all" )
+				.hide()
+				.attr({
+					role: this.options.role,
+					"aria-hidden": "true",
+					"aria-expanded": "false"
+				});
 
 		// Don't refresh list items that are already adapted
+		menus = submenus.add( this.element );
+
 		menus.children( ":not(.ui-menu-item):has(a)" )
 			.addClass( "ui-menu-item" )
 			.attr( "role", "presentation" )
@@ -8195,6 +8099,19 @@ $.widget( "ui.menu", {
 
 		// Add aria-disabled attribute to any disabled menu item
 		menus.children( ".ui-state-disabled" ).attr( "aria-disabled", "true" );
+
+		submenus.each(function() {
+			var menu = $( this ),
+				item = menu.prev( "a" ),
+				submenuCarat = $( "<span>" )
+					.addClass( "ui-menu-icon ui-icon " + icon )
+					.data( "ui-menu-submenu-carat", true );
+
+			item
+				.attr( "aria-haspopup", "true" )
+				.prepend( submenuCarat );
+			menu.attr( "aria-labelledby", item.attr( "id" ) );
+		});
 
 		// If the active item has been removed, blur the menu
 		if ( this.active && !$.contains( this.element[ 0 ], this.active[ 0 ] ) ) {
@@ -8475,389 +8392,6 @@ $.widget( "ui.menu", {
 });
 
 }( jQuery ));
-(function( $ ) {
-
-var increments = 0;
-
-function addDescribedBy( elem, id ) {
-	var describedby = (elem.attr( "aria-describedby" ) || "").split( /\s+/ );
-	describedby.push( id );
-	elem
-		.data( "ui-tooltip-id", id )
-		.attr( "aria-describedby", $.trim( describedby.join( " " ) ) );
-}
-
-function removeDescribedBy( elem ) {
-	var id = elem.data( "ui-tooltip-id" ),
-		describedby = (elem.attr( "aria-describedby" ) || "").split( /\s+/ ),
-		index = $.inArray( id, describedby );
-	if ( index !== -1 ) {
-		describedby.splice( index, 1 );
-	}
-
-	elem.removeData( "ui-tooltip-id" );
-	describedby = $.trim( describedby.join( " " ) );
-	if ( describedby ) {
-		elem.attr( "aria-describedby", describedby );
-	} else {
-		elem.removeAttr( "aria-describedby" );
-	}
-}
-
-$.widget( "ui.tooltip", {
-	version: "1.9.2",
-	options: {
-		content: function() {
-			return $( this ).attr( "title" );
-		},
-		hide: true,
-		// Disabled elements have inconsistent behavior across browsers (#8661)
-		items: "[title]:not([disabled])",
-		position: {
-			my: "left top+15",
-			at: "left bottom",
-			collision: "flipfit flip"
-		},
-		show: true,
-		tooltipClass: null,
-		track: false,
-
-		// callbacks
-		close: null,
-		open: null
-	},
-
-	_create: function() {
-		this._on({
-			mouseover: "open",
-			focusin: "open"
-		});
-
-		// IDs of generated tooltips, needed for destroy
-		this.tooltips = {};
-		// IDs of parent tooltips where we removed the title attribute
-		this.parents = {};
-
-		if ( this.options.disabled ) {
-			this._disable();
-		}
-	},
-
-	_setOption: function( key, value ) {
-		var that = this;
-
-		if ( key === "disabled" ) {
-			this[ value ? "_disable" : "_enable" ]();
-			this.options[ key ] = value;
-			// disable element style changes
-			return;
-		}
-
-		this._super( key, value );
-
-		if ( key === "content" ) {
-			$.each( this.tooltips, function( id, element ) {
-				that._updateContent( element );
-			});
-		}
-	},
-
-	_disable: function() {
-		var that = this;
-
-		// close open tooltips
-		$.each( this.tooltips, function( id, element ) {
-			var event = $.Event( "blur" );
-			event.target = event.currentTarget = element[0];
-			that.close( event, true );
-		});
-
-		// remove title attributes to prevent native tooltips
-		this.element.find( this.options.items ).andSelf().each(function() {
-			var element = $( this );
-			if ( element.is( "[title]" ) ) {
-				element
-					.data( "ui-tooltip-title", element.attr( "title" ) )
-					.attr( "title", "" );
-			}
-		});
-	},
-
-	_enable: function() {
-		// restore title attributes
-		this.element.find( this.options.items ).andSelf().each(function() {
-			var element = $( this );
-			if ( element.data( "ui-tooltip-title" ) ) {
-				element.attr( "title", element.data( "ui-tooltip-title" ) );
-			}
-		});
-	},
-
-	open: function( event ) {
-		var that = this,
-			target = $( event ? event.target : this.element )
-				// we need closest here due to mouseover bubbling,
-				// but always pointing at the same event target
-				.closest( this.options.items );
-
-		// No element to show a tooltip for or the tooltip is already open
-		if ( !target.length || target.data( "ui-tooltip-id" ) ) {
-			return;
-		}
-
-		if ( target.attr( "title" ) ) {
-			target.data( "ui-tooltip-title", target.attr( "title" ) );
-		}
-
-		target.data( "ui-tooltip-open", true );
-
-		// kill parent tooltips, custom or native, for hover
-		if ( event && event.type === "mouseover" ) {
-			target.parents().each(function() {
-				var parent = $( this ),
-					blurEvent;
-				if ( parent.data( "ui-tooltip-open" ) ) {
-					blurEvent = $.Event( "blur" );
-					blurEvent.target = blurEvent.currentTarget = this;
-					that.close( blurEvent, true );
-				}
-				if ( parent.attr( "title" ) ) {
-					parent.uniqueId();
-					that.parents[ this.id ] = {
-						element: this,
-						title: parent.attr( "title" )
-					};
-					parent.attr( "title", "" );
-				}
-			});
-		}
-
-		this._updateContent( target, event );
-	},
-
-	_updateContent: function( target, event ) {
-		var content,
-			contentOption = this.options.content,
-			that = this,
-			eventType = event ? event.type : null;
-
-		if ( typeof contentOption === "string" ) {
-			return this._open( event, target, contentOption );
-		}
-
-		content = contentOption.call( target[0], function( response ) {
-			// ignore async response if tooltip was closed already
-			if ( !target.data( "ui-tooltip-open" ) ) {
-				return;
-			}
-			// IE may instantly serve a cached response for ajax requests
-			// delay this call to _open so the other call to _open runs first
-			that._delay(function() {
-				// jQuery creates a special event for focusin when it doesn't
-				// exist natively. To improve performance, the native event
-				// object is reused and the type is changed. Therefore, we can't
-				// rely on the type being correct after the event finished
-				// bubbling, so we set it back to the previous value. (#8740)
-				if ( event ) {
-					event.type = eventType;
-				}
-				this._open( event, target, response );
-			});
-		});
-		if ( content ) {
-			this._open( event, target, content );
-		}
-	},
-
-	_open: function( event, target, content ) {
-		var tooltip, events, delayedShow,
-			positionOption = $.extend( {}, this.options.position );
-
-		if ( !content ) {
-			return;
-		}
-
-		// Content can be updated multiple times. If the tooltip already
-		// exists, then just update the content and bail.
-		tooltip = this._find( target );
-		if ( tooltip.length ) {
-			tooltip.find( ".ui-tooltip-content" ).html( content );
-			return;
-		}
-
-		// if we have a title, clear it to prevent the native tooltip
-		// we have to check first to avoid defining a title if none exists
-		// (we don't want to cause an element to start matching [title])
-		//
-		// We use removeAttr only for key events, to allow IE to export the correct
-		// accessible attributes. For mouse events, set to empty string to avoid
-		// native tooltip showing up (happens only when removing inside mouseover).
-		if ( target.is( "[title]" ) ) {
-			if ( event && event.type === "mouseover" ) {
-				target.attr( "title", "" );
-			} else {
-				target.removeAttr( "title" );
-			}
-		}
-
-		tooltip = this._tooltip( target );
-		addDescribedBy( target, tooltip.attr( "id" ) );
-		tooltip.find( ".ui-tooltip-content" ).html( content );
-
-		function position( event ) {
-			positionOption.of = event;
-			if ( tooltip.is( ":hidden" ) ) {
-				return;
-			}
-			tooltip.position( positionOption );
-		}
-		if ( this.options.track && event && /^mouse/.test( event.type ) ) {
-			this._on( this.document, {
-				mousemove: position
-			});
-			// trigger once to override element-relative positioning
-			position( event );
-		} else {
-			tooltip.position( $.extend({
-				of: target
-			}, this.options.position ) );
-		}
-
-		tooltip.hide();
-
-		this._show( tooltip, this.options.show );
-		// Handle tracking tooltips that are shown with a delay (#8644). As soon
-		// as the tooltip is visible, position the tooltip using the most recent
-		// event.
-		if ( this.options.show && this.options.show.delay ) {
-			delayedShow = setInterval(function() {
-				if ( tooltip.is( ":visible" ) ) {
-					position( positionOption.of );
-					clearInterval( delayedShow );
-				}
-			}, $.fx.interval );
-		}
-
-		this._trigger( "open", event, { tooltip: tooltip } );
-
-		events = {
-			keyup: function( event ) {
-				if ( event.keyCode === $.ui.keyCode.ESCAPE ) {
-					var fakeEvent = $.Event(event);
-					fakeEvent.currentTarget = target[0];
-					this.close( fakeEvent, true );
-				}
-			},
-			remove: function() {
-				this._removeTooltip( tooltip );
-			}
-		};
-		if ( !event || event.type === "mouseover" ) {
-			events.mouseleave = "close";
-		}
-		if ( !event || event.type === "focusin" ) {
-			events.focusout = "close";
-		}
-		this._on( true, target, events );
-	},
-
-	close: function( event ) {
-		var that = this,
-			target = $( event ? event.currentTarget : this.element ),
-			tooltip = this._find( target );
-
-		// disabling closes the tooltip, so we need to track when we're closing
-		// to avoid an infinite loop in case the tooltip becomes disabled on close
-		if ( this.closing ) {
-			return;
-		}
-
-		// only set title if we had one before (see comment in _open())
-		if ( target.data( "ui-tooltip-title" ) ) {
-			target.attr( "title", target.data( "ui-tooltip-title" ) );
-		}
-
-		removeDescribedBy( target );
-
-		tooltip.stop( true );
-		this._hide( tooltip, this.options.hide, function() {
-			that._removeTooltip( $( this ) );
-		});
-
-		target.removeData( "ui-tooltip-open" );
-		this._off( target, "mouseleave focusout keyup" );
-		// Remove 'remove' binding only on delegated targets
-		if ( target[0] !== this.element[0] ) {
-			this._off( target, "remove" );
-		}
-		this._off( this.document, "mousemove" );
-
-		if ( event && event.type === "mouseleave" ) {
-			$.each( this.parents, function( id, parent ) {
-				$( parent.element ).attr( "title", parent.title );
-				delete that.parents[ id ];
-			});
-		}
-
-		this.closing = true;
-		this._trigger( "close", event, { tooltip: tooltip } );
-		this.closing = false;
-	},
-
-	_tooltip: function( element ) {
-		var id = "ui-tooltip-" + increments++,
-			tooltip = $( "<div>" )
-				.attr({
-					id: id,
-					role: "tooltip"
-				})
-				.addClass( "ui-tooltip ui-widget ui-corner-all ui-widget-content " +
-					( this.options.tooltipClass || "" ) );
-		$( "<div>" )
-			.addClass( "ui-tooltip-content" )
-			.appendTo( tooltip );
-		tooltip.appendTo( this.document[0].body );
-		if ( $.fn.bgiframe ) {
-			tooltip.bgiframe();
-		}
-		this.tooltips[ id ] = element;
-		return tooltip;
-	},
-
-	_find: function( target ) {
-		var id = target.data( "ui-tooltip-id" );
-		return id ? $( "#" + id ) : $();
-	},
-
-	_removeTooltip: function( tooltip ) {
-		tooltip.remove();
-		delete this.tooltips[ tooltip.attr( "id" ) ];
-	},
-
-	_destroy: function() {
-		var that = this;
-
-		// close open tooltips
-		$.each( this.tooltips, function( id, element ) {
-			// Delegate to close method to handle common cleanup
-			var event = $.Event( "blur" );
-			event.target = event.currentTarget = element[0];
-			that.close( event, true );
-
-			// Remove immediately; destroying an open tooltip doesn't use the
-			// hide animation
-			$( "#" + id ).remove();
-
-			// Restore the title
-			if ( element.data( "ui-tooltip-title" ) ) {
-				element.attr( "title", element.data( "ui-tooltip-title" ) );
-				element.removeData( "ui-tooltip-title" );
-			}
-		});
-	}
-});
-
-}( jQuery ) );
 ;(jQuery.effects || (function($, undefined) {
 
 var backCompat = $.uiBackCompat !== false,
@@ -9095,7 +8629,8 @@ color.fn = jQuery.extend( color.prototype, {
 
 		var inst = this,
 			type = jQuery.type( red ),
-			rgba = this._rgba = [];
+			rgba = this._rgba = [],
+			source;
 
 		// more than 1 argument specified - assume ( red, green, blue, alpha )
 		if ( green !== undefined ) {
@@ -9276,7 +8811,7 @@ color.fn = jQuery.extend( color.prototype, {
 			rgba.push( ~~( alpha * 255 ) );
 		}
 
-		return "#" + jQuery.map( rgba, function( v ) {
+		return "#" + jQuery.map( rgba, function( v, i ) {
 
 			// default to 0 when nulls exist
 			v = ( v || 0 ).toString( 16 );
@@ -9350,7 +8885,8 @@ spaces.hsla.from = function ( hsla ) {
 		l = hsla[ 2 ],
 		a = hsla[ 3 ],
 		q = l <= 0.5 ? l * ( 1 + s ) : l + s - l * s,
-		p = 2 * l - q;
+		p = 2 * l - q,
+		r, g, b;
 
 	return [
 		Math.round( hue2rgb( p, q, h + ( 1 / 3 ) ) * 255 ),
@@ -9467,7 +9003,7 @@ each( stepHooks, function( i, hook ) {
 			}
 			try {
 				elem.style[ hook ] = value;
-			} catch( error ) {
+			} catch( value ) {
 				// wrapped to prevent IE from throwing errors on "invalid" values like 'auto' or 'inherit'
 			}
 		}
@@ -9558,6 +9094,7 @@ function getElementStyles() {
 			this.currentStyle,
 		newStyle = {},
 		key,
+		camelCase,
 		len;
 
 	// webkit enumerates style porperties
@@ -9726,7 +9263,7 @@ $.fn.extend({
 (function() {
 
 $.extend( $.effects, {
-	version: "1.9.2",
+	version: "1.9.0",
 
 	// Saves a set of properties in a data storage
 	save: function( element, set ) {
@@ -9892,7 +9429,7 @@ $.extend( $.effects, {
 // return an effect options object for the given parameters:
 function _normalizeArguments( effect, options, speed, callback ) {
 
-	// allow passing all options as the first parameter
+	// allow passing all optinos as the first parameter
 	if ( $.isPlainObject( effect ) ) {
 		options = effect;
 		effect = effect.effect;
@@ -9901,8 +9438,8 @@ function _normalizeArguments( effect, options, speed, callback ) {
 	// convert to an object
 	effect = { effect: effect };
 
-	// catch (effect, null, ...)
-	if ( options == null ) {
+	// catch (effect)
+	if ( options === undefined ) {
 		options = {};
 	}
 
@@ -9961,7 +9498,7 @@ function standardSpeed( speed ) {
 }
 
 $.fn.extend({
-	effect: function( /* effect, options, speed, callback */ ) {
+	effect: function( effect, options, speed, callback ) {
 		var args = _normalizeArguments.apply( this, arguments ),
 			mode = args.mode,
 			queue = args.queue,

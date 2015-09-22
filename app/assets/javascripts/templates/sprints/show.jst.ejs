@@ -1,5 +1,5 @@
 <h2 class="divider<% if (model.IsComplete()) { %> completed<% } %>">
-  <%= model.get('name') ? model.get('name') : 'Sprint ' + model.get('iteration') %> stories
+  Sprint <%= model.get('iteration') %> stories
 </h2>
 
 <div class="all-stories">

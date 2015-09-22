@@ -42,7 +42,7 @@
 .ui-resizable-se { cursor: se-resize; width: 12px; height: 12px; right: 1px; bottom: 1px; }
 .ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
 .ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
-.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}.ui-autocomplete { position: absolute; cursor: default; }
+.ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}.ui-autocomplete { position: absolute; cursor: default; }	
 
 /* workarounds */
 * html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
@@ -50,8 +50,8 @@
 .ui-button, .ui-button:link, .ui-button:visited, .ui-button:hover, .ui-button:active { text-decoration: none; }
 .ui-button-icon-only { width: 2.2em; } /* to make room for the icon, a width needs to be set here */
 button.ui-button-icon-only { width: 2.4em; } /* button elements seem to need a little more width */
-.ui-button-icons-only { width: 3.4em; }
-button.ui-button-icons-only { width: 3.7em; }
+.ui-button-icons-only { width: 3.4em; } 
+button.ui-button-icons-only { width: 3.7em; } 
 
 /*button text element */
 .ui-button .ui-button-text { display: block; line-height: 1.4;  }
@@ -88,7 +88,7 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .ui-datepicker .ui-datepicker-title { margin: 0 2.3em; line-height: 1.8em; text-align: center; }
 .ui-datepicker .ui-datepicker-title select { font-size:1em; margin:1px 0; }
 .ui-datepicker select.ui-datepicker-month-year {width: 100%;}
-.ui-datepicker select.ui-datepicker-month,
+.ui-datepicker select.ui-datepicker-month, 
 .ui-datepicker select.ui-datepicker-year { width: 49%;}
 .ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
 .ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
@@ -164,20 +164,6 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 
 /* right-aligned */
 .ui-menu .ui-menu-icon { position: static; float: right; }
-
-.ui-tooltip {
-  padding: 8px;
-  position: absolute;
-  z-index: 9999;
-  max-width: 300px;
-  -webkit-box-shadow: 0 0 5px #aaa;
-  box-shadow: 0 0 5px #aaa;
-}
-/* Fades and background-images don't work well together in IE6, drop the image */
-* html .ui-tooltip {
-  background-image: none;
-}
-body .ui-tooltip { border-width: 2px; }
 
 /* Component containers
 ----------------------------------*/
