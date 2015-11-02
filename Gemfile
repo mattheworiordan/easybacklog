@@ -79,7 +79,6 @@ end
 
 group :test do
   gem 'minitest'
-  gem 'test-unit'
   gem 'rspec','>=2.7.0'
   gem 'rspec-rails','>=2.7.0'
   gem 'shoulda-matchers'
