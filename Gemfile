@@ -87,8 +87,8 @@ group :test do
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
   gem 'selenium-webdriver', '~> 2.22'
-  gem 'capybara', '~> 1.0'
-  gem 'capybara-webkit'
+  gem 'capybara', '~> 2.0'
+  gem 'capybara-webkit', '~> 1.7.1'
   gem 'timecop'
   gem 'launchy', '>=2'
   gem 'pdf-reader'

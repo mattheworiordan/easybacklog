@@ -26,7 +26,7 @@ end
 
 When /^(?:|I )follow "([^"]*)"(?: within "([^"]*)")?$/ do |link, selector|
   with_scope(selector_to(selector)) do
-    click_link(link)
+    click_link(link, match: :first)
   end
 end
 
