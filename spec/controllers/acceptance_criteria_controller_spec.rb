@@ -24,7 +24,7 @@ describe AcceptanceCriteriaController do
       it 'should not allow access to criteria index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           ActiveSupport::JSON.decode(response.body)['message'].should == 'You do not have permission to view this backlog'
         end
       end
@@ -44,14 +44,14 @@ describe AcceptanceCriteriaController do
       it 'should allow access to criteria index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
       it 'should not allow a user to new, create, update, destroy' do
         [:create, :update, :destroy].each do |verb|
           post verb, @params
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           ActiveSupport::JSON.decode(response.body)['message'].should match(/You do not have permission to (create|edit|delete) this (backlog|acceptance criterion)/)
         end
       end
@@ -72,14 +72,14 @@ describe AcceptanceCriteriaController do
       it 'should allow access to criteria index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
       it 'should allow a user to new, create, update, destroy' do
         [:create, :update, :destroy].each do |verb|
           post verb, @params
-          [status_code(:ok),status_code(:created)].should include(response.code)
+          [status_code_to_string(:ok),status_code_to_string(:created)].should include(response.code)
         end
       end
     end
@@ -98,7 +98,7 @@ describe AcceptanceCriteriaController do
 
     def expect_404(http_verb)
       get http_verb, { :id => 0, :story_id => story.id }
-      response.code.should == status_code(:not_found)
+      response.code.should == status_code_to_string(:not_found)
       json = JSON.parse(response.body)
       json['message'].should match(/Acceptance criterion does not exist/i)
     end
@@ -111,7 +111,7 @@ describe AcceptanceCriteriaController do
       # assign the user no rights to this backlog
       FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
       get http_verb, { :id => criterion2.id, :story_id => story2.id }
-      response.code.should == status_code(:forbidden)
+      response.code.should == status_code_to_string(:forbidden)
     end
 
     context 'only support JSON and XML' do
@@ -125,17 +125,17 @@ describe AcceptanceCriteriaController do
 
       it 'should return a 404 error if the story id does not exist' do
         get :index, { :story_id => 0 }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
       end
 
       it 'should return an error if the user does not have access to the backlog' do
         get :index, { :story_id => FactoryGirl.create(:story).id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return a list of criteria' do
         get :index, { :story_id => story.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json.length.should == 1
         json.first['id'].should == criterion.id
@@ -144,7 +144,7 @@ describe AcceptanceCriteriaController do
       it 'should support XML' do
         accept_xml
         get :index, { :story_id => story.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         xml = XMLObject.new(response.body)
         xml['acceptance-criterion'].id.to_i.should == criterion.id
       end
@@ -154,7 +154,7 @@ describe AcceptanceCriteriaController do
       it 'should return a single criterion' do
         get :show, { :id => criterion.id, :story_id => story.id }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == criterion.id
         json['position'].to_i.should == criterion.position
@@ -170,7 +170,7 @@ describe AcceptanceCriteriaController do
         criterion
         story.acceptance_criteria.length.should == 1
         post :create, { :story_id => story.id, :criterion => 'New name' }
-        response.code.should == status_code(:created)
+        response.code.should == status_code_to_string(:created)
         story.reload
         story.acceptance_criteria.length.should == 2
         story.acceptance_criteria.last.criterion.should == 'New name'
@@ -178,7 +178,7 @@ describe AcceptanceCriteriaController do
 
       it 'should return an error when trying to assign to protected variables' do
         put :create, { :story_id => story.id, :criterion => 'New name', :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -187,7 +187,7 @@ describe AcceptanceCriteriaController do
       it 'should return an error if the current user does not have permission to create the criterion' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :create, { :story_id => story.id, :criterion => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to create this acceptance criterion/)
       end
@@ -196,21 +196,21 @@ describe AcceptanceCriteriaController do
         criterion # create story before backlog marked as archived
         backlog.mark_archived
         put :create, { :story_id => story.id, :criterion => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
     end
 
     context 'update' do
       it 'should allow updates' do
         put :update, { :id => criterion.id, :story_id => story.id, :criterion => 'New name' }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         criterion.reload
         criterion.criterion.should == 'New name'
       end
 
       it 'should return an error when trying to assign to protected variables' do
         put :update, { :id => criterion.id, :story_id => story.id, :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -220,13 +220,13 @@ describe AcceptanceCriteriaController do
         criterion # create story before backlog marked as archived
         backlog.mark_archived
         put :update, { :id => criterion.id, :story_id => story.id, :criterion => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :update, { :id => criterion.id, :story_id => story.id, :criterion => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to edit this backlog/)
       end
@@ -240,7 +240,7 @@ describe AcceptanceCriteriaController do
         criterion # create story
         story.acceptance_criteria.should include(criterion)
         delete :destroy, { :id => criterion.id, :story_id => story.id }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         story.reload
         story.acceptance_criteria.should_not include(criterion)
       end
@@ -248,7 +248,7 @@ describe AcceptanceCriteriaController do
       it 'should return an error if the current user does not have permission to edit the backlog' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         delete :destroy, { :id => criterion.id, :story_id => story.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to delete this acceptance criterion/)
       end
@@ -257,7 +257,7 @@ describe AcceptanceCriteriaController do
         criterion # create story before backlog marked as archived
         backlog.mark_archived
         delete :destroy, { :id => criterion.id, :story_id => story.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it('should return a 404 error if the id does not exist') { expect_404(:destroy) }

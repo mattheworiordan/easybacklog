@@ -389,7 +389,7 @@ describe BacklogsController do
     describe 'Master backlogs (not a snapshot)' do
       def expect_404(http_verb)
         get http_verb, { :id => 0, :account_id => account.id }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
         json = JSON.parse(response.body)
         json['message'].should match(/Backlog does not exist/i)
       end
@@ -399,25 +399,25 @@ describe BacklogsController do
         # assign the user no rights to this backlog
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
         get http_verb, { :id => backlog2.id, :account_id => account.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       context 'index' do
         it 'should return a 404 error if the account id does not exist' do
           get :index, { :account_id => 0 }
-          response.code.should == status_code(:not_found)
+          response.code.should == status_code_to_string(:not_found)
         end
 
         it 'should return an error if the user does not have access to the account' do
           get :index, { :account_id => FactoryGirl.create(:account).id }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
         end
 
         it 'should return a list of active backlogs' do
           archived_backlog = FactoryGirl.create(:backlog, :archived => true, :account => account)
           backlog_id = backlog.id # force create of the backlog
           get :index, { :account_id => account.id }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           json.length.should == 1
           json.first['id'].should == backlog.id
@@ -427,7 +427,7 @@ describe BacklogsController do
           archived_backlog = FactoryGirl.create(:backlog, :archived => true, :account => account)
           backlog_id = backlog.id # force create of the backlog
           get :index, { :account_id => account.id, :include_archived => true }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           json.length.should == 2
           [json.first['id'], json.second['id']].should include(backlog.id, archived_backlog.id)
@@ -452,7 +452,7 @@ describe BacklogsController do
         it 'should allow an API user to GET a backlog' do
           get :show, { :id => backlog.id, :account_id => account.id }
 
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           json['id'].should == backlog.id
           json['name'].should == backlog.name
@@ -468,7 +468,7 @@ describe BacklogsController do
           create_backlog_data
 
           get :show, { :id => backlog.id, :account_id => account.id, :include_associated_data => true }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           data = RecursiveOpenStruct.new(JSON.parse(response.body))
           check_backlog_data data, backlog
           data.themes[0].stories[0].acceptance_criteria[0].criterion.should == @criterion.criterion
@@ -483,7 +483,7 @@ describe BacklogsController do
 
           accept_xml
           get :show, { :id => backlog.id, :account_id => account.id, :include_associated_data => true }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           xml = XMLObject.new(response.body)
           check_backlog_data xml, backlog
           xml.sprints[0].iteration.to_i.should == @sprint.iteration
@@ -494,7 +494,7 @@ describe BacklogsController do
       context 'create' do
         it 'should allow backlogs to be created' do
           put :create, { :account_id => account.id, :name => 'New name' }
-          response.code.should == status_code(:created)
+          response.code.should == status_code_to_string(:created)
           account.reload
           account.backlogs.last.name.should == 'New name'
           json = JSON.parse(response.body)
@@ -503,7 +503,7 @@ describe BacklogsController do
 
         it 'should return an error when trying to assign to protected variables' do
           put :create, { :account_id => account.id, :some_field => 'assigned' }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/You cannot assign/)
           json['message'].should match(/some_field/)
@@ -511,14 +511,14 @@ describe BacklogsController do
 
         it 'should return an error if the fields are not valid' do
           put :create, { :account_id => account.id, :name => '' }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/Name can't/)
         end
 
         it 'should return an error when assigning rate without velocity' do
           post :create, { :account_id => account.id, :name => 'New name', :rate => 500 }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/Rate cannot be specified if velocity is empty/)
         end
@@ -527,7 +527,7 @@ describe BacklogsController do
           no_rights_account_user = FactoryGirl.create(:account_user_with_no_rights, :account => account)
           setup_api_authentication FactoryGirl.create(:user_token, :user => no_rights_account_user.user)
           put :create, { :account_id => account.id, :name => 'New name' }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You do not have permission to create backlogs/)
         end
@@ -536,14 +536,14 @@ describe BacklogsController do
       context 'update' do
         it 'should allow updates to a backlog' do
           put :update, { :id => backlog.id, :account_id => account.id, :name => 'New name' }
-          response.code.should == status_code(:no_content)
+          response.code.should == status_code_to_string(:no_content)
           backlog.reload
           backlog.name.should == 'New name'
         end
 
         it 'should return an error when trying to assign to protected variables' do
           put :update, { :id => backlog.id, :account_id => account.id, :some_field => 'assigned' }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/You cannot assign/)
           json['message'].should match(/some_field/)
@@ -551,7 +551,7 @@ describe BacklogsController do
 
         it 'should return an error if the fields are not valid' do
           put :update, { :id => backlog.id, :account_id => account.id, :name => '' }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/Name can't/)
           json['errors'].first.should match(/Name can't/)
@@ -559,7 +559,7 @@ describe BacklogsController do
 
         it 'should return an error when assigning default_rate without default_velocity' do
           put :update, {:id => backlog.id, :account_id => account.id, :rate => 500, :velocity => nil }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/Rate cannot be specified if velocity is empty/)
         end
@@ -567,20 +567,20 @@ describe BacklogsController do
         it 'should return an error if the backlog is not editable' do
           backlog.mark_archived
           put :update, { :id => backlog.id, :account_id => account.id, :name => 'New name' }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
         end
 
         it 'should return an error if the current user does not have permission to edit the backlog' do
           FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
           put :update, { :id => backlog.id, :account_id => account.id, :name => 'New name' }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You do not have permission to update this backlog/)
         end
 
         it 'should allow a backlog to be archived and all other fields will be updated as well' do
           put :update, { :id => backlog.id, :account_id => account.id, :name => 'New name', :archived => 'true' }
-          response.code.should == status_code(:no_content)
+          response.code.should == status_code_to_string(:no_content)
           backlog.reload
           backlog.archived.should be_true
           backlog.name.should == 'New name'
@@ -589,7 +589,7 @@ describe BacklogsController do
         it 'should allow an archived backlog to be restored from archive and all other fields will be ignored' do
           backlog.mark_archived
           put :update, { :id => backlog.id, :account_id => account.id, :name => 'New name', :archived => 'false' }
-          response.code.should == status_code(:no_content)
+          response.code.should == status_code_to_string(:no_content)
           backlog.reload
           backlog.archived.should be_false
           backlog.name.should_not == 'New name'
@@ -602,7 +602,7 @@ describe BacklogsController do
       context 'destroy' do
         it 'should allow a backlog to be deleted' do
           delete :destroy, { :id => backlog.id, :account_id => account.id }
-          response.code.should == status_code(:no_content)
+          response.code.should == status_code_to_string(:no_content)
           account.reload
           account.backlogs.available.find_by_id(backlog.id).should be_blank
         end
@@ -610,7 +610,7 @@ describe BacklogsController do
         it 'should return an error if the current user does not have permission to edit the backlog' do
           FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
           delete :destroy, { :id => backlog.id, :account_id => account.id }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You do not have permission to delete this backlog/)
         end
@@ -622,7 +622,7 @@ describe BacklogsController do
       context 'duplicate' do
         it 'should allow a backlog to be duplicated' do
           post :duplicate, { :id => backlog.id, :account_id => account.id, :name => 'Duplicate backlog' }
-          response.code.should == status_code(:created)
+          response.code.should == status_code_to_string(:created)
           account.reload
           new_backlog = account.backlogs.available.find_by_name('Duplicate backlog')
           new_backlog.should be_present
@@ -633,14 +633,14 @@ describe BacklogsController do
         it 'should return an error if the current user does not have permission to create a new backlog' do
           account.account_users.each { |au| au.privilege = Privilege.new(:read); au.save! }
           post :duplicate, { :id => backlog.id, :account_id => account.id, :name => 'Duplicate backlog' }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You do not have permission to create a new backlog in this account/)
         end
 
         it 'should return an error if updating with invalid details' do
           post :duplicate, { :id => backlog.id, :account_id => account.id, :name => '' }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/Name can't/)
         end
@@ -657,7 +657,7 @@ describe BacklogsController do
 
       def expect_404(http_verb)
         get http_verb, { :id => backlog.id, :account_id => account.id, :snapshot_id => 0 }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
         json = JSON.parse(response.body)
         json['message'].should match(/Snapshot does not exist/i)
       end
@@ -666,36 +666,36 @@ describe BacklogsController do
         # assign the user no rights to this backlog
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         get http_verb, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       context 'index' do
         it 'should return a 404 error if the account id does not exist' do
           get :index_snapshot, { :account_id => 0, :id => 0 }
-          response.code.should == status_code(:not_found)
+          response.code.should == status_code_to_string(:not_found)
         end
 
         it 'should return an error if the user does not have access to the account' do
           get :index_snapshot, { :account_id => FactoryGirl.create(:account).id, :id => 0 }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
         end
 
         it 'should return a 404 error if the backlog id does not exist' do
           get :index_snapshot, { :account_id => account.id, :id => 0 }
-          response.code.should == status_code(:not_found)
+          response.code.should == status_code_to_string(:not_found)
         end
 
         it 'should return an error if the user does not have access to the backlog' do
           backlog = FactoryGirl.create(:backlog)
           get :index_snapshot, { :account_id => backlog.account_id, :id => backlog.id }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
         end
 
         it 'should return a list of snapshots' do
           manual_snapshot
           sprint_snapshot
           get :index_snapshot, { :account_id => account.id, :id => backlog.id }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           json['manual_snapshots'].length.should == 1
           json['manual_snapshots'].first['id'].should == manual_snapshot.id
@@ -707,7 +707,7 @@ describe BacklogsController do
       context 'create' do
         it 'should allow snapshots to be created' do
           put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => 'New name' }
-          response.code.should == status_code(:created)
+          response.code.should == status_code_to_string(:created)
           account.reload
           account.backlogs.last.snapshots.last.name.should == 'New name'
           json = JSON.parse(response.body)
@@ -716,7 +716,7 @@ describe BacklogsController do
 
         it 'should return an error if the fields are not valid' do
           put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => '' }
-          response.code.should == status_code(:invalid_params)
+          response.code.should == status_code_to_string(:invalid_params)
           json = JSON.parse(response.body)
           json['message'].should match(/Name can't/)
         end
@@ -725,7 +725,7 @@ describe BacklogsController do
           no_rights_account_user = FactoryGirl.create(:account_user_with_no_rights, :account => account)
           setup_api_authentication FactoryGirl.create(:user_token, :user => no_rights_account_user.user)
           put :create_snapshot, { :account_id => account.id, :id => backlog.id, :name => 'New name' }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You do not have permission to create a snapshot/)
         end
@@ -751,7 +751,7 @@ describe BacklogsController do
         it 'should return the snapshot JSON data for a manual snapshot' do
           get :show_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id }
 
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           json['id'].should == manual_snapshot.id
           json['name'].should == 'Manual'
@@ -762,7 +762,7 @@ describe BacklogsController do
         it 'should return the snapshot JSON data for a sprint snapshot' do
           get :show_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => sprint_snapshot.id }
 
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           json['id'].should == sprint_snapshot.id
           json['name'].should == 'Sprint 1'
@@ -777,7 +777,7 @@ describe BacklogsController do
           create_backlog_data_and_snapshots
 
           get :show_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id, :include_associated_data => true }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           json = JSON.parse(response.body)
           data = RecursiveOpenStruct.new(json)
           check_backlog_data data, manual_snapshot
@@ -789,7 +789,7 @@ describe BacklogsController do
 
           accept_xml
           get :show_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id, :include_associated_data => true }
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
           xml = XMLObject.new(response.body)
           check_backlog_data xml, manual_snapshot
         end
@@ -798,7 +798,7 @@ describe BacklogsController do
       context 'destroy' do
         it 'should allow a manual backlog to be deleted' do
           delete :destroy_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id }
-          response.code.should == status_code(:no_content)
+          response.code.should == status_code_to_string(:no_content)
           backlog.reload
           backlog.snapshots.length.should == 0
         end
@@ -806,14 +806,14 @@ describe BacklogsController do
         it 'should return an error if the current user does not have permission to edit the backlog' do
           FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
           delete :destroy_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => manual_snapshot.id }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You do not have permission to delete this snapshot/)
         end
 
         it 'should show a useful error message if a user tries to delete a sprint snapshot' do
           delete :destroy_snapshot, { :id => backlog.id, :account_id => account.id, :snapshot_id => sprint_snapshot.id }
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           json = JSON.parse(response.body)
           json['message'].should match(/You cannot delete a sprint snapshot, only manually created snapshots can be deleted/)
         end

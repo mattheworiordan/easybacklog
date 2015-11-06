@@ -24,7 +24,7 @@ describe SprintsController do
       it 'should not allow access to criteria index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           ActiveSupport::JSON.decode(response.body)['message'].should == 'You do not have permission to view this backlog'
         end
       end
@@ -44,14 +44,14 @@ describe SprintsController do
       it 'should allow access to criteria index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
       it 'should not allow a user to create, update, destroy' do
         [:create, :update, :destroy].each do |verb|
           post verb, @params
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           ActiveSupport::JSON.decode(response.body)['message'].should match(/You do not have permission to (create|edit|delete) this (backlog|sprint)/)
         end
       end
@@ -73,7 +73,7 @@ describe SprintsController do
       it 'should allow access to criteria index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
@@ -82,7 +82,7 @@ describe SprintsController do
         [:update, :destroy, :create].each do |verb|
           start_on = start_on + 2.days
           post verb, @params.merge(:start_on => start_on)
-          [status_code(:ok),status_code(:created)].should include(response.code)
+          [status_code_to_string(:ok),status_code_to_string(:created)].should include(response.code)
         end
       end
     end
@@ -100,7 +100,7 @@ describe SprintsController do
 
     def expect_404(http_verb)
       get http_verb, { :id => 0, :backlog_id => theme.id }
-      response.code.should == status_code(:not_found)
+      response.code.should == status_code_to_string(:not_found)
       json = JSON.parse(response.body)
       json['message'].should match(/Sprint does not exist/i)
     end
@@ -111,7 +111,7 @@ describe SprintsController do
       # assign the user no rights to this backlog
       FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
       get http_verb, { :id => sprint2.id, :backlog_id => backlog2.id }
-      response.code.should == status_code(:forbidden)
+      response.code.should == status_code_to_string(:forbidden)
     end
 
     context 'only support JSON and XML' do
@@ -125,17 +125,17 @@ describe SprintsController do
 
       it 'should return a 404 error if the backlog id does not exist' do
         get :index, { :backlog_id => 0 }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
       end
 
       it 'should return an error if the user does not have access to the backlog' do
         get :index, { :backlog_id => FactoryGirl.create(:backlog).id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return a list of sprints' do
         get :index, { :backlog_id => backlog.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json.length.should == 1
         json.first['id'].should == sprint.id
@@ -144,7 +144,7 @@ describe SprintsController do
 
       it 'should return a list of sprints with associated data if requested' do
         get :index, { :backlog_id => backlog.id, :include_associated_data => true }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json.length.should == 1
         json.first['id'].should == sprint.id
@@ -155,7 +155,7 @@ describe SprintsController do
       it 'should support XML' do
         accept_xml
         get :index, { :backlog_id => backlog.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         xml = XMLObject.new(response.body)
         xml.sprint.id.to_i.should == sprint.id
       end
@@ -167,7 +167,7 @@ describe SprintsController do
       it 'should return a single sprint' do
         get :show, { :id => sprint.id, :backlog_id => backlog.id }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == sprint.id
         json['iteration'].to_i.should == sprint.iteration
@@ -179,7 +179,7 @@ describe SprintsController do
       it 'should return all children' do
         get :show, { :id => sprint.id, :backlog_id => backlog.id, :include_associated_data => true }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == sprint.id
         json['sprint_stories'].length.should == 2
@@ -194,7 +194,7 @@ describe SprintsController do
         sprint
         backlog.sprints.length.should == 1
         post :create, { :backlog_id => backlog.id, :start_on => sprint.start_on + sprint.duration_days.days, :duration_days => 10, :explicit_velocity => 5 }
-        response.code.should == status_code(:created)
+        response.code.should == status_code_to_string(:created)
         backlog.reload
         backlog.sprints.length.should == 2
         backlog.sprints.last.duration_days.to_i.should == 10
@@ -202,7 +202,7 @@ describe SprintsController do
 
       it 'should return an error when trying to assign to protected variables' do
         put :create, { :backlog_id => backlog.id, :as_a => 'New name', :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -210,7 +210,7 @@ describe SprintsController do
 
       it 'should return an error if the fields are not valid' do
         put :create, { :id => sprint.id, :backlog_id => backlog.id, :duration_days => '0' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Duration days/)
       end
@@ -218,7 +218,7 @@ describe SprintsController do
       it 'should return an error if one of the fields are invalid based on custom business logic for the sprint' do
         FactoryGirl.create(:sprint, :backlog => backlog, :start_on => Date.today.to_s, :duration_days => 10) # set up a sprint that will be overlapped by the next sprint
         put :create, { :id => sprint.id, :backlog_id => backlog.id, :start_on => Date.today.to_s, :duration_days => 10, :explicit_velocity => 5 }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Start date and duration overlaps with sprint 1/)
       end
@@ -226,7 +226,7 @@ describe SprintsController do
       it 'should return an error if the current user does not have permission to create the sprint' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :create, { :backlog_id => backlog.id, :start_on => Date.today.to_s, :duration_days => 10, :explicit_velocity => 5 }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to create this sprint/)
       end
@@ -235,21 +235,21 @@ describe SprintsController do
         sprint # create sprint before backlog marked as archived
         backlog.mark_archived
         put :update, { :backlog_id => backlog.id, :duration_days => 10, :id => sprint.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
     end
 
     context 'update' do
       it 'should allow updates' do
         put :update, { :id => sprint.id, :backlog_id => backlog.id, :duration_days => 43 }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         sprint.reload
         sprint.duration_days.should == 43
       end
 
       it 'should return an error when trying to assign to protected variables' do
         put :update, { :id => sprint.id, :backlog_id => backlog.id, :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -257,7 +257,7 @@ describe SprintsController do
 
       it 'should return an error if the fields are not valid' do
         put :update, { :id => sprint.id, :backlog_id => backlog.id, :duration_days => 0 }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Duration days/)
       end
@@ -266,13 +266,13 @@ describe SprintsController do
         sprint # create sprint before backlog marked as archived
         backlog.mark_archived
         put :update, { :id => sprint.id, :backlog_id => backlog.id, :duration_days => 10 }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :update, { :id => sprint.id, :backlog_id => backlog.id, :duration_days => 10 }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to edit this backlog/)
       end
@@ -286,7 +286,7 @@ describe SprintsController do
         sprint # create sprint
         backlog.sprints.should include(sprint)
         delete :destroy, { :id => sprint.id, :backlog_id => backlog.id }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         backlog.reload
         backlog.sprints.should_not include(sprint)
       end
@@ -294,7 +294,7 @@ describe SprintsController do
       it 'should return an error if the current user does not have permission to edit the backlog' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         delete :destroy, { :id => sprint.id, :backlog_id => backlog.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to delete this sprint/)
       end
@@ -303,13 +303,13 @@ describe SprintsController do
         sprint # create sprint before backlog marked as archived
         backlog.mark_archived
         delete :destroy, { :id => sprint.id, :backlog_id => backlog.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return a forbidden error if the sprint cannot be deleted because the sprint is marked as complete' do
         sprint.mark_as_complete
         delete :destroy, { :id => sprint.id, :backlog_id => backlog.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it('should return a 404 error if the id does not exist') { expect_404(:destroy) }

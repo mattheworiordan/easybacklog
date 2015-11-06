@@ -12,7 +12,7 @@ Given /^the database has the necessary lookup tables$/ do
 end
 
 Then /^(?:|I )should see the page title "([^\"]+)"$/ do |title|
-  sleep 0.2 unless page.has_css?("head title") # https://github.com/thoughtbot/capybara-webkit/issues/36
+  # sleep 0.2 unless page.has_css?("head title") # https://github.com/thoughtbot/capybara-webkit/issues/36
   with_scope("head title") do
     page.text.should match(title)
   end

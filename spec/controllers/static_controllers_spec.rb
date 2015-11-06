@@ -16,7 +16,7 @@ shared_examples "a static API" do
 
   it 'should return a list' do
     get :index, { :id => 0 }
-    response.code.should == status_code(:ok)
+    response.code.should == status_code_to_string(:ok)
     json = JSON.parse(response.body)
     json.length.should == 1
     json.first['id'].should == subject.id
@@ -25,7 +25,7 @@ shared_examples "a static API" do
   it 'should support XML' do
     accept_xml
     get :index, { :id => 0 }
-    response.code.should == status_code(:ok)
+    response.code.should == status_code_to_string(:ok)
     xml = XMLObject.new(response.body)
   end
 
@@ -33,14 +33,14 @@ shared_examples "a static API" do
     it 'should return a single object' do
       get :show, { :id => subject.id }
 
-      response.code.should == status_code(:ok)
+      response.code.should == status_code_to_string(:ok)
       json = JSON.parse(response.body)
       json['id'].should == subject.id
     end
 
     it('should return a 404 error if the id does not exist') do
       get :show, { :id => 0 }
-      response.code.should == status_code(:not_found)
+      response.code.should == status_code_to_string(:not_found)
     end
   end
 end

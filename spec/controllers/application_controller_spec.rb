@@ -25,7 +25,7 @@ describe TestingApplicationController do
       request.env['HTTP_AUTHORIZATION'] = "Basic #{Base64::encode64("#{user_token.user.id}:#{user_token.access_token}")}"
 
       get :show, { :id => account.id }
-      response.code.should == status_code(:ok)
+      response.code.should == status_code_to_string(:ok)
     end
 
     it 'should fail an API request trying to authenticate using basic authentication and invalid details' do
@@ -33,7 +33,7 @@ describe TestingApplicationController do
       request.env['HTTP_AUTHORIZATION'] = "Basic matt:password}"
 
       get :show, { :id => account.id }
-      response.code.should == status_code(:unauthorized)
+      response.code.should == status_code_to_string(:unauthorized)
       json = JSON.parse(response.body)
       json['status'].should == 'error'
       json['message'].should == 'Invalid authentication details'
@@ -44,7 +44,7 @@ describe TestingApplicationController do
       request.env['HTTP_AUTHORIZATION'] = "token #{user_token.access_token}"
 
       get :show, { :id => account.id }
-      response.code.should == status_code(:ok)
+      response.code.should == status_code_to_string(:ok)
     end
 
     it 'should fail an API request trying to authenticate using token authentication (auth header) and invalid details' do
@@ -52,28 +52,28 @@ describe TestingApplicationController do
       request.env['HTTP_AUTHORIZATION'] = "token IveJustMadeThisUp"
 
       get :show, { :id => account.id }
-      response.code.should == status_code(:unauthorized)
+      response.code.should == status_code_to_string(:unauthorized)
     end
 
     it 'should allow an API request to authenticate using querystring authentication' do
       request.env['X-Forward-To-API'] = 'true'
 
       get :show, { :id => account.id, :api_key => user_token.access_token }
-      response.code.should == status_code(:ok)
+      response.code.should == status_code_to_string(:ok)
     end
 
     it 'should fail an API request trying to authenticate using querystring authentication' do
       request.env['X-Forward-To-API'] = 'true'
 
       get :show, { :id => account.id, :api_key => 'doesNotExist' }
-      response.code.should == status_code(:unauthorized)
+      response.code.should == status_code_to_string(:unauthorized)
     end
 
     it 'should fail an API request without any form of authentication in the request' do
       request.env['X-Forward-To-API'] = 'true'
 
       get :show, { :id => account.id }
-      response.code.should == status_code(:unauthorized)
+      response.code.should == status_code_to_string(:unauthorized)
     end
 
     describe 'ssl' do
@@ -85,7 +85,7 @@ describe TestingApplicationController do
         request.env['HTTP_AUTHORIZATION'] = "token #{user_token.access_token}"
 
         get :show, { :id => account.id }
-        response.code.should == status_code(:upgrade_required)
+        response.code.should == status_code_to_string(:upgrade_required)
       end
     end
 
@@ -98,7 +98,7 @@ describe TestingApplicationController do
         request.env['HTTP_ACCEPT'] = 'text/html'
 
         get :show, { :id => account.id }
-        response.code.should == status_code(:not_acceptable)
+        response.code.should == status_code_to_string(:not_acceptable)
         response.body.should match(/HTML is not a supported/)
       end
 
@@ -108,7 +108,7 @@ describe TestingApplicationController do
         request.env['HTTP_ACCEPT'] = 'text/plain'
 
         get :show, { :id => account.id }
-        response.code.should == status_code(:not_acceptable)
+        response.code.should == status_code_to_string(:not_acceptable)
       end
     end
   end

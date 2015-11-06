@@ -39,7 +39,7 @@ def check_unsupported_mimetypes(actions, *params)
       else
         post action.to_sym, params
       end
-      response.code.should == status_code(:not_acceptable)
+      response.code.should == status_code_to_string(:not_acceptable)
     end
   end
 end

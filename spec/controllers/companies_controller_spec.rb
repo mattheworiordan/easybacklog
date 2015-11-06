@@ -71,7 +71,7 @@ describe CompaniesController do
 
     def expect_404(http_verb)
       get http_verb, { :id => 0, :account_id => account.id }
-      response.code.should == status_code(:not_found)
+      response.code.should == status_code_to_string(:not_found)
       json = JSON.parse(response.body)
       json['message'].should match(/Company does not exist/i)
     end
@@ -87,7 +87,7 @@ describe CompaniesController do
       before (:each) { FactoryGirl.create(:company_user, :user => user, :company => company2) }
 
       def check_has_valid_companies_data(companies)
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         companies.length.should == 2
         [companies.first['id'].to_i,companies.second['id'].to_i].should include(company.id,company2.id)
       end
@@ -101,7 +101,7 @@ describe CompaniesController do
       it 'should return an XML list of Companies' do
         accept_xml
         get :index, { :account_id => account.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         xml = XMLObject.new(response.body)
         check_has_valid_companies_data(xml.companies)
       end
@@ -110,7 +110,7 @@ describe CompaniesController do
     context 'show' do
       it 'should return the JSON for a company that exists that the user has access to' do
         get :show, { :id => company.id, :account_id => account.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == company.id
         json['name'].should == company.name
@@ -119,12 +119,12 @@ describe CompaniesController do
       it 'should return a 404 error if trying to access another user\'s company' do
         company2 = FactoryGirl.create(:company)
         get :show, { :id => company2.id, :account_id => account.id }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
       end
 
       it 'should return a 404 if trying to access a company that does not exist' do
         get :show, { :id => 0, :account_id => account.id }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
       end
 
       it('should return a 404 error if the account id does not exist') { expect_404(:show) }
@@ -135,7 +135,7 @@ describe CompaniesController do
 
       it 'should allow users to create a company' do
         post :create, { :account_id => account.id, :name => 'New name', :default_velocity => 27, :default_rate => 800 }
-        response.code.should == status_code(:created)
+        response.code.should == status_code_to_string(:created)
         json = JSON.parse(response.body)
         json['name'].should == 'New name'
         json['default_velocity'].to_i.should == 27
@@ -147,14 +147,14 @@ describe CompaniesController do
 
       it 'should return an error when trying to assign to protected variables' do
         post :create, { :account_id => account.id, :name => 'New name', :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/some_field/)
       end
 
       it 'should return an error when assigning default_rate without default_velocity' do
         post :create, { :account_id => account.id, :name => 'New name', :default_rate => 500 }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Default rate cannot be specified if default velocity is empty/)
         json['errors'].first.should match(/Default rate cannot be specified if default velocity is empty/)
@@ -162,7 +162,7 @@ describe CompaniesController do
 
       it 'should return an error if the fields are not valid' do
         post :create, { :account_id => account.id, :name => '' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Name can't/)
       end
@@ -172,7 +172,7 @@ describe CompaniesController do
         user_token2 = FactoryGirl.create(:user_token, :user => account_user2.user)
         setup_api_authentication user_token2
         post :create, { :account_id => account_user2.account.id, :name => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
     end
 
@@ -181,7 +181,7 @@ describe CompaniesController do
 
       it 'should allow updates to a company' do
         put :update, { :id => company.id, :account_id => account.id, :name => 'New name', :default_velocity => 27 }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         company.reload
         company.name.should == 'New name'
         company.default_velocity.to_i.should == 27
@@ -189,7 +189,7 @@ describe CompaniesController do
 
       it 'should return an error when trying to assign to protected variables' do
         put :update, { :id => company.id, :account_id => account.id, :name => 'New name', :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -197,7 +197,7 @@ describe CompaniesController do
 
       it 'should return an error when assigning default_rate without default_velocity' do
         put :update, {:id => company.id, :account_id => account.id, :default_rate => 500, :default_velocity => nil }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Default rate cannot be specified if default velocity is empty/)
         json['errors'].first.should match(/Default rate cannot be specified if default velocity is empty/)
@@ -205,7 +205,7 @@ describe CompaniesController do
 
       it 'should return an error if the fields are not valid' do
         put :update, { :id => company.id, :account_id => account.id, :name => '' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Name can't/)
       end
@@ -216,7 +216,7 @@ describe CompaniesController do
         company2 = FactoryGirl.create(:company, :account => account_user2.account)
         setup_api_authentication user_token2
         put :update, { :id => company2.id, :account_id => account_user2.account.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it('should return a 404 error if the account id does not exist') { expect_404(:update) }

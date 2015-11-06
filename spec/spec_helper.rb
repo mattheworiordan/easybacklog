@@ -15,6 +15,8 @@ include Warden::Test::Helpers
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
+require 'capybara/poltergeist'
+Capybara.javascript_driver = :poltergeist
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -46,6 +48,8 @@ RSpec.configure do |config|
   config.include Capybara::DSL
 
   config.include FeatureHelper, type: :request
+
+  config.include Rails.application.routes.url_helpers
 
   config.before(:each, type: :request) do
     create(:locale, :name => 'American English', :code => 'en-US', :position => 5)

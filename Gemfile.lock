@@ -63,14 +63,12 @@ GEM
     capybara-screenshot (1.0.11)
       capybara (>= 1.0, < 3)
       launchy
-    capybara-webkit (1.7.1)
-      capybara (>= 2.3.0, < 2.6.0)
-      json
     celluloid (0.13.0)
       timers (>= 1.0.0)
     childprocess (0.5.7)
       ffi (~> 1.0, >= 1.0.11)
     chunky_png (1.2.6)
+    cliver (0.3.2)
     coderay (1.0.8)
     columnize (0.3.6)
     compass (0.12.2)
@@ -165,6 +163,11 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
     pg (0.18.2)
+    poltergeist (1.7.0)
+      capybara (~> 2.1)
+      cliver (~> 0.3.1)
+      multi_json (~> 1.0)
+      websocket-driver (>= 0.2.0)
     polyglot (0.3.5)
     power_assert (0.2.2)
     prawn (0.12.0)
@@ -307,6 +310,9 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5.3)
     websocket (1.2.2)
+    websocket-driver (0.6.2)
+      websocket-extensions (>= 0.1.0)
+    websocket-extensions (0.1.2)
     will_paginate (3.0.3)
     xml-object (0.9.93)
     xpath (2.0.0)
@@ -321,7 +327,6 @@ DEPENDENCIES
   better_errors
   capybara (~> 2.0)
   capybara-screenshot
-  capybara-webkit (~> 1.7.1)
   compass
   compass-960-plugin
   compass-rails
@@ -347,6 +352,7 @@ DEPENDENCIES
   newrelic_rpm
   pdf-reader
   pg
+  poltergeist
   prawn (~> 0.12)
   pry
   pry-byebug

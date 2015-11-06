@@ -34,7 +34,7 @@ describe CompanyUsersController do
       it 'should send a forbidden header if non-admin user' do
         sign_in @user
         put :update, :account_id => @account.id, :company_id => @company.id, :privilege => 'read', :id => @user.id
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should add a company user when explicit permission set' do
@@ -57,13 +57,13 @@ describe CompanyUsersController do
 
       it 'should not allow invalid privileges' do
         put :update, :account_id => @account.id, :company_id => @company.id, :privilege => 'bollocks', :id => @user.id
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         ActiveSupport::JSON.decode(response.body)['message'].should == 'Invalid parameters'
       end
 
       it 'should not allow invalid parameters' do
         put :update, :account_id => @account.id, :company_id => @company.id, :privilege => 'read', :id => 0
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         ActiveSupport::JSON.decode(response.body)['message'].should == 'Invalid parameters'
       end
     end

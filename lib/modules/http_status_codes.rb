@@ -15,7 +15,7 @@ module HttpStatusCodes
     :internal_server_error => 500
   }
 
-  def status_code(status_code)
-    STATUS_CODE[status_code].to_s
+  def status_code_to_string(code)
+    STATUS_CODE[code].to_s
   end
 end

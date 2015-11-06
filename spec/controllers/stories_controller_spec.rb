@@ -24,7 +24,7 @@ describe StoriesController do
       it 'should not allow access to story index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           ActiveSupport::JSON.decode(response.body)['message'].should == 'You do not have permission to view this backlog'
         end
       end
@@ -44,21 +44,21 @@ describe StoriesController do
       it 'should allow access to story index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
       it 'should not allow a user to create, update, destroy' do
         [:create, :update, :destroy].each do |verb|
           post verb, @params
-          response.code.should == status_code(:forbidden)
+          response.code.should == status_code_to_string(:forbidden)
           ActiveSupport::JSON.decode(response.body)['message'].should match(/You do not have permission to (edit|delete|create) this (backlog|story)/)
         end
       end
 
       it 'should not allow a user to move a story to a new theme' do
         post :move_to_theme, @params.merge(:new_theme_id => FactoryGirl.create(:theme, :backlog => @story.theme.backlog))
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         ActiveSupport::JSON.decode(response.body)['message'].should == 'You do not have permission to edit this backlog'
       end
     end
@@ -78,20 +78,20 @@ describe StoriesController do
       it 'should allow access to story index and show' do
         [:index, :show].each do |verb|
           get verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
       it 'should allow a user to create, update, destroy' do
         [:create, :update, :destroy].each do |verb|
           post verb, @params
-          response.code.should == status_code(:ok)
+          response.code.should == status_code_to_string(:ok)
         end
       end
 
       it 'should allow a user to move a story to a new theme' do
         post :move_to_theme, @params.merge(:new_theme_id => FactoryGirl.create(:theme, :backlog => @story.theme.backlog))
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
       end
     end
   end
@@ -108,7 +108,7 @@ describe StoriesController do
 
     def expect_404(http_verb)
       get http_verb, { :id => 0, :theme_id => theme.id }
-      response.code.should == status_code(:not_found)
+      response.code.should == status_code_to_string(:not_found)
       json = JSON.parse(response.body)
       json['message'].should match(/Story does not exist/i)
     end
@@ -120,7 +120,7 @@ describe StoriesController do
       # assign the user no rights to this backlog
       FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
       get http_verb, { :id => story2.id, :theme_id => theme2.id }
-      response.code.should == status_code(:forbidden)
+      response.code.should == status_code_to_string(:forbidden)
     end
 
     context 'only support JSON and XML' do
@@ -134,17 +134,17 @@ describe StoriesController do
 
       it 'should return a 404 error if the theme id does not exist' do
         get :index, { :theme_id => 0 }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
       end
 
       it 'should return an error if the user does not have access to the backlog' do
         get :index, { :theme_id => FactoryGirl.create(:theme).id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return a list of stories' do
         get :index, { :theme_id => theme.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json.length.should == 1
         json.first['id'].should == story.id
@@ -153,7 +153,7 @@ describe StoriesController do
 
       it 'should return a list of stories with associated data if requested' do
         get :index, { :theme_id => theme.id, :include_associated_data => true }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json.length.should == 1
         json.first['id'].should == story.id
@@ -164,7 +164,7 @@ describe StoriesController do
       it 'should support XML' do
         accept_xml
         get :index, { :theme_id => theme.id }
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         xml = XMLObject.new(response.body)
         xml.story.id.to_i.should == story.id
       end
@@ -176,7 +176,7 @@ describe StoriesController do
       it 'should return a single story' do
         get :show, { :id => story.id, :theme_id => theme.id }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == story.id
         json['comments'].should == story.comments
@@ -189,7 +189,7 @@ describe StoriesController do
       it 'should return all children' do
         get :show, { :id => story.id, :theme_id => theme.id, :include_associated_data => true }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == story.id
         json['acceptance_criteria'].length.should == 2
@@ -221,7 +221,7 @@ describe StoriesController do
       it 'should return a single story' do
         get :show_without_theme_id, { :id => story.id }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == story.id
         json['comments'].should == story.comments
@@ -231,7 +231,7 @@ describe StoriesController do
         2.times { FactoryGirl.create(:acceptance_criterion, :story => story) }
         get :show_without_theme_id, { :id => story.id, :include_associated_data => true }
 
-        response.code.should == status_code(:ok)
+        response.code.should == status_code_to_string(:ok)
         json = JSON.parse(response.body)
         json['id'].should == story.id
         json['acceptance_criteria'].length.should == 2
@@ -239,7 +239,7 @@ describe StoriesController do
 
       it('should return a 404 error if the id does not exist') do
         get :show_without_theme_id, { :id => 0 }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
         json = JSON.parse(response.body)
         json['message'].should match(/Story does not exist/i)
       end
@@ -251,7 +251,7 @@ describe StoriesController do
         # assign the user no rights to this backlog
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog2)
         get :show_without_theme_id, { :id => story2.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
     end
 
@@ -260,7 +260,7 @@ describe StoriesController do
         story
         theme.stories.length.should == 1
         post :create, { :theme_id => theme.id, :as_a => 'New name' }
-        response.code.should == status_code(:created)
+        response.code.should == status_code_to_string(:created)
         theme.reload
         theme.stories.length.should == 2
         theme.stories.last.as_a.should == 'New name'
@@ -268,7 +268,7 @@ describe StoriesController do
 
       it 'should return an error when trying to assign to protected variables' do
         put :create, { :theme_id => theme.id, :as_a => 'New name', :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -276,7 +276,7 @@ describe StoriesController do
 
       it 'should return an error if the fields are not valid' do
         put :create, { :id => story.id, :theme_id => theme.id, :score_50 => 'a' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Score 50/)
         json['errors'].first.should match(/Score 50/)
@@ -285,7 +285,7 @@ describe StoriesController do
       it 'should return an error if the current user does not have permission to create the story' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :create, { :theme_id => theme.id, :as_a => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to create this story/)
       end
@@ -294,21 +294,21 @@ describe StoriesController do
         theme
         backlog.mark_archived
         put :create, { :theme_id => theme.id, :as_a => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
     end
 
     context 'update' do
       it 'should allow updates' do
         put :update, { :id => story.id, :theme_id => theme.id, :as_a => 'New name' }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         story.reload
         story.as_a.should == 'New name'
       end
 
       it 'should return an error when trying to assign to protected variables' do
         put :update, { :id => story.id, :theme_id => theme.id, :some_field => 'assigned' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/You cannot assign/)
         json['message'].should match(/some_field/)
@@ -316,7 +316,7 @@ describe StoriesController do
 
       it 'should return an error if the fields are not valid' do
         put :update, { :id => story.id, :theme_id => theme.id, :score_50 => 'a' }
-        response.code.should == status_code(:invalid_params)
+        response.code.should == status_code_to_string(:invalid_params)
         json = JSON.parse(response.body)
         json['message'].should match(/Score 50/)
         json['errors'].first.should match(/Score 50/)
@@ -326,13 +326,13 @@ describe StoriesController do
         story # create story before backlog marked as archived
         backlog.mark_archived
         put :update, { :id => story.id, :theme_id => theme.id, :as_a => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it 'should return an error if the current user does not have permission to edit the backlog' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         put :update, { :id => story.id, :theme_id => theme.id, :as_a => 'New name' }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to edit this backlog/)
       end
@@ -366,7 +366,7 @@ describe StoriesController do
         story # create story
         theme.stories.should include(story)
         delete :destroy, { :id => story.id, :theme_id => theme.id }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         theme.reload
         theme.stories.should_not include(story)
       end
@@ -374,7 +374,7 @@ describe StoriesController do
       it 'should return an error if the current user does not have permission to edit the backlog' do
         FactoryGirl.create(:backlog_user_with_no_rights, :user => user, :backlog => backlog)
         delete :destroy, { :id => story.id, :theme_id => theme.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
         json = JSON.parse(response.body)
         json['message'].should match(/You do not have permission to delete this story/)
       end
@@ -383,7 +383,7 @@ describe StoriesController do
         story # create story before backlog marked as archived
         backlog.mark_archived
         delete :destroy, { :id => story.id, :theme_id => theme.id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
 
       it('should return a 404 error if the id does not exist') { expect_404(:destroy) }
@@ -395,7 +395,7 @@ describe StoriesController do
 
       it 'should allow the story to be reassigned to another theme' do
         post :move_to_theme, { :id => story.id, :theme_id => theme.id, :new_theme_id => theme2.id }
-        response.code.should == status_code(:no_content)
+        response.code.should == status_code_to_string(:no_content)
         theme2.stories.should include(story)
         theme.reload
         theme.stories.should_not include(story)
@@ -403,12 +403,12 @@ describe StoriesController do
 
       it 'should return an error if the target theme does not exist' do
         post :move_to_theme, { :id => story.id, :theme_id => theme.id, :new_theme_id => 0 }
-        response.code.should == status_code(:not_found)
+        response.code.should == status_code_to_string(:not_found)
       end
 
       it 'should return an error if the theme could not be found from this backlog' do
         post :move_to_theme, { :id => story.id, :theme_id => theme.id, :new_theme_id => FactoryGirl.create(:theme).id }
-        response.code.should == status_code(:forbidden)
+        response.code.should == status_code_to_string(:forbidden)
       end
     end
   end
