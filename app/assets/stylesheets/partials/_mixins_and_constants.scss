@@ -25,7 +25,7 @@ $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-v
   text-shadow: rgba(255, 255, 255, 0.2) 0 0 1px;
 }
 
-@mixin drop-shadow($offset, $size, $color: #888) {
+@mixin drop-shadow($offset, $size, $color: #bbb) {
   -moz-box-shadow: $offset $offset $size $color;
   -webkit-box-shadow: $offset $offset $size $color;
   box-shadow: $offset $offset $size $color
@@ -120,38 +120,38 @@ $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-v
   }
   /* in progress */
   &.status-code-P {
-    background-color: #A00;
+    background-color: #c48989;
     color: white;
     @if $includeHover == yes {
       &.hover {
-        background-color: darken(#A00, 15%);
+        background-color: darken(#c48989, 15%);
       }
     }
   }
   /* completed (was for testing) */
   &.status-code-R {
-    background-color: #FF8000;
+    background-color: #ffb266;
     color: white;
     @if $includeHover == yes {
       &.hover {
-        background-color: darken(#FF8000, 20%);
+        background-color: darken(#ffb266, 20%);
       }
     }
   }
   /* accepted (was done) */
   &.status-code-D {
     @if $includeHover == yes {
-      background: #090 image-url('lock-tiny-fff.png') 7px 2px no-repeat;
+      background: #93dc87 image-url('lock-tiny-fff.png') 7px 4px no-repeat;
     } @else {
-      background-color: #090;
+      background-color: #93dc87;
     }
     color: white;
     span {
-      margin-left: 10px;
+      margin-left: 12px;
     }
     @if $includeHover == yes {
       &.hover {
-        background-color: darken(#090, 20%);
+        background-color: darken(#93dc87, 20%);
       }
     }
   }

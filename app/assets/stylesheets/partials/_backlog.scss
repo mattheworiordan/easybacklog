@@ -30,13 +30,13 @@ $col-days-width: 4%;
 }
 
 @mixin table-head($width) {
-  background-color: #DDD;
+  background-color: #eee;
   width: $width;
   float: left;
   margin: 0;
   &>div {
-    padding: 3px 3px 1px 5px;
-    border-right: 1px solid white;
+    padding: 5px 3px 3px 8px;
+    border-right: 1px solid #bbb;
   }
 }
 
@@ -283,12 +283,13 @@ section.content .not-editable-backlog-notice {
 
 #backlog-data-area {
   position: fixed;
-  top: $ninesixty-vertical * 2 - 4px;
+  top: 32px;
   left: 0;
   overflow: hidden;
   height: 56px;
   width: 100%;
   background-color: $title-area-color;
+  box-shadow: 0 -2px 10px 0px rgba(0,0,0,0.3) inset;
   z-index: 6; /* sits over header of 5 */
   .actions {
     float: right;
@@ -315,12 +316,12 @@ section.content .not-editable-backlog-notice {
     position: absolute;
   }
   .name-company-container {
-    height: 30px;
+    height: 31px;
     form {
       display: inline;
     }
     h2.name {
-      display: inline;
+      display: inline-block;
       margin: 2px 0 0 $ninesixty-gutter-width - 2px;
       position: relative;
       background-color: transparent;
@@ -389,16 +390,15 @@ section.content .not-editable-backlog-notice {
     }
   }
   .backlog-stats {
-    background-color: lighten($title-area-color, 25%);
+    background-color: #eee;
     float: right;
-    margin: 2px $standard-header-padding-height*2 0 0;
-    @include single-box-shadow(#FFFFFF, 0, 0, 3px, false, false);
+    margin: 0 $standard-header-padding-height*2 0 0;
+    padding: 3px 8px;
     div.title {
-      padding: 3px 0 5px 5px;
       float: left;
+      margin-right: 6px;
     }
     div.output {
-      padding: 3px;
       float: left;
       &.highlight {
         color: red;
@@ -441,7 +441,7 @@ section.content .not-editable-backlog-notice {
     left: -10px;
     width: 300px;
     height: 25px;
-    background-color: $title-area-color;
+    //background-color: $title-area-color;
     z-index: 2;
   }
   > ul {
@@ -521,14 +521,12 @@ section.content .not-editable-backlog-notice {
 #themes-header {
   position: fixed;
   z-index: 5;
-  top: 82px;
+  top: 88px;
   left: 0;
   width: 100%;
   margin: 0;
   overflow: hidden;
-  background-color: #DDD;
-  border-bottom: 1px solid white;
-  border-top: 1px solid white;
+  background-color: #eee;
   font-size: 12px;
   @include drop-shadow(2px, 2px);
   .columns {
@@ -540,12 +538,12 @@ section.content .not-editable-backlog-notice {
     .score { @include table-head($col-score-width * 2); &>div { text-align: right; } }
     .cost-formatted { @include table-head($col-cost-width); &>div { text-align: right; } }
     .days-formatted { /* $col-days-width but use auto instead to take up slack */
-      background-color: #DDD;
+      background-color: #eee;
       margin: 0;
       width: auto;
       &>div {
         text-align: right;
-        padding: 3px 3px 1px 5px;
+        padding: 5px 3px 1px 5px;
       }
     }
   }
@@ -690,18 +688,19 @@ ul.themes {
     /* theme name field */
     &>div.theme-data {
       @include table-col($col-theme-width / 100% * (100% - $col-theme-width)); /* negate the column scaling of table-col */
-      margin: 2px 0 1px 0;
+      margin: 10px 0 1px 0;
       &>div {
         margin-right: 0;
       }
       .name>.data {
         margin: 2px 0 8px 0px;
-        font-size: 16px;
+        font-size: 20px;
+        font-weight: 300;
+
       }
 
       .code {
-        color: #666;
-        font-size: 80%;
+        color: #888;
         border: none;
         padding: 0;
         .heading {
@@ -746,13 +745,15 @@ ul.themes {
 
     .color-picker-icon {
       float: left;
-      padding: 3px;
+      margin-right: 5px;
       cursor: pointer;
       a {
-        background: asset-data-url('color-picker.png');
-        width: 11px;
-        height: 11px;
+        background: asset-data-url('color-picker.png') no-repeat;
+        background-size: cover;
+        width: 16px;
+        height: 16px;
         display: block;
+        opacity: 0.75;
       }
     }
 
@@ -776,9 +777,12 @@ ul.themes {
     }
 
     .action-menu-icon {
+      box-sizing: border-box;
       background: asset-data-url('story-tool-icon-black.png') no-repeat center center;
-      width: 11px;
-      height: 11px;
+      width: 16px;
+      height: 16px;
+      background-size: cover;
+      opacity: 0.75;
       display: block;
       float: left;
       padding: 3px;
@@ -799,18 +803,20 @@ ul.themes {
       width: 100%;
       clear: left;
       overflow: hidden;
-      margin: 3px 0 8px 0;
+      margin: 6px 0 8px 0;
       .container {
         margin-left: $col-unique-id-width / (100% - $col-theme-width) * 100%;
         overflow: hidden;
         background-color: $stats-bg-color;
+        font-size: 14px;
+        color: #444;
+        > * {
+          padding: 10px;
+        }
         div.title {
-          padding: 5px;
           float: left;
-          color: #666;
         }
         div.metrics {
-          padding: 5px;
           float: right;
         }
         .collapsed-title {
@@ -878,10 +884,10 @@ ul.themes {
         list-style: none;
         margin: 0;
         li.actions {
-          margin: 0 0 1em 3px;
+          margin: 3px 0 1em 3px;
           position: absolute;
           a.new-story {
-            padding: 0 5px 0 5px;
+            padding: 5px 10px 4px 10px;
           }
         }
         li.target-order-highlight {

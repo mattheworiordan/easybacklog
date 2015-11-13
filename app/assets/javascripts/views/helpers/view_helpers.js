@@ -232,7 +232,7 @@ App.Views.Helpers = {
       $(target).css('background-color','transparent').removeClass('has-color');
       colorIndicator.addClass('no-color');
     } else {
-      $(target).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.15)')
+      $(target).css('background-color', 'rgba(' + parseInt(colors[0],16) + ', ' + parseInt(colors[1],16) + ', ' + parseInt(colors[2],16) + ', 0.1)')
         .addClass('has-color');
       colorIndicator.removeClass('no-color');
     }

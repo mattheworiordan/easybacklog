@@ -1,4 +1,4 @@
-$tab-background-color: #88b6e6; /* background color of tabs */
+$tab-background-color: #b2d0ef; /* background color of tabs */
 $active-tab-background-color: #FAFAFA; /* background color of selected tab */
 $tab-container-background-color: #4070b8; /* background color of the space the tabs are contained within, must be solid colour */
 $tab-container-margin: 5px; /* left & right margin of tabs, can set to zero but left and right rounded bottom corners may not appear */
@@ -69,9 +69,8 @@ ul.infinite-tabs {
     float: left;
     z-index: $base-zindex + 1;
 
-    /* So the psueudo elements can be abs. positioned inside */
     position: relative;
-    margin: 0;
+    margin: 0 2px 0 0;
 
     /* prevent selection */
     -moz-user-select: none;
@@ -89,18 +88,6 @@ ul.infinite-tabs {
       /* Default colors */
       color: black;
       background: $tab-background-color;
-
-      /* Only round the top corners */
-      -webkit-border-top-left-radius: $tab-corner-radius;
-      -webkit-border-top-right-radius: $tab-corner-radius;
-      -moz-border-radius-topleft: $tab-corner-radius;
-      -moz-border-radius-topright: $tab-corner-radius;
-      border-top-left-radius: $tab-corner-radius;
-      border-top-right-radius: $tab-corner-radius;
-    }
-
-    &:nth-child(2n+0)>a {
-      background: $tab-background-color-alternate;
     }
 
     &.active {
@@ -112,89 +99,6 @@ ul.infinite-tabs {
         background: $active-tab-background-color;
         color: black;
       }
-    }
-
-    &:before, &:after, a:before, a:after {
-      /* All pseudo elements are
-         abs. positioned and on bottom */
-      position: absolute;
-      bottom: 0;
-    }
-
-    /* Only the first, last, and active
-       tabs need pseudo elements at all */
-    &:last-child:after, &:last-child>a:after, &:first-child:before, &:first-child>a:before,
-      &.active:after, &.active:before, &.active a:after, &.active a:before {
-      content: "";
-    }
-
-    &.active:before, &.active:after {
-      background: $active-tab-background-color;
-      /* Squares below circles */
-      z-index: $base-zindex;
-    }
-
-    /* Squares */
-    &:before, &:after {
-      background: $tab-background-color;
-      width: $tab-corner-radius;
-      height: $tab-corner-radius;
-    }
-    &:before {
-      left: -$tab-corner-radius;
-    }
-    &:after {
-      right: -$tab-corner-radius;
-    }
-    &:nth-child(2n+0):after {
-      background: $tab-background-color-alternate;
-    }
-    /* selector above takes precedence over previous active-tab-background-color so need explicit declaration here */
-    &.active:nth-child(2n+0):after {
-      background: $active-tab-background-color;
-    }
-
-
-    /* Circle overlays */
-    a:before {
-      width: $tab-corner-radius;
-      height: $tab-corner-radius;
-      left: -$tab-corner-radius;
-      /* Quarter circle from bottom right for before tab elem */
-      -webkit-border-bottom-right-radius: $tab-corner-radius;
-      -moz-border-radius-bottomright:    $tab-corner-radius;
-      border-bottom-right-radius:         $tab-corner-radius;
-      background: $tab-container-background-color;
-
-      /* Quarter circles over squares */
-      z-index: $base-zindex + 1;
-    }
-    a:after {
-      width: $tab-corner-radius;
-      height: $tab-corner-radius;
-      right: -$tab-corner-radius;
-      /* Quarter circle from bottom left for after tab elem */
-      -webkit-border-bottom-left-radius: $tab-corner-radius;
-      -moz-border-radius-bottomleft:    $tab-corner-radius;
-      border-bottom-left-radius:         $tab-corner-radius;
-      background: $tab-container-background-color;
-
-      /* Quarter circles over squares */
-      z-index: $base-zindex + 1;
-    }
-
-    &.active a:after, &.active a:before {
-      background: $tab-background-color;
-    }
-    &:nth-child(2n+1).active {
-      a:after, a:before {
-        background: $tab-background-color-alternate;
-      }
-    }
-
-    /* First and last tabs have different outside color needs */
-    &:first-child.active a:before, &:last-child.active a:after, &.absolute-last.active a:after {
-      background: $tab-container-background-color;
     }
 
     &.scroller:after, &.scroller:before {
