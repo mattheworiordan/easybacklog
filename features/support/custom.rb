@@ -12,7 +12,7 @@ require 'capybara-screenshot/cucumber'
 Before('@javascript,@selenium') do
   if Capybara.current_driver == :selenium
     Capybara.current_session.driver.browser.manage.window.resize_to 1000,720
-  elsif Capybara.current_driver == :webkit
+  elsif Capybara.current_driver == :poltergeist
     Capybara.current_session.driver.resize_window 1000,720
   end
 end
