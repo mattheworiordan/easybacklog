@@ -51,7 +51,7 @@ gem 'sinatra', '>= 1.3.0', require: false
 gem 'thin', group: :development
 
 # See http://projects.theforeman.org/issues/2650 & http://stackoverflow.com/questions/13828889/rails-3-heroku-cannot-load-such-file-test-unit-testcase-loaderror
-gem 'test-unit'
+gem 'test-unit', require: false
 
 group :assets do
   gem 'sass-rails'
