@@ -4,4 +4,4 @@ require 'capybara/poltergeist'
 Capybara.javascript_driver = :poltergeist
 
 # Capybara.default_wait_time = 2 # double the wait time as we've experienced intermitten problems
-Capybara.ignore_hidden_elements = false
+Capybara.ignore_hidden_elements = true
