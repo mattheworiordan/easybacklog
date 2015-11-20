@@ -13,9 +13,7 @@ end
 
 Then /^(?:|I )should see the page title "([^\"]+)"$/ do |title|
   # sleep 0.2 unless page.has_css?("head title") # https://github.com/thoughtbot/capybara-webkit/issues/36
-  with_scope("head title") do
-    page.text.should match(title)
-  end
+  page.title.should match(title)
 end
 
 Then /^(?:|I )should (|not )see the following error messages:$/ do |negation, error_messages|
