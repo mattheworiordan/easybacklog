@@ -15,7 +15,7 @@ Feature: Backlog
     Then I should see the text "easyBacklog walk through" within the visible guider
     When I press the close button within the visible guider
     And I wait for 1 second
-    Then I should not see the text "easyBacklog walk through" within the visible guider
+    Then I should not see a visible guider
 
     Given I am on the backlog "Example corporate website backlog" page
     When I press the next button within the visible guider
@@ -48,6 +48,7 @@ Feature: Backlog
     # show totals area
     Then I should see the text "Backlog totals" within the visible guider
     When I press the next button within the visible guider
+    And I wait 2 seconds
     # show Exporting area
     Then I should see the text "Exporting and Printing" within the visible guider
     When I press the next button within the visible guider

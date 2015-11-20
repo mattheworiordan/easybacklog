@@ -469,7 +469,7 @@ end
 Then /^(?:I |)should( not|) see "([^"]+)" within row (\d+), column (\d+) of the ([\w\d]+) table$/ do |negation, text, row, column, table_position|
   table_selector = string_quantity_to_numeric_pseudo_selector(table_position)
   selector = "table:#{table_selector} tr:nth-child(#{row}) td:nth-child(#{column}), table:#{table_selector} tr:nth-child(#{row}) th:nth-child(#{column})"
-  unless negation == ' not' && !page.has_selector?(:selector) # if cell does not exist, then content does not exist so negative test is fine
+  unless negation == ' not' && !page.has_selector?(selector) # if cell does not exist, then content does not exist so negative test is fine
     step %{I should#{negation} see the text "#{text}" within "#{selector}"}
   end
 end
@@ -479,7 +479,7 @@ end
 Then /^(?:I |)should( not|) see "([^"]+)" within row (\d+), cell (\d+) of the ([\w\d]+) worksheet$/ do |negation, text, row, cell, worksheet_position|
   table_selector = string_quantity_to_numeric(worksheet_position)
   selector = "worksheet:eq(#{table_selector}) table row:eq(#{row}) cell:eq(#{cell})"
-  unless negation == ' not' && !page.has_selector?(:selector) # if cell does not exist, then content does not exist so negative test is fine
+  unless negation == ' not' && !page.has_selector?(selector) # if cell does not exist, then content does not exist so negative test is fine
     step %{I should#{negation} see the text "#{text}" within "#{selector}"}
   end
 end
@@ -506,9 +506,16 @@ end
 
 ##
 # Backlog guiders
-Then /^I should (|not )see (?:|the text )"([^"]+)" within the visible guider$/ do |negation, text|
-  page.evaluate_script(%{ $(".guider:visible:contains('#{text}')").length }).should == (negation == 'not ' ? 0 : 1)
+Then /^I should see (?:|the text )"([^"]+)" within the visible guider$/ do |text|
+  with_scope(".guider") do
+    page.should have_content(text)
+  end
 end
+
+Then /^I should not see a visible guider$/ do
+  page.should have_no_selector('.guider')
+end
+
 
 Then /^I press the (close button|next button|cross) within the visible guider$/ do |button|
   button_path = case button

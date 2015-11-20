@@ -149,7 +149,9 @@ Feature: Invite and Sign Up
     When I follow "Example corporate website backlog"
     Then I should see the page title "Example corporate website backlog"
     # check that user has full rights
-    When I follow "Settings"
+    When I press the close button within the visible guider
+    And I wait for 1 second
+    And I follow "Settings"
     Then the "text input fields" should not be disabled
       And the "checkboxes" should not be disabled
       And the "radio buttons" should not be disabled
