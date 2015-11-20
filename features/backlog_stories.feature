@@ -13,7 +13,7 @@ Feature: Backlog Stories
       And a backlog named "Backlog 1" with 3 themes is set up for "Acme"
       And I am on the backlog "Backlog 1" page
 
-  @selenium
+  @javascript
   Scenario: Set up a basic story ensuring tab order works
     Given the focus is on the "first theme's name"
     When I tab forwards
@@ -141,7 +141,7 @@ Feature: Backlog Stories
       Then I should see the error "Score 90 must be greater than or equal to score 50"
 
 
-  @selenium
+  @javascript
   Scenario: Re-order stories and move stories to new themes
     # to identify stories we set the "as" field and use that find stories when dragging
     Given the following stories are created in the first theme:
@@ -172,7 +172,7 @@ Feature: Backlog Stories
         | fifth   |
         | fourth  |
 
-  @selenium
+  @javascript
   Scenario: Re-order stories by dragging cross themes
     # to identify stories we set the "as" field and use that find stories when dragging
     Given the following stories are created in the first theme:
@@ -313,7 +313,7 @@ Feature: Backlog Stories
     Then the "first story's 50 score" should allow the values "0,0.3,5,27.6"
       And the "first story's 90 score" should not allow the values "-1,-0.5"
 
-  @selenium
+  @javascript
   Scenario: Check that single score configuration works (not using 50/90 rules, so only one score field)
     When I follow "Settings"
       And I uncheck "Use the 50/90 estimation method"

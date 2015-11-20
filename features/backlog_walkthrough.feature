@@ -3,7 +3,7 @@ Feature: Backlog
   A visitor
   Should be taken through a walk through when they view the Example backlog
 
-  @selenium
+  @javascript
   Scenario: Walk through the backlog
     Given the database has the necessary lookup tables
       And a user named "John" is registered

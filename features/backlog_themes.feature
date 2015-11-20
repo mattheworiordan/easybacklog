@@ -77,7 +77,7 @@ Feature: Backlog Themes
     Then I should see the error "Code has already been taken"
       And I should see the text "TH2" within the "second theme's code"
 
-  @selenium
+  @javascript
   Scenario: Ensure the tab order works
     # new theme starts with Add theme selected
     Then the focussed element should have the text "Add theme"

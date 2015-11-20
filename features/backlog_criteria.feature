@@ -39,7 +39,7 @@ Scenario: Add and remove acceptance criteria
       | line 3    |
       | line 4    |
 
-@selenium
+@javascript
 Scenario: Drag and drop acceptance criteria
   When I click on the "edit acceptance criteria field within the first story"
     And I wait for 0.5 seconds
