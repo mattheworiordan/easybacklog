@@ -1,6 +1,7 @@
 require 'spec_helper'
 
-feature 'Backlog', :js => true do
+feature 'Backlog', js: true, pending: 'move these to cucumber feature tests' do
+
   let(:account) { create(:account_with_user) }
   let(:user) { account.account_users.first.user }
 
