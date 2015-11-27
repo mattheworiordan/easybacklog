@@ -695,6 +695,7 @@ ul.themes {
       .name>.data {
         margin: 2px 0 8px 0px;
         font-size: 20px;
+        line-height: 1.25;
         font-weight: 300;
 
       }
@@ -748,7 +749,7 @@ ul.themes {
       margin-right: 5px;
       cursor: pointer;
       a {
-        background: asset-data-url('color-picker.png') no-repeat;
+        background: asset-data-url('color-picker.gif') no-repeat;
         background-size: cover;
         width: 16px;
         height: 16px;
@@ -778,7 +779,7 @@ ul.themes {
 
     .action-menu-icon {
       box-sizing: border-box;
-      background: asset-data-url('story-tool-icon-black.png') no-repeat center center;
+      background: asset-data-url('gear.png') no-repeat center center;
       width: 16px;
       height: 16px;
       background-size: cover;
