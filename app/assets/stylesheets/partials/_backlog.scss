@@ -653,17 +653,18 @@ ul.themes {
     /* this box appears when in theme re-order mode */
     .move-theme {
       display: none;
-      border: 1px solid #CCC;
-      background-color: #EEE;
+      background-color: #eee;
       text-align: center;
       float: left;
       margin: 1px;
       padding: 2px 2em;
       cursor: move;
       overflow: hidden;
-      @include border-radius(6px);
+      border-radius: 2px;
       width: auto;
+      margin-top: 12px;
       .icon {
+        margin-top: 1px;
         float: left;
       }
       .instructions {
