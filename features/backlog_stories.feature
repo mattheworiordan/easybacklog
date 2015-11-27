@@ -69,7 +69,7 @@ Feature: Backlog Stories
     Then the focussed element should have the text "Add story"
       And the server should return story JSON as follows:
         | unique_id | as_a      | i_want_to   | so_i_can  | comments    | score_50  | score_90  |
-        | 1         | as        | I want to   | so I can  | comments    | 1.0       | 3.0       |
+        | 1         | as        | I want to   | so I can  | comments    | 1         | 3         |
         | 2         | as 2nd    |             |           |             |           |           |
 
   @javascript
@@ -348,8 +348,8 @@ Feature: Backlog Stories
     Then the focussed element should be a "story score"
       And the server should return story JSON as follows:
         | unique_id | as_a      | i_want_to   | so_i_can  | comments    | score  |
-        | 1         | as        |             |           |             | 3.0    |
-        | 2         | as 2nd    |             |           |             | 21.0   |
+        | 1         | as        |             |           |             | 3      |
+        | 2         | as 2nd    |             |           |             | 21     |
 
   @javascript
   Scenario: Check that user is notified when trying to edit an accepted story
