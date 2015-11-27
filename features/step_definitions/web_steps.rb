@@ -92,9 +92,9 @@ Then /^(?:|I )should see JSON:$/ do |expected_json|
   expected.should == actual
 end
 
-Then /^the "([^"]*)" field(?: within "([^"]*)")? should (|not )(contain "([^"]*)"|be empty)$/ do |field, selector, negation, check_for_empty, value|
+Then /^the "([^"]*)" (disabled )?field(?: within "([^"]*)")? should (|not )(contain "([^"]*)"|be empty)$/ do |field, disabled, selector, negation, check_for_empty, value|
   with_scope(selector) do
-    field = find_field(field)
+    field = find_field(field, disabled: disabled.try(:strip) == 'disabled')
     field_value = (field.tag_name == 'textarea') ? field.text : field.value
     if negation == 'not '
       if check_for_empty == 'be empty'

@@ -14,7 +14,8 @@ test: &test
   adapter: postgresql
   database: easybacklog_test
   host: localhost
-  pool: 5
+  pool: 10
+  reaping_frequency: 10
   timeout: 5000
   min_messages: WARNING
 

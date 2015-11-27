@@ -1,7 +1,7 @@
 Given /^the database has the necessary lookup tables$/ do
   FactoryGirl.create(:locale, :name => 'American English', :code => 'en-US', :position => 5)
   FactoryGirl.create(:locale, :name => 'British English', :code => 'en-GB', :position => 10)
-  FactoryGirl.create(:locale, :name => 'France French ', :code => 'fr-FR', :position => 10)
+  FactoryGirl.create(:locale, :name => 'France French ', :code => 'fr', :position => 10)
   FactoryGirl.create(:sprint_story_status, :status => 'To do', :code => SprintStoryStatus::DEFAULT_CODE)
   FactoryGirl.create(:sprint_story_status, :status => 'Accepted', :code => SprintStoryStatus::ACCEPTED)
   FactoryGirl.create(:sprint_story_status, :status => 'In progress', :code => SprintStoryStatus::IN_PROGRESS)

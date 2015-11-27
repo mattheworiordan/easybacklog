@@ -61,8 +61,7 @@ Feature: Backlog Other Functionality
       And I click on the "create new snapshot button"
       And I fill in "Please name your snapshot:" with "Snapshot 1"
       And I press "Create Snapshot" within "the dialog"
-      And I wait for 2 seconds
-    Then I should see the notice "New snapshot created"
+    Then I should see the notice "New snapshot being created"
     When I click on the "snapshots menu"
     Then "Working version (current)" should be selected for "snapshot drop down within snapshots menu"
     When I select "Snapshot 1" from "Select a snapshot to view:"
@@ -105,7 +104,7 @@ Feature: Backlog Other Functionality
       And I click on the "create new snapshot button"
       And I fill in "Please name your snapshot:" with "Snapshot 1"
       And I press "Create Snapshot" within "the dialog"
-    Then I should see the notice "New snapshot created"
+    Then I should see the notice "New snapshot being created"
     When I change the editable text "1" within the "first story's 50 score within the first theme" to "3"
       And I change the editable text "13" within the "first story's 90 score within the first theme" to "5"
       And I change the editable text "base value" within the "first story's so I can field within the first theme" to "new value"
@@ -133,24 +132,24 @@ Feature: Backlog Other Functionality
       And I should see "As Story 1" within row 3, cell 3 of the first worksheet
       And I should see "Total for theme 'Theme 1'" within row 5, cell 1 of the first worksheet
       And I should see "0.0 days" within row 11, cell 2 of the first worksheet
-      And I should see "Cost" within row 2, cell 9 of the first worksheet
-      And I should see "Days" within row 2, cell 10 of the first worksheet
+      And I should see "Cost" within row 2, cell 10 of the first worksheet
+      And I should see "Days" within row 2, cell 11 of the first worksheet
 
   Scenario: Export backlog with costs and points disabled
     When I follow "Settings"
       And I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
       And I press "Update backlog settings"
       And I follow "Export"
-    Then I should not see "Cost" within row 2, cell 9 of the first worksheet
-    And I should not see "Days" within row 2, cell 10 of the first worksheet
+    Then I should not see "Cost" within row 2, cell 10 of the first worksheet
+    And I should not see "Days" within row 2, cell 11 of the first worksheet
 
   Scenario: Export backlog with costs disabled
     When I follow "Settings"
       And I fill in "Rate (optional)" with ""
       And I press "Update backlog settings"
       And I follow "Export"
-    Then I should not see "Cost" within row 2, cell 9 of the first worksheet
-    And I should see "Days" within row 2, cell 9 of the first worksheet
+    Then I should not see "Cost" within row 2, cell 10 of the first worksheet
+    And I should see "Days" within row 2, cell 10 of the first worksheet
 
   Scenario: Export snapshot
     Given a snapshot called "Snapshot 1" exists for backlog "Backlog 1"
@@ -206,7 +205,7 @@ Feature: Backlog Other Functionality
       And I wait 1 second
     Then "Sprint 1" should be selected for "snapshot drop down appearing in snapshot mode near tabs"
     When I follow "Settings"
-    Then the "Snapshot name" field should contain "Sprint 1"
+    Then the "backlog_name" disabled field should contain "Sprint 1"
       And the "text input fields" should be disabled
       And the "checkboxes" should be disabled
       And the "radio buttons" should be disabled
