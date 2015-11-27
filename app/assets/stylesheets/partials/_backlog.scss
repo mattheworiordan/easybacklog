@@ -231,14 +231,12 @@ section.content .not-editable-backlog-notice {
   display: none;
   position: fixed;
   background-color: darken(#FFB300, 5%);
-  border: 1px solid darken(#FFB300, 20%);
-  border-bottom: none;
   bottom: 0;
   left: 20px;
   z-index: 15;
-  padding: 6px;
+  padding: 6px 14px 6px 10px;
   color: #FFF;
-  @include border-radius(10px 10px 0 0);
+  border-radius: 2px;
   .header {
     overflow: hidden;
   }
@@ -262,12 +260,11 @@ section.content .not-editable-backlog-notice {
   .title {
     float: left;
     padding-left: 10px;
-    font-weight: bold;
   }
   .ui-icon { background-image: image-url('images/ui-icons_ffffff_256x240.png'); }
   .people {
     display: none;
-    border-top: 1px solid darken(#FFB300, 20%);
+    border-top: 1px solid darken(#FFB300, 12%);
     padding-top: 10px;
     margin-top: 10px;
     ul {
