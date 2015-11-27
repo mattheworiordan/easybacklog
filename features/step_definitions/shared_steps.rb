@@ -175,3 +175,8 @@ Then /^(?:|I )start (?:the debugger|debugging)$/ do
   debugger
   page
 end
+
+When /^(?:|I )wait for AJAX requests?$/ do
+  wait_for_ajax
+  sleep 0.5
+end

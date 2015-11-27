@@ -10,20 +10,20 @@ module HtmlSelectorHelpers
       'ul.backlog-list'
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) company heading in a dashboard list$/
-      position = string_quantity_to_numeric($1) * 2
-      "section.main-content-pod .dash-board-company:nth-child(#{position})"
+      position = string_quantity_to_numeric($1)
+      "section.main-content-pod .dash-board-company:nth-of-type(#{position})"
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) backlog list in a dashboard list$/
-      position = string_quantity_to_numeric($1) * 2 + 1
-      "section.main-content-pod .backlog-list:nth-child(#{position})"
+      position = string_quantity_to_numeric($1)
+      "section.main-content-pod .backlog-list:nth-of-type(#{position})"
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) company heading in your backlog list$/
-      position = string_quantity_to_numeric($1) * 2 - 1
-      ".your-list-side-panel .company:nth-child(#{position})"
+      position = string_quantity_to_numeric($1)
+      ".your-list-side-panel .company:nth-of-type(#{position})"
 
     when /^(first|second|third|fourth|fifth|\d+(?:th|st|nd|rd)) backlog list in your backlog list$/
-      position = string_quantity_to_numeric($1) * 2
-      ".your-list-side-panel .your-backlog-list:nth-child(#{position})"
+      position = string_quantity_to_numeric($1)
+      ".your-list-side-panel .your-backlog-list:nth-of-type(#{position})"
 
     when /^dashboard company or account fields?$/
       'section.main-content-pod .dash-board-company, section.main-content-pod .company'

@@ -351,30 +351,31 @@ Feature: Backlog
       And I fill in "Velocity" with "1"
       And I fill in "Rate (optional)" with "2"
       And I press "Update account"
+      And I wait for AJAX requests
     Then I should see the page title "Acme"
     When I follow "Microsoft"
     Then I should see the page title "Company settings"
     When I fill in "Rate (optional)" with ""
       And I fill in "Velocity" with "3"
       And I press "Update company"
-      And I wait for 0.2 seconds
+      And I wait for AJAX requests
     Then I should see the page title "Acme"
     When I follow "Apple"
     Then I should see the page title "Company settings"
     When I choose "No, I'd prefer to estimate once I set up my first iteration and defined the velocity"
       And I press "Update company"
-      And I wait for 0.2 seconds
+      And I wait for AJAX requests
     Then I should see the page title "Acme"
     When I follow "Create a new backlog"
     Then the "Velocity" field should contain "1"
       And the "Rate (optional)" field should contain "2"
     When I choose "Yes, I would like to assign this to a company"
       And I select "Microsoft" from "Which company?"
-      And I wait for AJAX for 1 second
+      And I wait for AJAX requests
     Then the "Velocity" field should contain "3"
       And the "Rate (optional)" field should contain ""
     When I select "Apple" from "Which company?"
-      And I wait for AJAX for 1 second
+      And I wait for AJAX requests
     Then the "No, I'd prefer to estimate once I set up my first iteration and defined the velocity" checkbox should be checked
       And the "backlog velocity" should not be visible
       And the "backlog rate" should not be visible
