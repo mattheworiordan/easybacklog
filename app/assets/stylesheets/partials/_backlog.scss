@@ -47,18 +47,7 @@ $col-days-width: 4%;
 }
 
 @mixin collapsed-theme-style {
-  &:nth-child(1n+2) {
-    padding-top: 0;
-  }
-  border: 1px solid rgba(0,0,0,0.15);
-  @include border-radius(6px);
-  margin: 3px 0;
-  .theme-data {
-    .name {
-      border: none;
-      padding-top: 4px;
-    }
-  }
+  padding-bottom: 20px;
 }
 
 /* on the backlog page we need to move the header to a fixed position */
@@ -657,8 +646,8 @@ ul.themes {
 
     /* remove styles for first */
     &:first-child {
-      padding-top: 0;
-      border-top: none;
+      // padding-top: 0;
+      // border-top: none;
     }
 
     /* this box appears when in theme re-order mode */
@@ -757,13 +746,18 @@ ul.themes {
 
     .theme-collapse-icon {
       float: left;
-      padding: 3px;
       cursor: pointer;
+      margin-right: 5px;
       a {
-        background: asset-data-url('collapsed-icon.png');
-        width: 11px;
-        height: 11px;
+        width: 16px;
+        height: 16px;
         display: block;
+        opacity: 0.75;
+        &.expand {
+          display: none;
+          background: asset-data-url('expand.png');
+        }
+        &.collapse { background: asset-data-url('collapse.png'); }
       }
     }
 
@@ -771,7 +765,7 @@ ul.themes {
     .theme-data > .theme-collapse-icon {
       display: none;
       border: none;
-      padding: 5px 8px 3px 8px;
+      //padding: 5px 8px 3px 8px;
     }
 
     .action-menu-icon {
@@ -818,6 +812,7 @@ ul.themes {
           float: right;
         }
         .collapsed-title {
+          margin-top: 16px;
           padding: 5px;
           float: left;
           color: #999;
@@ -850,15 +845,15 @@ ul.themes {
         }
       }
       .theme-collapse-icon {
-        a {
-          background: asset-data-url('expanded-icon.png');
+        a.expand {
+          background: asset-data-url('expand.png');
         }
       }
       .theme-data {
-        > .theme-collapse-icon {
+        .theme-actions .expand {
           display: block;
         }
-        .theme-actions, .code {
+        .theme-actions .collapse {
           display: none;
         }
       }
