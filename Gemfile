@@ -87,7 +87,6 @@ group :test do
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
   gem 'capybara', '~> 2.0'
-  # gem 'capybara-webkit', '~> 1.7.1'
   gem 'poltergeist'
   gem 'timecop'
   gem 'launchy', '>=2'
