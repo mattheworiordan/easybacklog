@@ -110,11 +110,11 @@ $standard-body-padding: $ninesixty-vertical $ninesixty-gutter-width $ninesixty-v
 @mixin status-code-colors($includeHover: yes) {
   /* to do */
   &.status-code-T {
-    background-color: #777;
+    background-color: #bbb;
     color: white;
     @if $includeHover == yes {
       &.hover {
-        background-color: darken(#777, 20%);
+        background-color: darken(#bbb, 20%);
       }
     }
   }
