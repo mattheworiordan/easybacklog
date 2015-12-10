@@ -21,7 +21,7 @@ h1 {
 
 h2 {
   font-family: $base-brand-font;
-  @include fix-type;
+  //@include fix-type;
   font-weight: normal;
   margin-bottom: 0.5em;
 }
@@ -65,8 +65,8 @@ p {
 
 $header-height: 34px;
 header {
-  background: #000 asset_data_url('embed/header_bg.png') repeat-x;
-  padding: $standard-header-padding;
+  background: #222;
+  padding: 5px 20px;
   color: #666;
   height: 22px; /* 11px of padding */
   font-size: 13px;

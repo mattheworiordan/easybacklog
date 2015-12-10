@@ -30,13 +30,13 @@ $col-days-width: 4%;
 }
 
 @mixin table-head($width) {
-  background-color: #DDD;
+  background-color: #eee;
   width: $width;
   float: left;
   margin: 0;
   &>div {
-    padding: 3px 3px 1px 5px;
-    border-right: 1px solid white;
+    padding: 5px 3px 3px 8px;
+    border-right: 1px solid #bbb;
   }
 }
 
@@ -47,18 +47,7 @@ $col-days-width: 4%;
 }
 
 @mixin collapsed-theme-style {
-  &:nth-child(1n+2) {
-    padding-top: 0;
-  }
-  border: 1px solid rgba(0,0,0,0.15);
-  @include border-radius(6px);
-  margin: 3px 0;
-  .theme-data {
-    .name {
-      border: none;
-      padding-top: 4px;
-    }
-  }
+  padding-bottom: 20px;
 }
 
 /* on the backlog page we need to move the header to a fixed position */
@@ -231,14 +220,12 @@ section.content .not-editable-backlog-notice {
   display: none;
   position: fixed;
   background-color: darken(#FFB300, 5%);
-  border: 1px solid darken(#FFB300, 20%);
-  border-bottom: none;
   bottom: 0;
   left: 20px;
   z-index: 15;
-  padding: 6px;
+  padding: 6px 14px 6px 10px;
   color: #FFF;
-  @include border-radius(10px 10px 0 0);
+  border-radius: 2px;
   .header {
     overflow: hidden;
   }
@@ -262,12 +249,11 @@ section.content .not-editable-backlog-notice {
   .title {
     float: left;
     padding-left: 10px;
-    font-weight: bold;
   }
   .ui-icon { background-image: image-url('images/ui-icons_ffffff_256x240.png'); }
   .people {
     display: none;
-    border-top: 1px solid darken(#FFB300, 20%);
+    border-top: 1px solid darken(#FFB300, 12%);
     padding-top: 10px;
     margin-top: 10px;
     ul {
@@ -283,12 +269,13 @@ section.content .not-editable-backlog-notice {
 
 #backlog-data-area {
   position: fixed;
-  top: $ninesixty-vertical * 2 - 4px;
+  top: 32px;
   left: 0;
   overflow: hidden;
   height: 56px;
   width: 100%;
   background-color: $title-area-color;
+  box-shadow: 0 -2px 10px 0px rgba(0,0,0,0.3) inset;
   z-index: 6; /* sits over header of 5 */
   .actions {
     float: right;
@@ -315,12 +302,12 @@ section.content .not-editable-backlog-notice {
     position: absolute;
   }
   .name-company-container {
-    height: 30px;
+    height: 31px;
     form {
       display: inline;
     }
     h2.name {
-      display: inline;
+      display: inline-block;
       margin: 2px 0 0 $ninesixty-gutter-width - 2px;
       position: relative;
       background-color: transparent;
@@ -389,16 +376,15 @@ section.content .not-editable-backlog-notice {
     }
   }
   .backlog-stats {
-    background-color: lighten($title-area-color, 25%);
+    background-color: #b2d0ef;
     float: right;
-    margin: 2px $standard-header-padding-height*2 0 0;
-    @include single-box-shadow(#FFFFFF, 0, 0, 3px, false, false);
+    margin: 0 $standard-header-padding-height*2 0 0;
+    padding: 3px 8px;
     div.title {
-      padding: 3px 0 5px 5px;
       float: left;
+      margin-right: 6px;
     }
     div.output {
-      padding: 3px;
       float: left;
       &.highlight {
         color: red;
@@ -441,7 +427,7 @@ section.content .not-editable-backlog-notice {
     left: -10px;
     width: 300px;
     height: 25px;
-    background-color: $title-area-color;
+    //background-color: $title-area-color;
     z-index: 2;
   }
   > ul {
@@ -521,14 +507,12 @@ section.content .not-editable-backlog-notice {
 #themes-header {
   position: fixed;
   z-index: 5;
-  top: 82px;
+  top: 88px;
   left: 0;
   width: 100%;
   margin: 0;
   overflow: hidden;
-  background-color: #DDD;
-  border-bottom: 1px solid white;
-  border-top: 1px solid white;
+  background-color: #eee;
   font-size: 12px;
   @include drop-shadow(2px, 2px);
   .columns {
@@ -540,12 +524,12 @@ section.content .not-editable-backlog-notice {
     .score { @include table-head($col-score-width * 2); &>div { text-align: right; } }
     .cost-formatted { @include table-head($col-cost-width); &>div { text-align: right; } }
     .days-formatted { /* $col-days-width but use auto instead to take up slack */
-      background-color: #DDD;
+      background-color: #eee;
       margin: 0;
       width: auto;
       &>div {
         text-align: right;
-        padding: 3px 3px 1px 5px;
+        padding: 5px 3px 1px 5px;
       }
     }
   }
@@ -620,11 +604,10 @@ ul.themes {
 
   /* styling for an empty editable field with edit text in it */
   .editable-blank {
-    font-size: 80%;
-    color: #DDD;
-    color: rgba(0,0,0,0.2);
+    font-size: 10px;
+    color: rgba(0,0,0,0.3);
     &:hover {
-      color: #555;
+      color: rgba(0,0,0,0.5);
     }
   }
 
@@ -662,24 +645,25 @@ ul.themes {
 
     /* remove styles for first */
     &:first-child {
-      padding-top: 0;
-      border-top: none;
+      // padding-top: 0;
+      // border-top: none;
     }
 
     /* this box appears when in theme re-order mode */
     .move-theme {
       display: none;
-      border: 1px solid #CCC;
-      background-color: #EEE;
+      background-color: #eee;
       text-align: center;
       float: left;
       margin: 1px;
       padding: 2px 2em;
       cursor: move;
       overflow: hidden;
-      @include border-radius(6px);
+      border-radius: 2px;
       width: auto;
+      margin-top: 12px;
       .icon {
+        margin-top: 1px;
         float: left;
       }
       .instructions {
@@ -690,18 +674,20 @@ ul.themes {
     /* theme name field */
     &>div.theme-data {
       @include table-col($col-theme-width / 100% * (100% - $col-theme-width)); /* negate the column scaling of table-col */
-      margin: 2px 0 1px 0;
+      margin: 10px 0 1px 0;
       &>div {
         margin-right: 0;
       }
       .name>.data {
         margin: 2px 0 8px 0px;
-        font-size: 16px;
+        font-size: 20px;
+        line-height: 1.25;
+        font-weight: 300;
+
       }
 
       .code {
-        color: #666;
-        font-size: 80%;
+        color: #888;
         border: none;
         padding: 0;
         .heading {
@@ -746,25 +732,32 @@ ul.themes {
 
     .color-picker-icon {
       float: left;
-      padding: 3px;
+      margin-right: 5px;
       cursor: pointer;
       a {
-        background: asset-data-url('color-picker.png');
-        width: 11px;
-        height: 11px;
+        background: asset-data-url('color-picker.png') no-repeat;
+        background-size: cover;
+        width: 16px;
+        height: 16px;
         display: block;
+        opacity: 0.75;
       }
     }
 
     .theme-collapse-icon {
       float: left;
-      padding: 3px;
       cursor: pointer;
+      margin-right: 5px;
       a {
-        background: asset-data-url('collapsed-icon.png');
-        width: 11px;
-        height: 11px;
+        width: 16px;
+        height: 16px;
         display: block;
+        opacity: 0.75;
+        &.expand {
+          display: none;
+          background: asset-data-url('expand.png');
+        }
+        &.collapse { background: asset-data-url('collapse.png'); }
       }
     }
 
@@ -772,13 +765,16 @@ ul.themes {
     .theme-data > .theme-collapse-icon {
       display: none;
       border: none;
-      padding: 5px 8px 3px 8px;
+      //padding: 5px 8px 3px 8px;
     }
 
     .action-menu-icon {
-      background: asset-data-url('story-tool-icon-black.png') no-repeat center center;
-      width: 11px;
-      height: 11px;
+      box-sizing: border-box;
+      background: asset-data-url('gear.png') no-repeat center center;
+      width: 16px;
+      height: 16px;
+      background-size: cover;
+      opacity: 0.75;
       display: block;
       float: left;
       padding: 3px;
@@ -799,21 +795,24 @@ ul.themes {
       width: 100%;
       clear: left;
       overflow: hidden;
-      margin: 3px 0 8px 0;
+      margin: 6px 0 8px 0;
       .container {
         margin-left: $col-unique-id-width / (100% - $col-theme-width) * 100%;
         overflow: hidden;
         background-color: $stats-bg-color;
+        font-size: 14px;
+        color: #444;
+        > * {
+          padding: 10px;
+        }
         div.title {
-          padding: 5px;
           float: left;
-          color: #666;
         }
         div.metrics {
-          padding: 5px;
           float: right;
         }
         .collapsed-title {
+          margin-top: 16px;
           padding: 5px;
           float: left;
           color: #999;
@@ -846,15 +845,15 @@ ul.themes {
         }
       }
       .theme-collapse-icon {
-        a {
-          background: asset-data-url('expanded-icon.png');
+        a.expand {
+          background: asset-data-url('expand.png');
         }
       }
       .theme-data {
-        > .theme-collapse-icon {
+        .theme-actions .expand {
           display: block;
         }
-        .theme-actions, .code {
+        .theme-actions .collapse {
           display: none;
         }
       }
@@ -878,10 +877,10 @@ ul.themes {
         list-style: none;
         margin: 0;
         li.actions {
-          margin: 0 0 1em 3px;
+          margin: 3px 0 1em 3px;
           position: absolute;
           a.new-story {
-            padding: 0 5px 0 5px;
+            padding: 5px 10px 4px 10px;
           }
         }
         li.target-order-highlight {
