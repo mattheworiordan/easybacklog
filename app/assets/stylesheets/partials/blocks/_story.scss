@@ -149,12 +149,10 @@ li.story {
     }
     /* as a, i want to, so i can text */
     .heading {
-      display: inline;
+      float: left;
+      padding-right: 0.5em;
       color: #888;
       font-style: italic;
-    }
-    .data {
-      display: inline;
     }
   }
   ul.acceptance-criteria {
