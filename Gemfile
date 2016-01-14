@@ -102,4 +102,5 @@ group :development do
   gem 'hpricot' # for Devise generators
   gem 'jslint_on_rails'
   gem 'quiet_assets' # reduce verbosity of console messages for serving up assets
+  gem 'dotenv-rails' # load env vars from .env file
 end
