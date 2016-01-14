@@ -149,6 +149,7 @@
       model: thisBacklog,
       user: {
         name: '#{escape_javascript current_user.name}',
+        accounts: [#{current_user.accounts.map { |a| "'#{ escape_javascript a.name }'" }.join(",") }],
         id: #{current_user.id}
       },
       el: $('#presence-notifier')

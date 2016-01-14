@@ -5,10 +5,13 @@ App.Views.BacklogPresence = {
     initialize: function(options) {
       this.clientId = String(options.user.id);
       this.name = options.user.name;
+      this.accounts = options.user.accounts;
+
       this.ably = new Ably.Realtime({
         authUrl: '/realtime-token',
         clientId: this.clientId // TODO: Remove, see https://github.com/ably/ably-js/issues/198
       });
+
       this.backlogChannel = this.ably.channels.get('backlog-' + this.model.get('id'));
       this.globalChannel = this.ably.channels.get('global-editors');
     },
@@ -29,7 +32,12 @@ App.Views.BacklogPresence = {
       var enterChannels = function() {
         that.backlogChannel.presence.enter({ name: that.name });
         that.backlogChannel.presence.subscribe(that.showDuplicateEditorWarning.bind(that));
-        that.globalChannel.presence.enter({ name: that.name, backlogId: that.model.get('id'), since: new Date().getTime() });
+        that.globalChannel.presence.enter({
+          name: that.name,
+          accounts: that.accounts,
+          backlogId: that.model.get('id'),
+          since: new Date().getTime()
+        });
       }
 
       if (that.ably.connection.state == 'connected') {
