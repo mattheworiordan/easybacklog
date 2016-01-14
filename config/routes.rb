@@ -89,6 +89,7 @@ EasyBacklog::Application.routes.draw do
   end
 
   resources :user_tokens, :path => 'user-tokens', :only => [:index, :create, :destroy]
+  get '/realtime-token' => 'pages#realtime_token'
 
   get '/sprint-story-statuses' => 'sprint_story_statuses#index'
 

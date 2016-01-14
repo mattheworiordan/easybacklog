@@ -2,113 +2,67 @@
 
 App.Views.BacklogPresence = {
   Show: App.Views.BaseView.extend({
-    presenceServerUrl: window.location.protocol + '//easybacklog-presence.aws.af.cm/',
-
     initialize: function(options) {
-      this.userId = Math.floor(Math.random()*1000000000).toString(36);
-      this.name = options.name;
+      this.clientId = String(options.user.id);
+      this.name = options.user.name;
+      this.ably = new Ably.Realtime({
+        authUrl: '/realtime-token',
+        clientId: this.clientId // TODO: Remove, see https://github.com/ably/ably-js/issues/198
+      });
+      this.backlogChannel = this.ably.channels.get('backlog-' + this.model.get('id'));
+      this.globalChannel = this.ably.channels.get('global-editors');
     },
 
     render: function() {
-      var that = this;
-
-      // support Cross Domain Scripting Security
-      $.support.cors = true;
-
       if (App.environment !== 'test') {
         // only open a connection if the user has edit rights to the backlog
         if (this.model.IsEditable()) {
-          that.startPolling();
-          that.closeConnectionOnUnload();
+          this.enterChannel();
+          this.leaveOnUnload();
         }
       }
-
-      return (this);
+      return this;
     },
 
-    ajaxRequest: function(options) {
-      var that = this,
-          ajaxOptions = {
-            url: that.presenceServerUrl + options.path,
-            data: options.data,
-            crossDomain: true,
-            async: options.async === false ? false : true,
-            success: function(response) { if (options.success) { options.success(response); } },
-            error: function(jqXHR) { if (options.error) { options.error(jqXHR); } }
-          }
-
-      if ($.browser.msie && parseInt($.browser.version, 10) >= 8) {
-        // IE does not support cross domain AJAX requests
-        // it does have a XDomainRequest object, but I tried that, and it behaved
-        // strangely and randomly disconnected connections, so we have had to revert to JSON-P for IE
-        _.extend(ajaxOptions, {
-          type: 'GET',
-          cache: false,
-          dataType: 'jsonp'
-        });
-
-        $.ajax(ajaxOptions);
-      } else {
-        _.extend(ajaxOptions, {
-          type: 'POST'
-        });
-
-        $.ajax(ajaxOptions);
-      }
-    },
-
-    startPolling: function() {
+    enterChannel: function() {
       var that = this;
-      var _poll = function() {
-        that.ajaxRequest({
-          path: 'poll',
-          data: { id: that.userId, name: that.name, channel: that.model.get('id') },
-          success: function(response) {
-            if ((typeof response === 'string') && response.replace(/\s/g,'').length) {
-              response = JSON.parse(response);
-            }
-            if (response && response.length) { // must be an array or else we've got an empty response
-              if (response.length > 1) {
-                var people = _(response).reject(function(elem) { return elem.id === that.userId; });
-                // remove duplicates
-                people = _.uniq(_.map(people, function(person) { return person.name }));
-                $(that.el).html(JST['templates/backlogs/presence']({ people: people }));
-                $(that.el).show();
-              } else {
-                if ($(that.el).is(':visible')) {
-                  $(that.el).hide();
-                }
-              }
-            }
-            _poll();
-          },
-          error: function(jqXHR) {
-            if (jqXHR.status === 410) {
-              if (window.console) { console.log("Connection closed upon request"); }
-            } else {
-              // try again in 5 seconds
-              setTimeout(_poll, 5000);
-            }
-          }
-        });
+      var enterChannels = function() {
+        that.backlogChannel.presence.enter({ name: that.name });
+        that.backlogChannel.presence.subscribe(that.showDuplicateEditorWarning.bind(that));
+        that.globalChannel.presence.enter({ name: that.name, backlogId: that.model.get('id'), since: new Date().getTime() });
       }
-      _poll();
+
+      if (that.ably.connection.state == 'connected') {
+        enterChannels();
+      } else {
+        that.ably.connection.on('connected', function() {
+          enterChannels();
+        })
+      }
     },
 
-    closeConnectionOnUnload: function() {
+    showDuplicateEditorWarning: function() {
+      var that = this;
+      that.backlogChannel.presence.get(function(err, members) {
+        if (err) {
+          (console.error || console.log)('Presence members get failed:', err);
+          return;
+        }
+        var people = _(members).reject(function(member) { return member.clientId === that.clientId });
+        people = _.uniq(_.map(people, function(person) { return person.data.name }));
+        $(that.el).html(JST['templates/backlogs/presence']({ people: people }));
+        if (people.length > 0) {
+          $(that.el).show();
+        } else {
+          $(that.el).hide();
+        }
+      });
+    },
+
+    leaveOnUnload: function() {
       var that = this;
       window.onbeforeunload = function() {
-        that.ajaxRequest({
-          path: 'close',
-          data: { id: that.userId, channel: that.model.get('id') },
-          async: false,
-          success: function(response) {
-            if (window.console) { console.log("Connection close request sent"); }
-          },
-          error: function(jqXHR) {
-            if (window.console) { console.log("Connection close request FAILED"); }
-          }
-        });
+        that.ably.close();
       }
     }
   })

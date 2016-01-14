@@ -4,6 +4,7 @@
   = stylesheet_link_tag 'backlog'
   - if is_example_backlog?
     = stylesheet_link_tag 'backlog_walkthrough', :media => 'all'
+  = javascript_include_tag '//cdn.ably.io/lib/ably.min.js'
 
 - content_for :global_nav_left do
   .logo
@@ -144,7 +145,14 @@
     backlogData.render();
     var sprintTabs = new App.Views.SprintTabs.Index({ collection: thisBacklog.Sprints(), el: $('#backlog-tabs'), router: router });
     sprintTabs.render();
-    var presence = new App.Views.BacklogPresence.Show({ model: thisBacklog, name: '#{escape_javascript current_user.name}', el: $('#presence-notifier') });
+    var presence = new App.Views.BacklogPresence.Show({
+      model: thisBacklog,
+      user: {
+        name: '#{escape_javascript current_user.name}',
+        id: #{current_user.id}
+      },
+      el: $('#presence-notifier')
+    });
     presence.render();
 
     router.setTabsReference(sprintTabs);
