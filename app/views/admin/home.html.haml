@@ -1,6 +1,7 @@
 - title 'Admin bunker'
 - content_for :head do
   = stylesheet_link_tag 'admin', :media => 'all'
+  = javascript_include_tag '//cdn.ably.io/lib/ably.min.js'
 - content_for :title do
   %h1 Admin bunker
 %p
@@ -27,8 +28,9 @@
   %table.people
     %tr.head
       %th Name
+      %th Accounts
       %th Backlog ID
-      %th Editing time
+      %th Editing since
 
   %h2 Recent cron jobs
   %table.cron-jobs
@@ -41,38 +43,36 @@
         %td= cron.created_at.strftime('%H:%M %d/%m/%Y')
 
 :javascript
-  var adminClientId = 'admin-' + Math.floor(Math.random()*10000).toString(36);
-  var adminPoll = function() {
-    $.ajax({
-      url: 'https://easybacklog-presence.aws.af.cm/admin-monitor',
-      data: { id: adminClientId },
-      type: 'POST',
-      dataType: 'json',
-      success: function(response) {
-        if (response) {
-          var table = $('table.people');
-          table.find('tr:not(.head)').remove();
-          _(response).each(function(person) {
-            var tr = $('<tr>');
-            tr.append($('<td>').text(person.name));
-            tr.append($('<td>').text(person.channel));
-            tr.append($('<td class="time">').text(Math.round(person.since / 1000) + 's'));
-            table.append(tr);
-          });
-        }
-        adminPoll();
-      },
-      error: function() {
-        // try again in 5 seconds
-        setTimeout(adminPoll, 5000);
-      }
-    });
-  }
-  adminPoll();
+  var ably = new Ably.Realtime({
+    authUrl: '/realtime-token',
+    log: { level: 5 }
+  });
 
-  setInterval(function() {
-    $('td.time').each(function(index, elem) {
-      var currentSeconds = Number($(this).text().replace('s',''));
-      $(this).text((currentSeconds+1) + 's');
-    });
-  }, 1000);
+  var table = $('table.people');
+  function addPerson(member) {
+    var tr = table.find('tr#member-' + member.clientId);
+    if (tr.empty()) {
+      tr = $('<tr id="member-' + member.clientId + '">');
+      table.append(tr);
+    }
+    tr.append($('<td>').text(member.data.name));
+    var $accounts = $('<td>');
+    for (var accountIndex = 0; accountIndex < member.data.accounts.length; accountIndex++) {
+      var account = member.data.accounts[accountIndex];
+      $accounts.append($('<a href="/bunker/data/account?filter=' + escape(account) + '">').text(account));
+      if (accountIndex < member.data.accounts.length - 1) { $accounts.append(', '); }
+    }
+    tr.append($accounts);
+    tr.append($('<td>').text(member.data.backlogId));
+    tr.append($('<td class="time">').text(new Date(member.data.since)));
+  }
+
+  function removePerson(member) {
+    table.find('tr#member-' + member.clientId).remove();
+  }
+
+  var globalPresent = ably.channels.get('global-editors').presence;
+  globalPresent.subscribe('enter', addPerson);
+  globalPresent.subscribe('update', addPerson);
+  globalPresent.subscribe('present', addPerson);
+  globalPresent.subscribe('leave', removePerson);

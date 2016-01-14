@@ -17,6 +17,16 @@ class PagesController < ApplicationController
     end
   end
 
+  def realtime_token
+    raise "Ably API key is missing, set env var ABLY_API_KEY" unless ENV['ABLY_API_KEY']
+    unless current_user
+      return render status: :unauthorized, json: { error: "A realtime token cannot be issued unless you are logged in, please log in first" }
+    end
+
+    ably = Ably::Rest.new(key: ENV['ABLY_API_KEY'])
+    render json: ably.auth.create_token_request(client_id: current_user.id.to_s)
+  end
+
   # /raise-error for testing error capture
   def raise_error
     raise "Intentional error thrown"
