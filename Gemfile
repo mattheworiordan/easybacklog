@@ -76,6 +76,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'better_errors'
   gem 'binding_of_caller' # REPL for better errors
+  gem 'rake', '< 11' # addresses "NoMethodError: undefined method `last_comment'" -> https://stackoverflow.com/questions/35893584/nomethoderror-undefined-method-last-comment-after-upgrading-to-rake-11
 end
 
 group :production, :staging do
@@ -85,8 +86,8 @@ end
 
 group :test do
   gem 'minitest'
-  gem 'rspec','~>2.7.0'
-  gem 'rspec-rails','~>2.7.0'
+  gem 'rspec','~>2.99'
+  gem 'rspec-rails','~>2.99'
   gem 'shoulda-matchers'
   gem 'factory_girl_rails'
   gem 'webrat'
