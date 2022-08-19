@@ -479,7 +479,7 @@ DEPENDENCIES
   xml-object
 
 RUBY VERSION
-   ruby 2.6.10p210
+   ruby 2.5.9
 
 BUNDLED WITH
    1.17.3
