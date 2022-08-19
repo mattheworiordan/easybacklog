@@ -4,7 +4,8 @@ source 'http://rubygems.org'
 ruby File.read(File.expand_path("../.ruby-version", __FILE__)).strip.gsub(/\-p\d+$/, '')
 
 gem 'rails', '~> 3.2.18'
-gem 'pg'
+gem 'bigdecimal', '1.3.5'
+gem 'pg', '~> 0.11'
 gem 'jquery-rails', '~> 2.1.3'
 
 gem 'haml'
@@ -36,7 +37,7 @@ gem 'will_paginate'
 # load XML as an object
 gem 'xml-object'
 
-gem 'deep_merge', :require => 'deep_merge/rails_compat'
+# gem 'deep_merge', :require => 'deep_merge/rails_1compat'
 
 # improved hosting on Heroku
 gem 'unicorn'
@@ -48,13 +49,14 @@ gem 'slim', '~> 1.3.0'
 gem 'sinatra', '~> 1.3.0', require: false
 
 # better web server in development
-gem 'thin', group: :development
+gem 'thin', '~> 1.8', group: :development
 
 # See http://projects.theforeman.org/issues/2650 & http://stackoverflow.com/questions/13828889/rails-3-heroku-cannot-load-such-file-test-unit-testcase-loaderror
 gem 'test-unit', require: false
 
 # Ably is used for presence and realtime updates
-gem 'ably'
+gem 'ably', '~> 1.1.0'
+gem 'json', '~> 2.3.0'
 
 group :assets do
   gem 'sass-rails'
@@ -96,9 +98,11 @@ group :test do
   gem 'launchy', '>=2'
   gem 'pdf-reader'
   gem 'email_spec'
-  gem 'eventmachine', '~> 1.0.4'
+  gem 'eventmachine', '~> 1.2'
   gem 'capybara-screenshot'
-  gem 'recursive-open-struct', :git => 'git://github.com/mattheworiordan/recursive-open-struct.git'
+  gem 'recursive-open-struct', :git => 'https://github.com/mattheworiordan/recursive-open-struct.git'
+  gem 'nokogiri', '~> 1.13'
+  gem 'ffi', '~> 1.15'
 end
 
 group :development do
