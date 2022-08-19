@@ -27,7 +27,7 @@ EasyBacklog::Application.configure do
 
   # Heroku support
   config.assets.initialize_on_precompile = false
-  config.assets.compile = true # compile assets at Heroku
+  config.assets.compile = false # compile assets at Heroku
 
   config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
   config.assets.compress = true
