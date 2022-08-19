@@ -29,7 +29,7 @@ EasyBacklog::Application.configure do
   config.assets.initialize_on_precompile = false
   config.assets.compile = false # compile assets at Heroku
 
-  config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
+  # config.asset_host = 'd2bnjfukjumf2u.cloudfront.net'
   config.assets.compress = true
   config.fonts_domain = '//easybacklog-staging.herokuapp.com'
 
