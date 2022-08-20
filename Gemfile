@@ -102,7 +102,7 @@ group :test do
   gem 'eventmachine', '~> 1.2'
   gem 'capybara-screenshot'
   gem 'recursive-open-struct', :git => 'https://github.com/mattheworiordan/recursive-open-struct.git'
-  gem 'nokogiri', '~> 1.13'
+  gem 'nokogiri', '~> 1.12'
   gem 'ffi', '~> 1.15'
 end
 
